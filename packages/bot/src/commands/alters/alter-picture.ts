@@ -48,7 +48,6 @@ export default class EditAlterPictureCommand extends BaseErrorSubCommand {
         const alter = await query;
 
         const storage = new Storage();
-        const storageBucket = storage.bucket(process.env.GCP_BUCKET ?? "")
 
         if (alter === null) {
             return await ctx.ephemeral({
