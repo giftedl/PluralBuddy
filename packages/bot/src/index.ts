@@ -115,5 +115,3 @@ await setupMongoDB()
 await setupDatabases()
 await client.start();
 await client.uploadCommands({ cachePath: './commands.json' });
-
-Bun.serve({ port: 8080, routes: { "/": new Response("OK") }})
