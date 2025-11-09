@@ -1,0 +1,12 @@
+{
+	"name": "pluralbuddy",
+	"private": true,
+	"workspaces": ["packages/*"],
+	"scripts": {
+		"bot": "cd packages/bot && bun run bot"
+	},
+	"dependencies": {
+		"@google-cloud/storage": "^7.17.3",
+		"yunaforseyfert": "^1.1.3"
+	}
+}

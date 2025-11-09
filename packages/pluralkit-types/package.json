@@ -1,0 +1,22 @@
+{
+  "name": "pluralkit-types",
+  "module": "src/index.ts",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "moment-timezone": "^0.6.0",
+    "zod": "^4.1.12"
+  }
+}

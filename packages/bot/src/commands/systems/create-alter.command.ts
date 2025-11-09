@@ -1,0 +1,107 @@
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+
+import { type CommandContext, createStringOption, Declare, Options, SubCommand, type OKFunction, IgnoreCommand, type OnOptionsReturnObject } from "seyfert";
+import { AlertView } from "../../views/alert";
+import { MessageFlags } from "seyfert/lib/types";
+import { PAlterObject } from "../../types/alter";
+import { DiscordSnowflake } from "@sapphire/snowflake"
+import { getUserById, writeUserById } from "../../types/user";
+import { alterCollection } from "../../mongodb";
+import { BaseErrorSubCommand } from "../../base-error-subcommand";
+
+const options = {
+    username: createStringOption({
+        description: 'The username for the alter. These **cannot** include spaces.',
+        required: true,
+        max_length: 20,
+        value: (data, ok: OKFunction<string>, no) => {
+            if (data.value.includes(" "))
+                no("contains a space; yet usernames do not contain a space")
+            ok(data.value);
+        }
+    }),
+    "display-name": createStringOption({
+        description: 'The display name for the alter. These can include spaces.',
+        required: true,
+        max_length: 100
+    })
+};
+
+@Declare({
+    name: 'create-alter',
+    description: "Creates a new alter",
+    aliases: ["ca", "alter"]
+})
+@Options(options)
+export default class CreateAlterCommand extends BaseErrorSubCommand {
+	override async run(ctx: CommandContext<typeof options>) {
+        const { username, "display-name": displayName } = ctx.options;
+
+
+        await ctx.write(ctx.loading(ctx.userTranslations()))
+
+        const user = await ctx.retrievePUser();
+        const server = await ctx.retrievePGuild();
+
+        if (user.system === undefined) {
+            return await ctx.ephemeral({
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+            })
+        }
+
+        const alter = PAlterObject.parse({
+            alterId: Number(DiscordSnowflake.generate()),
+            systemId: user.system.associatedUserId,
+
+            username,
+            displayName,
+            nameMap: [],
+            color: null,
+            description: null,
+            created: new Date(),
+            avatarUrl: null,
+            webhookAvatarUrl: null,
+            banner: null,
+            lastMessageTimestamp: null,
+            messageCount: 0,
+            alterMode: "webhook"
+        })
+
+        await writeUserById(user.system.associatedUserId, {
+            ...(await getUserById(user.system.associatedUserId)),
+            system: {
+                ...user.system,
+                alterIds: [
+                    ...user.system.alterIds,
+                    alter.alterId
+                ]
+            }
+        })
+
+        alterCollection.insertOne(alter);
+        
+        await ctx.editResponse({
+            components: [
+                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATE_NEW_ALTER_DONE
+                    .replace("%prefix%", server.prefixes[0] ?? "/")
+                    .replace("%alter_id%", alter.username))
+            ]
+        })
+    }
+
+    override async onOptionsError(
+        context: CommandContext,
+        metadata: OnOptionsReturnObject
+    ) {
+        const errors = Object.entries(metadata)
+            .filter((_) => _[1].failed)
+            .map((error) => `${error[0]}: ${error[1].value}`)
+            .join("\n")
+            
+        await context.editOrReply({
+            components: [...new AlertView(context.userTranslations()).errorViewCustom(context.userTranslations().PLURALBUDDY_OPTIONS_ERROR.replace("%options_errors%", errors))],
+            flags: MessageFlags.IsComponentsV2
+        });
+    }
+}

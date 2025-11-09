@@ -1,0 +1,100 @@
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+
+import type { translations } from "./en_us";
+
+export type TranslationString = {
+    INTRODUCTION_MESSAGE: string;
+    IMPORT_MESSAGE: string;
+
+    PAGINATION_NEXT_PAGE: string;
+    PAGINATION_FINISH: string;
+    PAGINATION_PREVIOUS_PAGE: string;
+    CREATING_NEW_SYSTEM_HEADER: string;
+    SUCCESSFULLY_IMPORTED: string;
+
+    CREATING_NEW_PT_FORM_TITLE: string;
+    CREATING_NEW_PT_FORM_LABEL: string;
+    CREATING_NEW_PT_FORM_DESC: string;
+    CREATING_NEW_PT_ERROR: string;
+    CREATING_NEW_PT_TOO_MANY_CHARS: string;
+    SUCCESSFULLY_NEW_PT: string;
+
+    CREATING_NEW_SYSTEM_NAME_MESSAGE: string;
+    CREATING_NEW_SYSTEM_NAME_SET: string;
+    CREATING_NEW_SYSTEM_NAME_BUTTON: string;
+    SYSTEM_NAME_FORM_LABEL: string;
+
+    CREATING_NEW_SYSTEM_TAG_BUTTON: string;
+    CREATING_NEW_SYSTEM_TAG_SET: string;
+    CREATING_NEW_SYSTEM_TAG_MESSAGE: string;
+    SYSTEM_TAG_FORM_LABEL: string;
+
+    CREATING_NEW_SYSTEM_PRIVACY_BUTTON: string;
+    CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: string;
+    CREATING_NEW_SYSTEM_PRIVACY_SET: string;
+    SYSTEM_PRIVACY_FORM_LABEL: string;
+    CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: string;
+
+    CREATING_NEW_SYSTEM_SUCCESS: string;
+    SETUP_ERROR_SYSTEM_ALREADY_EXISTS: string;
+    SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: string;
+
+    PAGE_NEW_SYS_TEXT: string;
+    PAGE_NEW_SYS_TEXT_FILLED: string;
+
+    IMPORT_PLURALKIT_DESCRIPTION: string;
+    IMPORT_TUPPERBOX_DESCRIPTION: string;
+    IMPORT_PLURALBUDDY_DESCRIPTION: string;
+
+    IMPORT_SOURCE_DESCRIPTION: string;
+    CREATE_NEW_SYS_DESCRIPTION: string;
+
+    PLURALBUDDY_IMPORT_SOURCE: string;
+    PLURALBUDDY_IMPORT_DESC: string;
+    PLURALBUDDY_IMPORT_ERROR: string;
+    PLURALBUDDY_OPTIONS_ERROR: string;
+
+    ERROR_INTERACTION_TOO_OLD: string;
+    ERROR_SYSTEM_DOESNT_EXIST: string;
+    ERROR_ALTER_DOESNT_EXIST: string;
+
+    PAGINATION_TITLE: string;
+    CREATING_NEW_SYSTEM_FORM_TITLE: string;
+    EDIT_SYSTEM_FORM_TITLE: string;
+    WAITING: string;
+
+    CONFIRMATION_SYSTEM_DELETION: string;
+    CONFIRMATION_SYSTEM_DELETION_BTN: string;
+
+    ALTER_PROXY_TAGS: string;
+
+    SYSTEM_DELETION_FINISHED: string;
+    SYSTEM_DELETION_DM: string;
+
+    SYSTEM_EXPORT_FINISHED: string;
+    SYSTEM_EXPORT_DM: string;
+
+    PFP_SUCCESS: string,
+    RENAME_SUCCESS: string;
+    COLOR_SUCCESS: string,
+
+    CREATE_NEW_ALTER_DONE: string;
+
+    PRIVACY_NAME:        string; 
+    PRIVACY_DISPLAY_TAG: string;
+    PRIVACY_DESCRIPTION: string;
+    PRIVACY_AVATAR:      string;
+    PRIVACY_BANNER:      string;
+    PRIVACY_PRONOUNS:    string;
+    PRIVACY_ALTERS:      string;
+    PRIVACY_TAGS:        string;
+
+    ERROR_USER_BLACKLISTED: string;
+
+    OPERATION_DISCORD: string;
+    OPERATION_HEADER: string;
+    OPERATION_ID: string;
+    OPERATION_CHANGE_NAME: string;
+    OPERATION_CHANGE_PRIVACY: string;
+    OPERATION_UNDO_SUCCESS: string;
+};
