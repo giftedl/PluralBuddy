@@ -3,6 +3,7 @@
 import { type CommandContext, Container, Declare, TextDisplay } from "seyfert";
 import { BaseErrorCommand } from "../base-error-command";
 import { buildNumber } from "..";
+import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
 	name: "about",
@@ -22,7 +23,8 @@ export default class SystemCommand extends BaseErrorCommand {
                                     .replace("%branch%", process.env.BRANCH ?? "unknown")
                             )
                     )
-            ]
+            ],
+            flags: MessageFlags.IsComponentsV2
         });
     }
 }
