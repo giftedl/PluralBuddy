@@ -103,7 +103,6 @@ export const client = new Client({
     },
     context: extendedContext,
     globalMiddlewares,
-
 });
 
 client.setServices({
