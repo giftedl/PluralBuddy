@@ -4,6 +4,7 @@ import { type CommandContext, Container, Declare, TextDisplay } from "seyfert";
 import { BaseErrorCommand } from "../base-error-command";
 import { buildNumber } from "..";
 import { MessageFlags } from "seyfert/lib/types";
+import { emojis } from "../lib/emojis";
 
 @Declare({
 	name: "about",
@@ -21,6 +22,7 @@ export default class SystemCommand extends BaseErrorCommand {
                                 ctx.userTranslations().ABOUT_PB
                                     .replace("%version%", String(buildNumber))
                                     .replace("%branch%", process.env.BRANCH ?? "unknown")
+                                    .replace("%catjamming%", emojis.catjamming)
                             )
                     )
             ],

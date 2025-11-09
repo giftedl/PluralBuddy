@@ -18,7 +18,8 @@ export const emojiProfiles = {
         circleQuestion: "<:circlequestionmark:1435094250374172754>",
         circleQuestionWhite: "<:circlequestionmarkwhite:1435094249296232612>",
         check: "<:check:1435094247769374731>",
-        loading: "<a:loading:1433658260338114570>"
+        loading: "<a:loading:1433658260338114570>",
+        catjamming: "<a:catjamming:1437185438036132022>"
     },
     production: {
         x: "<:x_:1436973282304725083>",
@@ -37,7 +38,8 @@ export const emojiProfiles = {
         circleQuestion: "<:circlequestionmark:1436973265900929156>",
         circleQuestionWhite: "<:circlequestionmarkwhite:1436973264202371172>",
         check: "<:check:1436973262310608936>",
-        loading: "<a:loading:1436974818422427738>"
+        loading: "<a:loading:1436974818422427738>",
+        catjamming: "<a:catjamming:1437185292170690640>"
     }
 }
 
