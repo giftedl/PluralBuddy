@@ -70,7 +70,7 @@ export default class EditAlterPictureCommand extends BaseErrorSubCommand {
             })
         }
 
-        const objectName = `${ctx.author.id}/${alter.alterId}/${assetStringGeneration(32)}.${((attachment as {value: Attachment}).value.contentType ?? "").replace(/(.*)\//g, '')}`;
+        const objectName = `${process.env.BRANCH}/${ctx.author.id}/${alter.alterId}/${assetStringGeneration(32)}.${((attachment as {value: Attachment}).value.contentType ?? "").replace(/(.*)\//g, '')}`;
         const bucketName = process.env.GCP_BUCKET ?? "";
         const contentType = (attachment as {value: Attachment}).value.contentType ?? "application/octet-stream";
 

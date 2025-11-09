@@ -97,4 +97,6 @@ export type TranslationString = {
     OPERATION_CHANGE_NAME: string;
     OPERATION_CHANGE_PRIVACY: string;
     OPERATION_UNDO_SUCCESS: string;
+
+    ABOUT_PB: string;
 };

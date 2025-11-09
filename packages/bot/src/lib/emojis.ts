@@ -34,7 +34,7 @@ export const emojiProfiles = {
         discord: "<:Discord:1436973269030015047>",
         clock: "<:Clock:1436973267587170464>",
         clockCheck: "<:clockcheck:1436973266651844642>",
-        circleQuestionMark: "<:circlequestionmark:1436973265900929156>",
+        circleQuestion: "<:circlequestionmark:1436973265900929156>",
         circleQuestionWhite: "<:circlequestionmarkwhite:1436973264202371172>",
         check: "<:check:1436973262310608936>",
         loading: "<a:loading:1436974818422427738>"

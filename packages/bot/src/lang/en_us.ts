@@ -102,5 +102,13 @@ Systems can have **privacy values** which are values that describe who can see w
     OPERATION_ID: "Operation ID: %id%",
     OPERATION_CHANGE_NAME: "Set system name to `%name%`.",
     OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",
-    OPERATION_UNDO_SUCCESS: "Successfully updated %value-count% value(s) as result of an undo action."
+    OPERATION_UNDO_SUCCESS: "Successfully updated %value-count% value(s) as result of an undo action.",
+
+    ABOUT_PB: `**PluralBuddy Build #%version%** · \`%branch%\`
+
+[GitHub](https://github.com) · [Docs](https://pb.giftedly.dev)
+
+> **Credits:**
+> Programmed w/ :heart_hands: by @giftedly 
+> Art by @rainecloudzy`
 }
