@@ -84,7 +84,7 @@ export const extendedContext = extendContext((interaction) => {
         }
     };
   });
-   
+
 export const client = new Client({
     commands: {
         prefix: async (msg) => {
