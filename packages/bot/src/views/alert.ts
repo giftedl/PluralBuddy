@@ -28,7 +28,6 @@ export class AlertView extends TranslatedView {
         ]
     }
 
-
     errorViewCustom(string: string) {
         return [
             new Container()
