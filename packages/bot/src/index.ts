@@ -108,7 +108,7 @@ export const client = new Client({
 client.setServices({
     middlewares: middlewares,
     handleCommand: PluralBuddyHandleCommand
-  });
+});
 
 await setupMongoDB()
 await setupDatabases()
