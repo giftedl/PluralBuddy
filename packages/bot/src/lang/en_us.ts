@@ -104,10 +104,13 @@ Systems can have **privacy values** which are values that describe who can see w
     OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",
     OPERATION_UNDO_SUCCESS: "Successfully updated %value-count% value(s) as result of an undo action.",
 
-    ABOUT_PB: `## PluralBuddy Build #%version% · \`%branch%\`
-[GitHub](https://github.com) · [Docs](https://pb.giftedly.dev)
+    ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
+%github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+
+> PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
+> This bot was made as a faster, more controllable alternative to other plural bots.
 
 > **Credits:**
-> Programmed w/ :heart_hands: by @giftedly 
-> Art by %catjamming% @rainecloudzy`
+> %linein% Programmed w/ :heart_hands: by @giftedly 
+> %lineright% Art by %catjamming% @raincloudzy`
 }

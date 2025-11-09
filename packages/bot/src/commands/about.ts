@@ -23,6 +23,10 @@ export default class SystemCommand extends BaseErrorCommand {
                                     .replace("%version%", String(buildNumber))
                                     .replace("%branch%", process.env.BRANCH ?? "unknown")
                                     .replace("%catjamming%", emojis.catjamming)
+                                    .replace("%github%", emojis.github)
+                                    .replace("%docs%", emojis.book)
+                                    .replace("%linein%", emojis.lineIn)
+                                    .replace("%lineright%", emojis.lineRight)
                             )
                     )
             ],
