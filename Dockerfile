@@ -43,4 +43,5 @@ RUN chown -R bun:bun /usr/pluralbuddy
 
 # run the app
 USER bun
+EXPOSE 8080
 ENTRYPOINT [ "bun", "run", "bot" ]
