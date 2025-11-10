@@ -3,17 +3,17 @@
 import z from "zod";
 import { guildCollection } from "../mongodb";
 
+export const defaultPrefixes = { canary: ["pbc;", "pbc!"], production: ["pb;", "pb!"] }
 export const PGuildObject = z.object({
     guildId: z.string(),
 
     /** command prefixes */
-    prefixes: z.string().array().default([ "pb!", "pb;" ]),
+    prefixes: z.string().array().default(defaultPrefixes[process.env.BRANCH as "production" | "canary" ?? "production"]),
 
     /** users allowed to use, channels allowed to proxy */
     blacklistedRoles: z.string().array().default([]),
     blacklistedChannels: z.string().array().default([]),
 
-    nicknameEnforceMode: z.enum([ "whitelist", "blacklist", "both" ]).default("both"),
     whitelistedNicknameRoles: z.string().array().default([]),
     blacklistedNicknameRoles: z.string().array().default([]),
 

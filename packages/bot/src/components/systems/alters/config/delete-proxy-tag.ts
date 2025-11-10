@@ -1,11 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ComponentCommand, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { alterCollection } from "../../../mongodb";
-import { AlertView } from "../../../views/alert";
+import { InteractionIdentifier } from "../../../../lib/interaction-ids";
+import { alterCollection } from "../../../../mongodb";
+import { AlertView } from "../../../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlterView } from "../../../views/alters";
+import { AlterView } from "../../../../views/alters";
 
 export default class DeleteProxyTag extends ComponentCommand {
     componentType = 'Button' as const;

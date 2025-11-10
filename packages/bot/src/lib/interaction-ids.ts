@@ -65,6 +65,16 @@ export const InteractionIdentifier = {
             Alters: {
                 Index: createStatic("systems/config/alters"),
                 GeneralSettings: createFromAdditionalArg("systems/config/alters/general"),
+
+                SetUsername: createFromAdditionalArg("systems/config/alters/set-username"),
+                SetProxyMode: createFromAdditionalArg("systems/config/alters/set-proxy-mode"),
+                ProxyMode: {
+                    GoBack: createFromAdditionalArg("systems/config/alters-proxy-mode/goback"),
+                    Nickname: createFromAdditionalArg("systems/config/alters-proxy-mode/nickname"),
+                    Webhook: createFromAdditionalArg("systems/config/alters-proxy-mode/webhook"),
+                    Both: createFromAdditionalArg("systems/config/alters-proxy-mode/both")
+                },
+
                 ProxyTagSettings: createFromAdditionalArg("systems/config/alters/proxy"),
                 DeleteProxyTag: new InteractionObj("systems/config/alters/delete-proxy-tag-", (alterId: string, proxyTag: string) => `systems/config/alters/delete-proxy-tag-${alterId}-${proxyTag}`),
                 PublicProfileSettings: createFromAdditionalArg("systems/config/alters/public-profile"),
@@ -83,6 +93,11 @@ export const InteractionIdentifier = {
                 PrivacyForm: createFromAdditionalArg("systems/config/set-form/privacy"),
                 ProxyType: createStatic("systems/config/type-form/proxy"),
                 ProxyForm: createFromAdditionalArg("systems/config/set-form/proxy"),
+                Alters: {
+                    AlterUsernameType: createStatic("systems/config/type-form/alters/set-username"),
+                    AlterUsernameForm: createFromAdditionalArg("systems/config/set-form/alters/set-username"),
+
+                }
             }
         },
         UndoOperation: createFromAdditionalArg("systems/undo-operation")

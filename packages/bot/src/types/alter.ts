@@ -17,7 +17,7 @@ export const PAlterObject = z.object({
     alterId: z.number(),
     systemId: z.string(),
 
-    username: z.string(),
+    username: z.string().max(20).regex(/^[^\s]+$/),
     displayName: z.string(),
     nameMap: z.object({ server: z.number(), name: z.string() }).array(),
     color: z.string().nullable(),
@@ -30,7 +30,7 @@ export const PAlterObject = z.object({
 
     lastMessageTimestamp: z.coerce.date().nullable(),
     messageCount: z.number(),
-    alterMode: z.enum([ "nickname", "webhook" ]),
+    alterMode: z.enum([ "nickname", "webhook", "both" ]).default("webhook"),
     proxyTags: z.object({ prefix: z.string().max(20), suffix: z.string().max(20), id: z.string() }).array()
 })
 

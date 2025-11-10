@@ -5,7 +5,7 @@
 
 import { ActionRow, Button, Client, Container, Emoji, extendContext, Message, TextDisplay } from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
-import { getGuildFromId } from "./types/guild";
+import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import type { InteractionCreateBodyRequest } from "seyfert/lib/common";
 import { Emojis } from "seyfert/lib/cache/resources/emojis";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
@@ -18,7 +18,7 @@ import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
 import type { TranslationString } from "./lang";
 
-export const buildNumber = 31;
+export const buildNumber = 47;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware']
 
 export const extendedContext = extendContext((interaction) => {
@@ -86,11 +86,14 @@ export const extendedContext = extendContext((interaction) => {
     };
   });
 
+
+console.log("the branch is:", process.env.BRANCH ?? "unknown", "- so, default prefixes are:", defaultPrefixes[process.env.BRANCH as "production" | "canary" ?? "production"])
+
 export const client = new Client({
     commands: {
         prefix: async (msg) => {
             if (msg.guildId === undefined)
-                return ["pb;", "pb!"]
+                return defaultPrefixes[process.env.BRANCH as "production" | "canary" ?? "production"]
 
             const guild = await getGuildFromId(msg.guildId ?? "")
 

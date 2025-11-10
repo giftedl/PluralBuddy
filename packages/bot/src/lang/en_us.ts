@@ -90,7 +90,18 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_TAG_FORM_LABEL: "System Tag",
 
     ALTER_PROXY_TAGS: "## Proxy Tags - @%alter%\nProxy tags are the way your alter *fronts* depending on the contents of your message. You can multiple of these, with 20 characters as the prefix/suffix of each descriptor for proxy tags.",
-    
+    ALTER_FORM_TITLE: "Editing Alter",
+    ALTER_GENERAL: "## General - @%alter%\nAlter's are parts of your system. Certain values of your system can be configured here.",
+    ALTER_SET_USERNAME: "Set Alter Username",
+    ALTER_SET_USERNAME_DESC: "Alter usernames cannot have any spaces and can only be less than 20 characters. They are used to identify your system in commands.",
+    ALTER_SET_USERNAME_SPACES: "There cannot be spaces in usernames.",
+
+    ALTER_SET_MODE: "Set Proxy Mode",
+    ALTER_SET_MODE_DESC: `Proxy modes describe how the alter proxies. There are three main methods for alter proxying:
+> - *Nickname*: Your nickname is adjusted based on this alters display name & the system nickname convention. You are required to have the Change Nickname permission for this to work.
+> - *Webhooks*: A webhook is created with your alter & system data that will replace your message. Similar to bots like PluralKit and Tupperbox. Default mode.
+> - *Both*: Sets both a nickname and sends a webhook based on alter.`,
+
     PFP_SUCCESS: "Successfully updated the profile picture for @%alter%.",
     RENAME_SUCCESS: "Successfully updated the username for @%alter%.",
     COLOR_SUCCESS: "Successfully updated the color for @%alter%.",
@@ -112,5 +123,6 @@ Systems can have **privacy values** which are values that describe who can see w
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
-> %lineright% Art by %catjamming% @raincloudzy`
+> %lineright% Art by %catjamming% @raincloudzy`,
+    FORBIDDEN: "You do not have permission on this server to do this action."
 }

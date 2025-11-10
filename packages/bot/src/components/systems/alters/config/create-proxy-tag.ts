@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ComponentCommand, Label, Modal, TextInput, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "../../../../lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
 
 

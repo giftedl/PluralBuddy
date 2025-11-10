@@ -7,7 +7,7 @@ import type { ColorResolvable } from "seyfert/lib/common";
 import type { PSystem } from "../types/system";
 import { SystemSettingsView } from "./system-settings";
 import { InteractionIdentifier } from "../lib/interaction-ids";
-import { ButtonStyle } from "seyfert/lib/types";
+import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis } from "../lib/emojis";
 
 export class AlterView extends TranslatedView {
@@ -77,6 +77,80 @@ ${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
                                 .setDisabled(alter.proxyTags.length >= 7)
                         ),
                     new TextDisplay().setContent("-# You can create up to 6 proxy tags.")
+                )
+        ]
+    }
+
+    alterGeneralView(alter: PAlter) {
+        return [
+            new Container()
+                .setComponents(
+                    new TextDisplay()
+                        .setContent(this.translations.ALTER_GENERAL.replace("%alter%", alter.username)),
+                    new Separator().setSpacing(Spacing.Large),
+                    new Section()
+                        .addComponents(
+                            new TextDisplay()
+                                .setContent(
+                                    this.translations.ALTER_SET_USERNAME_DESC
+                                )
+                        )
+                        .setAccessory(
+                            new Button()
+                                .setStyle(ButtonStyle.Secondary)
+                                .setLabel(this.translations.ALTER_SET_USERNAME)
+                                .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.SetUsername.create(alter.alterId))
+                        ),
+                    new Separator(),
+                    new Section()
+                        .addComponents(
+                            new TextDisplay()
+                                .setContent(
+                                    `${this.translations.ALTER_SET_MODE_DESC}
+-# Current mode for @${alter.username} is ${alter.alterMode[0]?.toUpperCase() + alter.alterMode.slice(1)}`
+                                )
+                        )
+                        .setAccessory(
+                            new Button()
+                                .setLabel(this.translations.ALTER_SET_MODE)
+                                .setStyle(ButtonStyle.Secondary)
+                                .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.create(alter.alterId))
+                        )
+                )
+        ]
+    }
+
+    altersSetMode(alterUsername: string, alterId: number, currentMode: string) {
+        return [
+            new Container()
+                .setComponents(
+                    new TextDisplay()
+                        .setContent(`### ${emojis.circleQuestion}   Proxy Mode · @${alterUsername}
+${this.translations.ALTER_SET_MODE_DESC}
+
+Please select the mode you would like to use below.
+-# Current mode for @${alterUsername} is ${currentMode[0]?.toUpperCase() + currentMode.slice(1)}`)
+                )
+                .setColor("#1190FF"),
+            new ActionRow()
+                .setComponents(
+                    new Button()
+                        .setEmoji(emojis.undo)
+                        .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.GoBack.create(alterId))
+                        .setLabel("Back")
+                        .setStyle(ButtonStyle.Secondary),
+                    new Button()
+                        .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Nickname.create(alterId))
+                        .setLabel("Nickname")
+                        .setStyle(ButtonStyle.Primary),
+                    new Button()
+                        .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Webhook.create(alterId))
+                        .setLabel("Webhook")
+                        .setStyle(ButtonStyle.Primary),
+                    new Button()
+                        .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Both.create(alterId))
+                        .setLabel("Both")
+                        .setStyle(ButtonStyle.Primary)
                 )
         ]
     }

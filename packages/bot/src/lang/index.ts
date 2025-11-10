@@ -67,6 +67,14 @@ export type TranslationString = {
     CONFIRMATION_SYSTEM_DELETION_BTN: string;
 
     ALTER_PROXY_TAGS: string;
+    ALTER_GENERAL: string;
+    ALTER_FORM_TITLE: string;
+    ALTER_SET_USERNAME: string;
+    ALTER_SET_USERNAME_DESC: string;
+    ALTER_SET_USERNAME_SPACES: string;
+
+    ALTER_SET_MODE: string;
+    ALTER_SET_MODE_DESC: string;
 
     SYSTEM_DELETION_FINISHED: string;
     SYSTEM_DELETION_DM: string;
@@ -99,4 +107,5 @@ export type TranslationString = {
     OPERATION_UNDO_SUCCESS: string;
 
     ABOUT_PB: string;
+    FORBIDDEN: string;
 };

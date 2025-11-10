@@ -1,12 +1,12 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { alterCollection } from "../../../mongodb";
-import { AlertView } from "../../../views/alert";
+import { InteractionIdentifier } from "../../../../lib/interaction-ids";
+import { alterCollection } from "../../../../mongodb";
+import { AlertView } from "../../../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import { AlterView } from "../../../views/alters";
+import { AlterView } from "../../../../views/alters";
 
 export default class CreateProxyTagModal extends ModalCommand {
 	override filter(context: ModalContext) {
