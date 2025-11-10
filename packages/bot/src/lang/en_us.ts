@@ -124,5 +124,6 @@ Systems can have **privacy values** which are values that describe who can see w
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
 > %lineright% Art by %catjamming% @raincloudzy`,
-    FORBIDDEN: "You do not have permission on this server to do this action."
+    FORBIDDEN: "You do not have permission on this server to do this action.",
+    ERROR_FAILED_TO_UPLOAD_TO_GCP: "Failed to upload the image to Google Cloud Platform. Please try again later."
 }

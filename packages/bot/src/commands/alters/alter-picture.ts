@@ -9,6 +9,7 @@ import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { Storage } from "@google-cloud/storage";
 import { assetStringGeneration, operationStringGeneration } from "../../types/operation";
 import { LoadingView } from "../../views/loading";
+import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
 
 const options = {
     "alter-name": createStringOption({
@@ -47,10 +48,8 @@ export default class EditAlterPictureCommand extends BaseErrorSubCommand {
             : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId })
         const alter = await query;
 
-        const storage = new Storage();
-
         if (alter === null) {
-            return await ctx.ephemeral({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
@@ -71,39 +70,18 @@ export default class EditAlterPictureCommand extends BaseErrorSubCommand {
 
         const objectName = `${process.env.BRANCH}/${ctx.author.id}/${alter.alterId}/${assetStringGeneration(32)}.${((attachment as {value: Attachment}).value.contentType ?? "").replace(/(.*)\//g, '')}`;
         const bucketName = process.env.GCP_BUCKET ?? "";
-        const contentType = (attachment as {value: Attachment}).value.contentType ?? "application/octet-stream";
 
-        const accessToken = process.env.GCP_TOKEN;
-        const attachmentUrl = (attachment as {value: Attachment}).value.url;
-        const discordResponse = await fetch(attachmentUrl);
-        
-        if (!discordResponse.ok) {
-            throw new Error("Failed to fetch the image from Discord.");
-        }
-
-        if (!discordResponse.body) {
-            throw new Error("Response body is null.");
-        }
-
-        const gcpUploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${encodeURIComponent(bucketName)}/o?uploadType=media&name=${encodeURIComponent(objectName)}`;
-        
-        const gcpResponse = await fetch(gcpUploadUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': contentType
-            },
-            body: discordResponse.body
-        });
-
-        if (!gcpResponse.ok) {
-            const errorText = await gcpResponse.text();
-            throw new Error(`Failed to upload to GCS: ${gcpResponse.status} ${errorText}`);
+        try {
+            const accessToken = await getGcpAccessToken();
+            await uploadDiscordAttachmentToGcp((attachment as {value: Attachment}).value, accessToken, bucketName, objectName);
+        } catch (error) {
+            return await ctx.editResponse({
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_FAILED_TO_UPLOAD_TO_GCP"),
+                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+            })
         }
         
-        // Construct the public URL
         const publicUrl = `https://storage.googleapis.com/${bucketName}/${objectName}`;
-
         await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { avatarUrl: publicUrl }})
 
         return await ctx.editResponse({

@@ -108,4 +108,5 @@ export type TranslationString = {
 
     ABOUT_PB: string;
     FORBIDDEN: string;
+    ERROR_FAILED_TO_UPLOAD_TO_GCP: string;
 };
