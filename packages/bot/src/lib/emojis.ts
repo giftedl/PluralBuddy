@@ -23,7 +23,8 @@ export const emojiProfiles = {
         github: "<:github:1437190309413912757>",
         book: "<:book:1437190307665018941>",
         lineIn: "<:linein:1437194209248546968>",
-        lineRight: "<:lineright:1437194208061685830>"
+        lineRight: "<:lineright:1437194208061685830>",
+        reply: "<:reply:1437573940393545911>"
     },
     production: {
         x: "<:x_:1436973282304725083>",
@@ -47,7 +48,8 @@ export const emojiProfiles = {
         github: "<:github:1437190484635291709>",
         book: "<:book:1437190483725123787>",
         lineIn: "<:linein:1437193987592159282>",
-        lineRight: "<:lineright:1437193986400981112>"
+        lineRight: "<:lineright:1437193986400981112>",
+        reply: "<:reply:1437573788245037186>"
     }
 }
 
