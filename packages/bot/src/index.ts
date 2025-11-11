@@ -18,7 +18,7 @@ import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
 import type { TranslationString } from "./lang";
 
-export const buildNumber = 57;
+export const buildNumber = 58;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware']
 
 export const extendedContext = extendContext((interaction) => {
