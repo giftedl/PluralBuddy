@@ -28,7 +28,7 @@ export default createEvent({
             try {
                 (await client.guilds.fetch(message.guildId as string)).members.fetch("1430750248401371199")
                 returnBack = true;
-            } catch (_) {}
+            } catch (c) {console.log(c)}
 
         if (returnBack)
             return;
