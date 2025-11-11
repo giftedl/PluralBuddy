@@ -13,10 +13,24 @@ export default createEvent({
     run: async (message, client) => {
         if (message.author.bot === true)
             return;
+        if ((await message.channel()).isDM()) {
+            message.write({ content: "You cannot proxy inside of DM channels." })
+            return;
+        }
 
         const userPerms = await client.channels.memberPermissions(message.channelId, await client.members.fetch(message.guildId as string, client.botId), true)
 
         if (!userPerms.has([ "ManageWebhooks", "ManageMessages" ]))
+            return;
+
+        let returnBack = false;
+        if (process.env.BRANCH === "production")
+            try {
+                (await client.guilds.fetch(message.guildId as string)).members.fetch("1430750248401371199")
+                returnBack = true;
+            } catch (_) {}
+
+        if (returnBack)
             return;
 
         const similarWebhooks = (await client.webhooks.listFromChannel(message.channelId)).filter((val) => val.name === 'PluralBuddy Proxy' && (val.user ?? { id: 0}).id === client.botId)
