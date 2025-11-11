@@ -23,15 +23,13 @@ export default createEvent({
         if (!userPerms.has([ "ManageWebhooks", "ManageMessages" ]))
             return;
 
-        let returnBack = false;
-        if (process.env.BRANCH === "production")
-            try {
-                (await client.guilds.fetch(message.guildId as string)).members.fetch("1430750248401371199", true)
-                returnBack = true;
-            } catch (c) {console.log(c)}
+        if (process.env.BRANCH === "production") {
+            const member = await (await client.guilds.fetch(message.guildId as string)).members.fetch("1430750248401371199", true).catch(() => null);
 
-        if (returnBack)
-            return;
+            if (member !== null)
+                return;
+        }
+
 
         const similarWebhooks = (await client.webhooks.listFromChannel(message.channelId)).filter((val) => val.name === 'PluralBuddy Proxy' && (val.user ?? { id: 0}).id === client.botId)
         const user = await getUserById(message.author.id)
