@@ -26,7 +26,7 @@ export default createEvent({
         let returnBack = false;
         if (process.env.BRANCH === "production")
             try {
-                (await client.guilds.fetch(message.guildId as string)).members.fetch("1430750248401371199")
+                (await client.guilds.fetch(message.guildId as string)).members.fetch("1430750248401371199", true)
                 returnBack = true;
             } catch (c) {console.log(c)}
 
