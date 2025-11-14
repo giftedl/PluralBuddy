@@ -34,6 +34,9 @@ export async function createSystemOperation(system: PSystem, operation: Partial<
         if (c === "public") {
             return translations.OPERATION_CHANGE_PRIVACY.replace("%privacy%", ((operation.public ?? 0) > 0 ? `\`${friendlyProtection(translations, listFromMask(operation.public ?? 0)).join("`, `")}\`` : ""))
         }
+        if (c === "nicknameFormat") {
+            return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace("%format%", operation.nicknameFormat as string)
+        }
 
         return "";
     })

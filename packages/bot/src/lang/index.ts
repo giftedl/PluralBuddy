@@ -23,6 +23,9 @@ export type TranslationString = {
     CREATING_NEW_SYSTEM_NAME_SET: string;
     CREATING_NEW_SYSTEM_NAME_BUTTON: string;
     SYSTEM_NAME_FORM_LABEL: string;
+    SYSTEM_NICKNAME_FORM_LABEL: string;
+    SYSTEM_NICKNAME_FORM_DESC: string;
+    ALTER_DISPLAY_NAME_FORM_LABEL: string;
 
     CREATING_NEW_SYSTEM_TAG_BUTTON: string;
     CREATING_NEW_SYSTEM_TAG_SET: string;
@@ -65,6 +68,8 @@ export type TranslationString = {
 
     CONFIRMATION_SYSTEM_DELETION: string;
     CONFIRMATION_SYSTEM_DELETION_BTN: string;
+    CONFIRMATION_ALTER_DELETION: string;
+    ALTER_DELETION_FINISHED: string;
 
     ALTER_PROXY_TAGS: string;
     ALTER_GENERAL: string;
@@ -75,6 +80,14 @@ export type TranslationString = {
 
     ALTER_SET_MODE: string;
     ALTER_SET_MODE_DESC: string;
+
+    ALTER_DELETE: string;
+    ALTER_DELETE_DESC: string;
+    ALTER_SET_DISPLAY: string;
+    ALTER_SET_PFP: string;
+    ERROR_INVALID_ATTACHMENT_TYPE: string;
+    ALTER_SET_COLOR: string;
+    ERROR_INVALID_COLOR: string;
 
     SYSTEM_DELETION_FINISHED: string;
     SYSTEM_DELETION_DM: string;
@@ -104,6 +117,7 @@ export type TranslationString = {
     OPERATION_ID: string;
     OPERATION_CHANGE_NAME: string;
     OPERATION_CHANGE_PRIVACY: string;
+    OPERATION_CHANGE_NICKNAME_FORMAT: string;
     OPERATION_UNDO_SUCCESS: string;
 
     ABOUT_PB: string;

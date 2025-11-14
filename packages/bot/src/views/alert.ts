@@ -61,4 +61,15 @@ export class AlertView extends TranslatedView {
         ]
 
     }
+
+    questionViewCustom(string: string) {
+        return [
+            new Container()
+                .setComponents(
+                    new TextDisplay()
+                        .setContent(`  ${emojis.circleQuestion}   ${string}`)
+                )
+                .setColor("#1190FF")
+        ]
+    }
 }

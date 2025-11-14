@@ -12,11 +12,10 @@ import { emojis } from "../lib/emojis";
 
 export class AlterView extends TranslatedView {
 
-    alterProfileView(alter: PAlter) {
-
+    alterProfileView(alter: PAlter, preview = false) {
         const innerComponents =
             new TextDisplay()
-                .setContent(`## ${alter.displayName}
+                .setContent(`${preview ? "" : "##"} ${alter.displayName} ${preview ? " - preview" : ""}
 -# Also known as @${alter.username}
 ${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
 **Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}
@@ -36,7 +35,7 @@ ${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
                         .setComponents(innerComponents)
             )
 
-        if (alter.color !== null)
+        if (alter.color !== null && alter.color !== "#000000")
             comp.setColor(alter.color as ColorResolvable)
 
         return [
@@ -153,6 +152,60 @@ Please select the mode you would like to use below.
                         .setStyle(ButtonStyle.Primary)
                 )
         ]
+    }
+
+    altersPublicView(alter: PAlter) {
+
+        return [
+            new Container()
+                .setComponents(
+
+                    new TextDisplay()
+                        .setContent(`## Public Profile - @${alter.username}\nYour public profile is what your alter looks like to other users when they identify your messages.`),
+                    new Separator().setSpacing(Spacing.Large),
+                    new Section()
+                        .addComponents(
+                            new TextDisplay()
+                                .setContent(
+                                    `Display names are shown on webhooks when you proxy. These have less restrictions then usernames.\n-# Display Name: ${alter.displayName}`
+                                )
+                        )
+                        .setAccessory(
+                            new Button()
+                                .setStyle(ButtonStyle.Secondary)
+                                .setLabel(this.translations.ALTER_SET_DISPLAY)
+                                .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.SetDisplayName.create(alter.alterId))
+                        ),
+                    new Separator().setSpacing(Spacing.Large),
+                    new Section()
+                        .addComponents(
+                            new TextDisplay()
+                                .setContent(
+                                    "You can set a **profile picture** by uploading an image using the modal on the right."
+                                )
+                        )
+                        .setAccessory(
+                            new Button()
+                                .setStyle(ButtonStyle.Secondary)
+                                .setLabel(this.translations.ALTER_SET_PFP)
+                                .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.SetPFP.create(alter.alterId))
+                        ),
+                        new Separator().setSpacing(Spacing.Large),
+                        new Section()
+                            .addComponents(
+                                new TextDisplay()
+                                    .setContent(
+                                        "Setting a color for an alter shows that color for their rank container along with their public profile."
+                                    )
+                            )
+                            .setAccessory(
+                                new Button()
+                                    .setStyle(ButtonStyle.Secondary)
+                                    .setLabel(this.translations.ALTER_SET_COLOR)
+                                    .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.SetAlterColor.create(alter.alterId))
+                            ),
+                )
+            ];
     }
 
     alterTopView(currentTab: "general" | "proxy-tags" | "public-settings", alterId: string, alterUsername: string) {

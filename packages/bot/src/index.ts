@@ -18,14 +18,14 @@ import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
 import type { TranslationString } from "./lang";
 
-export const buildNumber = 60;
+export const buildNumber = 108;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware']
 
 export const extendedContext = extendContext((interaction) => {
     const ephemeral = async (body: InteractionCreateBodyRequest, allowedPublic?: boolean) => {
         if (interaction instanceof Message) {
             if (allowedPublic && (interaction.content.endsWith("-p") || interaction.content.endsWith("-public"))) {
-                return await interaction.write(body);
+                return await interaction.reply(body);
             }
 
             const message = await interaction.reply({

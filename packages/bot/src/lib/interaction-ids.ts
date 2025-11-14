@@ -56,9 +56,11 @@ export const InteractionIdentifier = {
         DeleteSystem: createStatic("systems/delete"),
         ConfigurePublicProfile: createFromAdditionalArg("systems/configure-public-profile"),
         Configuration: {
+            ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
             GeneralTab: {
                 Index: createStatic("systems/config/general"),
                 SetName: createStatic("systems/config/general/set-name"),
+                SetNicknameFormat: createStatic("systems/config/general/nickname-format"),
                 SetPrivacy: createStatic("systems/config/general/set-privacy"),
                 ExportSystem: createStatic("systems/config/general/export")
             },
@@ -67,7 +69,10 @@ export const InteractionIdentifier = {
                 GeneralSettings: createFromAdditionalArg("systems/config/alters/general"),
 
                 SetUsername: createFromAdditionalArg("systems/config/alters/set-username"),
+                SetDisplayName: createFromAdditionalArg("systems/config/alters/set-display-name"),
                 SetProxyMode: createFromAdditionalArg("systems/config/alters/set-proxy-mode"),
+                SetPFP: createFromAdditionalArg("systems/config/alters/set-pfp"),
+                SetAlterColor: createFromAdditionalArg("systems/config/alters/set-alter-color"),
                 ProxyMode: {
                     GoBack: createFromAdditionalArg("systems/config/alters-proxy-mode/goback"),
                     Nickname: createFromAdditionalArg("systems/config/alters-proxy-mode/nickname"),
@@ -75,6 +80,7 @@ export const InteractionIdentifier = {
                     Both: createFromAdditionalArg("systems/config/alters-proxy-mode/both")
                 },
 
+                RemoveAlterConfirm: createFromAdditionalArg("systems/config/alters/remove"),
                 ProxyTagSettings: createFromAdditionalArg("systems/config/alters/proxy"),
                 DeleteProxyTag: new InteractionObj("systems/config/alters/delete-proxy-tag-", (alterId: string, proxyTag: string) => `systems/config/alters/delete-proxy-tag-${alterId}-${proxyTag}`),
                 PublicProfileSettings: createFromAdditionalArg("systems/config/alters/public-profile"),
@@ -93,10 +99,17 @@ export const InteractionIdentifier = {
                 PrivacyForm: createFromAdditionalArg("systems/config/set-form/privacy"),
                 ProxyType: createStatic("systems/config/type-form/proxy"),
                 ProxyForm: createFromAdditionalArg("systems/config/set-form/proxy"),
+                NicknameType: createStatic("systems/config/type-form/nickname"),
+                NicknameForm: createFromAdditionalArg("systems/config/set-form/nickname"),
                 Alters: {
                     AlterUsernameType: createStatic("systems/config/type-form/alters/set-username"),
                     AlterUsernameForm: createFromAdditionalArg("systems/config/set-form/alters/set-username"),
-
+                    AlterDisplayNameType: createStatic("systems/config/type-form/alters/set-display-name"),
+                    AlterDisplayNameForm: createFromAdditionalArg("systems/config/set-form/alters/set-display-name"),
+                    AlterPFPForm: createFromAdditionalArg("systems/config/set-form/alters/set-pfp"),
+                    AlterPFPType: createStatic("systems/config/type-form/alters/set-pfp"),
+                    AlterColorType: createStatic("systems/config/type-form/alters/set-alter-color"),
+                    AlterColorForm: createFromAdditionalArg("systems/config/set-form/alters/set-alter-color"),
                 }
             }
         },

@@ -24,6 +24,7 @@ export default class NameCNS extends ComponentCommand {
         })
         const oldInteractionId = InteractionIdentifier.Setup.Pagination.Page3.substring(ctx.customId)[0] ?? "";
         const temporarySystem = createdSystems.get(oldInteractionId);
+        const server = await ctx.retrievePGuild()
     
         if (temporarySystem === undefined) {
             return ctx.write({ content: ctx.userTranslations().ERROR_INTERACTION_TOO_OLD, flags: MessageFlags.Ephemeral })
@@ -41,7 +42,7 @@ export default class NameCNS extends ComponentCommand {
 
 
         return await ctx.editResponse({
-            components: new AlertView(ctx.userTranslations()).successView("CREATING_NEW_SYSTEM_SUCCESS"),
+            components: new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATING_NEW_SYSTEM_SUCCESS.replaceAll("%prefix%", server.prefixes[0] ?? "!")),
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
         })
     }

@@ -39,7 +39,7 @@ export async function getGcpAccessToken() {
   const data = `${headerEncoded}.${payloadEncoded}`;
 
   // 3. Sign JWT using RS256
-  const crypto = await import("crypto");
+  const crypto = await import("node:crypto");
   const signer = crypto.createSign("RSA-SHA256");
   signer.update(data);
   signer.end();

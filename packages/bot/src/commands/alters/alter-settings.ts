@@ -1,32 +1,30 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { AutoLoad, Command, Options, type CommandContext, createStringOption, Declare, createBooleanOption } from "seyfert";
-import { alterCollection } from "../mongodb";
-import { BaseErrorCommand } from "../base-error-command";
-import { AlterView } from "../views/alters";
-import { AlertView } from "../views/alert";
+import { BaseErrorSubCommand } from "@/base-error-subcommand";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
+import { type CommandContext, createStringOption, Declare, Options } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { autocompleteAlters } from "../lib/autocomplete-alters";
 
 const options = {
     "alter-name": createStringOption({
-        description: "Name of the alter to query. You can use `<user_id>/<alter>` for alters from other systems.",
+        description: "The name of the alter to modify.",
         required: true,
         autocomplete: autocompleteAlters
-    }),
-    public: createBooleanOption({
-        description: 'Do you want to expose this publicly? (non-ephemeral)',
     })
 }
 
 @Declare({
-	name: "alter",
-	description: "alter command",
-    aliases: ["a", "m", "member"]
+	name: "config",
+	description: "Modify the config of an alter",
+    aliases: ["settings", "s"]
 })
 @Options(options)
-export default class SystemCommand extends BaseErrorCommand {
+export default class AlterConfigCommand extends BaseErrorSubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+
         const { "alter-name": alterName } = ctx.options;
         const systemId = ctx.author.id;
         const query = Number.isNaN(Number.parseInt(alterName)) 
@@ -42,10 +40,15 @@ export default class SystemCommand extends BaseErrorCommand {
         }
 
         return await ctx.ephemeral({
-            components: [...(new AlterView(ctx.userTranslations()).alterProfileView(alter))],
-            flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
-            allowed_mentions: { parse: [] }
-        }, true)
-        
+            components: [
+                ...new AlterView(ctx.userTranslations()).alterTopView(
+                    "general",
+                    alter.alterId.toString(),
+                    alter.username,
+                ),
+                ...new AlterView(ctx.userTranslations()).alterGeneralView(alter),
+            ],
+            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+        });
     }
 }

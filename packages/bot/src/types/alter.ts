@@ -18,11 +18,12 @@ export const PAlterObject = z.object({
     systemId: z.string(),
 
     username: z.string().max(20).regex(/^[^\s]+$/),
-    displayName: z.string(),
+    displayName: z.string().max(100),
     nameMap: z.object({ server: z.number(), name: z.string() }).array(),
-    color: z.string().nullable(),
+    color: z.string().regex(/^#[0-9A-F]{6}$/i).nullable(),
     description: z.string().nullable(),
     created: z.coerce.date(),
+    pronouns: z.string().nullable(),
 
     avatarUrl: z.string().nullable(),
     webhookAvatarUrl: z.string().nullable(),
@@ -31,7 +32,7 @@ export const PAlterObject = z.object({
     lastMessageTimestamp: z.coerce.date().nullable(),
     messageCount: z.number(),
     alterMode: z.enum([ "nickname", "webhook", "both" ]).default("webhook"),
-    proxyTags: z.object({ prefix: z.string().max(20), suffix: z.string().max(20), id: z.string() }).array()
+    proxyTags: z.object({ prefix: z.string().max(20), suffix: z.string().max(20), id: z.string() }).array().default([])
 })
 
 export type PAlter = z.infer<typeof PAlterObject>

@@ -17,6 +17,8 @@ const options = {
         value: (data, ok: OKFunction<string>, no) => {
             if (data.value.includes(" "))
                 no("contains a space; yet usernames do not contain a space")
+            if (data.value.includes("@") || data.value.includes("/") || data.value.includes("\\"))
+                no("contains a slash or @ symbol. usernames cannot have either of those")
             ok(data.value);
         }
     }),

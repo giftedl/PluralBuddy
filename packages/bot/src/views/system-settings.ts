@@ -9,11 +9,13 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { TranslatedView } from "./translated-view";
-import { ButtonStyle } from "seyfert/lib/types";
+import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import type { PSystem } from "../types/system";
 import { emojis } from "../lib/emojis";
 import { friendlyProtection, listFromMask } from "../lib/privacy-bitmask";
+import { alterCollection } from "@/mongodb";
+
 
 export class SystemSettingsView extends TranslatedView {
 	topView(
@@ -113,6 +115,21 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
+								.setLabel("Set Nickname Format")
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.GeneralTab.SetNicknameFormat.create(),
+								),
+						)
+						.setComponents(
+							new TextDisplay().setContent(
+								"The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
+							),
+						),
+					new Separator(),
+					new Section()
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Secondary)
 								.setLabel("Set System Privacy")
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.create(),
@@ -161,5 +178,30 @@ export class SystemSettingsView extends TranslatedView {
 				)
 				.setColor("#1190FF"),
 		];
+	}
+
+	async altersSettings(system: PSystem) {
+		const alters = await alterCollection.find({ systemId: system.associatedUserId }).limit(10).toArray()
+
+		return [
+			new Container()
+				.setComponents(
+					new TextDisplay().setContent(`## Alters - ${system.systemName}`),
+					new Separator().setSpacing(Spacing.Large),
+					...(alters.map((alter) => {
+						return new Section()
+							.setAccessory(
+								new Button()
+									.setLabel("Edit Alter")
+									.setCustomId(InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(alter.alterId))
+									.setStyle(ButtonStyle.Primary)
+							)
+							.setComponents(
+								new TextDisplay()
+									.setContent(`[@${alter.username}] **${alter.displayName}${alter.pronouns !== null ? ` | ${alter.pronouns}` : ""} ${alter.proxyTags[0] !== undefined ? `*(\`${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}\`)*` : ""}`)
+							)
+					}))
+				)
+		]
 	}
 }
