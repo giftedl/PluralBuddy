@@ -17,7 +17,7 @@ export default class ConfigureAlter extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(ctx: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.ConfigureAlter.startsWith(
+		return InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlter.startsWith(
 			ctx.customId,
 		);
 	}
