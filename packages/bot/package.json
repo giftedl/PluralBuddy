@@ -17,6 +17,7 @@
     "pluralkit-types": "workspace:*"
   },
   "scripts": {
-      "bot": "bun run src"
+      "bot": "bun run src",
+      "bot:watch": "bun run --watch src/index.ts"
   }
 }

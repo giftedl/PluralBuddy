@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { AutoLoad, Command, Options, type CommandContext, createStringOption, Declare, createBooleanOption } from "seyfert";
+import { AutoLoad, Command, Options, type CommandContext, createStringOption, Declare, createBooleanOption, ActionRow, Button } from "seyfert";
 import { alterCollection } from "../mongodb";
 import { BaseErrorCommand } from "../base-error-command";
 import { AlterView } from "../views/alters";
@@ -22,7 +22,8 @@ const options = {
 @Declare({
 	name: "alter",
 	description: "alter command",
-    aliases: ["a", "m", "member"]
+    aliases: ["a", "m", "member"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class SystemCommand extends BaseErrorCommand {
@@ -42,7 +43,10 @@ export default class SystemCommand extends BaseErrorCommand {
         }
 
         return await ctx.ephemeral({
-            components: [...(new AlterView(ctx.userTranslations()).alterProfileView(alter))],
+            components: [
+                ...(new AlterView(ctx.userTranslations()).alterProfileView(alter)),
+                ...(new AlterView(ctx.userTranslations()).alterConfigureButton(alter))
+            ],
             flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
             allowed_mentions: { parse: [] }
         }, true)

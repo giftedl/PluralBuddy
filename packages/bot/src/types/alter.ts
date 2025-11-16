@@ -17,9 +17,9 @@ export const PAlterObject = z.object({
     alterId: z.number(),
     systemId: z.string(),
 
-    username: z.string().max(20).regex(/^[^\s]+$/),
+    username: z.string().max(20).regex(/^[^\s@\\/]+$/),
     displayName: z.string().max(100),
-    nameMap: z.object({ server: z.number(), name: z.string() }).array(),
+    nameMap: z.object({ server: z.string().max(20), name: z.string().max(100) }).array(),
     color: z.string().regex(/^#[0-9A-F]{6}$/i).nullable(),
     description: z.string().nullable(),
     created: z.coerce.date(),

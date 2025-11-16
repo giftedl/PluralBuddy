@@ -20,7 +20,8 @@ const options = {
 @Declare({
 	name: "add-proxy-tags",
 	description: "Modify the proxy tags of a alter",
-    aliases: ["proxy", "pt", "ptags", "apts"]
+    aliases: ["proxy", "pt", "ptags", "apts"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class EditAlterProxyTagsCommand extends BaseErrorSubCommand {

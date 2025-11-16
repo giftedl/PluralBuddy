@@ -48,8 +48,8 @@ export default class PluralBuddyImportModal extends ModalCommand {
         data.system.associatedUserId = ctx.author.id;
         data.system.alterIds = [];
 
-        const newAlters = data.alters.map((v) => {
-            return {...v, systemId: ctx.author.id, lastMessageTimestamp: null, messageCount: 0, alterId: Number(DiscordSnowflake.generate())}
+        const newAlters = data.alters.map((v,i ) => {
+            return {...v, systemId: ctx.author.id, lastMessageTimestamp: null, messageCount: 0, alterId: Number(DiscordSnowflake.generate({ processId: BigInt(i) }))}
         })
 
         data.system.alterIds = newAlters.map((v) => v.alterId)

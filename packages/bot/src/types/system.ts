@@ -34,7 +34,7 @@ export const PSystemObject = z.object({
     createdAt: z.coerce.date(),
 
     systemAutoproxy: z.array(PAutoProxyObj),
-    systemOperationDM: z.boolean().default(false),
+    systemOperationDM: z.boolean().default(true),
 
     public: z.number(),
     subAccounts: z.array(z.string())

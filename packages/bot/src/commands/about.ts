@@ -8,7 +8,8 @@ import { emojis } from "../lib/emojis";
 
 @Declare({
 	name: "about",
-	description: "PluralBuddy!"
+	description: "PluralBuddy!",
+    contexts: ["BotDM", "Guild"]
 })
 export default class SystemCommand extends BaseErrorCommand {
 	override async run(ctx: CommandContext) {

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -10,11 +10,11 @@ import { AlterView } from "@/views/alters";
 export default class SetUsernameButton extends ModalCommand {
    
    override filter(context: ModalContext) {
-	   return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameForm.startsWith(context.customId)
+	   return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterServerDisplayNameForm.startsWith(context.customId)
    }
 
    override async run(ctx: ModalContext) {
-	const alterId = InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameForm.substring(
+	const alterId = InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterServerDisplayNameForm.substring(
 		ctx.customId,
 	)[0];
 
@@ -33,18 +33,39 @@ export default class SetUsernameButton extends ModalCommand {
 	}
 
 	const newAlterUsername = ctx.interaction.getInputValue(
-		InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(),
+		InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterServerDisplayNameType.create(),
 		true,
 	);
 
-	await alterCollection.updateOne(
-		{ alterId: Number(alterId), systemId },
-		{
-			$set: {
-				displayName: newAlterUsername as string
+	const nameMapHasServer = alter.nameMap.some(nm => nm.server === ctx.guildId);
+
+	if (nameMapHasServer) {
+		// Update the name for this server using $[<identifier>] and pass arrayFilters outside $set
+		await alterCollection.updateOne(
+			{ alterId: Number(alterId), systemId },
+			{
+				$set: {
+					"nameMap.$[serverEntry].name": newAlterUsername as string
+				}
 			},
-		},
-	);
+			{
+				arrayFilters: [{ "serverEntry.server": ctx.guildId }]
+			}
+		);
+	} else {
+		// Append a new mapping to the nameMap array
+		await alterCollection.updateOne(
+			{ alterId: Number(alterId), systemId },
+			{
+				$set: {
+					nameMap: [
+						...alter.nameMap,
+						{ server: ctx.guildId as string, name: newAlterUsername as string }
+					]
+				}
+			}
+		);
+	}
 
 	alter = await alterCollection.findOne({
 		alterId: Number(alterId),

@@ -15,8 +15,16 @@ import type { PSystem } from "../types/system";
 import { emojis } from "../lib/emojis";
 import { friendlyProtection, listFromMask } from "../lib/privacy-bitmask";
 import { alterCollection } from "@/mongodb";
+import type { FindCursor, WithId } from "mongodb";
+import type { PAlter } from "@/types/alter";
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import { AlertView } from "./alert";
 
-
+export const alterPagination: {
+	id: string;
+	memoryPage: number;
+	documentCount: number;
+}[] = [];
 export class SystemSettingsView extends TranslatedView {
 	topView(
 		currentTab: "general" | "alters" | "tags" | "public-settings",
@@ -136,14 +144,13 @@ export class SystemSettingsView extends TranslatedView {
 								),
 						)
 						.setComponents(
-							new TextDisplay()
-								.setContent(
-                                    // biome-ignore lint/style/useTemplate: a
-									"By default, your system is completely private besides for server automatic moderation and if you use command publicly. \n(with `-public` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself." +
-										((system.public ?? 0) > 0
-											? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtection(this.translations, listFromMask(system.public ?? 0)).join("`, `")}\``
-											: ""),
-								),
+							new TextDisplay().setContent(
+								// biome-ignore lint/style/useTemplate: a
+								"By default, your system is completely private besides for server automatic moderation and if you use command publicly. \n(with `-public` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself." +
+									((system.public ?? 0) > 0
+										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtection(this.translations, listFromMask(system.public ?? 0)).join("`, `")}\``
+										: ""),
+							),
 						),
 					new Separator(),
 					new Section()
@@ -160,7 +167,7 @@ export class SystemSettingsView extends TranslatedView {
 								"Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
 							),
 						),
-                    new Separator(),
+					new Separator(),
 					new Section()
 						.setAccessory(
 							new Button()
@@ -180,28 +187,92 @@ export class SystemSettingsView extends TranslatedView {
 		];
 	}
 
-	async altersSettings(system: PSystem) {
-		const alters = await alterCollection.find({ systemId: system.associatedUserId }).limit(10).toArray()
+	async altersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
+		if (system.alterIds.length === 0) {
+			return [
+				...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
+				new ActionRow()
+					.setComponents(
+						new Button()
+							.setLabel("Create new alter")
+							.setCustomId(InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create())
+							.setStyle(ButtonStyle.Primary)
+					)
+			]
+		}
+		
+		const time = Date.now();
+		const altersCursor = alterCollection
+			.find({ systemId: system.associatedUserId })
+			.limit(5)
+			.skip(((pgObj?.memoryPage ?? 1) - 1) * 5);
+
+		const alters = await altersCursor.toArray()
+		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
+
+		if (pgObj === undefined) {
+			const documentCount = await alterCollection.countDocuments({
+				systemId: system.associatedUserId,
+			});
+
+			alterPagination.push({
+				id: String(pgId),
+				memoryPage: 1,
+				documentCount,
+			});
+
+			// biome-ignore lint/style/noParameterAssign: not really any other way to do it.
+			pgObj = {
+				id: String(pgId),
+				memoryPage: 1,
+				documentCount,
+			}
+		}
+
 
 		return [
-			new Container()
-				.setComponents(
-					new TextDisplay().setContent(`## Alters - ${system.systemName}`),
-					new Separator().setSpacing(Spacing.Large),
-					...(alters.map((alter) => {
-						return new Section()
-							.setAccessory(
-								new Button()
-									.setLabel("Edit Alter")
-									.setCustomId(InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(alter.alterId))
-									.setStyle(ButtonStyle.Primary)
-							)
-							.setComponents(
-								new TextDisplay()
-									.setContent(`[@${alter.username}] **${alter.displayName}${alter.pronouns !== null ? ` | ${alter.pronouns}` : ""} ${alter.proxyTags[0] !== undefined ? `*(\`${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}\`)*` : ""}`)
-							)
-					}))
-				)
-		]
+			new Container().setComponents(
+				new TextDisplay().setContent(`## Alters - ${system.systemName}`),
+				new Separator().setSpacing(Spacing.Large),
+				...alters.map((alter) => {
+					return new Section()
+						.setAccessory(
+							new Button()
+								.setLabel("Edit Alter")
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(
+										alter.alterId,
+									),
+								)
+								.setStyle(ButtonStyle.Primary)
+								.setEmoji(emojis.wrenchWhite),
+						)
+						.setComponents(
+							new TextDisplay().setContent(
+								`[\`@${alter.username}\`] **${alter.displayName}**${alter.pronouns !== null ? ` | ${alter.pronouns}` : ""} ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
+							),
+						);
+				}),
+				new Separator().setSpacing(Spacing.Large),
+				new TextDisplay()
+					.setContent(`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / 5)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms`),
+				new ActionRow().setComponents(
+					new Button()
+						.setLabel("Previous Page")
+						.setDisabled(pgObj?.memoryPage === 1)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(pgObj.id),
+						)
+						.setStyle(ButtonStyle.Primary),
+					new Button()
+						.setLabel("Next Page")
+						.setDisabled(pgObj?.memoryPage === Math.ceil((pgObj?.documentCount ?? 0) / 5))
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(pgObj.id),
+						)
+						.setStyle(ButtonStyle.Primary),
+				),
+			),
+		];
 	}
 }

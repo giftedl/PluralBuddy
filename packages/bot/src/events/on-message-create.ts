@@ -4,12 +4,14 @@ import {
 	ActionRow,
 	Attachment,
 	Button,
+	Container,
 	createEvent,
 	Separator,
 	TextDisplay,
 } from "seyfert";
 import {
 	ButtonStyle,
+	MessageFlags,
 	PermissionFlagsBits,
 	Spacing,
 } from "seyfert/lib/types";
@@ -21,15 +23,39 @@ import { DiscordSnowflake } from "@sapphire/snowflake";
 import { getReferencedMessageString } from "../lib/proxying/referenced-message";
 import { proxy } from "@/lib/proxying";
 import { processEmojis } from "../lib/proxying/process-emojis";
+import { defaultPrefixes } from "@/types/guild";
+import { AlertView } from "@/views/alert";
+
+function listStartsWith(string: string, list: string[]) {
+	for (const item of list) if (string.startsWith(item)) return true;
+	return false;
+}
 
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message, client) => {
 		if (message.author.bot === true) return;
-		if ((await message.channel()).isDM()) {
-			message.write({ content: "You cannot proxy inside of DM channels." });
+		if (
+			(await message.channel()).isDM() &&
+			!listStartsWith(
+				message.content,
+				defaultPrefixes[
+					(process.env.BRANCH as "production" | "canary") ?? "production"
+				],
+			)
+		) {
+			message.reply({
+				components: [
+					// @ts-ignore
+					...new AlertView(null).errorViewCustom(
+						"You cannot proxy inside of DM channels. Sorry!",
+					),
+				],
+				flags: MessageFlags.IsComponentsV2,
+			});
 			return;
 		}
+		if ((await message.channel()).isDM()) return;
 
 		const userPerms = await client.channels.memberPermissions(
 			message.channelId,
@@ -111,15 +137,17 @@ export default createEvent({
 						checkAlter?.alterMode === "both" ||
 						checkAlter?.alterMode === "nickname"
 					) {
-                        const sendingUserPerms = await client.channels.memberPermissions(
-                            message.channelId,
-                            await client.members.fetch(message.guildId as string, message.user.id),
-                            true
-                        );
+						const sendingUserPerms = await client.channels.memberPermissions(
+							message.channelId,
+							await client.members.fetch(
+								message.guildId as string,
+								message.user.id,
+							),
+							true,
+						);
 
-                        if (!sendingUserPerms.has(["ChangeNickname"]))
-                            return;
-                        
+						if (!sendingUserPerms.has(["ChangeNickname"])) return;
+
 						if (
 							!userPerms.has(["ManageNicknames"]) ||
 							!(await message.member?.moderatable())
@@ -153,28 +181,28 @@ export default createEvent({
 							);
 						}
 
-					const trimmedContents = contents.trim();
+						const trimmedContents = contents.trim();
 
-					const { emojis: uploadedEmojis, newMessage: processedContents } =
-						await processEmojis(trimmedContents);
+						const { emojis: uploadedEmojis, newMessage: processedContents } =
+							await processEmojis(trimmedContents);
 
-					const messageComponents = [
-						new TextDisplay().setContent(processedContents),
-					];
+						const messageComponents = [
+							new TextDisplay().setContent(processedContents),
+						];
 
-					proxy(
-						webhook,
-						client,
-						message,
-						processedContents,
-						`${checkAlter?.displayName ?? ""} ${user.system.systemDisplayTag ?? ""}`,
-						checkAlter?.alterId as number,
-						checkAlter?.systemId as string,
-						[...referencedMessage],
-						messageComponents,
-						uploadedEmojis,
-						checkAlter?.avatarUrl ?? undefined,
-					);
+						proxy(
+							webhook,
+							client,
+							message,
+							processedContents,
+							`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""} ${user.system.systemDisplayTag ?? ""}`,
+							checkAlter?.alterId as number,
+							checkAlter?.systemId as string,
+							[...referencedMessage],
+							messageComponents,
+							uploadedEmojis,
+							checkAlter?.avatarUrl ?? undefined,
+						);
 					}
 
 					break outer;

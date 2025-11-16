@@ -64,11 +64,18 @@ export const InteractionIdentifier = {
                 SetPrivacy: createStatic("systems/config/general/set-privacy"),
                 ExportSystem: createStatic("systems/config/general/export")
             },
+            AlterPagination: {
+                PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
+                NextPage: createFromAdditionalArg("systems/config/apg/next"),
+                CreateNewAlter: createStatic("systems/config/apg/create")
+            },
             Alters: {
                 Index: createStatic("systems/config/alters"),
                 GeneralSettings: createFromAdditionalArg("systems/config/alters/general"),
+                ConfigureAlter: createFromAdditionalArg("systems/config/alters/configure-external"),
 
                 SetUsername: createFromAdditionalArg("systems/config/alters/set-username"),
+                SetServerDisplayName: createFromAdditionalArg("systems/config/alters/server-display-name"),
                 SetDisplayName: createFromAdditionalArg("systems/config/alters/set-display-name"),
                 SetProxyMode: createFromAdditionalArg("systems/config/alters/set-proxy-mode"),
                 SetPFP: createFromAdditionalArg("systems/config/alters/set-pfp"),
@@ -102,10 +109,14 @@ export const InteractionIdentifier = {
                 NicknameType: createStatic("systems/config/type-form/nickname"),
                 NicknameForm: createFromAdditionalArg("systems/config/set-form/nickname"),
                 Alters: {
+                    CreateNewAlterForm: createStatic("systems/config/form/alter"),
+
                     AlterUsernameType: createStatic("systems/config/type-form/alters/set-username"),
                     AlterUsernameForm: createFromAdditionalArg("systems/config/set-form/alters/set-username"),
                     AlterDisplayNameType: createStatic("systems/config/type-form/alters/set-display-name"),
                     AlterDisplayNameForm: createFromAdditionalArg("systems/config/set-form/alters/set-display-name"),
+                    AlterServerDisplayNameType: createStatic("systems/config/type-form/alters/set-server-display-name"),
+                    AlterServerDisplayNameForm: createFromAdditionalArg("systems/config/set-form/alters/set-server-display-name"),
                     AlterPFPForm: createFromAdditionalArg("systems/config/set-form/alters/set-pfp"),
                     AlterPFPType: createStatic("systems/config/type-form/alters/set-pfp"),
                     AlterColorType: createStatic("systems/config/type-form/alters/set-alter-color"),

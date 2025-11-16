@@ -10,7 +10,8 @@ import { emojis } from "../lib/emojis";
 @Declare({
     name: 'setup',
     description: "Setup a PluralBuddy system.",
-    aliases: ["set"]
+    aliases: ["set"],
+    contexts: ["BotDM", "Guild"]
 })
 export default class SetupCommand extends Command {
 

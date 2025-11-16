@@ -21,8 +21,7 @@ export default class SetProxyMode extends ComponentCommand {
 
         const systemId = context.author.id;
         const query = alterCollection.findOne({
-            alterId: Number(alterId),
-            systemId,
+			$and: [{ alterId: Number(alterId) }, { systemId }],
         });
         const alter = await query;
 

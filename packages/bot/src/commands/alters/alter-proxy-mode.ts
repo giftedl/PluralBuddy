@@ -28,7 +28,8 @@ const options = {
 @Declare({
 	name: "proxy-mode",
 	description: "Set alter's proxy mode",
-    aliases: ["pm", "proxy"]
+    aliases: ["pm", "proxy"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class EditAlterProxyModeCommand extends BaseErrorSubCommand {

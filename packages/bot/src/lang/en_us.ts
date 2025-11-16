@@ -37,6 +37,8 @@ Systems can have **privacy values** which are values that describe who can see w
 > - To create a new tag, try using \`%prefix%system new-tag %name%\``,
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
+    ERROR_PAGINATION_TOO_OLD: "That alter pagination component is too old, you cannot proceed. Please hit the \"Alters\" tab at the top of the message to reset the pagination.",
+    ERROR_NO_ALTERS: "You have no alters! Create one below!",
 
     PAGE_NEW_SYS_TEXT: "-# Page 3/3 · Some fields haven't been filled out. · * Required",
     PAGE_NEW_SYS_TEXT_FILLED: "-# Page 3/3 · * Required",
@@ -45,6 +47,7 @@ Systems can have **privacy values** which are values that describe who can see w
     IMPORT_PLURALBUDDY_DESCRIPTION: "Import from PluralBuddy",
     IMPORT_SOURCE_DESCRIPTION: "Import Source",
     CREATE_NEW_SYS_DESCRIPTION: "Create New System",
+    CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
 
     ERROR_INTERACTION_TOO_OLD: "This interaction has no longer been kept track of. (have you waited too long?)",
     ERROR_SYSTEM_DOESNT_EXIST: "This operation cannot be concluded because there is no system to operate on.",
@@ -77,6 +80,7 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_DELETION_FINISHED: "Sucessfully deleted your system. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
     SYSTEM_DELETION_DM: "Here is the export data due to the deletion on %time%:",
     ALTER_DELETION_FINISHED: "Successfully deleted that alter.",
+    ALTER_SERVER_DN_FORM_LABEL: "Server Display Name",
 
     SYSTEM_EXPORT_FINISHED: "Successfully exported your system. \n-# **Pro tip:** Make sure PluralBuddy can direct message or else the export cannot be sent to you.",
     SYSTEM_EXPORT_DM: "Here is your export data on request:",
@@ -101,8 +105,11 @@ Systems can have **privacy values** which are values that describe who can see w
     ALTER_GENERAL: "## General - @%alter%\nAlter's are parts of your system. Certain values of your system can be configured here.",
     ALTER_SET_USERNAME: "Set Alter Username",
     ALTER_SET_DISPLAY: "Set Display Name",
+    ALTER_SET_SERVER_NAME: "Set Server Display Name",
+    ALTER_SET_SERVER_NAME_DESC: `Setting this value will make this alter's display name a different value when fronting in %server%.
+-# Your name in %server% is: %name%`,
     ALTER_SET_USERNAME_DESC: "Alter usernames cannot have any spaces and can only be less than 20 characters. They are used to identify your system in commands.",
-    ALTER_SET_USERNAME_SPACES: "There cannot be spaces in usernames.",
+    ALTER_SET_USERNAME_SPACES: "There cannot be spaces, `@`, `\\` or `/` in usernames.",
     ALTER_DISPLAY_NAME_FORM_LABEL: "Display Name",
     ALTER_SET_PFP: "Set Profile Picture",
     ERROR_INVALID_ATTACHMENT_TYPE: "The attachment you uploaded is not an image.",

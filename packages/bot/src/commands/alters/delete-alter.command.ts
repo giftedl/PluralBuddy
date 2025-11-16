@@ -20,7 +20,8 @@ const options = {
 @Declare({
 	name: "delete",
 	description: "Remove an alter",
-    aliases: ["remove", "r"]
+    aliases: ["remove", "r"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class DeleteAlterCommand extends BaseErrorSubCommand {

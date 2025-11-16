@@ -8,7 +8,8 @@ import { SystemSettingsView } from "../../views/system-settings";
 @Declare({
     name: 'config',
     description: "Configure the system",
-    aliases: ["configure"]
+    aliases: ["configure", "c"],
+    contexts: ["BotDM", "Guild"]
 })
 export default class SystemConfigCommand extends SubCommand {
 	override async run(ctx: CommandContext) {

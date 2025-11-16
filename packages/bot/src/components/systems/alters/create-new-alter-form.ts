@@ -1,46 +1,23 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { type CommandContext, createStringOption, Declare, Options, SubCommand, type OKFunction, IgnoreCommand, type OnOptionsReturnObject } from "seyfert";
-import { AlertView } from "../../views/alert";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { alterCollection } from "@/mongodb";
+import { PAlterObject } from "@/types/alter";
+import { getUserById, writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { PAlterObject } from "../../types/alter";
-import { DiscordSnowflake } from "@sapphire/snowflake"
-import { getUserById, writeUserById } from "../../types/user";
-import { alterCollection } from "../../mongodb";
-import { BaseErrorSubCommand } from "../../base-error-subcommand";
 import z from "zod";
 
-const options = {
-    username: createStringOption({
-        description: 'The username for the alter. These **cannot** include spaces.',
-        required: true,
-        max_length: 20,
-        value: (data, ok: OKFunction<string>, no) => {
-            if (data.value.includes(" "))
-                no("contains a space; yet usernames do not contain a space")
-            if (data.value.includes("@") || data.value.includes("/") || data.value.includes("\\"))
-                no("contains a slash or @ symbol. usernames cannot have either of those")
-            ok(data.value);
-        }
-    }),
-    "display-name": createStringOption({
-        description: 'The display name for the alter. These can include spaces.',
-        required: true,
-        max_length: 100
-    })
-};
+export default class CreateNewAlterForm extends ModalCommand {
+    override filter(context: ModalContext) {
+        return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.CreateNewAlterForm.equals(context.customId)
+    }
 
-@Declare({
-    name: 'create-alter',
-    description: "Creates a new alter",
-    aliases: ["ca", "alter"],
-    contexts: ["BotDM", "Guild"]
-})
-@Options(options)
-export default class CreateAlterCommand extends BaseErrorSubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-        const { username, "display-name": displayName } = ctx.options;
-
+    override async run(ctx: ModalContext) {
+        const username = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameType.create(), true);
+        const displayName = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(), true);
 
         await ctx.write(ctx.loading(ctx.userTranslations()))
 
@@ -105,20 +82,5 @@ ${z.prettifyError(alter.error)}
                     .replace("%alter_id%", alter.data.username))
             ]
         })
-    }
-
-    override async onOptionsError(
-        context: CommandContext,
-        metadata: OnOptionsReturnObject
-    ) {
-        const errors = Object.entries(metadata)
-            .filter((_) => _[1].failed)
-            .map((error) => `${error[0]}: ${error[1].value}`)
-            .join("\n")
-            
-        await context.editOrReply({
-            components: [...new AlertView(context.userTranslations()).errorViewCustom(context.userTranslations().PLURALBUDDY_OPTIONS_ERROR.replace("%options_errors%", errors))],
-            flags: MessageFlags.IsComponentsV2
-        });
     }
 }

@@ -30,7 +30,8 @@ const options = {
 @Declare({
 	name: "avatar",
 	description: "Set an alter's avatar.",
-    aliases: ["pfp", "pic", "edit-member"]
+    aliases: ["pfp", "pic", "edit-member"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class EditAlterPictureCommand extends BaseErrorSubCommand {

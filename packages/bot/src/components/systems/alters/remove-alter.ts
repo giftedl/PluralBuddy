@@ -21,8 +21,7 @@ export default class RemoveAlterButton extends ComponentCommand {
 
         const systemId = ctx.author.id;
         const query = alterCollection.findOne({
-            alterId: Number(alterId),
-            systemId,
+			$and: [{ alterId: Number(alterId) }, { systemId }],
         });
         const alter = await query;
 

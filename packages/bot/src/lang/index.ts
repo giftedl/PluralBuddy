@@ -26,11 +26,13 @@ export type TranslationString = {
     SYSTEM_NICKNAME_FORM_LABEL: string;
     SYSTEM_NICKNAME_FORM_DESC: string;
     ALTER_DISPLAY_NAME_FORM_LABEL: string;
+    ALTER_SERVER_DN_FORM_LABEL: string;
 
     CREATING_NEW_SYSTEM_TAG_BUTTON: string;
     CREATING_NEW_SYSTEM_TAG_SET: string;
     CREATING_NEW_SYSTEM_TAG_MESSAGE: string;
     SYSTEM_TAG_FORM_LABEL: string;
+    ERROR_NO_ALTERS: string;
 
     CREATING_NEW_SYSTEM_PRIVACY_BUTTON: string;
     CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: string;
@@ -41,6 +43,7 @@ export type TranslationString = {
     CREATING_NEW_SYSTEM_SUCCESS: string;
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS: string;
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: string;
+    ERROR_PAGINATION_TOO_OLD: string;
 
     PAGE_NEW_SYS_TEXT: string;
     PAGE_NEW_SYS_TEXT_FILLED: string;
@@ -51,6 +54,7 @@ export type TranslationString = {
 
     IMPORT_SOURCE_DESCRIPTION: string;
     CREATE_NEW_SYS_DESCRIPTION: string;
+    CREATE_NEW_ALTER_DESCRIPTION: string;
 
     PLURALBUDDY_IMPORT_SOURCE: string;
     PLURALBUDDY_IMPORT_DESC: string;
@@ -76,6 +80,8 @@ export type TranslationString = {
     ALTER_FORM_TITLE: string;
     ALTER_SET_USERNAME: string;
     ALTER_SET_USERNAME_DESC: string;
+    ALTER_SET_SERVER_NAME: string;
+    ALTER_SET_SERVER_NAME_DESC: string;
     ALTER_SET_USERNAME_SPACES: string;
 
     ALTER_SET_MODE: string;

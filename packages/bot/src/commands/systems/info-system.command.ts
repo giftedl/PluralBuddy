@@ -13,7 +13,8 @@ const options = {
 @Declare({
     name: 'info',
     description: "Get information about the system",
-    aliases: ["i"]
+    aliases: ["i"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class SystemInfoCommand extends SubCommand {

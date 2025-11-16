@@ -2,32 +2,31 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlterView } from "@/views/alters";
+import { AlertView } from "@/views/alert";
 
-export default class PublicProfileButton extends ComponentCommand {
+export default class ConfigureAlter extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.Alters.PublicProfileSettings.startsWith(
+		return InteractionIdentifier.Systems.Configuration.ConfigureAlter.startsWith(
 			context.customId,
 		);
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		const alterId =
-         InteractionIdentifier.Systems.Configuration.Alters.PublicProfileSettings.substring(
+			InteractionIdentifier.Systems.Configuration.ConfigureAlter.substring(
 				ctx.customId,
 			)[0];
-
 		const systemId = ctx.author.id;
 		const query = alterCollection.findOne({
-			alterId: Number(alterId),
-			systemId,
+			$and: [{ alterId: Number(alterId) }, { systemId }],
 		});
 		const alter = await query;
 
+		console.log(alter);
 		if (alter === null) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
@@ -40,11 +39,11 @@ export default class PublicProfileButton extends ComponentCommand {
 		return await ctx.update({
 			components: [
 				...new AlterView(ctx.userTranslations()).alterTopView(
-					"public-settings",
+					"general",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(ctx.userTranslations()).altersPublicView(alter, (await ctx.guild()) ?? { name: "", id: "" }),
+				...new AlterView(ctx.userTranslations()).alterGeneralView(alter),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

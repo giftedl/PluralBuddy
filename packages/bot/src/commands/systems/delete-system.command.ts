@@ -9,6 +9,7 @@ import { emojis } from "../../lib/emojis";
 @Declare({
     name: 'delete',
     description: "Removes the system",
+    contexts: ["BotDM", "Guild"]
 })
 export default class SetupCommand extends SubCommand {
 	override async run(ctx: CommandContext) {

@@ -7,7 +7,8 @@ import { AlertView } from "../../views/alert";
 @Declare({
 	name: "system",
 	description: "system command",
-    aliases: ["s"]
+    aliases: ["s"],
+    contexts: ["BotDM", "Guild"]
 })
 // Being in the same folder with @AutoLoad() you can save this step
 @AutoLoad()

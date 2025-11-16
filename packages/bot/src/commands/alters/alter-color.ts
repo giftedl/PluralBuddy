@@ -26,7 +26,8 @@ const options = {
 @Declare({
 	name: "color",
 	description: "Set an alter's color.",
-    aliases: ["c"]
+    aliases: ["c"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class EditAlterColorCommand extends BaseErrorSubCommand {

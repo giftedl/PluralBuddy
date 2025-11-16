@@ -19,7 +19,8 @@ const options = {
 @Declare({
 	name: "config",
 	description: "Modify the config of an alter",
-    aliases: ["settings", "s"]
+    aliases: ["settings", "s"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class AlterConfigCommand extends BaseErrorSubCommand {

@@ -65,7 +65,7 @@ export default class SetUsernameButton extends ModalCommand {
 				alter.alterId.toString(),
 				alter.username,
 			),
-			...new AlterView(ctx.userTranslations()).altersPublicView(alter),
+			...new AlterView(ctx.userTranslations()).altersPublicView(alter, (await ctx.guild()) ?? { name: "", id: "" }),
 		],
 		flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 	});

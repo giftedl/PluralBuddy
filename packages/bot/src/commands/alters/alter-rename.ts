@@ -31,7 +31,8 @@ const options = {
 @Declare({
 	name: "rename",
 	description: "Modify the username of an alter",
-    aliases: ["name", "rn", "n"]
+    aliases: ["name", "rn", "n"],
+    contexts: ["BotDM", "Guild"]
 })
 @Options(options)
 export default class EditAlterNameCommand extends BaseErrorSubCommand {

@@ -3,7 +3,7 @@
 import z from "zod"
 
 export const PAutoProxyObj = z.object({
-    autoproxyMode: z.enum([ "off", "front", "latch", "member" ]),
+    autoproxyMode: z.enum([ "off", "latch", "member" ]),
     autoproxyAlter: z.string().optional(),
     serverId: z.string(),
     
