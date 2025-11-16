@@ -72,7 +72,7 @@ export const InteractionIdentifier = {
             Alters: {
                 Index: createStatic("systems/config/alters"),
                 GeneralSettings: createFromAdditionalArg("systems/config/alters/general"),
-                ConfigureAlter: createFromAdditionalArg("systems/config/alters/configure-external"),
+                ConfigureAlterExternal: createFromAdditionalArg("systems/config/alters/configure-external"),
 
                 SetUsername: createFromAdditionalArg("systems/config/alters/set-username"),
                 SetServerDisplayName: createFromAdditionalArg("systems/config/alters/server-display-name"),

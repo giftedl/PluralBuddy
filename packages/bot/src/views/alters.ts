@@ -353,7 +353,7 @@ Please select the mode you would like to use below.
                     new Button()
                         .setLabel("Configure Profile")
                         .setEmoji(emojis.wrenchWhite)
-                        .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlter.create(alter.alterId))
+                        .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.create(alter.alterId))
                         .setStyle(ButtonStyle.Primary)
                 )
         ]

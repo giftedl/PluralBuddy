@@ -3,6 +3,7 @@
 import {
 	ComponentCommand,
 	Container,
+	type Message,
 	TextDisplay,
 	type ComponentContext,
 } from "seyfert";
@@ -17,17 +18,22 @@ export default class ConfigureAlter extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(ctx: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlter.startsWith(
+		return InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.startsWith(
 			ctx.customId,
 		);
 	}
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
+        let referencedMessage: Message | null = null;
+        if (ctx.interaction.message.messageReference !== undefined && ctx.interaction.message.messageReference.messageId !== undefined)
+            referencedMessage = await ctx.client.messages.fetch(ctx.interaction.message.messageReference?.messageId, ctx.interaction.message.messageReference?.channelId)
+
 		const originalUserId =
-			ctx.interaction.message.referencedMessage?.author.id ??
+			referencedMessage?.author.id ??
 			ctx.interaction.message.interactionMetadata?.user.id;
+            console.log(ctx.interaction.message.messageReference?.messageId)
 		const alterId =
-			InteractionIdentifier.Systems.Configuration.ConfigureAlter.substring(
+			InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.substring(
 				ctx.customId,
 			)[0];
 
@@ -60,7 +66,7 @@ export default class ConfigureAlter extends ComponentCommand {
 			});
 		}
 
-		return await ctx.update({
+		return await ctx.write({
 			components: [
 				...new AlterView(ctx.userTranslations()).alterTopView(
 					"public-settings",
