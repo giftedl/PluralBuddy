@@ -25,7 +25,7 @@ export class AlterView extends TranslatedView {
 	alterProfileView(alter: PAlter, preview = false) {
 		const innerComponents =
 			new TextDisplay().setContent(`${preview ? "" : "##"} ${alter.displayName} ${preview ? " - preview" : ""}
--# Also known as @${alter.username} ${alter.pronouns !== null ? `· ${alter.pronouns}` : ""}
+-# Also known as @${alter.username} ${(alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
 ${alter.description !== null ? "\n" : ""}${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
 **Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}
 **Associated to:** <@${alter.systemId}> (${alter.systemId})\n

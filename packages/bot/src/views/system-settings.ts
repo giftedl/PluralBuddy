@@ -249,7 +249,7 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setComponents(
 							new TextDisplay().setContent(
-								`[\`@${alter.username}\`] **${alter.displayName}**${alter.pronouns !== null ? ` | ${alter.pronouns}` : ""} ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
+								`[\`@${alter.username}\`] **${alter.displayName}**${(alter.pronouns !== null && alter.pronouns !== undefined) ? ` | ${alter.pronouns}` : ""} ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
 							),
 						);
 				}),
