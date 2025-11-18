@@ -26,7 +26,6 @@ export default class ConfigureAlter extends ComponentCommand {
 		});
 		const alter = await query;
 
-		console.log(alter);
 		if (alter === null) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(

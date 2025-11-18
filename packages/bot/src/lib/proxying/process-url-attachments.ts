@@ -12,19 +12,20 @@
 	Thumbnail,
 } from "seyfert";
 import type { ColorResolvable } from "seyfert/lib/common";
-import type { Message } from "seyfert/lib/structures";
+import type { Message, WebhookMessage } from "seyfert/lib/structures";
 import { getGifLink } from "./tenor";
 
 export async function processUrlIntegrations(
 	webhook: Webhook,
 	client: UsingClient,
-	message: Message,
+	message: Message | WebhookMessage,
 	messageId: string,
 	stringContents: string,
 	reply: TopLevelBuilders[],
 	mainContents: TopLevelBuilders[],
 	fileAttachments: Array<{ buff: Buffer; name: string }>,
 	uploadedEmojis: ApplicationEmoji[],
+	channelReference?: { channelId: string, guildId: string, userId: string }
 ) {
 	const urlAttachments: Array<
 		{ buff: Buffer; name: string } | { link: string }
@@ -32,8 +33,8 @@ export async function processUrlIntegrations(
 	const containerAttachments: Array<Container> = [];
 	const urlRegex = /(?<!<)(https?:\/\/[^\s>]+)(?!>)/g;
 	const userPerms = await client.channels.memberPermissions(
-		message.channelId,
-		await client.members.fetch(message.guildId as string, message.user.id),
+		channelReference?.channelId ?? message.channelId,
+		await client.members.fetch(channelReference?.guildId ?? message.guildId as string, channelReference?.userId ?? message.user.id),
 		true,
 	);
 
@@ -148,9 +149,8 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 					),
 			},
 		});
-
-		for (const emoji of uploadedEmojis) {
-			emoji.delete();
-		}
+	}
+	for (const emoji of uploadedEmojis) {
+		emoji.delete();
 	}
 }

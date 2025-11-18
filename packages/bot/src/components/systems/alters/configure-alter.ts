@@ -24,31 +24,40 @@ export default class ConfigureAlter extends ComponentCommand {
 	}
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
-        let referencedMessage: Message | null = null;
-        if (ctx.interaction.message.messageReference !== undefined && ctx.interaction.message.messageReference.messageId !== undefined)
-            referencedMessage = await ctx.client.messages.fetch(ctx.interaction.message.messageReference?.messageId, ctx.interaction.message.messageReference?.channelId)
+		let referencedMessage: Message | null = null;
+		if (
+			ctx.interaction.message.messageReference !== undefined &&
+			ctx.interaction.message.messageReference.messageId !== undefined
+		)
+			referencedMessage = await ctx.client.messages
+				.fetch(
+					ctx.interaction.message.messageReference?.messageId,
+					ctx.interaction.message.messageReference?.channelId,
+				)
+				.catch(() => null);
 
-		const originalUserId =
-			referencedMessage?.author.id ??
-			ctx.interaction.message.interactionMetadata?.user.id;
-            console.log(ctx.interaction.message.messageReference?.messageId)
+		if (referencedMessage !== null) {
+			const originalUserId =
+				referencedMessage?.author.id ??
+				ctx.interaction.message.interactionMetadata?.user.id;
+			if (ctx.author.id !== originalUserId) {
+				return ctx.write({
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(
+								"You are not the original recipient of the message.",
+							),
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			}
+		}
+
 		const alterId =
 			InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.substring(
 				ctx.customId,
 			)[0];
-
-		if (ctx.author.id !== originalUserId) {
-			return ctx.write({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(
-							"You are not the original recipient of the message.",
-						),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
 
 		const systemId = ctx.author.id;
 		const query = alterCollection.findOne({
@@ -76,6 +85,7 @@ export default class ConfigureAlter extends ComponentCommand {
 				...new AlterView(ctx.userTranslations()).altersPublicView(
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
+					await ctx.getDefaultPrefix() ?? ""
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

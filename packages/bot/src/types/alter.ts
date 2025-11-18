@@ -21,9 +21,9 @@ export const PAlterObject = z.object({
     displayName: z.string().max(100),
     nameMap: z.object({ server: z.string().max(20), name: z.string().max(100) }).array(),
     color: z.string().regex(/^#[0-9A-F]{6}$/i).nullable(),
-    description: z.string().nullable(),
+    description: z.string().max(1000).nullable(),
     created: z.coerce.date(),
-    pronouns: z.string().nullable(),
+    pronouns: z.string().max(100).nullable(),
 
     avatarUrl: z.string().nullable(),
     webhookAvatarUrl: z.string().nullable(),

@@ -18,7 +18,7 @@ import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
 import type { TranslationString } from "./lang";
 
-export const buildNumber = 131;
+export const buildNumber = 168;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware']
 
 export const extendedContext = extendContext((interaction) => {
@@ -82,6 +82,12 @@ export const extendedContext = extendContext((interaction) => {
                 components: new LoadingView(translations).loadingView(),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
+        },
+        getDefaultPrefix: async () => {
+            if (interaction.guildId) {
+                return (await getGuildFromId(interaction.guildId ?? "??")).prefixes[0]
+            }
+            return defaultPrefixes[process.env.BRANCH as "production" | "canary" ?? "production"][0]
         }
     };
   });

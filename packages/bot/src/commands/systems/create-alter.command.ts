@@ -33,7 +33,7 @@ const options = {
 @Declare({
     name: 'create-alter',
     description: "Creates a new alter",
-    aliases: ["ca", "alter"],
+    aliases: ["ca", "alter", "new-alter"],
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)

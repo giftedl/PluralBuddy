@@ -17,8 +17,8 @@ const options = {
         required: true,
         autocomplete: autocompleteAlters
     }),
-    "alter-avatar": createAttachmentOption({
-        description: "The picture to use for the alter. (leave blank to clear)",
+    "alter-banner": createAttachmentOption({
+        description: "The banner to use for the alter. (leave blank to clear)",
         value(data, ok, fail) {
             if (!data.value.contentType?.startsWith("image"))
                 fail("This attachment is not an image.")
@@ -28,9 +28,9 @@ const options = {
 }
 
 @Declare({
-	name: "avatar",
-	description: "Set an alter's avatar.",
-    aliases: ["pfp", "pic"],
+	name: "banner",
+	description: "Set an alter's banner.",
+    aliases: ["b"],
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
@@ -42,7 +42,7 @@ export default class EditAlterPictureCommand extends BaseErrorSubCommand {
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
         })
 
-        const { "alter-name": alterName, "alter-avatar": attachment } = ctx.options;
+        const { "alter-name": alterName, "alter-banner": attachment } = ctx.options;
         const systemId = ctx.author.id;
         const query = Number.isNaN(Number.parseInt(alterName)) 
             ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
@@ -83,11 +83,11 @@ export default class EditAlterPictureCommand extends BaseErrorSubCommand {
         }
         
         const publicUrl = `https://storage.googleapis.com/${bucketName}/${objectName}`;
-        await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { avatarUrl: publicUrl }})
+        await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { banner: publicUrl }})
 
         return await ctx.editResponse({
             components: [
-                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().PFP_SUCCESS
+                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().BANNER_SUCCESS
                     .replace("%alter%", alter.username)),
                 new Container()
                     .setComponents(

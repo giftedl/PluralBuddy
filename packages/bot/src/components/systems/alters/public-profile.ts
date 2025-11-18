@@ -17,7 +17,7 @@ export default class PublicProfileButton extends ComponentCommand {
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		const alterId =
-         InteractionIdentifier.Systems.Configuration.Alters.PublicProfileSettings.substring(
+			InteractionIdentifier.Systems.Configuration.Alters.PublicProfileSettings.substring(
 				ctx.customId,
 			)[0];
 
@@ -44,7 +44,11 @@ export default class PublicProfileButton extends ComponentCommand {
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(ctx.userTranslations()).altersPublicView(alter, (await ctx.guild()) ?? { name: "", id: "" }),
+				...new AlterView(ctx.userTranslations()).altersPublicView(
+					alter,
+					(await ctx.guild()) ?? { name: "", id: "" },
+					(await ctx.getDefaultPrefix()) ?? "",
+				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

@@ -2,7 +2,7 @@
 
 import type { TranslationString } from ".";
 
-export const translations: TranslationString = {
+export const translations = {
     INTRODUCTION_MESSAGE: `## Welcome to PluralBuddy
 PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
 
@@ -55,6 +55,10 @@ Systems can have **privacy values** which are values that describe who can see w
 
     CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
     EDIT_SYSTEM_FORM_TITLE: "Editing System",
+    SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
+    SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
+    ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
+    ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
     PAGINATION_TITLE: "Page",
     WAITING: "Loading...",
     SUCCESSFULLY_IMPORTED: "Successfully imported %alter_count% alter(s) for %system_name%.",
@@ -111,7 +115,10 @@ Systems can have **privacy values** which are values that describe who can see w
     ALTER_SET_USERNAME_DESC: "Alter usernames cannot have any spaces and can only be less than 20 characters. They are used to identify your system in commands.",
     ALTER_SET_USERNAME_SPACES: "There cannot be spaces, `@`, `\\` or `/` in usernames.",
     ALTER_DISPLAY_NAME_FORM_LABEL: "Display Name",
+    ALTER_SET_PRONOUNS: "Set Pronouns",
+    ALTER_SET_DESCRIPTION: "Set Description",
     ALTER_SET_PFP: "Set Profile Picture",
+    ALTER_SET_BANNER: "Set Banner",
     ERROR_INVALID_ATTACHMENT_TYPE: "The attachment you uploaded is not an image.",
     ERROR_INVALID_COLOR: "The color you entered is not a valid hex color.",
     
@@ -126,13 +133,21 @@ Systems can have **privacy values** which are values that describe who can see w
     ALTER_DELETE_DESC: "Deleting an alter will completely remove the alter from the system without the option to undo.",
 
     PFP_SUCCESS: "Successfully updated the profile picture for @%alter%.",
+    BANNER_SUCCESS: "Successfully updated the banner for @%alter%.",
     RENAME_SUCCESS: "Successfully updated the username for @%alter%.",
+    DN_SUCCESS: "Successfully updated the display name for @%alter% to %new-display%.",
+    DN_SUCCESS_SS: "Successfully updated the display name for @%alter% to %new-display% **in %server%**.",
     COLOR_SUCCESS: "Successfully updated the color for @%alter%.",
+    ERROR_MANUAL_PROXY: "There was an error while manually proxying. Please try again later.",
+    SUCCESS_PROXY: "[Your message](<%message-link%>) has been sent!",
+    CONTENT_ERROR_PROXY: "You must either have some text or an attachment to proxy.",
 
     ERROR_USER_BLACKLISTED: "2a – This user is blacklisted from using PluralBuddy.",
 
     OPERATION_HEADER: "Operation Transcript:",
     OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
+    NO_PERMISSIONS_PROXY: "I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
+    NICKNAME_MANUAL_PROXY: "You cannot proxy here since the alter you specified is using the Nickname proxy mode, and you cannot send a normal message when using the manual proxy command. Please use automatic proxying instead.",
     OPERATION_ID: "Operation ID: %id%",
     OPERATION_CHANGE_NAME: "Set system name to `%name%`.",
     OPERATION_CHANGE_NICKNAME_FORMAT: "Set nickname format to `%format%`.",
@@ -149,5 +164,6 @@ Systems can have **privacy values** which are values that describe who can see w
 > %linein% Programmed w/ :heart_hands: by @giftedly 
 > %lineright% Art by %catjamming% @raincloudzy`,
     FORBIDDEN: "You do not have permission on this server to do this action.",
-    ERROR_FAILED_TO_UPLOAD_TO_GCP: "Failed to upload the image to Google Cloud Platform. Please try again later."
+    ERROR_FAILED_TO_UPLOAD_TO_GCP: "Failed to upload the image to Google Cloud Platform. Please try again later.",
+    DN_ERROR_SS: "You cannot use this command in DM's."
 }

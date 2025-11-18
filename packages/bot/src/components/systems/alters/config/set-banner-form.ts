@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
@@ -10,14 +10,14 @@ import { assetStringGeneration } from "@/types/operation";
 
 export default class SetPFPForm extends ModalCommand {
 	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.startsWith(
+		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterBannerForm.startsWith(
 			context.customId,
 		);
 	}
 
 	override async run(ctx: ModalContext) {
 		const alterId =
-			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.substring(
+			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterBannerForm.substring(
 				ctx.customId,
 			)[0];
 
@@ -39,7 +39,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		const attachment = {
 			value: ctx.interaction.getFiles(
-				InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create(),
+				InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterBannerType.create(),
 				true,
 			)[0] as Attachment,
 		};
@@ -67,7 +67,7 @@ export default class SetPFPForm extends ModalCommand {
 		const publicUrl = `https://storage.googleapis.com/${bucketName}/${objectName}`;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
-			{ $set: { avatarUrl: publicUrl } },
+			{ $set: { banner: publicUrl } },
 		);
 
 		return await ctx.interaction.update({

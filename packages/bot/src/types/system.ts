@@ -29,7 +29,7 @@ export const PSystemObject = z.object({
 
     nicknameFormat: z.string().optional(),
 
-    alterIds: z.array(z.number()).default([]),
+    alterIds: z.array(z.number()).max(2000).default([]),
     tagIds: z.array(z.string()).default([]),
     createdAt: z.coerce.date(),
 

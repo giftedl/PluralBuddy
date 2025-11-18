@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -7,16 +7,16 @@ import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { alterCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 
-export default class SetUsernameButton extends ModalCommand {
+export default class SetPronounsButton extends ModalCommand {
 	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterColorForm.startsWith(
+		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDescriptionForm.startsWith(
 			context.customId,
 		);
 	}
 
 	override async run(ctx: ModalContext) {
 		const alterId =
-			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterColorForm.substring(
+			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDescriptionForm.substring(
 				ctx.customId,
 			)[0];
 
@@ -36,25 +36,16 @@ export default class SetUsernameButton extends ModalCommand {
 			});
 		}
 
-		const newAlterColor = ctx.interaction.getInputValue(
-			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterColorType.create(),
+		const newAlterDescription = ctx.interaction.getInputValue(
+			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDescriptionType.create(),
 			true,
-		) as string;
-
-		if (!/^#[0-9A-F]{6}$/i.test(newAlterColor)) {
-			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
-					"ERROR_INVALID_COLOR",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+		);
 
 		await alterCollection.updateOne(
 			{ alterId: Number(alterId), systemId },
 			{
 				$set: {
-					color: newAlterColor as string,
+					description: newAlterDescription as string,
 				},
 			},
 		);

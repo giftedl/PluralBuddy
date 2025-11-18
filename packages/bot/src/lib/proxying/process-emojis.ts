@@ -33,7 +33,7 @@ export async function processEmojis(
     const uploadedEmojis: ApplicationEmoji[] = [];
 
     for (const emoji of emojis) {
-        const existingEmojis = await client.applications.listEmojis();
+        const existingEmojis = await client.applications.listEmojis(true);
 
         if (existingEmojis.find((exEmoji: ApplicationEmoji) => emoji.name === exEmoji.name) !==
             undefined) {

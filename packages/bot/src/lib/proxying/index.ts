@@ -16,6 +16,23 @@ import { MessageFlags } from "seyfert/lib/types";
 import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 
+export const imageOrVideoExtensions = [
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".webp",
+    ".bmp",
+    ".svg",
+    ".mp4",
+    ".webm",
+    ".mov",
+    ".mkv",
+    ".mpeg",
+    ".heic",
+    ".heif",
+];
+
 export async function proxy(
 	webhook: Webhook,
 	client: UsingClient,
@@ -35,24 +52,6 @@ export async function proxy(
 		message,
 		stringContents,
 	);
-
-	// Sort file attachments into videos/images and all other files using file extension since mimetype is not available
-	const imageOrVideoExtensions = [
-		".png",
-		".jpg",
-		".jpeg",
-		".gif",
-		".webp",
-		".bmp",
-		".svg",
-		".mp4",
-		".webm",
-		".mov",
-		".mkv",
-		".mpeg",
-		".heic",
-		".heif",
-	];
 
 	const mediaFiles: typeof fileAttachments = [];
 	const otherFiles: typeof fileAttachments = [];
@@ -107,7 +106,7 @@ export async function proxy(
 			body: {
 				components,
 				flags: MessageFlags.IsComponentsV2,
-				username,
+				username: username.substring(0, 80),
 				allowed_mentions: { parse: [] },
 				avatar_url: picture,
 				files: fileAttachments.map((c) =>

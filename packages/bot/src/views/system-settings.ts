@@ -258,6 +258,10 @@ export class SystemSettingsView extends TranslatedView {
 					.setContent(`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / 5)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms`),
 				new ActionRow().setComponents(
 					new Button()
+						.setEmoji(emojis.plus)
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId(InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create()),
+					new Button()
 						.setLabel("Previous Page")
 						.setDisabled(pgObj?.memoryPage === 1)
 						.setCustomId(
@@ -272,6 +276,7 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setStyle(ButtonStyle.Primary),
 				),
+
 			),
 		];
 	}

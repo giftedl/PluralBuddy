@@ -5,6 +5,8 @@ import {
 	Button,
 	Container,
 	type Guild,
+	MediaGallery,
+	MediaGalleryItem,
 	Section,
 	Separator,
 	TextDisplay,
@@ -23,8 +25,8 @@ export class AlterView extends TranslatedView {
 	alterProfileView(alter: PAlter, preview = false) {
 		const innerComponents =
 			new TextDisplay().setContent(`${preview ? "" : "##"} ${alter.displayName} ${preview ? " - preview" : ""}
--# Also known as @${alter.username}
-${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
+-# Also known as @${alter.username} ${alter.pronouns !== null ? `· ${alter.pronouns}` : ""}
+${alter.description !== null ? "\n" : ""}${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
 **Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}
 **Associated to:** <@${alter.systemId}> (${alter.systemId})\n
 -# ID: \`${alter.alterId}\``);
@@ -39,6 +41,15 @@ ${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
 								.setDescription(`${alter.avatarUrl}'s avatar`),
 						)
 						.setComponents(innerComponents),
+			...(alter.banner !== null
+				? [
+						new MediaGallery().setItems(
+							new MediaGalleryItem()
+								.setMedia(alter.banner)
+								.setDescription(`${alter.avatarUrl}'s banner`),
+						),
+					]
+				: []),
 		);
 
 		if (alter.color !== null && alter.color !== "#000000")
@@ -182,9 +193,14 @@ Please select the mode you would like to use below.
 		];
 	}
 
-	altersPublicView(alter: PAlter, currentGuildName: { name: string, id: string }) {
-
-        const existingName = alter.nameMap.find(v => currentGuildName.id === v.server)
+	altersPublicView(
+		alter: PAlter,
+		currentGuildName: { name: string; id: string },
+		prefix: string
+	) {
+		const existingName = alter.nameMap.find(
+			(v) => currentGuildName.id === v.server,
+		);
 
 		return [
 			new Container().setComponents(
@@ -217,7 +233,10 @@ Please select the mode you would like to use below.
 										this.translations.ALTER_SET_SERVER_NAME_DESC.replaceAll(
 											"%server%",
 											`**${currentGuildName.name}**`,
-										).replaceAll("%name%", existingName?.name ?? alter.displayName),
+										).replaceAll(
+											"%name%",
+											existingName?.name ?? alter.displayName,
+										),
 									),
 								)
 								.setAccessory(
@@ -245,6 +264,59 @@ Please select the mode you would like to use below.
 							.setLabel(this.translations.ALTER_SET_PFP)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.SetPFP.create(
+									alter.alterId,
+								),
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							"You can set a **banner** by uploading an image using the modal on the right.",
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_BANNER)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.Alters.SetBanner.create(
+									alter.alterId,
+								),
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							`You can set pronouns for your alter. Alter pronouns can be at maximum 100 characters long.
+-# @${alter.username}'s pronouns are: ${alter.pronouns ?? "Not set"}`,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_PRONOUNS)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.Alters.SetPronouns.create(
+									alter.alterId,
+								),
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							`You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: \`${prefix}edit-alter description ${alter.username}\``,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_DESCRIPTION)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.Alters.SetDescription.create(
 									alter.alterId,
 								),
 							),
@@ -346,16 +418,19 @@ Please select the mode you would like to use below.
 		];
 	}
 
-    alterConfigureButton(alter: PAlter) {
-        return [
-            new ActionRow()
-                .setComponents(
-                    new Button()
-                        .setLabel("Configure Profile")
-                        .setEmoji(emojis.wrenchWhite)
-                        .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.create(alter.alterId))
-                        .setStyle(ButtonStyle.Primary)
-                )
-        ]
-    }
+	alterConfigureButton(alter: PAlter) {
+		return [
+			new ActionRow().setComponents(
+				new Button()
+					.setLabel("Configure Profile")
+					.setEmoji(emojis.wrenchWhite)
+					.setCustomId(
+						InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.create(
+							alter.alterId,
+						),
+					)
+					.setStyle(ButtonStyle.Primary),
+			),
+		];
+	}
 }

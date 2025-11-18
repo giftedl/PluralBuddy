@@ -8,7 +8,7 @@ import { SystemSettingsView } from "../../views/system-settings";
 @Declare({
     name: 'config',
     description: "Configure the system",
-    aliases: ["configure", "c"],
+    aliases: ["configure", "c", "s", "settings"],
     contexts: ["BotDM", "Guild"]
 })
 export default class SystemConfigCommand extends SubCommand {
