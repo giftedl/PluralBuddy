@@ -2,7 +2,6 @@
 
 import { AutoLoad, Command, Options, type CommandContext, createStringOption, Declare, createBooleanOption, ActionRow, Button } from "seyfert";
 import { alterCollection } from "../mongodb";
-import { BaseErrorCommand } from "../base-error-command";
 import { AlterView } from "../views/alters";
 import { AlertView } from "../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -26,7 +25,7 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class SystemCommand extends BaseErrorCommand {
+export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
         const { "alter-name": alterName } = ctx.options;
         const systemId = ctx.author.id;

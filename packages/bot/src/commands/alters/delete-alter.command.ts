@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { BaseErrorSubCommand } from "@/base-error-subcommand";
+import { SubCommand } from "seyfert"
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { emojis } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -24,7 +24,7 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class DeleteAlterCommand extends BaseErrorSubCommand {
+export default class DeleteAlterCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
         
         const { "alter-name": alterName } = ctx.options;

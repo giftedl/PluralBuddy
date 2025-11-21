@@ -3,7 +3,6 @@ import { Declare, Options, type CommandContext, SubCommand, createBooleanOption 
 import { MessageFlags } from "seyfert/lib/types";
 import { SystemView } from "../../views/system";
 import { AlertView } from "../../views/alert";
-import { BaseErrorSubCommand } from "@/base-error-subcommand";
 
 const options = {
     public: createBooleanOption({
@@ -18,7 +17,7 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class SystemInfoCommand extends BaseErrorSubCommand {
+export default class SystemInfoCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
         const user = await ctx.retrievePUser();
 

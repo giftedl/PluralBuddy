@@ -9,12 +9,21 @@ export enum TagProtectionFlags {
     COLOR         = 1 << 6
 }
 
+export const tagColors = [
+    'red',     'orange', 'amber',
+    'yellow',  'lime',   'green',
+    'emerald', 'teal',   'cyan',
+    'sky',     'blue',   'indigo',
+    'violet',  'purple', 'fuchsia',
+    'pink',    'rose'
+  ]
+
 export const PTagObject = z.object({
     tagId: z.string(),
 
-    tagFriendlyName: z.string(),
+    tagFriendlyName: z.string().max(100),
     tagDescription: z.string().optional(),
-    tagColor: z.enum(["red" , "yellow" , "orange" , "purple" , "white" , "green" , "black" , "brown" , "blue"]),
+    tagColor: z.enum(tagColors),
 
     associatedAlters: z.string().array(),
 

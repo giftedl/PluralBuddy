@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { BaseErrorSubCommand } from "@/base-error-subcommand";
+import { SubCommand } from "seyfert"
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 import { type CommandContext, Declare, SubCommand } from "seyfert";
@@ -12,7 +12,7 @@ import { MessageFlags } from "seyfert/lib/types";
 	aliases: ["a", "m", "members"],
 	contexts: ["BotDM", "Guild"],
 })
-export default class AlterListCommand extends BaseErrorSubCommand {
+export default class AlterListCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
 		const user = await ctx.retrievePUser();
 

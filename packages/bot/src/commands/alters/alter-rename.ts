@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type CommandContext, createStringOption, Declare, type OKFunction, Options } from "seyfert";
-import { BaseErrorSubCommand } from "../../base-error-subcommand";
+import { SubCommand } from "seyfert"
 import { alterCollection } from "../../mongodb";
 import { AlertView } from "../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -35,7 +35,7 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class EditAlterNameCommand extends BaseErrorSubCommand {
+export default class EditAlterNameCommand extends SubCommand {
 
 	override async run(ctx: CommandContext<typeof options>) {
 

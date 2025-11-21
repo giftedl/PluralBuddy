@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { BaseErrorSubCommand } from "@/base-error-subcommand";
+import { SubCommand } from "seyfert"
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -32,7 +32,7 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class EditAlterProxyModeCommand extends BaseErrorSubCommand {
+export default class EditAlterProxyModeCommand extends SubCommand {
 
 	override async run(ctx: CommandContext<typeof options>) {
 

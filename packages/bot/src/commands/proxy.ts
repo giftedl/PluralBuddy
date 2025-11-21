@@ -1,11 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { BaseErrorCommand } from "@/base-error-command";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	AttachmentBuilder,
+	Command,
 	type CommandContext,
 	createAttachmentOption,
 	createStringOption,
@@ -47,7 +47,7 @@ const options = {
 	contexts: ["Guild"]
 })
 @Options(options)
-export default class SystemCommand extends BaseErrorCommand {
+export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { "alter-name": alterName, message, attachment } = ctx.options;
 		const systemId = ctx.author.id;

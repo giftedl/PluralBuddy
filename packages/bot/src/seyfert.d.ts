@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import type { ParseGlobalMiddlewares, ParseMiddlewares } from "seyfert";
-import type { extendedContext } from ".";
+import type { extendedContext } from "./extended-context";
 import type { middlewares } from "./middleware";
 import type { StatisticResource } from "./cache/statistics";
 

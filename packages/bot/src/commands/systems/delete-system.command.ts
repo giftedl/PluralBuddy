@@ -5,14 +5,13 @@ import { AlertView } from "../../views/alert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
 import { emojis } from "../../lib/emojis";
-import { BaseErrorSubCommand } from "@/base-error-subcommand";
 
 @Declare({
     name: 'delete',
     description: "Removes the system",
     contexts: ["BotDM", "Guild"]
 })
-export default class SetupCommand extends BaseErrorSubCommand {
+export default class SetupCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
         return await ctx.ephemeral({
             components: [

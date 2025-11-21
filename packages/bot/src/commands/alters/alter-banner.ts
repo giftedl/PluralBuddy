@@ -2,7 +2,6 @@
 
 import { type Attachment, type CommandContext, Container, createAttachmentOption, createStringOption, Declare, MediaGallery, MediaGalleryItem, Options, SubCommand } from "seyfert";
 import { alterCollection } from "../../mongodb";
-import { BaseErrorSubCommand } from "../../base-error-subcommand";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlertView } from "../../views/alert";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
@@ -34,7 +33,7 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class EditAlterPictureCommand extends BaseErrorSubCommand {
+export default class EditAlterPictureCommand extends SubCommand {
 
 	override async run(ctx: CommandContext<typeof options>) {
         await ctx.write({

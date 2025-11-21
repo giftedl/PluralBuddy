@@ -4,13 +4,12 @@ import {
 	AttachmentBuilder,
 	type CommandContext,
 	Declare,
-	SubCommand,
 } from "seyfert";
 import { LoadingView } from "../../views/loading";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlertView } from "../../views/alert";
 import { buildExportPayload } from "../../lib/export";
-import { BaseErrorSubCommand } from "@/base-error-subcommand";
+import { SubCommand } from "seyfert"
 
 @Declare({
 	name: "export",
@@ -18,7 +17,7 @@ import { BaseErrorSubCommand } from "@/base-error-subcommand";
 	aliases: ["e"],
 	contexts: ["BotDM", "Guild"],
 })
-export default class ExportCommand extends BaseErrorSubCommand {
+export default class ExportCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
 		await ctx.write({
 			components: new LoadingView(ctx.userTranslations()).loadingView(),

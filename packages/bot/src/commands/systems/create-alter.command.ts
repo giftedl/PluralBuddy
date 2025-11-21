@@ -1,13 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { type CommandContext, createStringOption, Declare, Options, SubCommand, type OKFunction, IgnoreCommand, type OnOptionsReturnObject } from "seyfert";
+import { type CommandContext, createStringOption, Declare, Options, type OKFunction, IgnoreCommand, type OnOptionsReturnObject } from "seyfert";
 import { AlertView } from "../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { PAlterObject } from "../../types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake"
 import { getUserById, writeUserById } from "../../types/user";
 import { alterCollection } from "../../mongodb";
-import { BaseErrorSubCommand } from "../../base-error-subcommand";
+import { SubCommand } from "seyfert"
 import z from "zod";
 
 const options = {
@@ -37,10 +37,9 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class CreateAlterCommand extends BaseErrorSubCommand {
+export default class CreateAlterCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
         const { username, "display-name": displayName } = ctx.options;
-
 
         await ctx.write(ctx.loading(ctx.userTranslations()))
 

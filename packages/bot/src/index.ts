@@ -32,8 +32,11 @@ import type { TranslationString } from "./lang";
 import { PostHog } from "posthog-node";
 import { StatisticResource } from "./cache/statistics";
 import { RedisAdapter } from "@slipher/redis-adapter";
+import { PluralBuddyComponentErrorCommand, PluralBuddyErrorCommand, PluralBuddyModalErrorCommand } from "./error-command";
+import { PluralBuddyErrorModalCommandImpl } from "./error-command-impl";
+import { extendedContext } from "./extended-context";
 
-export const buildNumber = 203;
+export const buildNumber = 209;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
@@ -48,87 +51,6 @@ export const posthogClient =
 				enableExceptionAutocapture: true,
 			});
 
-export const extendedContext = extendContext((interaction) => {
-	const ephemeral = async (
-		body: InteractionCreateBodyRequest,
-		allowedPublic?: boolean,
-	) => {
-		if (interaction instanceof Message) {
-			if (
-				allowedPublic &&
-				(interaction.content.endsWith("-p") ||
-					interaction.content.endsWith("-public"))
-			) {
-				return await interaction.reply(body);
-			}
-
-			const message = await interaction.reply(
-				{
-					components: [
-						new ActionRow().setComponents(
-							new Button()
-								.setEmoji(emojis.folderKeyWhite)
-								.setStyle(ButtonStyle.Primary)
-								.setCustomId(`ephemeral-${interaction.id}`),
-						),
-					],
-				},
-				true,
-			);
-
-			const collector = message.createComponentCollector();
-
-			collector.run(`ephemeral-${interaction.id}`, async (i) => {
-				if (i.user.id !== interaction.user.id)
-					return i.write({
-						components: [
-							new Container().setComponents(
-								new TextDisplay().setContent(
-									"You are not the original recipient of the message.",
-								),
-							),
-						],
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					});
-
-				if (i.isButton()) {
-					message.delete();
-					return i.write(body);
-				}
-			});
-
-			return message;
-		}
-		return await interaction.write(body);
-	};
-
-	return {
-		ephemeral,
-		retrievePUser: async () => getUserById(interaction.user.id),
-		retrievePGuild: async () => getGuildFromId(interaction.guildId ?? "??"),
-		userTranslations: () => translations,
-		loading: (translations: TranslationString) => {
-			return {
-				components: new LoadingView(translations).loadingView(),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			};
-		},
-		loadingEphemeral: (translations: TranslationString) => {
-			return ephemeral({
-				components: new LoadingView(translations).loadingView(),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		},
-		getDefaultPrefix: async () => {
-			if (interaction.guildId) {
-				return (await getGuildFromId(interaction.guildId ?? "??")).prefixes[0];
-			}
-			return defaultPrefixes[
-				(process.env.BRANCH as "production" | "canary") ?? "production"
-			][0];
-		},
-	};
-});
 
 console.log(
 	"the branch is:",
@@ -156,7 +78,10 @@ export const client = new Client({
 			components: new LoadingView(ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		}),
+        defaults: new PluralBuddyErrorCommand()
 	},
+	components: { defaults: new PluralBuddyComponentErrorCommand() },
+	modals: { defaults: new PluralBuddyModalErrorCommand() },
 	context: extendedContext,
 	globalMiddlewares,
 });

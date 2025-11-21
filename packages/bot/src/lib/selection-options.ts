@@ -40,3 +40,7 @@ export const privacySelection = (translations: TranslationString, existing?: num
         .setValue(InteractionIdentifier.Selection.PrivacyValues.PRIVACY_TAGS.create())
         .setDefault(has(SystemProtectionFlags.TAGS, existing)),
 ]
+
+export const tagColorSelection = (translations: TranslationString, existing?: number) => [
+
+]

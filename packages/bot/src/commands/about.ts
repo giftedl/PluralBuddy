@@ -1,7 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { type CommandContext, Container, Declare, TextDisplay } from "seyfert";
-import { BaseErrorCommand } from "../base-error-command";
+import { Command, type CommandContext, Container, Declare, TextDisplay } from "seyfert";
 import { buildNumber } from "..";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "../lib/emojis";
@@ -11,7 +10,7 @@ import { emojis } from "../lib/emojis";
 	description: "PluralBuddy!",
     contexts: ["BotDM", "Guild"]
 })
-export default class SystemCommand extends BaseErrorCommand {
+export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext) {
 
         return await ctx.write({

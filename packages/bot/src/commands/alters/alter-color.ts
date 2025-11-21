@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type Attachment, type CommandContext, Container, createStringOption, Declare, MediaGallery, MediaGalleryItem, Options, type OKFunction } from "seyfert";
-import { BaseErrorSubCommand } from "../../base-error-subcommand";
+import { SubCommand } from "seyfert"
 import { alterCollection } from "../../mongodb";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlertView } from "../../views/alert";
@@ -30,7 +30,7 @@ const options = {
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)
-export default class EditAlterColorCommand extends BaseErrorSubCommand {
+export default class EditAlterColorCommand extends SubCommand {
 
 	override async run(ctx: CommandContext<typeof options>) {
         const { "alter-name": alterName, "alter-color": color } = ctx.options;

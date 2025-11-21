@@ -51,6 +51,25 @@ export const InteractionIdentifier = {
             PRIVACY_ALTERS:      createStatic("selection/privacy/alters"),
             PRIVACY_TAGS:        createStatic("selection/privacy/tags"),
         },
+        TagColors: {
+            'red':       createStatic("selection/tag-color/red"),
+            'orange':    createStatic("selection/tag-color/orange"),
+            'amber':     createStatic("selection/tag-color/amber"),
+            'yellow':    createStatic("selection/tag-color/yellow"),
+            'lime':      createStatic("selection/tag-color/lime"),
+            'green':     createStatic("selection/tag-color/green"),
+            'emerald':   createStatic("selection/tag-color/emerald"),
+            'teal':      createStatic("selection/tag-color/teal"),
+            'cyan':      createStatic("selection/tag-color/cyan"),
+            'sky':       createStatic("selection/tag-color/sky"),
+            'blue':      createStatic("selection/tag-color/blue"),
+            'indigo':    createStatic("selection/tag-color/indigo"),
+            'violet':    createStatic("selection/tag-color/violet"),
+            'purple':    createStatic("selection/tag-color/purple"),
+            'fuchsia':   createStatic("selection/tag-color/fuchsia"),
+            'pink':      createStatic("selection/tag-color/pink"),
+            'rose':      createStatic("selection/tag-color/rose")
+          }
     },
     Systems: {
         DeleteSystem: createStatic("systems/delete"),
