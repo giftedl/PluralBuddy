@@ -3,7 +3,7 @@
  *  - is licensed under MIT License.
  */
 
-import { ActionRow, Button, Cache, CacheFrom, Client, Container, Emoji, extendContext, Message, TextDisplay } from "seyfert";
+import { ActionRow, Button, Cache, CacheFrom, Client, Container, Emoji, extendContext, MemoryAdapter, Message, TextDisplay } from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import type { InteractionCreateBodyRequest } from "seyfert/lib/common";
@@ -19,8 +19,9 @@ import { LoadingView } from "./views/loading";
 import type { TranslationString } from "./lang";
 import { PostHog } from "posthog-node";
 import { StatisticResource } from "./cache/statistics";
+import { RedisAdapter } from "@slipher/redis-adapter";
 
-export const buildNumber = 170;
+export const buildNumber = 201;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware', 'posthogInteractionMiddleware']
 
 export const posthogClient = new PostHog(
@@ -127,7 +128,12 @@ export const client = new Client({
 
 client.setServices({
     middlewares: middlewares,
-    handleCommand: PluralBuddyHandleCommand
+    handleCommand: PluralBuddyHandleCommand,
+    cache: {
+        adapter: process.env.REDIS === undefined ? new MemoryAdapter() : new RedisAdapter(
+            { redisOptions: { url: process.env.REDIS }}
+        )
+    }
 });
 
 await setupMongoDB()
