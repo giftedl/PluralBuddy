@@ -9,6 +9,7 @@ import {
 import { AlertView } from "./views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { posthogClient } from ".";
+import { DiscordSnowflake } from "@sapphire/snowflake";
 
 export abstract class BaseErrorSubCommand extends SubCommand {
 	override async onOptionsError(
@@ -36,19 +37,25 @@ export abstract class BaseErrorSubCommand extends SubCommand {
 
 	override async onRunError(context: CommandContext, error: unknown) {
 		context.client.logger.fatal(error);
-		posthogClient.captureException(error, context.author.id, {
-			$set: { username: context.author.username },
 
-			interactionId: context.interaction.id,
-			guildId: context.guildId,
-			channelId: context.channelId,
-		});
+		const interactionId = (
+			context.interaction ?? { id: `c${DiscordSnowflake.generate()}` }
+		).id
+
+		if (posthogClient)
+			posthogClient.captureException(error, context.author.id, {
+				$set: { username: context.author.username },
+
+				interactionId,
+				guildId: context.guildId,
+				channelId: context.channelId,
+			});
 
 		await context.editOrReply({
 			components: [
 				// @ts-ignore
 				...new AlertView(null).errorViewCustom(
-					`There was an error while doing that action.\n-# Interaction: \`${context.interaction.id}\``,
+					`There was an error while doing that action.\n-# Interaction: \`${interactionId}\``,
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
