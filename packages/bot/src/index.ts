@@ -25,7 +25,7 @@ export const buildNumber = 201;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware', 'posthogInteractionMiddleware']
 
 export const posthogClient = new PostHog(
-    'phc_JUfHI0Ju8S6PeznuzN7ZSdmeyhRVydbCmE5whhE1Fex',
+    process.env.POSTHOG_API_KEY ?? "",
     {
         host: 'https://us.i.posthog.com',
         enableExceptionAutocapture: true
