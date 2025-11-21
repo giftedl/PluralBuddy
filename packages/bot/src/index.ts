@@ -3,40 +3,24 @@
  *  - is licensed under MIT License.
  */
 
-import {
-	ActionRow,
-	Button,
-	Cache,
-	CacheFrom,
-	Client,
-	Container,
-	Emoji,
-	extendContext,
-	MemoryAdapter,
-	Message,
-	TextDisplay,
-} from "seyfert";
+import { CacheFrom, Client, MemoryAdapter } from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import type { InteractionCreateBodyRequest } from "seyfert/lib/common";
-import { Emojis } from "seyfert/lib/cache/resources/emojis";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { noWebhookMiddleware } from "./middleware/no-webhook.middleware";
+import { MessageFlags } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
-import { getUserById } from "./types/user";
-import { translations } from "./lang/en_us";
-import { emojis } from "./lib/emojis";
 import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
-import type { TranslationString } from "./lang";
 import { PostHog } from "posthog-node";
 import { StatisticResource } from "./cache/statistics";
 import { RedisAdapter } from "@slipher/redis-adapter";
-import { PluralBuddyComponentErrorCommand, PluralBuddyErrorCommand, PluralBuddyModalErrorCommand } from "./error-command";
-import { PluralBuddyErrorModalCommandImpl } from "./error-command-impl";
+import {
+	PluralBuddyComponentErrorCommand,
+	PluralBuddyErrorCommand,
+	PluralBuddyModalErrorCommand,
+} from "./error-command";
 import { extendedContext } from "./extended-context";
 
-export const buildNumber = 209;
+export const buildNumber = 210;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
@@ -50,7 +34,6 @@ export const posthogClient =
 				host: "https://us.i.posthog.com",
 				enableExceptionAutocapture: true,
 			});
-
 
 console.log(
 	"the branch is:",
@@ -78,7 +61,7 @@ export const client = new Client({
 			components: new LoadingView(ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		}),
-        defaults: new PluralBuddyErrorCommand()
+		defaults: new PluralBuddyErrorCommand(),
 	},
 	components: { defaults: new PluralBuddyComponentErrorCommand() },
 	modals: { defaults: new PluralBuddyModalErrorCommand() },
