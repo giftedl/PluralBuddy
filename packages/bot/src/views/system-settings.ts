@@ -188,26 +188,29 @@ export class SystemSettingsView extends TranslatedView {
 	}
 
 	async altersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
+		const altersPerPage = 5;
+
 		if (system.alterIds.length === 0) {
 			return [
 				...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
-				new ActionRow()
-					.setComponents(
-						new Button()
-							.setLabel("Create new alter")
-							.setCustomId(InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create())
-							.setStyle(ButtonStyle.Primary)
-					)
-			]
+				new ActionRow().setComponents(
+					new Button()
+						.setLabel("Create new alter")
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
+						)
+						.setStyle(ButtonStyle.Primary),
+				),
+			];
 		}
-		
+
 		const time = Date.now();
 		const altersCursor = alterCollection
 			.find({ systemId: system.associatedUserId })
-			.limit(5)
-			.skip(((pgObj?.memoryPage ?? 1) - 1) * 5);
+			.limit(altersPerPage)
+			.skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
 
-		const alters = await altersCursor.toArray()
+		const alters = await altersCursor.toArray();
 		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
 
 		if (pgObj === undefined) {
@@ -226,11 +229,11 @@ export class SystemSettingsView extends TranslatedView {
 				id: String(pgId),
 				memoryPage: 1,
 				documentCount,
-			}
+			};
 		}
 
-
 		return [
+			...this.topView("alters", system.associatedUserId),
 			new Container().setComponents(
 				new TextDisplay().setContent(`## Alters - ${system.systemName}`),
 				new Separator().setSpacing(Spacing.Large),
@@ -249,35 +252,46 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setComponents(
 							new TextDisplay().setContent(
-								`[\`@${alter.username}\`] **${alter.displayName}**${(alter.pronouns !== null && alter.pronouns !== undefined) ? ` | ${alter.pronouns}` : ""} ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
+								`[\`@${alter.username}\`] **${alter.displayName}${alter.pronouns !== null && alter.pronouns !== undefined ? ` | ${alter.pronouns}` : ""}** ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
 							),
 						);
 				}),
 				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay()
-					.setContent(`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / 5)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms`),
+				new TextDisplay().setContent(
+					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms`,
+				),
 				new ActionRow().setComponents(
 					new Button()
 						.setEmoji(emojis.plus)
 						.setStyle(ButtonStyle.Primary)
-						.setCustomId(InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create()),
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(pgObj.id),
+						),
 					new Button()
 						.setLabel("Previous Page")
 						.setDisabled(pgObj?.memoryPage === 1)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(pgObj.id),
+							InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(
+								pgObj.id,
+							),
 						)
 						.setStyle(ButtonStyle.Primary),
 					new Button()
 						.setLabel("Next Page")
-						.setDisabled(pgObj?.memoryPage === Math.ceil((pgObj?.documentCount ?? 0) / 5))
+						.setDisabled(
+							pgObj?.memoryPage ===
+								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+						)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(pgObj.id),
+							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(
+								pgObj.id,
+							),
 						)
 						.setStyle(ButtonStyle.Primary),
 				),
-
 			),
 		];
 	}
+
+	publicProfile() {}
 }

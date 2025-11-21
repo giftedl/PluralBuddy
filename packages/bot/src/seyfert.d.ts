@@ -3,13 +3,16 @@
 import type { ParseGlobalMiddlewares, ParseMiddlewares } from "seyfert";
 import type { extendedContext } from ".";
 import type { middlewares } from "./middleware";
+import type { StatisticResource } from "./cache/statistics";
 
-declare module 'seyfert' {
-    interface ExtendContext extends ReturnType<typeof extendedContext> {} 
+declare module "seyfert" {
+	interface ExtendContext extends ReturnType<typeof extendedContext> {}
+	interface Cache {
+		statistic: StatisticResource;
+	}
 
-    // Register the middlewares on seyfert types
-    interface RegisteredMiddlewares
-      extends ParseMiddlewares<typeof middlewares> {}
-    interface GlobalMetadata
-        extends ParseGlobalMiddlewares<typeof middlewares> {}
+	// Register the middlewares on seyfert types
+	interface RegisteredMiddlewares
+		extends ParseMiddlewares<typeof middlewares> {}
+	interface GlobalMetadata extends ParseGlobalMiddlewares<typeof middlewares> {}
 }

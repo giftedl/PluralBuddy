@@ -28,6 +28,7 @@ export default class SystemCommand extends BaseErrorCommand {
                                     .replace("%docs%", emojis.book)
                                     .replace("%linein%", emojis.lineIn)
                                     .replace("%lineright%", emojis.lineRight)
+                                    .replace("%prefix%", await ctx.getDefaultPrefix() ?? "pb;")
                             )
                     )
             ],

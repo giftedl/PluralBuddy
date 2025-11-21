@@ -10,6 +10,7 @@ import { LoadingView } from "../../views/loading";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlertView } from "../../views/alert";
 import { buildExportPayload } from "../../lib/export";
+import { BaseErrorSubCommand } from "@/base-error-subcommand";
 
 @Declare({
 	name: "export",
@@ -17,7 +18,7 @@ import { buildExportPayload } from "../../lib/export";
 	aliases: ["e"],
 	contexts: ["BotDM", "Guild"],
 })
-export default class ExportCommand extends SubCommand {
+export default class ExportCommand extends BaseErrorSubCommand {
 	override async run(ctx: CommandContext) {
 		await ctx.write({
 			components: new LoadingView(ctx.userTranslations()).loadingView(),

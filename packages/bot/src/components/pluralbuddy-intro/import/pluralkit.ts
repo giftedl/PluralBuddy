@@ -13,22 +13,9 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
       }
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
-      return ctx.modal(
-          new Modal()
-              .setTitle(ctx.userTranslations().IMPORT_PLURALBUDDY_DESCRIPTION)
-              .setCustomId(InteractionIdentifier.Setup.FormSelection.PkForm.create())
-              .setComponents(
-                  [
-                      new Label()
-                          .setLabel(ctx.userTranslations().PLURALBUDDY_IMPORT_SOURCE)
-                          .setDescription(ctx.userTranslations().PLURALBUDDY_IMPORT_DESC)
-                          .setComponent(
-                              new TextInput()
-                                  .setCustomId(InteractionIdentifier.Setup.FormSelection.PkType.create())
-                                  .setStyle(TextInputStyle.Paragraph)
-                          )
-                  ]
-              )
-      )
+      return await ctx.update({
+        components: [...new PluralBuddyIntro(ctx.userTranslations()).pluralKitImportPage(ctx.interaction.id)]
+      })
+      
   }
 }

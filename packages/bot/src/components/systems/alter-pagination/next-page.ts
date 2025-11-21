@@ -54,7 +54,6 @@ export default class NextPageAP extends ComponentCommand {
 
         return await ctx.update({
             components: [
-                ...new SystemSettingsView(ctx.userTranslations()).topView("alters", user.system.associatedUserId),
                 ...await new SystemSettingsView(ctx.userTranslations()).altersSettings(user.system, corresponding)
             ]
         })

@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@^0.1.47"
+  },
+  "deploy": {
+    "org": "giftedl",
+    "app": "pb-link-scraper"
+  }
+}

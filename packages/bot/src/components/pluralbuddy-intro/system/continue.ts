@@ -1,13 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, ComponentCommand, Container, Label, Modal, ModalSubmitInteraction, TextDisplay, TextInput, type ComponentContext } from "seyfert";
+import { ActionRow, Button, ComponentCommand, Container, Label, Modal, ModalSubmitInteraction, TextDisplay, TextInput, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
+import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
 import { LoadingView } from "../../../views/loading";
 import { createdSystems } from "../create-new-system";
 import { writeUserById } from "../../../types/user";
 import { AlertView } from "../../../views/alert";
+import { emojis } from "@/lib/emojis";
 
 export default class NameCNS extends ComponentCommand {
     componentType = 'Button' as const;
@@ -42,7 +43,17 @@ export default class NameCNS extends ComponentCommand {
 
 
         return await ctx.editResponse({
-            components: new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATING_NEW_SYSTEM_SUCCESS.replaceAll("%prefix%", server.prefixes[0] ?? "!")),
+            components: [
+                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATING_NEW_SYSTEM_SUCCESS.replaceAll("%prefix%", server.prefixes[0] ?? "!")),
+                new ActionRow()
+                    .setComponents(
+                        new Button()
+                            .setCustomId(InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create())
+                            .setLabel("Configure Alter")
+                            .setEmoji(emojis.wrenchWhite)
+                            .setStyle(ButtonStyle.Primary)
+                    )
+            ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
         })
     }

@@ -3,7 +3,7 @@
  *  - is licensed under MIT License.
  */
 
-import { ActionRow, Button, Client, Container, Emoji, extendContext, Message, TextDisplay } from "seyfert";
+import { ActionRow, Button, Cache, CacheFrom, Client, Container, Emoji, extendContext, Message, TextDisplay } from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import type { InteractionCreateBodyRequest } from "seyfert/lib/common";
@@ -17,9 +17,19 @@ import { emojis } from "./lib/emojis";
 import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
 import type { TranslationString } from "./lang";
+import { PostHog } from "posthog-node";
+import { StatisticResource } from "./cache/statistics";
 
-export const buildNumber = 169;
-const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware']
+export const buildNumber = 170;
+const globalMiddlewares: readonly (keyof typeof middlewares)[] = ['noWebhookMiddleware', 'blacklistUserMiddleware', 'posthogInteractionMiddleware']
+
+export const posthogClient = new PostHog(
+    'phc_JUfHI0Ju8S6PeznuzN7ZSdmeyhRVydbCmE5whhE1Fex',
+    {
+        host: 'https://us.i.posthog.com',
+        enableExceptionAutocapture: true
+    }
+)
 
 export const extendedContext = extendContext((interaction) => {
     const ephemeral = async (body: InteractionCreateBodyRequest, allowedPublic?: boolean) => {
@@ -124,3 +134,18 @@ await setupMongoDB()
 await setupDatabases()
 await client.start();
 await client.uploadCommands({ cachePath: './commands.json' });
+
+client.cache.statistic = new StatisticResource(client.cache, client);
+
+const guildCount = (await client.guilds.list()).length;
+const guilds = await client.guilds.list() ?? []
+let userCount = 0;
+for (const unfetchedGuild of guilds.values()) {
+    const guild = await unfetchedGuild.fetch()
+    
+    if (guild.members) {
+        userCount += guild.memberCount ?? 0;
+    }
+}
+
+client.cache.statistic.set(CacheFrom.Rest, "latest", { guildCount, userCount })

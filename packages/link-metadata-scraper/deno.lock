@@ -1,0 +1,19 @@
+{
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@0.1.47"
+    },
+    "jsr": {
+      "@b-fuze/deno-dom@0.1.47": {
+        "integrity": "270a888de91329f8ce3849211ece0ad97ce1e8b9a8a774f2bed2f43c8b0ffe8e"
+      }
+    }
+  },
+  "remote": {},
+  "workspace": {
+    "dependencies": [
+      "jsr:@b-fuze/deno-dom@^0.1.47"
+    ]
+  }
+}

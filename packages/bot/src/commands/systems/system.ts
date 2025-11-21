@@ -3,6 +3,7 @@ import { Declare, Command, AutoLoad, type CommandContext, Message } from "seyfer
 import { MessageFlags } from "seyfert/lib/types";
 import { SystemView } from "../../views/system";
 import { AlertView } from "../../views/alert";
+import { BaseErrorCommand } from "@/base-error-command";
 
 @Declare({
 	name: "system",
@@ -12,7 +13,7 @@ import { AlertView } from "../../views/alert";
 })
 // Being in the same folder with @AutoLoad() you can save this step
 @AutoLoad()
-export default class SystemCommand extends Command {
+export default class SystemCommand extends BaseErrorCommand {
 	override async run(ctx: CommandContext) {
         const user = await ctx.retrievePUser();
 

@@ -4,6 +4,7 @@ import { type CommandContext, Declare, SubCommand } from "seyfert";
 import { AlertView } from "../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { SystemSettingsView } from "../../views/system-settings";
+import { BaseErrorSubCommand } from "@/base-error-subcommand";
 
 @Declare({
     name: 'config',
@@ -11,7 +12,7 @@ import { SystemSettingsView } from "../../views/system-settings";
     aliases: ["configure", "c", "s", "settings"],
     contexts: ["BotDM", "Guild"]
 })
-export default class SystemConfigCommand extends SubCommand {
+export default class SystemConfigCommand extends BaseErrorSubCommand {
 	override async run(ctx: CommandContext) {
 
         const user = await ctx.retrievePUser();

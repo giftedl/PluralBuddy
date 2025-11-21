@@ -6,6 +6,7 @@ import { PluralBuddyIntro } from "../views/pluralbuddy-intro";
 import { AlertView } from "../views/alert";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import { emojis } from "../lib/emojis";
+import { BaseErrorCommand } from "@/base-error-command";
 
 @Declare({
     name: 'setup',
@@ -13,7 +14,7 @@ import { emojis } from "../lib/emojis";
     aliases: ["set"],
     contexts: ["BotDM", "Guild"]
 })
-export default class SetupCommand extends Command {
+export default class SetupCommand extends BaseErrorCommand {
 
     override async run(ctx: CommandContext) {
         const user = await ctx.retrievePUser();

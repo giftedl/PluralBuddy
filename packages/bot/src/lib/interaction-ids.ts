@@ -67,7 +67,8 @@ export const InteractionIdentifier = {
             AlterPagination: {
                 PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
                 NextPage: createFromAdditionalArg("systems/config/apg/next"),
-                CreateNewAlter: createStatic("systems/config/apg/create")
+                CreateNewAlter: createStatic("systems/config/apg/create"),
+                HideTopView: createFromAdditionalArg("systems/config/apg/hide-top-view")
             },
             Alters: {
                 Index: createStatic("systems/config/alters"),
@@ -159,6 +160,9 @@ export const InteractionIdentifier = {
             ImportType: createStatic("setup/create-new-system/type-form/import"),
             PkForm: createStatic("setup/create-new-system/set-form/pk-import"),
             PkType: createStatic("setup/create-new-system/type-form/pk-import"),
+        },
+        PluralKitImport: {
+            UploadAttachment: createStatic("setup/pk-import/upload")
         },
         ImportSelection: {
             Index: createStatic("setup/import-select"),

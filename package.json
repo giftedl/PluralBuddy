@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"@google-cloud/storage": "^7.17.3",
+		"posthog-node": "^5.13.0",
 		"yunaforseyfert": "^1.1.3"
 	}
 }

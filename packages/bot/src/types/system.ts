@@ -20,7 +20,7 @@ export enum SystemProtectionFlags {
 export const PSystemObject = z.object({
     associatedUserId: z.string(),
 
-    systemName: z.string().max(20).min(3),
+    systemName: z.string().max(20).min(1),
     systemDisplayTag: z.string().optional(),
     systemDescription: z.string().max(1000).optional(),
     systemAvatar: z.string().optional(),

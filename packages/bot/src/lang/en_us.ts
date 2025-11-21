@@ -39,6 +39,7 @@ Systems can have **privacy values** which are values that describe who can see w
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
     ERROR_PAGINATION_TOO_OLD: "That alter pagination component is too old, you cannot proceed. Please hit the \"Alters\" tab at the top of the message to reset the pagination.",
     ERROR_NO_ALTERS: "You have no alters! Create one below!",
+    PK_IMPORT_START: "## PluralKit Importing",
 
     PAGE_NEW_SYS_TEXT: "-# Page 3/3 · Some fields haven't been filled out. · * Required",
     PAGE_NEW_SYS_TEXT_FILLED: "-# Page 3/3 · * Required",
@@ -47,7 +48,9 @@ Systems can have **privacy values** which are values that describe who can see w
     IMPORT_PLURALBUDDY_DESCRIPTION: "Import from PluralBuddy",
     IMPORT_SOURCE_DESCRIPTION: "Import Source",
     CREATE_NEW_SYS_DESCRIPTION: "Create New System",
+    PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "Importing files cannot be larger than 2mb. Please contact support if you are genuinely trying to import a system larger than 2mb.",
     CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
+    PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "The file you imported is not valid JSON.",
 
     ERROR_INTERACTION_TOO_OLD: "This interaction has no longer been kept track of. (have you waited too long?)",
     ERROR_SYSTEM_DOESNT_EXIST: "This operation cannot be concluded because there is no system to operate on.",
@@ -159,6 +162,7 @@ Systems can have **privacy values** which are values that describe who can see w
 
 > PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
+> To get started with using PluralBuddy, use \`%prefix%setup\`.
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
