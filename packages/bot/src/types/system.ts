@@ -30,7 +30,7 @@ export const PSystemObject = z.object({
     nicknameFormat: z.string().optional(),
 
     alterIds: z.array(z.number()).max(2000).default([]),
-    tagIds: z.array(z.string()).default([]),
+    tagIds: z.array(z.string()).max(500).default([]),
     createdAt: z.coerce.date(),
 
     systemAutoproxy: z.array(PAutoProxyObj),

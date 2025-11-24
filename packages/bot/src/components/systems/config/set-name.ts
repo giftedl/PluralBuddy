@@ -30,12 +30,18 @@ export default class SetName extends ComponentCommand {
                     new Label()
                         .setLabel(ctx.userTranslations().SYSTEM_NAME_FORM_LABEL)
                         .setComponent(
-                            new TextInput()
-                                .setStyle(TextInputStyle.Short)
-                                .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.NameType.create())
-                                .setLength({ min: 3, max: 20 })
-                                .setRequired(true)
-                                .setValue(oldSystemName as string)
+                            oldSystemName.length > 3 ? 
+                                new TextInput()
+                                    .setStyle(TextInputStyle.Short)
+                                    .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.NameType.create())
+                                    .setLength({ min: 3, max: 20 })
+                                    .setRequired(true)
+                                    .setValue(oldSystemName) :
+                                new TextInput()
+                                    .setStyle(TextInputStyle.Short)
+                                    .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.NameType.create())
+                                    .setLength({ min: 3, max: 20 })
+                                    .setRequired(true)
                         )
                 ]
             )

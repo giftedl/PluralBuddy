@@ -6,12 +6,14 @@ import type { PUser } from "./types/user";
 import type { PAlter } from "./types/alter";
 import type { POperation } from "./types/operation";
 import type { PMessage } from "./types/message";
+import type { PTag } from "./types/tag";
 
 export let mongoClient: MongoClient;
 export let mainDb: Db;
 export let guildCollection: Collection<PGuild>;
 export let userCollection: Collection<PUser>;
 export let alterCollection: Collection<PAlter>;
+export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let messagesCollection: Collection<PMessage>;
 
@@ -29,4 +31,5 @@ export async function setupDatabases() {
     alterCollection = mainDb.collection("alters")
     operationCollection = mainDb.collection("system-operations")
     messagesCollection = mainDb.collection("messages")
+    tagCollection = mainDb.collection("tags")
 }

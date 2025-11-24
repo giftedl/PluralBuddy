@@ -1,5 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import type { tagColors } from "@/types/tag"
+
 export const emojiProfiles = {
     canary: {
         x: "<:x_:1435094265758875769>",
@@ -26,7 +28,24 @@ export const emojiProfiles = {
         lineRight: "<:lineright:1437194208061685830>",
         reply: "<:reply:1437573940393545911>",
         plus: "<:plus:1440154372687265932>",
-        refresh: "<:refreshccw:1440902320018690301>"
+        refresh: "<:refreshccw:1440902320018690301>",
+        tag0: "<:tag0:1441277056611520572>",
+        tag1: "<:tag1:1441277057681195088>",
+        tag2: "<:tag2:1441277058767655004>",
+        tag3: "<:tag3:1441277059857907752>",
+        tag4: "<:tag4:1441277060856283186>",
+        tag5: "<:tag5:1441277062798114886>",
+        tag6: "<:tag6:1441277064312389732>",
+        tag7: "<:tag7:1441277065713291346>",
+        tag8: "<:tag8:1441277066950606949>",
+        tag9: "<:tag9:1441277068720476190>",
+        tag10: "<:tag10:1441277069689360445>",
+        tag11: "<:tag11:1441277070654177350>",
+        tag12: "<:tag12:1441277071597768734>",
+        tag13: "<:tag13:1441277073091199127>",
+        tag14: "<:tag14:1441277073900703754>",
+        tag15: "<:tag15:1441277074919788774>",
+        tag16: "<:tag16:1441277076177948713>"
     },
     production: {
         x: "<:x_:1436973282304725083>",
@@ -53,8 +72,66 @@ export const emojiProfiles = {
         lineRight: "<:lineright:1437193986400981112>",
         reply: "<:reply:1437573788245037186>",
         plus: "<:plus:1440154214964789300>",
-        refresh: "<:refreshccw:1440899053293535313>"
+        refresh: "<:refreshccw:1440899053293535313>",
+        tag0: "<:tag0:1441276966929174668>",
+        tag1: "<:tag1:1441276967935545525>",
+        tag2: "<:tag2:1441276969227522202>",
+        tag3: "<:tag3:1441276970250797166>",
+        tag4: "<:tag4:1441276971412750386>",
+        tag5: "<:tag5:1441276972394221694>",
+        tag6: "<:tag6:1441276973354582128>",
+        tag7: "<:tag7:1441276974374064128>",
+        tag8: "<:tag8:1441276975573373049>",
+        tag9: "<:tag9:1441276976928391188>",
+        tag10: "<:tag10:1441276978018914456>",
+        tag11: "<:tag11:1441276978677157900>",
+        tag12: "<:tag12:1441276980208336966>",
+        tag13: "<:tag13:1441276980862648372>",
+        tag14: "<:tag14:1441276982137720893>",
+        tag15: "<:tag15:1441276983295082677>",
+        tag16: "<:tag16:1441276984754700318>"
     }
 }
 
 export const emojis = emojiProfiles[process.env.EMOJI_PROFILE as "production" | "canary" ?? "canary"]
+
+export function getEmojiFromTagColor(tagColor: string) {
+    switch(tagColor) {
+        case "red":
+            return emojis.tag0
+        case "orange":
+            return emojis.tag1
+        case "amber":
+            return emojis.tag2
+        case "yellow":
+            return emojis.tag3
+        case "lime":
+            return emojis.tag4
+        case "green":
+            return emojis.tag5
+        case "emerald":
+            return emojis.tag6
+        case "teal":
+            return emojis.tag7
+        case "cyan":
+            return emojis.tag8
+        case "sky":
+            return emojis.tag9
+        case "blue":
+            return emojis.tag10
+        case "indigo":
+            return emojis.tag11
+        case "violet":
+            return emojis.tag12
+        case "purple":
+            return emojis.tag13
+        case "fuchsia":
+            return emojis.tag14
+        case "pink":
+            return emojis.tag15
+        case "rose":
+            return emojis.tag16
+    }
+
+    return emojis.tag0
+}

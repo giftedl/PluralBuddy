@@ -20,6 +20,7 @@ export const tagColors = [
 
 export const PTagObject = z.object({
     tagId: z.string(),
+    systemId: z.string(),
 
     tagFriendlyName: z.string().max(100),
     tagDescription: z.string().optional(),
@@ -28,8 +29,7 @@ export const PTagObject = z.object({
     associatedAlters: z.string().array(),
 
     /** @see {@link TagProtectionFlags} */
-    disallowed: z.number(),
-    allowed: z.number()
+    public: z.number()
 })
 
 export type PTag = z.infer<typeof PTagObject>

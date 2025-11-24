@@ -79,6 +79,8 @@ Systems can have **privacy values** which are values that describe who can see w
     PLURALBUDDY_OPTIONS_ERROR: "There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
 
     CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
+    CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use `%prefix%tag %tag_name%` for more details.",
+    TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
 
     CONFIRMATION_SYSTEM_DELETION: "Are you sure you'd like to delete your system? **This action cannot be undone.**",
     CONFIRMATION_SYSTEM_DELETION_BTN: "Yes, continue",
