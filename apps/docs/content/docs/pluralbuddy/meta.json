@@ -1,0 +1,11 @@
+{
+    "title": "PluralBuddy",
+    "description": "The modern, fast plurality Discord bot",
+    "icon": "Handshake",
+    "root": true,
+    "pages": [
+      "---Introduction---",
+      "index",
+      "test"
+    ]
+  }

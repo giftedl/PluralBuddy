@@ -1,0 +1,9 @@
+{
+    "title": "Policies",
+    "icon": "Book",
+    "root": true,
+    "pages": [
+      "terms",
+      "privacy"
+    ]
+  }
