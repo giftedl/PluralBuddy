@@ -75,7 +75,6 @@
 
 .policies {
     --color-fd-primary: #cc8b00;
-
 }
 
 :root {
@@ -166,6 +165,25 @@
 	html,
 	body {
 		scrollbar-width: thin;
-		scrollbar-color: var(--color-fd-primary) var(--background);
+	}
+
+    body.policies,
+    html#policies.dark {
+        scrollbar-color: #fff383 var(--background);
+    }
+
+    body.pluralbuddy,
+    html#pluralbuddy.dark {
+        scrollbar-color: oklch(89.9% 0.061 343.231) var(--background);
+    }
+
+	body.pluralbuddy,
+    html#pluralbuddy.light {
+        scrollbar-color: oklch(53% 33% 342deg) var(--background);
+	}
+	
+	body.policies,
+    html#policies.light {
+        scrollbar-color: #cc8b00 var(--background);
 	}
 }
