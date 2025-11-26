@@ -30,9 +30,18 @@ import { useQuery } from "@tanstack/react-query";
 export function ClerkOtherComponents({ style }: { style: "main" | "docs" }) {
 	const clerk = useClerk();
 	const user = useUser();
+    
 	const { data: discordUserData, status } = useQuery({
 		queryKey: ["discord-data"],
-		queryFn: getDiscordUserData,
+		queryFn: async () => {
+            const data = await getDiscordUserData()
+
+            if ("error" in data) 
+                throw new Error('User not found')
+        
+            return data;
+        },
+        retry: 0
 	});
 
 	return (

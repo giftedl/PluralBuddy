@@ -5,11 +5,11 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import type { RESTGetAPIUserResult } from "discord-api-types/v10"
 
-export async function getDiscordUserData(): Promise<RESTGetAPIUserResult> {
+export async function getDiscordUserData(): Promise<RESTGetAPIUserResult | { error: string }> {
     const { isAuthenticated, userId } = await auth()
 
     if (!isAuthenticated) {
-        throw new Error('User not found')
+        return { error: "User not found." }
     }
 
     const client = await clerkClient()
@@ -17,7 +17,7 @@ export async function getDiscordUserData(): Promise<RESTGetAPIUserResult> {
     const clerkResponse = await client.users.getUserOauthAccessToken(userId, "discord")
     const accessToken = clerkResponse.data[0].token || ''
     if (!accessToken) {
-        throw new Error('Access token not found')
+        return { error: ('Access token not found') }
     }
     
     const discordUserApi = 'https://discord.com/api/v10/users/@me'
