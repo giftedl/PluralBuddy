@@ -4,7 +4,8 @@
 	"workspaces": ["packages/*"],
 	"scripts": {
 		"bot": "cd packages/bot && bun run bot",
-		"bot:watch": "cd packages/bot && bun run bot:watch"
+		"bot:watch": "cd packages/bot && bun run bot:watch",
+		"docs:dev": "cd apps/docs && bun run dev"
 	},
 	"dependencies": {
 		"@google-cloud/storage": "^7.17.3",

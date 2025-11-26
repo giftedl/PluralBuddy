@@ -21,6 +21,8 @@ const options = {
         value(data, ok, fail) {
             if (!data.value.contentType?.startsWith("image"))
                 fail("This attachment is not an image.")
+            if (data.value.size > 1_000_000)
+                fail("This attachment is too big. Attachments at most can be 1mb.")
             ok(data)
         },
     })
@@ -68,12 +70,18 @@ export default class EditAlterPictureCommand extends SubCommand {
             })
         }
 
-        const objectName = `${process.env.BRANCH}/${ctx.author.id}/${alter.alterId}/${assetStringGeneration(32)}.${((attachment as {value: Attachment}).value.contentType ?? "").replace(/(.*)\//g, '')}`;
+        const objectName =`${(process.env.BRANCH ?? "c")[0]}/${assetStringGeneration(32)}.${((attachment as {value: Attachment}).value.contentType ?? "").replace(/(.*)\//g, '')}`;
         const bucketName = process.env.GCP_BUCKET ?? "";
 
         try {
             const accessToken = await getGcpAccessToken();
-            await uploadDiscordAttachmentToGcp((attachment as {value: Attachment}).value, accessToken, bucketName, objectName);
+			await uploadDiscordAttachmentToGcp(
+				(attachment as { value: Attachment }).value,
+				accessToken,
+				bucketName,
+				objectName,
+				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "banner" },
+			);
         } catch (error) {
             return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_FAILED_TO_UPLOAD_TO_GCP"),
@@ -81,7 +89,7 @@ export default class EditAlterPictureCommand extends SubCommand {
             })
         }
         
-        const publicUrl = `https://storage.googleapis.com/${bucketName}/${objectName}`;
+        const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
         await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { banner: publicUrl }})
 
         return await ctx.editResponse({

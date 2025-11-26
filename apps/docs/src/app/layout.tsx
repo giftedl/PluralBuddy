@@ -3,6 +3,7 @@ import "./global.css";
 import { Inter } from "next/font/google";
 import { Body } from "@/components/body";
 import { Html } from "@/components/html";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -12,13 +13,15 @@ export default function Layout({ children }: LayoutProps<"/">) {
 	return (
 		<Html>
 			<Body>
-				<RootProvider
-					theme={{
-						enabled: true,
-					}}
-				>
-					{children}
-				</RootProvider>
+				<ClerkProvider>
+					<RootProvider
+						theme={{
+							enabled: true,
+						}}
+					>
+						{children}
+					</RootProvider>
+				</ClerkProvider>
 			</Body>
 		</Html>
 	);

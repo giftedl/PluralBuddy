@@ -44,16 +44,26 @@ export default class SetPFPForm extends ModalCommand {
 			)[0] as Attachment,
 		};
 
-		const objectName = `${process.env.BRANCH}/${ctx.author.id}/${alter.alterId}/${attachment.value.filename}`;
+		if (attachment.value.size > 1_000_000) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"ERROR_ATTACHMENT_TOO_LARGE",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${assetStringGeneration(32)}.${(attachment.value.contentType ?? "").replace(/(.*)\//g, '')}`;;
 		const bucketName = process.env.GCP_BUCKET ?? "";
 
 		try {
 			const accessToken = await getGcpAccessToken();
 			await uploadDiscordAttachmentToGcp(
-				attachment.value,
+				(attachment as { value: Attachment }).value,
 				accessToken,
 				bucketName,
 				objectName,
+				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "profile-picture/form" },
 			);
 		} catch (error) {
 			return await ctx.write({
@@ -64,7 +74,7 @@ export default class SetPFPForm extends ModalCommand {
 			});
 		}
 
-		const publicUrl = `https://storage.googleapis.com/${bucketName}/${objectName}`;
+		const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
 			{ $set: { avatarUrl: publicUrl } },

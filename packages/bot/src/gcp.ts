@@ -13,7 +13,7 @@ export async function getGcpAccessToken() {
   const now = Math.floor(Date.now() / 1000);
   const payload = {
     iss: clientEmail,
-    scope: "https://www.googleapis.com/auth/devstorage.read_write",
+    scope: "https://www.googleapis.com/auth/cloud-platform",
     aud: "https://oauth2.googleapis.com/token",
     exp: now + 3600,
     iat: now,
@@ -72,7 +72,7 @@ export async function getGcpAccessToken() {
   return accessToken;
 }
 
-export async function uploadDiscordAttachmentToGcp(attachment: Attachment, accessToken: string, bucketName: string, objectName: string) {
+export async function uploadDiscordAttachmentToGcp(attachment: Attachment, accessToken: string, bucketName: string, objectName: string, metadata: Record<string, string>) {
     const attachmentUrl = attachment.url;
     const discordResponse = await fetch(attachmentUrl);
     
@@ -85,6 +85,7 @@ export async function uploadDiscordAttachmentToGcp(attachment: Attachment, acces
     }
 
     const gcpUploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${encodeURIComponent(bucketName)}/o?uploadType=media&name=${encodeURIComponent(objectName)}`;
+    const gcpMetadataUrl = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucketName)}/o/${encodeURIComponent(objectName)}`;
     
     const gcpResponse = await fetch(gcpUploadUrl, {
         method: 'POST',
@@ -95,5 +96,17 @@ export async function uploadDiscordAttachmentToGcp(attachment: Attachment, acces
         body: discordResponse.body,
     });
 
+   const a = await fetch(gcpMetadataUrl, {
+      method: 'PATCH',
+      headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': "application/json"
+      },
+      body: JSON.stringify({
+        metadata
+      }),
+    });
+
+console.log(a)
     return gcpResponse;
 }

@@ -130,7 +130,6 @@ export function SidebarContent(props: ComponentProps<'aside'>) {
           'rounded-xl border translate-x-(--fd-sidebar-offset) rtl:-translate-x-(--fd-sidebar-offset)',
           hover ? 'z-50 shadow-lg' : 'opacity-0',
         ],
-        "!border-r !border-[var(--color-fd-border)]",
         props.className,
       )}
       style={

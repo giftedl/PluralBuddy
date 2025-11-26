@@ -45,6 +45,7 @@ export default class SetName extends ComponentCommand {
                         )
                 ]
             )
+            
         return await ctx.interaction.modal(form);
     }
 }
