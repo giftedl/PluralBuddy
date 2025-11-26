@@ -27,6 +27,7 @@ import {
   NavigationMenuItem,
 } from './client';
 import { buttonVariants } from '../../ui/button';
+import { ClerkOtherComponents } from '../docs/clerk-other-components';
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -137,6 +138,7 @@ export function Header({
               item={item}
             />
           ))}
+          <ClerkOtherComponents style="main" />
         </ul>
       </div>
       <ul className="flex flex-row items-center ms-auto -me-1.5 lg:hidden">

@@ -49,6 +49,7 @@ Systems can have **privacy values** which are values that describe who can see w
     IMPORT_SOURCE_DESCRIPTION: "Import Source",
     CREATE_NEW_SYS_DESCRIPTION: "Create New System",
     PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "Importing files cannot be larger than 2mb. Please contact support if you are genuinely trying to import a system larger than 2mb.",
+    ERROR_ATTACHMENT_TOO_LARGE: "Attachments for banners or profile pictures cannot be larger than 2mb.",
     CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
     PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "The file you imported is not valid JSON.",
 

@@ -262,7 +262,7 @@ export function DocsLayout({
 								</BaseLinkItem>
 							))}
 
-              <ClerkOtherComponents />
+              <ClerkOtherComponents style="docs" />
 
 							{themeSwitch.enabled !== false &&
 								(themeSwitch.component ?? (

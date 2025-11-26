@@ -24,10 +24,16 @@ import {
 } from "@clerk/nextjs";
 import { LogIn, LogOut } from "lucide-react";
 import Image from "next/image";
+import { getDiscordUserData } from "@/app/server";
+import { useQuery } from "@tanstack/react-query";
 
-export function ClerkOtherComponents() {
+export function ClerkOtherComponents({ style }: { style: "main" | "docs" }) {
 	const clerk = useClerk();
 	const user = useUser();
+	const { data: discordUserData, status } = useQuery({
+		queryKey: ["discord-data"],
+		queryFn: getDiscordUserData,
+	});
 
 	return (
 		<>
@@ -39,6 +45,7 @@ export function ClerkOtherComponents() {
 							className={cn(
 								buttonVariants({ size: "icon-sm", color: "ghost" }),
 								"cursor-pointer",
+                                style === "main" ? "rounded-full border size-[36px]" : ""
 							)}
 							type="button"
 						>
@@ -48,7 +55,7 @@ export function ClerkOtherComponents() {
 					<PopoverContent>
 						<SignIn.Root routing="virtual">
 							<Clerk.Connection name="discord" asChild>
-								<div className="p-4 flex items-center gap-3 hover:bg-fd-accent rounded-lg cursor-pointer">
+								<div className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg cursor-pointer">
 									<Discord className="size-[16px]" /> Sign In with Discord
 								</div>
 							</Clerk.Connection>
@@ -64,13 +71,14 @@ export function ClerkOtherComponents() {
 							className={cn(
 								buttonVariants({ size: "icon-sm", color: "ghost" }),
 								"cursor-pointer",
+                                style === "main" ? "rounded-full border size-[36px]" : ""
 							)}
 							type="button"
 						>
 							<Image
 								src={user.user?.imageUrl ?? ""}
-								width={18}
-								height={18}
+								width={style === "main" ? 24 : 18}
+								height={style === "main" ? 24 : 18}
 								alt="Your Profile Picture"
 								unoptimized
 								className="rounded-full"
@@ -78,13 +86,18 @@ export function ClerkOtherComponents() {
 						</button>
 					</PopoverTrigger>
 					<PopoverContent>
-						<div className="p-4 flex items-center gap-3 hover:bg-fd-accent rounded-lg">
-							<Discord className="size-[16px]" /> Linked to{" "}
-							{user.user?.username}
-						</div>
+						{status === "success" && (
+							<div className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg">
+								<Discord className="size-[16px]" />{" "}
+								<div className="block">
+									<span>Linked to @{discordUserData.username}</span> <br />
+                                    <code className="text-xs">{discordUserData.id}</code>
+								</div>
+							</div>
+						)}
 						<Separator className="my-2" />
 						<button
-							className="p-4 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full text-red-400 cursor-pointer"
+							className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full text-red-400 cursor-pointer"
 							onClick={() => clerk.signOut()}
 							type="button"
 						>

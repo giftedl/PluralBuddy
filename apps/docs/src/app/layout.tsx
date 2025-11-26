@@ -4,6 +4,13 @@ import { Inter } from "next/font/google";
 import { Body } from "@/components/body";
 import { Html } from "@/components/html";
 import { ClerkProvider } from "@clerk/nextjs";
+import {
+	useQuery,
+	useMutation,
+	useQueryClient,
+	QueryClient,
+	QueryClientProvider,
+} from "@tanstack/react-query";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -19,7 +26,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
 							enabled: true,
 						}}
 					>
-						{children}
+							{children}
 					</RootProvider>
 				</ClerkProvider>
 			</Body>
