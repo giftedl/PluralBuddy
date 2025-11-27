@@ -51,7 +51,7 @@ import {
 	getSidebarTabs,
 	type GetSidebarTabsOptions,
 } from "fumadocs-ui/utils/get-sidebar-tabs";
-import { ClerkOtherComponents } from "./clerk-other-components";
+import { AuthComponents } from "./auth-components";
 
 export interface DocsLayoutProps extends BaseLayoutProps {
 	tree: PageTree.Root;
@@ -262,7 +262,7 @@ export function DocsLayout({
 								</BaseLinkItem>
 							))}
 
-              <ClerkOtherComponents style="docs" />
+              <AuthComponents style="docs" />
 
 							{themeSwitch.enabled !== false &&
 								(themeSwitch.component ?? (

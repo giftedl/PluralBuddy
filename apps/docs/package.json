@@ -11,8 +11,6 @@
     "format": "biome format --write"
   },
   "dependencies": {
-    "@clerk/elements": "^0.23.86",
-    "@clerk/nextjs": "^6.35.5",
     "@paper-design/shaders-react": "^0.0.66",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-popover": "^1.1.15",
@@ -20,6 +18,7 @@
     "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-separator": "^1.1.8",
     "@tanstack/react-query": "^5.90.11",
+    "better-auth": "^1.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "discord-api-types": "^0.38.34",
@@ -27,6 +26,7 @@
     "fumadocs-mdx": "14.0.3",
     "fumadocs-ui": "16.1.0",
     "lucide-react": "^0.554.0",
+    "mongodb": "^7.0.0",
     "next": "16.0.1",
     "next-themes": "^0.4.6",
     "react": "^19.2.0",
