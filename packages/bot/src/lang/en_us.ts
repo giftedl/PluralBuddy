@@ -81,6 +81,7 @@ Systems can have **privacy values** which are values that describe who can see w
 
     CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
     CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use `%prefix%tag %tag_name%` for more details.",
+    TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
     TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
 
     CONFIRMATION_SYSTEM_DELETION: "Are you sure you'd like to delete your system? **This action cannot be undone.**",
