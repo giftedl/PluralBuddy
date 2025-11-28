@@ -49,7 +49,6 @@ const redirectUriSchema = z
 	)
 	.max(300)
 	.array()
-	.min(1)
 	.max(10);
 
 export async function changeRedirectURIs(
