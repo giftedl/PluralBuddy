@@ -47,7 +47,7 @@ export function RedirectURLs({
 							else {
 								setExistingURIs((existing) => [...existing, value]);
 								setValue("");
-								changeRedirectURIs(application.clientId, existingURIs);
+								changeRedirectURIs(application.clientId, [...existingURIs, value]);
 							}
 						}}
 					>
