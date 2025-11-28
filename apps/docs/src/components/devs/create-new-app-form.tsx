@@ -43,12 +43,15 @@ export const scopeList = [
 	{ title: "email", description: "Access to your email address" },
 	{ title: "alter:read", description: "Access to read alter data" },
 	{ title: "alter:write", description: "Access to change alter settings" },
+	{ title: "tags:read", description: "Access to read tag data" },
+	{ title: "tags:write", description: "Access to change tag data" },
+	{ title: "tags:alters", description: "Access to assign tags to alters" },
 	{ title: "system:read", description: "Access to system data" },
 	{ title: "system:write", description: "Access to change system settings" },
 	{
 		title: "system:admin",
 		description: "Access to read and write to systems AND alters.",
-	},
+	}
 ] as const;
 
 export const urlRegex =
