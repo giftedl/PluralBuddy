@@ -26,7 +26,8 @@ import {
 	InputGroupInput,
 } from "../ui/input-group";
 import { useCopyToClipboard } from "@/lib/use-copy-to-clipboard";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, LayoutGrid } from "lucide-react";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 
 export function ScopesForm({ application }: { application: OAuthApplication }) {
 	const [scopes, setScopes] = useState<string[]>(
@@ -81,19 +82,33 @@ export function ScopesForm({ application }: { application: OAuthApplication }) {
 				<FieldGroup>
 					<Field>
 						<FieldLabel>2. Redirect URI</FieldLabel>
-
-						<Select value={redirectUri} onValueChange={setRedirectUri}>
-							<SelectTrigger>
-								<SelectValue placeholder="Choose Redirect URI" />
-							</SelectTrigger>
-							<SelectContent>
-								{application.redirectUrls.split(",").map((uri) => (
-									<SelectItem value={uri} key={uri}>
-										{uri}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						{redirectUri !== undefined && (
+							<Select value={redirectUri} onValueChange={setRedirectUri}>
+								<SelectTrigger>
+									<SelectValue placeholder="Choose Redirect URI" />
+								</SelectTrigger>
+								<SelectContent>
+									{application.redirectUrls.split(",").map((uri) => (
+										<SelectItem value={uri} key={uri}>
+											{uri}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						)}
+						{redirectUri === undefined && (
+							<Empty className="border border-dashed w-full">
+								<EmptyHeader>
+									<EmptyMedia variant="icon">
+										<LayoutGrid />
+									</EmptyMedia>
+									<EmptyTitle>This application has no redirect URI(s)</EmptyTitle>
+									<EmptyDescription>
+                                        Create one above – you need one to create a link.
+									</EmptyDescription>
+								</EmptyHeader>
+							</Empty>
+						)}
 					</Field>
 				</FieldGroup>
 				<FieldGroup>

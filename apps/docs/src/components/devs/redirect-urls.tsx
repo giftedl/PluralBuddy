@@ -22,7 +22,7 @@ export function RedirectURLs({
 	application: OAuthApplication;
 }) {
 	const [existingURIs, setExistingURIs] = useState<string[]>(
-		application.redirectUrls.split(","),
+		application.redirectUrls === "" ? [] : application.redirectUrls.split(","),
 	);
 	const [value, setValue] = useState<string>("");
 
@@ -43,13 +43,12 @@ export function RedirectURLs({
 						variant="secondary"
 						disabled={existingURIs.length === 10}
 						onClick={() => {
-                            if (!urlRegex.test(value))
-                                toast.error("Value is not a URL")
+							if (!urlRegex.test(value)) toast.error("Value is not a URL");
 							else {
-                                setExistingURIs((existing) => [...existing, value]);
-                                setValue("");
-                                changeRedirectURIs(application.clientId, existingURIs)
-                            }
+								setExistingURIs((existing) => [...existing, value]);
+								setValue("");
+								changeRedirectURIs(application.clientId, existingURIs);
+							}
 						}}
 					>
 						Add
@@ -65,17 +64,16 @@ export function RedirectURLs({
 							<Button
 								aria-label={`Remove redirect URI ${i + 1}`}
 								className="size-4"
-                                onClick={() => {
-                                    const index = existingURIs.indexOf(name);
-                                    if (index > -1) {
-                                        const newScopes = [...existingURIs];
-                                        newScopes.splice(index, 1);
-                                        setExistingURIs(newScopes);
-                                        
-                                        changeRedirectURIs(application.clientId, newScopes)
-                                    }
+								onClick={() => {
+									const index = existingURIs.indexOf(name);
+									if (index > -1) {
+										const newScopes = [...existingURIs];
+										newScopes.splice(index, 1);
+										setExistingURIs(newScopes);
 
-                                }}
+										changeRedirectURIs(application.clientId, newScopes);
+									}
+								}}
 							>
 								<X />
 							</Button>
