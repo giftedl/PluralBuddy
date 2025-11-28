@@ -12,11 +12,12 @@ import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/ui/svgs/discord";
 import { cn } from "@/lib/cn";
 
-import { LogIn, LogOut } from "lucide-react";
+import { Code, LogIn, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut } from "@/components/auth/signed-in";
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
 
 export function AuthComponents({ style }: { style: "main" | "docs" }) {
 	const session = authClient.useSession();
@@ -75,7 +76,16 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 							/>
 						</button>
 					</PopoverTrigger>
-					<PopoverContent>
+					<PopoverContent className="grid grid-cols-1 gap-2">
+						<Link href="/developers/applications">
+							<button
+								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
+								type="button"
+							>
+								<Code size={16} /> OAuth Applications
+							</button>
+						</Link>
+						<Separator />
 						<button
 							className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full text-red-400 cursor-pointer"
 							onClick={() => authClient.signOut()}
