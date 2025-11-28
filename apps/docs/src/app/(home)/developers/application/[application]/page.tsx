@@ -34,6 +34,13 @@ import {
 import { Button } from "@/components/ui/shadcn-button";
 import { Badge } from "@/components/ui/badge";
 import { RedirectURLs } from "@/components/devs/redirect-urls";
+import type { Metadata, Viewport } from "next";
+
+export const metadata: Metadata = {
+	title: 'Application',
+	description: 'Use PluralBuddy\'s OAuth API to get data about system and alters dynamically without over-exposing details about your users.',
+	applicationName: 'PluralBuddy',
+  }
 
 export default async function ApplicationPage({
 	params,

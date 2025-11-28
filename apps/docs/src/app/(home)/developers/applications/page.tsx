@@ -25,6 +25,13 @@ import {
 import { DeleteAppForm } from "@/components/devs/delete-app-form";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import type { Metadata, Viewport } from "next";
+
+export const metadata: Metadata = {
+	title: 'Developer Applications',
+	description: 'Use PluralBuddy\'s OAuth API to get data about system and alters dynamically without over-exposing details about your users.',
+	applicationName: 'PluralBuddy',
+  }
 
 export default async function DeveloperApplications() {
 	const applications = await getUserApps();

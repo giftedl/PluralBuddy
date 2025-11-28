@@ -3,6 +3,17 @@ import { cva } from "class-variance-authority";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 import { ExternalLink } from "lucide-react";
+import { Metadata, Viewport } from "next";
+
+export const metadata: Metadata = {
+	title: 'PluralBuddy',
+	description: 'The new age of plurality data storage.',
+	applicationName: 'PluralBuddy',
+  }
+
+export const viewport: Viewport = {
+	themeColor: '#fccee8'
+}
 
 const buttonVariants = cva(
 	"inline-flex justify-center px-5 py-3 rounded-full font-medium tracking-tight transition-colors",
