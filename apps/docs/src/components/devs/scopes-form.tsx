@@ -32,7 +32,11 @@ export function ScopesForm({ application }: { application: OAuthApplication }) {
 	const [scopes, setScopes] = useState<string[]>(
 		JSON.parse(application.metadata ?? '{"scopes":""}').scopes.split(" "),
 	);
-	const [redirectUri, setRedirectUri] = useState<string>(application.redirectUrls.split(",")[0]);
+	const [redirectUri, setRedirectUri] = useState<string | undefined>(
+		application.redirectUrls === ""
+			? undefined
+			: application.redirectUrls.split(",")[0],
+	);
 	const pathname = process.env.NEXT_PUBLIC_HOST;
 	const { copyToClipboard, isCopied } = useCopyToClipboard();
 
@@ -100,7 +104,7 @@ export function ScopesForm({ application }: { application: OAuthApplication }) {
 							<InputGroupInput
 								id="client-secret"
 								readOnly
-								value={`${pathname}/api/auth/oauth2/authorize?client_id=${application.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(" "))}`}
+								value={`${pathname}/api/auth/oauth2/authorize?client_id=${application.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri ?? "")}&scope=${encodeURIComponent(scopes.join(" "))}`}
 							/>
 							<InputGroupAddon align="inline-end">
 								<InputGroupButton
@@ -109,7 +113,7 @@ export function ScopesForm({ application }: { application: OAuthApplication }) {
 									size="icon-xs"
 									onClick={() => {
 										copyToClipboard(
-											`${pathname}/api/auth/oauth2/authorize?client_id=${application.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.join(" "))}`,
+											`${pathname}/api/auth/oauth2/authorize?client_id=${application.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri ?? "")}&scope=${encodeURIComponent(scopes.join(" "))}`,
 										);
 									}}
 								>
