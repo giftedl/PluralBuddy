@@ -19,7 +19,7 @@ import { SignedIn, SignedOut } from "@/components/auth/signed-in";
 import { authClient } from "@/lib/auth-client";
 
 export function AuthComponents({ style }: { style: "main" | "docs" }) {
-    const session = authClient.useSession()
+	const session = authClient.useSession();
 
 	return (
 		<>
@@ -40,12 +40,12 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 					</PopoverTrigger>
 					<PopoverContent>
 						<button
-							className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg cursor-pointer"
-							onClick={async () => {
-								const data = await authClient.signIn.social({
+							className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg cursor-pointer w-full"
+							onClick={() =>
+								authClient.signIn.social({
 									provider: "discord",
-								});
-							}}
+								})
+							}
 							type="button"
 						>
 							<Discord className="size-[16px]" /> Sign In with Discord
