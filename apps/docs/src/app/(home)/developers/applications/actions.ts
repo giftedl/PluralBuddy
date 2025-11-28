@@ -130,7 +130,7 @@ const urlRegex =
 
 const formSchema = z.object({
 	applicationName: z.string().max(90).min(3),
-	redirectUris: z.string().regex(urlRegex).max(300).array().min(1).max(10),
+	redirectUris: z.string().regex(urlRegex).max(300).array().max(10),
 	scopes: z.enum(scopes.map((c) => c.title)).array(),
 });
 
