@@ -17,7 +17,7 @@ import { Dithering } from "@paper-design/shaders-react";
 import { useQuery } from "@tanstack/react-query";
 import { CircleAlert, FileExclamationPoint } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 export default function ConsentPage() {
@@ -33,9 +33,11 @@ export default function ConsentPage() {
 	// Submit consent with the code in the request body
 	const consentCode = params.get("consent_code");
 	const scopes = params.get("scope")?.split(" ");
-	if (!consentCode) {
-		return <>Consent code required.</>;
-	}
+
+    if (consentCode === null) return <>Requires consent code</>
+
+	if (data !== undefined && "message" in data) return <>Invalid application</>
+	if (data !== undefined && !("data" in data)) return <>Invalid application</>
 
 	return (
 		<div className="grid w-full flex-grow relative items-center justify-center px-4">
