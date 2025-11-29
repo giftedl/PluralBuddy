@@ -12,9 +12,9 @@ const options = {
 }
 
 @Declare({
-	name: "banner",
-	description: "Set an alter's banner.",
-    aliases: ["b"],
+	name: "privacy",
+	description: "Set an alter's privacy.",
+    aliases: ["p"],
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)

@@ -122,7 +122,6 @@ export async function proxy(
 				messageId: sentMessage?.id ?? "0",
 				alterId,
 				systemId,
-				contents: stringContents,
 				createdAt: new Date(),
 			});
 

@@ -34,6 +34,7 @@ function capturePostHogException(
     interactionId?: string | undefined;
     guildId?: string | undefined;
     channelId?: string | undefined;
+    // I don't set users for the Posthog exceptions since I want exceptions to be anonymous
     user?: { username: string; id: string } | undefined;
   }
 ): string {
@@ -87,10 +88,6 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
       interactionId: context.interaction?.id,
       guildId: context.guildId,
       channelId: context.channelId,
-      user: {
-        id: context.author.id,
-        username: context.author.username,
-      },
     });
 
     await context.editOrReply({
@@ -125,10 +122,6 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
         interactionId: context.interaction?.id,
         guildId: context.guildId,
         channelId: context.channelId,
-        user: {
-          id: context.author.id,
-          username: context.author.username,
-        },
       });
 
       await context.editOrReply({
@@ -153,10 +146,6 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
         interactionId: context.interaction?.id,
         guildId: context.guildId,
         channelId: context.channelId,
-        user: {
-          id: context.author.id,
-          username: context.author.username,
-        },
       }
     );
 
@@ -202,10 +191,6 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
       interactionId: context.interaction?.id,
       guildId: context.guildId,
       channelId: context.channelId,
-      user: {
-        id: context.author.id,
-        username: context.author.username,
-      },
     });
 
     await context.editOrReply({
@@ -232,10 +217,6 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
         interactionId: context.interaction?.id,
         guildId: context.guildId,
         channelId: context.channelId,
-        user: {
-          id: context.author.id,
-          username: context.author.username,
-        },
       });
 
       await context.editOrReply({
@@ -263,10 +244,6 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
       interactionId: context.interaction?.id,
       guildId: context.guildId,
       channelId: context.channelId,
-      user: {
-        id: context.author.id,
-        username: context.author.username,
-      },
     });
 
     await context.editOrReply({
@@ -287,10 +264,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
       interactionId: context.interaction?.id,
       guildId: context.guildId,
       channelId: context.channelId,
-      user: {
-        id: context.author.id,
-        username: context.author.username,
-      },
+
     });
 
     await context.editOrReply({
@@ -314,10 +288,6 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
         interactionId: context.interaction?.id,
         guildId: context.guildId,
         channelId: context.channelId,
-        user: {
-          id: context.author.id,
-          username: context.author.username,
-        },
       });
 
       await context.editOrReply({
@@ -345,10 +315,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
       interactionId: context.interaction?.id,
       guildId: context.guildId,
       channelId: context.channelId,
-      user: {
-        id: context.author.id,
-        username: context.author.username,
-      },
+
     });
 
     await context.editOrReply({
@@ -369,10 +336,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
       interactionId: context.interaction?.id,
       guildId: context.guildId,
       channelId: context.channelId,
-      user: {
-        id: context.author.id,
-        username: context.author.username,
-      },
+
     });
 
     await context.editOrReply({

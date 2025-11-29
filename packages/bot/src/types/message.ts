@@ -6,8 +6,7 @@ export const PMessageObject = z.object({
     messageId: z.string(),
     systemId: z.string(),
     alterId: z.number(),
-    createdAt: z.date(),
-    contents: z.string()
+    createdAt: z.date()
 })
 
 export type PMessage = z.infer<typeof PMessageObject>

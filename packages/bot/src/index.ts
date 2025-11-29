@@ -23,8 +23,7 @@ import { extendedContext } from "./extended-context";
 export const buildNumber = 214;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
-	"blacklistUserMiddleware",
-	"posthogInteractionMiddleware",
+	"blacklistUserMiddleware"
 ];
 
 export const posthogClient =
@@ -99,3 +98,18 @@ for (const unfetchedGuild of guilds.values()) {
 }
 
 client.cache.statistic.set(CacheFrom.Rest, "latest", { guildCount, userCount });
+
+Bun.serve({
+	port: 3000,
+	routes: {
+		"/api/stats": (req) => {
+			if (req.headers.get("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
+				return Response.json({ error: "invalid key" }, { status: 400 })
+
+			return Response.json(client.cache.statistic.get("latest"));
+		},
+	},
+	fetch(req, server) {
+		return Response.error()
+	},
+});
