@@ -4,7 +4,6 @@ import {
 	ActionRow,
 	Button,
 	Container,
-	type Guild,
 	MediaGallery,
 	MediaGalleryItem,
 	Section,
@@ -12,27 +11,40 @@ import {
 	TextDisplay,
 	Thumbnail,
 } from "seyfert";
-import type { PAlter } from "../types/alter";
+import { AlterProtectionFlags, type PAlter } from "../types/alter";
 import { TranslatedView } from "./translated-view";
 import type { ColorResolvable } from "seyfert/lib/common";
-import type { PSystem } from "../types/system";
-import { SystemSettingsView } from "./system-settings";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis } from "../lib/emojis";
+import { has } from "@/lib/privacy-bitmask";
+import { AlertView } from "./alert";
 
 export class AlterView extends TranslatedView {
-	alterProfileView(alter: PAlter, preview = false) {
+	alterProfileView(alter: PAlter, external = false) {
+		if (external && (!has(AlterProtectionFlags.VISIBILITY, alter.public))) {
+			return new AlertView(this.translations).errorView("INVISIBLE_ALTER")
+		}
+
+		const displayNameDisplayable = (!external) || has(AlterProtectionFlags.NAME, alter.public)          
+		const pronounsDisplayable =    (!external) || has(AlterProtectionFlags.PRONOUNS, alter.public)      
+		const descriptionDisplayable = (!external) || has(AlterProtectionFlags.DESCRIPTION, alter.public)   
+		const avatarDisplayable =      (!external) || has(AlterProtectionFlags.AVATAR, alter.public)        
+		const bannerDisplayable =      (!external) || has(AlterProtectionFlags.BANNER, alter.public)        
+		const messagesDisplayable =    (!external) || has(AlterProtectionFlags.MESSAGE_COUNT, alter.public) 
+		const usernameDisplayable =    (!external) || has(AlterProtectionFlags.USERNAME, alter.public)      
+		const tagsDisplayable =        (!external) || has(AlterProtectionFlags.TAGS, alter.public)          
+
 		const innerComponents =
-			new TextDisplay().setContent(`${preview ? "" : "##"} ${alter.displayName} ${preview ? " - preview" : ""}
--# Also known as @${alter.username} ${(alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
-${alter.description !== null ? "\n" : ""}${alter.description ?? ""}${alter.description !== null ? "\n" : ""}
-**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}
+			new TextDisplay().setContent(`${displayNameDisplayable ? `## ${alter.displayName}` : ""}
+${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : (usernameDisplayable ? `-# Also known as @${alter.username}` : "")} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
+${(descriptionDisplayable && alter.description !== null) ? "\n" : ""}${descriptionDisplayable ? (alter.description ?? "") : ""}${(descriptionDisplayable && alter.description !== null) ? "\n" : ""}
+${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}` : ""}
 **Associated to:** <@${alter.systemId}> (${alter.systemId})\n
 -# ID: \`${alter.alterId}\``);
 
 		const comp = new Container().setComponents(
-			alter.avatarUrl === null
+			(!avatarDisplayable) || (alter.avatarUrl === null)
 				? innerComponents
 				: new Section()
 						.setAccessory(
@@ -41,7 +53,7 @@ ${alter.description !== null ? "\n" : ""}${alter.description ?? ""}${alter.descr
 								.setDescription(`${alter.avatarUrl}'s avatar`),
 						)
 						.setComponents(innerComponents),
-			...(alter.banner !== null
+			...(bannerDisplayable && alter.banner !== null
 				? [
 						new MediaGallery().setItems(
 							new MediaGalleryItem()

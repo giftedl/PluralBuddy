@@ -96,7 +96,9 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_EXPORT_FINISHED: "Successfully exported your system. \n-# **Pro tip:** Make sure PluralBuddy can direct message or else the export cannot be sent to you.",
     SYSTEM_EXPORT_DM: "Here is your export data on request:",
 
-    PRIVACY_NAME:        "Name Privacy",
+    PRIVACY_VISIBILITY:  "Visibility",
+    PRIVACY_NAME:        "Display Name Privacy",
+    PRIVACY_USERNAME:    "Username Privacy",
     PRIVACY_DISPLAY_TAG: "Display Tag Privacy",
     PRIVACY_DESCRIPTION: "Description Privacy",
     PRIVACY_AVATAR:      "Avatar Privacy",
@@ -104,6 +106,8 @@ Systems can have **privacy values** which are values that describe who can see w
     PRIVACY_PRONOUNS:    "Pronouns Privacy",
     PRIVACY_ALTERS:      "Alter Privacy",
     PRIVACY_TAGS:        "Tags Privacy",
+
+    INVISIBLE_ALTER: "You cannot view this alter due to their privacy settings.",
 
     SYSTEM_NAME_FORM_LABEL: "System Name",
     SYSTEM_PRIVACY_FORM_LABEL: "System Privacy",

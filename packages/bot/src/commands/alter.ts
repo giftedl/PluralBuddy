@@ -5,13 +5,11 @@ import { alterCollection } from "../mongodb";
 import { AlterView } from "../views/alters";
 import { AlertView } from "../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
-import { autocompleteAlters } from "../lib/autocomplete-alters";
 
 const options = {
     "alter-name": createStringOption({
-        description: "Name of the alter to query. You can use `<user_id>/<alter>` for alters from other systems.",
-        required: true,
-        autocomplete: autocompleteAlters
+        description: "Name of the alter to query. You can use `<user-id>/<alter>` for alters from other systems.",
+        required: true
     }),
     public: createBooleanOption({
         description: 'Do you want to expose this publicly? (non-ephemeral)',
@@ -20,7 +18,7 @@ const options = {
 
 @Declare({
 	name: "alter",
-	description: "alter command",
+	description: "Query an alter",
     aliases: ["a", "m", "member"],
     contexts: ["BotDM", "Guild"]
 })
@@ -29,10 +27,36 @@ export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
         const { "alter-name": alterName } = ctx.options;
         const systemId = ctx.author.id;
-        const query = Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId })
+
+        let query = null;
+        const userAlterMatch = /^(\d+)\/(.+)$/.exec(alterName);
+        if (userAlterMatch) {
+            // If format is <user-id>/<alter>, query from another system
+            const [_, otherSystemId, otherAlterName] = userAlterMatch;
+            query = alterCollection.findOne({
+                $or: [
+                    { username: otherAlterName },
+                    { alterId: Number(otherAlterName) }
+                ],
+                systemId: otherSystemId
+            });
+        } else {
+            // Otherwise, query for current user's alters
+            query = Number.isNaN(Number.parseInt(alterName))
+                ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+                : alterCollection.findOne({ $or: [{ username: alterName }, { alterId: Number(alterName) }], systemId });
+        }
         const alter = await query;
+
+        if (alter === null && userAlterMatch) {
+            return await ctx.ephemeral({
+                components: [
+                    ...new AlertView(ctx.userTranslations()).errorView("INVISIBLE_ALTER")
+                ],
+                flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
+                allowed_mentions: { parse: [] }
+            }, true)
+        }
 
         if (alter === null) {
             return await ctx.ephemeral({
@@ -43,8 +67,8 @@ export default class SystemCommand extends Command {
 
         return await ctx.ephemeral({
             components: [
-                ...(new AlterView(ctx.userTranslations()).alterProfileView(alter)),
-                ...(new AlterView(ctx.userTranslations()).alterConfigureButton(alter))
+                ...(new AlterView(ctx.userTranslations()).alterProfileView(alter, alter.systemId !== ctx.author.id)),
+                ...(alter.systemId === ctx.author.id ? new AlterView(ctx.userTranslations()).alterConfigureButton(alter) : [])
             ],
             flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
             allowed_mentions: { parse: [] }

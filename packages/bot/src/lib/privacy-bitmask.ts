@@ -1,5 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import type { AlterProtectionFlags } from "@/types/alter";
 import type { TranslationString } from "../lang";
 import { SystemProtectionFlags } from "../types/system";
 
@@ -35,6 +36,6 @@ export function friendlyProtection(translations: TranslationString, flags: Syste
     })
 }
 
-export function has(perm: SystemProtectionFlags, mask?: number): boolean {
+export function has(perm: SystemProtectionFlags | AlterProtectionFlags, mask?: number): boolean {
     return ((mask ?? 0) & perm) !== 0;
   }
