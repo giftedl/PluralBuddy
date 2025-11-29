@@ -115,7 +115,7 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_NICKNAME_FORM_LABEL: "System Nickname Format",
     SYSTEM_NICKNAME_FORM_DESC: "Where \"%username%\" is your alter username, \"%display%\" is your alter display name",
 
-    ALTER_PROXY_TAGS: "## Proxy Tags - @%alter%\nProxy tags are the way your alter *fronts* depending on the contents of your message. You can multiple of these, with 20 characters as the prefix/suffix of each descriptor for proxy tags.",
+    ALTER_PROXY_TAGS: "## Proxy Tags - @%alter%\nProxy tags are the way your alter *fronts* depending on the contents of your message. You can create multiple of these, with 20 characters as the prefix/suffix of each descriptor for proxy tags.",
     ALTER_FORM_TITLE: "Editing Alter",
     ALTER_GENERAL: "## General - @%alter%\nAlter's are parts of your system. Certain values of your system can be configured here.",
     ALTER_SET_USERNAME: "Set Alter Username",
