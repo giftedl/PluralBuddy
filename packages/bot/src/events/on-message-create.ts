@@ -69,16 +69,6 @@ export default createEvent({
 		)
 			return;
 
-		// If the branch is on production and a canary bot is on the server,
-		// prioritize proxying of the canary bot instead. (to avoid double proxying)
-		if (process.env.BRANCH === "production") {
-			const member = await client.members
-				.fetch(message.guildId as string, "1430750248401371199")
-				.catch(() => null);
-
-			if (member !== null) return;
-		}
-
 		const similarWebhooks = (
 			await client.webhooks.listFromChannel(message.channelId)
 		).filter(
