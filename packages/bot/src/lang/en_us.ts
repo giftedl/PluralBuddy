@@ -177,5 +177,5 @@ Systems can have **privacy values** which are values that describe who can see w
 > %lineright% Art by %catjamming% @raincloudzy`,
     FORBIDDEN: "You do not have permission on this server to do this action.",
     ERROR_FAILED_TO_UPLOAD_TO_GCP: "Failed to upload the image to Google Cloud Platform. Please try again later.",
-    DN_ERROR_SS: "You cannot use this command in DM's."
+    DN_ERROR_SE: "You cannot use this command in DM's."
 }
