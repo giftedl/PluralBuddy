@@ -25,8 +25,9 @@ const options = {
 		description: "The new display name for the alter.",
 		max_length: 100,
 	}),
-	ss: createBooleanOption({
+	"server-specific": createBooleanOption({
 		description: "Is this display name specific to this server?",
+		aliases: ["ss"]
 	}),
 };
 
@@ -42,7 +43,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 		const {
 			"alter-name": alterName,
 			"alter-new-name": alterNewName,
-			ss,
+			"server-specific": ss,
 		} = ctx.options;
 
 		const systemId = ctx.author.id;
