@@ -181,6 +181,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 						id: Number(DiscordSnowflake.generate()).toString(),
 					};
 				}),
+				public: 0
 			} satisfies PAlter);
 		});
 

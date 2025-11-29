@@ -69,7 +69,8 @@ export default class CreateAlterCommand extends SubCommand {
             banner: null,
             lastMessageTimestamp: null,
             messageCount: 0,
-            alterMode: "webhook"
+            alterMode: "webhook",
+            public: 0
         })
 
         if (alter.error) {
