@@ -27,7 +27,7 @@ const options = {
 	}),
 	"server-specific": createBooleanOption({
 		description: "Is this display name specific to this server?",
-		aliases: ["ss"]
+		aliases: ["se"]
 	}),
 };
 
@@ -43,7 +43,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 		const {
 			"alter-name": alterName,
 			"alter-new-name": alterNewName,
-			"server-specific": ss,
+			"server-specific": se,
 		} = ctx.options;
 
 		const systemId = ctx.author.id;
@@ -64,16 +64,16 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 			});
 		}
 
-		if (ss && ctx.guildId === undefined) {
+		if (se && ctx.guildId === undefined) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
-					"DN_ERROR_SS",
+					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-        if (ss && alterNewName === undefined) {
+        if (se && alterNewName === undefined) {
 
 			return await ctx.ephemeral({
 				components: [
@@ -100,7 +100,7 @@ ${alter.displayName}
 			}, true);
 		}
 
-		if (ss) {
+		if (se) {
 			// Server specific
 			const nameMapHasServer = alter.nameMap.some(
 				(nm) => nm.server === ctx.guildId,
@@ -149,7 +149,7 @@ ${alter.displayName}
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx
 						.userTranslations()
-						[ss ? "DN_SUCCESS_SS" : "DN_SUCCESS"].replace(
+						[se ? "DN_SUCCESS_SS" : "DN_SUCCESS"].replace(
 							"%alter%",
 							alter.username,
 						)
