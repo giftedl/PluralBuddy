@@ -1,9 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ComponentCommand, Label, Modal, TextInput, type ComponentContext } from "seyfert";
+import { ComponentCommand, FileUpload, Label, Modal, TextInput, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { TextInputStyle } from "seyfert/lib/types";
-
 
 export default class SetupImportPluralBuddy extends ComponentCommand {
     componentType = 'StringSelect' as const;
@@ -18,16 +16,15 @@ export default class SetupImportPluralBuddy extends ComponentCommand {
                 .setTitle(ctx.userTranslations().IMPORT_PLURALBUDDY_DESCRIPTION)
                 .setCustomId(InteractionIdentifier.Setup.FormSelection.ImportForm.create())
                 .setComponents(
-                    [
-                        new Label()
-                            .setLabel(ctx.userTranslations().PLURALBUDDY_IMPORT_SOURCE)
-                            .setDescription(ctx.userTranslations().PLURALBUDDY_IMPORT_DESC)
-                            .setComponent(
-                                new TextInput()
-                                    .setCustomId(InteractionIdentifier.Setup.FormSelection.ImportType.create())
-                                    .setStyle(TextInputStyle.Paragraph)
-                            )
-                    ]
+                    [new Label()
+                        .setLabel(ctx.userTranslations().IMPORT_SOURCE_DESCRIPTION)
+                        .setComponent(
+                            new FileUpload()
+                                .setCustomId(InteractionIdentifier.Setup.FormSelection.ImportType.create())
+                                .setMaxValues(1)
+                                .setMinValues(1)
+                                .setRequired(true)
+                        )]
                 )
         )
     }

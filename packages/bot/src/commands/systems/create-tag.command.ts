@@ -29,6 +29,7 @@ const options = {
 		description: "The display name for the tag.",
 		required: true,
 		max_length: 100,
+		min_length: 3
 	}),
 };
 

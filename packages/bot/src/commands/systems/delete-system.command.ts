@@ -1,10 +1,17 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Command, type CommandContext, Declare, SubCommand } from "seyfert";
+import { ActionRow, Button, Command, type CommandContext, createBooleanOption, Declare, SubCommand } from "seyfert";
 import { AlertView } from "../../views/alert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "../../lib/interaction-ids";
 import { emojis } from "../../lib/emojis";
+
+const options = {
+    "media-included": createBooleanOption({
+        description: "If you delete the media, this request will take significantly longer.",
+        aliases: [ "m", "mi" ]
+    })
+}
 
 @Declare({
     name: 'delete',
@@ -23,7 +30,7 @@ export default class SetupCommand extends SubCommand {
                             .setEmoji(emojis.circleQuestionWhite)
                             .setStyle(ButtonStyle.Primary)
                             .setLabel(ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN)
-                            .setCustomId(InteractionIdentifier.Systems.DeleteSystem.create())
+                            .setCustomId(InteractionIdentifier.Systems.DeleteSystemMedia.create())
                     )
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral

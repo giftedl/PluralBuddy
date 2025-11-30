@@ -197,7 +197,6 @@ export default class SystemCommand extends Command {
 					messageId: sentMessage?.id ?? "0",
 					alterId: alter.alterId,
 					systemId,
-					contents: message ?? "",
 					createdAt: new Date(),
 				});
 

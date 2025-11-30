@@ -26,7 +26,8 @@ const options = {
     "display-name": createStringOption({
         description: 'The display name for the alter. These can include spaces.',
         required: true,
-        max_length: 100
+        max_length: 100,
+        min_length: 3
     })
 };
 

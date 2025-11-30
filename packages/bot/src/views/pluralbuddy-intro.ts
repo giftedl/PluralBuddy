@@ -16,7 +16,7 @@ import type { PGuild } from "../types/guild";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import { createdSystems } from "../components/pluralbuddy-intro/create-new-system";
-import { friendlyProtection, listFromMask } from "../lib/privacy-bitmask";
+import { friendlyProtectionSystem, listFromMaskSystems } from "../lib/privacy-bitmask";
 import { TranslatedView } from "./translated-view";
 import { emojis } from "@/lib/emojis";
 
@@ -213,7 +213,7 @@ export class PluralBuddyIntro extends TranslatedView {
 					new TextDisplay().setContent(
 						this.translations.CREATING_NEW_SYSTEM_PRIVACY_MESSAGE +
 							((temporarySystem.public ?? 0) > 0
-								? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtection(this.translations, listFromMask(temporarySystem.public ?? 0)).join("`, `")}\``
+								? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem(this.translations, listFromMaskSystems(temporarySystem.public ?? 0)).join("`, `")}\``
 								: ""),
 					),
 				)

@@ -14,14 +14,14 @@ import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { LoadingView } from "../../../views/loading";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { PSystemObject, type PSystem } from "../../../types/system";
-import { ImportNotation } from "../../../lib/export";
 import { AlertView } from "../../../views/alert";
-import { parse, z } from "zod";
-import { PluralKitSystem } from "pluralkit-types";
-import { PAlterObject, type PAlter } from "@/types/alter";
+import { PluralKitSystem } from "plurography";
+import { AlterProtectionFlags, PAlterObject, type PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { alterCollection } from "@/mongodb";
 import { getUserById, writeUserById } from "@/types/user";
+import { combine } from "@/lib/privacy-bitmask";
+import z from "zod";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -157,9 +157,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		}
 		const { data: systemData } = newSystem;
 
-		const parsedSafe = data.members.map((member) => {
+		const parsedSafe = data.members.map((member, i) => {
 			return PAlterObject.safeParse({
-				alterId: Number(DiscordSnowflake.generate()),
+				alterId: Number(DiscordSnowflake.generate({ processId: BigInt(i) })),
 				systemId: ctx.author.id,
 				username: member.name,
 				displayName: member.display_name ?? member.name,
@@ -181,7 +181,31 @@ export default class PluralBuddyImportModal extends ModalCommand {
 						id: Number(DiscordSnowflake.generate()).toString(),
 					};
 				}),
-				public: 0
+				public: combine(
+					...[
+						...(member.privacy.visibility === "public"
+							? [AlterProtectionFlags.VISIBILITY]
+							: []),
+						...(member.privacy.pronoun_privacy === "public"
+							? [AlterProtectionFlags.PRONOUNS]
+							: []),
+						...(member.privacy.description_privacy === "public"
+							? [AlterProtectionFlags.DESCRIPTION]
+							: []),
+						...(member.privacy.avatar_privacy === "public"
+							? [AlterProtectionFlags.AVATAR]
+							: []),
+						...(member.privacy.banner_privacy === "public"
+							? [AlterProtectionFlags.BANNER]
+							: []),
+						...(member.privacy.metadata_privacy === "public"
+							? [AlterProtectionFlags.MESSAGE_COUNT, AlterProtectionFlags.TAGS]
+							: []),
+						...(member.privacy.name_privacy === "public"
+							? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
+							: [])
+					],
+				),
 			} satisfies PAlter);
 		});
 

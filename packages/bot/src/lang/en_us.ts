@@ -55,7 +55,8 @@ Systems can have **privacy values** which are values that describe who can see w
 
     ERROR_INTERACTION_TOO_OLD: "This interaction has no longer been kept track of. (have you waited too long?)",
     ERROR_SYSTEM_DOESNT_EXIST: "This operation cannot be concluded because there is no system to operate on.",
-    ERROR_ALTER_DOESNT_EXIST: "This operation cannot be concluded because either:\na. There is no alter to operate on or\nb. There is no system associated to the user who created the request.",
+    ERROR_ALTER_DOESNT_EXIST: "This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
+    ERROR_TAG_DOESNT_EXIST: "This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
 
     CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
     EDIT_SYSTEM_FORM_TITLE: "Editing System",
@@ -96,18 +97,20 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_EXPORT_FINISHED: "Successfully exported your system. \n-# **Pro tip:** Make sure PluralBuddy can direct message or else the export cannot be sent to you.",
     SYSTEM_EXPORT_DM: "Here is your export data on request:",
 
-    PRIVACY_VISIBILITY:  "Visibility",
-    PRIVACY_NAME:        "Display Name Privacy",
-    PRIVACY_USERNAME:    "Username Privacy",
-    PRIVACY_DISPLAY_TAG: "Display Tag Privacy",
-    PRIVACY_DESCRIPTION: "Description Privacy",
-    PRIVACY_AVATAR:      "Avatar Privacy",
-    PRIVACY_BANNER:      "Banner Privacy",
-    PRIVACY_PRONOUNS:    "Pronouns Privacy",
-    PRIVACY_ALTERS:      "Alter Privacy",
-    PRIVACY_TAGS:        "Tags Privacy",
+    PRIVACY_VISIBILITY:    "Visibility",
+    PRIVACY_NAME:          "Display Name Privacy",
+    PRIVACY_USERNAME:      "Username Privacy",
+    PRIVACY_DISPLAY_TAG:   "Display Tag Privacy",
+    PRIVACY_DESCRIPTION:   "Description Privacy",
+    PRIVACY_AVATAR:        "Avatar Privacy",
+    PRIVACY_BANNER:        "Banner Privacy",
+    PRIVACY_MESSAGE_COUNT: "Message Count Privacy",
+    PRIVACY_PRONOUNS:      "Pronouns Privacy",
+    PRIVACY_ALTERS:        "Alter Privacy",
+    PRIVACY_TAGS:          "Tags Privacy",
 
     INVISIBLE_ALTER: "You cannot view this alter due to their privacy settings.",
+    INVISIBLE_TAG: "You cannot view this tag due to its privacy settings.",
 
     SYSTEM_NAME_FORM_LABEL: "System Name",
     SYSTEM_PRIVACY_FORM_LABEL: "System Privacy",
@@ -117,7 +120,7 @@ Systems can have **privacy values** which are values that describe who can see w
 
     ALTER_PROXY_TAGS: "## Proxy Tags - @%alter%\nProxy tags are the way your alter *fronts* depending on the contents of your message. You can create multiple of these, with 20 characters as the prefix/suffix of each descriptor for proxy tags.",
     ALTER_FORM_TITLE: "Editing Alter",
-    ALTER_GENERAL: "## General - @%alter%\nAlter's are parts of your system. Certain values of your system can be configured here.",
+    ALTER_GENERAL: "## %general% General Settings - @%alter%\nAlter's are parts of your system. Certain values of your alter can be configured here.",
     ALTER_SET_USERNAME: "Set Alter Username",
     ALTER_SET_DISPLAY: "Set Display Name",
     ALTER_SET_SERVER_NAME: "Set Server Display Name",
@@ -130,15 +133,22 @@ Systems can have **privacy values** which are values that describe who can see w
     ALTER_SET_DESCRIPTION: "Set Description",
     ALTER_SET_PFP: "Set Profile Picture",
     ALTER_SET_BANNER: "Set Banner",
+    ALTER_SET_PRIVACY: "Set Privacy",
     ERROR_INVALID_ATTACHMENT_TYPE: "The attachment you uploaded is not an image.",
     ERROR_INVALID_COLOR: "The color you entered is not a valid hex color.",
-    
+
+    TAG_GENERAL: "## %general% General Settings - %tag%\nTag's are specific groups your alter can be apart of. Certain values of your tag can be configured here.",
+    TAG_SET_DISPLAY_NAME_DESC: "Tag display names are the only form of identification for tags. They can only be less than 100 characters.",
+    TAG_FORM_TITLE: "Editing Tag",
+
     ALTER_SET_COLOR: "Set Alter Color",
     ALTER_SET_MODE: "Set Proxy Mode",
     ALTER_SET_MODE_DESC: `Proxy modes describe how the alter proxies. There are three main methods for alter proxying:
 > - *Nickname*: Your nickname is adjusted based on this alters display name & the system nickname convention. You are required to have the Change Nickname permission for this to work.
 > - *Webhooks*: A webhook is created with your alter & system data that will replace your message. Similar to bots like PluralKit and Tupperbox. Default mode.
 > - *Both*: Sets both a nickname and sends a webhook based on alter.`,
+    ALTER_SET_PRIVACY_DESC: `By default, this alter is completely private besides for server automatic moderation and if you use command publicly. 
+(with \`-public\` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself.`,
 
     ALTER_DELETE: "Delete Alter",
     ALTER_DELETE_DESC: "Deleting an alter will completely remove the alter from the system without the option to undo.",

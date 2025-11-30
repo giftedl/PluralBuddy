@@ -69,6 +69,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		await writeUserById(ctx.author.id, {
 			userId: ctx.author.id,
 			blacklisted: false,
+			storagePrefix: user.storagePrefix
 		});
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
 

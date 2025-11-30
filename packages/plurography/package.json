@@ -1,5 +1,5 @@
 {
-  "name": "pluralkit-types",
+  "name": "plurography",
   "module": "src/index.ts",
   "version": "0.1.0",
   "type": "module",

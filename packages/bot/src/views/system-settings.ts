@@ -13,7 +13,7 @@ import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import type { PSystem } from "../types/system";
 import { emojis } from "../lib/emojis";
-import { friendlyProtection, listFromMask } from "../lib/privacy-bitmask";
+import { friendlyProtectionSystem, listFromMaskSystems } from "../lib/privacy-bitmask";
 import { alterCollection } from "@/mongodb";
 import type { FindCursor, WithId } from "mongodb";
 import type { PAlter } from "@/types/alter";
@@ -148,7 +148,7 @@ export class SystemSettingsView extends TranslatedView {
 								// biome-ignore lint/style/useTemplate: a
 								"By default, your system is completely private besides for server automatic moderation and if you use command publicly. \n(with `-public` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself." +
 									((system.public ?? 0) > 0
-										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtection(this.translations, listFromMask(system.public ?? 0)).join("`, `")}\``
+										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem(this.translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
 										: ""),
 							),
 						),

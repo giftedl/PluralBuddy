@@ -185,6 +185,9 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
     context: CommandContext | MenuCommandContext<any, never>,
     error: string
   ) {
+    if (error.startsWith("2") || error.startsWith("1"))
+      return;
+    
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {
@@ -258,6 +261,9 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
   }
 
   override async onMiddlewaresError(context: ComponentContext, error: string) {
+    if (error.startsWith("2") || error.startsWith("1"))
+      return;
+    
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {
@@ -309,6 +315,9 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
   }
 
   override async onMiddlewaresError(context: ModalContext, error: string) {
+    if (error.startsWith("2") || error.startsWith("1"))
+      return;
+    
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {

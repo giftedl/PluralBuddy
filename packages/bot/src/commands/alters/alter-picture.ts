@@ -56,6 +56,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
+		const user = await ctx.retrievePUser()
 		const { "alter-name": alterName, "alter-avatar": attachment } = ctx.options;
 		const systemId = ctx.author.id;
 		const query = Number.isNaN(Number.parseInt(alterName))
@@ -91,7 +92,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${assetStringGeneration(32)}.${((attachment as { value: Attachment }).value.contentType ?? "").replace(/(.*)\//g, "")}`;
+		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}.${((attachment as { value: Attachment }).value.contentType ?? "").replace(/(.*)\//g, "")}`;
 		const bucketName = process.env.GCP_BUCKET ?? "";
 
 		try {

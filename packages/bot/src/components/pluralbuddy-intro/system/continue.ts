@@ -26,6 +26,7 @@ export default class NameCNS extends ComponentCommand {
         const oldInteractionId = InteractionIdentifier.Setup.Pagination.Page3.substring(ctx.customId)[0] ?? "";
         const temporarySystem = createdSystems.get(oldInteractionId);
         const server = await ctx.retrievePGuild()
+        const user = await ctx.retrievePUser();
     
         if (temporarySystem === undefined) {
             return ctx.write({ content: ctx.userTranslations().ERROR_INTERACTION_TOO_OLD, flags: MessageFlags.Ephemeral })
@@ -34,6 +35,7 @@ export default class NameCNS extends ComponentCommand {
         await writeUserById(ctx.author.id, {
             userId: ctx.author.id,
             blacklisted: false,
+            storagePrefix: user.storagePrefix,
             // @ts-ignore
             system: {
                 associatedUserId: ctx.author.id,

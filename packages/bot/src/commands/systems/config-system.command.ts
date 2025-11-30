@@ -4,7 +4,6 @@ import { type CommandContext, Declare, SubCommand } from "seyfert";
 import { AlertView } from "../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { SystemSettingsView } from "../../views/system-settings";
-import { SubCommand } from "seyfert"
 
 @Declare({
     name: 'config',

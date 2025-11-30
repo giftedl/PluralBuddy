@@ -17,34 +17,48 @@ import type { ColorResolvable } from "seyfert/lib/common";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis } from "../lib/emojis";
-import { has } from "@/lib/privacy-bitmask";
+import {
+	friendlyProtectionAlters,
+	friendlyProtectionSystem,
+	has,
+	listFromMaskAlters,
+	listFromMaskSystems,
+} from "@/lib/privacy-bitmask";
 import { AlertView } from "./alert";
 
 export class AlterView extends TranslatedView {
 	alterProfileView(alter: PAlter, external = false) {
-		if (external && (!has(AlterProtectionFlags.VISIBILITY, alter.public))) {
-			return new AlertView(this.translations).errorView("INVISIBLE_ALTER")
+		if (external && !has(AlterProtectionFlags.VISIBILITY, alter.public)) {
+			return new AlertView(this.translations).errorView("INVISIBLE_ALTER");
 		}
 
-		const displayNameDisplayable = (!external) || has(AlterProtectionFlags.NAME, alter.public)          
-		const pronounsDisplayable =    (!external) || has(AlterProtectionFlags.PRONOUNS, alter.public)      
-		const descriptionDisplayable = (!external) || has(AlterProtectionFlags.DESCRIPTION, alter.public)   
-		const avatarDisplayable =      (!external) || has(AlterProtectionFlags.AVATAR, alter.public)        
-		const bannerDisplayable =      (!external) || has(AlterProtectionFlags.BANNER, alter.public)        
-		const messagesDisplayable =    (!external) || has(AlterProtectionFlags.MESSAGE_COUNT, alter.public) 
-		const usernameDisplayable =    (!external) || has(AlterProtectionFlags.USERNAME, alter.public)      
-		const tagsDisplayable =        (!external) || has(AlterProtectionFlags.TAGS, alter.public)          
+		const displayNameDisplayable =
+			!external || has(AlterProtectionFlags.NAME, alter.public);
+		const pronounsDisplayable =
+			!external || has(AlterProtectionFlags.PRONOUNS, alter.public);
+		const descriptionDisplayable =
+			!external || has(AlterProtectionFlags.DESCRIPTION, alter.public);
+		const avatarDisplayable =
+			!external || has(AlterProtectionFlags.AVATAR, alter.public);
+		const bannerDisplayable =
+			!external || has(AlterProtectionFlags.BANNER, alter.public);
+		const messagesDisplayable =
+			!external || has(AlterProtectionFlags.MESSAGE_COUNT, alter.public);
+		const usernameDisplayable =
+			!external || has(AlterProtectionFlags.USERNAME, alter.public);
+		const tagsDisplayable =
+			!external || has(AlterProtectionFlags.TAGS, alter.public);
 
 		const innerComponents =
 			new TextDisplay().setContent(`${displayNameDisplayable ? `## ${alter.displayName}` : ""}
-${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : (usernameDisplayable ? `-# Also known as @${alter.username}` : "")} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
-${(descriptionDisplayable && alter.description !== null) ? "\n" : ""}${descriptionDisplayable ? (alter.description ?? "") : ""}${(descriptionDisplayable && alter.description !== null) ? "\n" : ""}
+${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : usernameDisplayable ? `-# Also known as @${alter.username}` : ""} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
+${descriptionDisplayable && alter.description !== null ? "\n" : ""}${descriptionDisplayable ? (alter.description ?? "") : ""}${descriptionDisplayable && alter.description !== null ? "\n" : ""}
 ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}` : ""}
 **Associated to:** <@${alter.systemId}> (${alter.systemId})\n
 -# ID: \`${alter.alterId}\``);
 
 		const comp = new Container().setComponents(
-			(!avatarDisplayable) || (alter.avatarUrl === null)
+			!avatarDisplayable || alter.avatarUrl === null
 				? innerComponents
 				: new Section()
 						.setAccessory(
@@ -113,46 +127,71 @@ ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMe
 
 	alterGeneralView(alter: PAlter) {
 		return [
-			new Container().setComponents(
-				new TextDisplay().setContent(
-					this.translations.ALTER_GENERAL.replace("%alter%", alter.username),
-				),
-				new Separator().setSpacing(Spacing.Large),
-				new Section()
-					.addComponents(
-						new TextDisplay().setContent(
-							this.translations.ALTER_SET_USERNAME_DESC,
-						),
-					)
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(this.translations.ALTER_SET_USERNAME)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.Alters.SetUsername.create(
-									alter.alterId,
-								),
-							),
+			new Container()
+				.setComponents(
+					new TextDisplay().setContent(
+						this.translations.ALTER_GENERAL.replace(
+							"%general%",
+							emojis.settings,
+						).replace("%alter%", alter.username),
 					),
-				new Separator(),
-				new Section()
-					.addComponents(
-						new TextDisplay().setContent(
-							`${this.translations.ALTER_SET_MODE_DESC}
+					new Separator().setSpacing(Spacing.Large),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
+								this.translations.ALTER_SET_USERNAME_DESC,
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Secondary)
+								.setLabel(this.translations.ALTER_SET_USERNAME)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Alters.SetUsername.create(
+										alter.alterId,
+									),
+								),
+						),
+					new Separator(),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
+								`${this.translations.ALTER_SET_MODE_DESC}
 -# Current mode for @${alter.username} is ${alter.alterMode[0]?.toUpperCase() + alter.alterMode.slice(1)}`,
-						),
-					)
-					.setAccessory(
-						new Button()
-							.setLabel(this.translations.ALTER_SET_MODE)
-							.setStyle(ButtonStyle.Secondary)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.create(
-									alter.alterId,
-								),
 							),
-					),
-			),
+						)
+						.setAccessory(
+							new Button()
+								.setLabel(this.translations.ALTER_SET_MODE)
+								.setStyle(ButtonStyle.Secondary)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.create(
+										alter.alterId,
+									),
+								),
+						),
+					new Separator(),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
+								this.translations.ALTER_SET_PRIVACY_DESC +
+									((alter.public ?? 0) > 0
+										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionAlters(this.translations, listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``
+										: ""),
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setLabel(this.translations.ALTER_SET_PRIVACY)
+								.setStyle(ButtonStyle.Secondary)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.create(
+										alter.alterId,
+									),
+								),
+						),
+				)
+				.setColor("#1190FF"),
 		];
 	}
 
@@ -208,7 +247,7 @@ Please select the mode you would like to use below.
 	altersPublicView(
 		alter: PAlter,
 		currentGuildName: { name: string; id: string },
-		prefix: string
+		prefix: string,
 	) {
 		const existingName = alter.nameMap.find(
 			(v) => currentGuildName.id === v.server,
@@ -370,9 +409,7 @@ Please select the mode you would like to use below.
 						.setStyle(ButtonStyle.Secondary)
 						.setEmoji(emojis.undo)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Alters.Index.create(
-								alterId,
-							),
+							InteractionIdentifier.Systems.Configuration.Alters.Index.create(),
 						),
 					new Button()
 						.setLabel("General")

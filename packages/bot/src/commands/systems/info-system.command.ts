@@ -7,6 +7,7 @@ import { AlertView } from "../../views/alert";
 const options = {
     public: createBooleanOption({
         description: 'Do you want to expose this publicly? (non-ephemeral)',
+        flag: true
     })
 }
 

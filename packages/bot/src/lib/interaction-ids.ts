@@ -73,6 +73,7 @@ export const InteractionIdentifier = {
     },
     Systems: {
         DeleteSystem: createStatic("systems/delete"),
+        DeleteSystemMedia: createStatic("systems/delete-media"),
         ConfigurePublicProfile: createFromAdditionalArg("systems/configure-public-profile"),
         Configuration: {
             ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
@@ -100,6 +101,7 @@ export const InteractionIdentifier = {
                 SetServerDisplayName: createFromAdditionalArg("systems/config/alters/server-display-name"),
                 SetDisplayName: createFromAdditionalArg("systems/config/alters/set-display-name"),
                 SetProxyMode: createFromAdditionalArg("systems/config/alters/set-proxy-mode"),
+                SetPrivacy: createFromAdditionalArg("systems/config/alters/set-privacy"),
                 SetPFP: createFromAdditionalArg("systems/config/alters/set-pfp"),
                 SetBanner: createFromAdditionalArg("systems/config/alters/set-banner"),
                 SetAlterColor: createFromAdditionalArg("systems/config/alters/set-alter-color"),
@@ -117,7 +119,11 @@ export const InteractionIdentifier = {
                 CreateProxyTag: createFromAdditionalArg("systems/config/alters/create-proxy-tag")
             },
             Tags: {
-                Index: createStatic("systems/config/tags")
+                Index: createStatic("systems/config/tags"),
+                GeneralSettings: createFromAdditionalArg("systems/config/tags/general"),
+                ConfigureTagExternal: createFromAdditionalArg("systems/config/tags/configure-external"),
+
+                SetDisplayName: createFromAdditionalArg("systems/config/tags/set-display")
             },
             PublicProfile: {
                 Index: createStatic("systems/config/public-profile")
@@ -131,6 +137,10 @@ export const InteractionIdentifier = {
                 ProxyForm: createFromAdditionalArg("systems/config/set-form/proxy"),
                 NicknameType: createStatic("systems/config/type-form/nickname"),
                 NicknameForm: createFromAdditionalArg("systems/config/set-form/nickname"),
+                Tags: {
+                    TagDisplayNameType:       createStatic           ("systems/config/type-form/tag/set-display-name"),
+                    TagDisplayNameForm:       createFromAdditionalArg("systems/config/set-form/tag/set-display-name"),
+                },
                 Alters: {
                     CreateNewAlterForm: createStatic("systems/config/form/alter"),
 

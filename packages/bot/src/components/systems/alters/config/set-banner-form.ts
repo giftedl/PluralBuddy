@@ -21,6 +21,7 @@ export default class SetPFPForm extends ModalCommand {
 				ctx.customId,
 			)[0];
 
+		const user = await ctx.retrievePUser()
 		const systemId = ctx.author.id;
 		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
@@ -53,7 +54,7 @@ export default class SetPFPForm extends ModalCommand {
 			});
 		}
 
-		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${assetStringGeneration(32)}.${(attachment.value.contentType ?? "").replace(/(.*)\//g, '')}`;;
+		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}.${(attachment.value.contentType ?? "").replace(/(.*)\//g, '')}`;;
 		const bucketName = process.env.GCP_BUCKET ?? "";
 
 		try {

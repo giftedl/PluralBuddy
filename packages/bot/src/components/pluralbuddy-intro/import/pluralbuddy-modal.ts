@@ -19,13 +19,41 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
     
     async run(ctx: ModalContext) {
-        await ctx.interaction.update({
-            components: new LoadingView(ctx.userTranslations()).loadingView(),
-            flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-        })
+		await ctx.interaction.update({
+			components: new LoadingView(ctx.userTranslations()).loadingView(),
+			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+		});
 
-        const value = ctx.interaction.getInputValue(InteractionIdentifier.Setup.FormSelection.ImportType.create(), true) as string
-        const parsed = ImportNotation.safeParse(JSON.parse(value));
+		const file = ctx.interaction.getFiles(
+			InteractionIdentifier.Setup.FormSelection.ImportType.create(),
+			true,
+		)[0];
+		if (!file) {
+			throw new Error("?");
+		}
+
+		const MAX_FILE_SIZE = 2 * 1024 * 1024;
+		if (file.size > MAX_FILE_SIZE) {
+			return await ctx.editResponse({
+				components: [
+					...new AlertView(ctx.userTranslations()).errorView(
+						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
+					),
+					new ActionRow().addComponents(
+						new Button()
+							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
+							.setCustomId(
+								InteractionIdentifier.Setup.Pagination.Page2.create(),
+							)
+							.setStyle(ButtonStyle.Secondary),
+					),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		const fileData = await (await fetch(file.url)).text();
+        const parsed = ImportNotation.safeParse(JSON.parse(fileData));
 
         if (parsed.error) {
             return await ctx.editResponse({

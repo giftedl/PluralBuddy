@@ -1,15 +1,109 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { PTag } from "@/types/tag";
+import { tagColors, tagHexColors, type PTag } from "@/types/tag";
 import { TranslatedView } from "./translated-view";
-import { TextDisplay } from "seyfert";
+import { ActionRow, Button, Container, Section, Separator, TextDisplay } from "seyfert";
+import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { ButtonStyle, Spacing } from "seyfert/lib/types";
 
 export class TagView extends TranslatedView {
-    tagProfileView(tag: PTag) {
+	tagProfileView(tag: PTag, external = false) {
 		const innerComponents =
-			new TextDisplay().setContent(`## ${tag.tagFriendlyName}
+			new TextDisplay().setContent(`## ${getEmojiFromTagColor(tag.tagColor)} ${tag.tagFriendlyName}
 ${tag.tagDescription !== null ? "\n" : ""}${tag.tagDescription ?? ""}${tag.tagDescription !== null ? "\n" : ""}
 **Alter Count:** ${tag.associatedAlters.length}\n
 -# ID: \`${tag.tagId}\``);
-    }
+
+		return [
+			new Container()
+				.setComponents(innerComponents)
+				.setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
+		];
+	}
+
+	tagConfigureButton(tag: PTag) {
+		return [
+			new ActionRow().setComponents(
+				new Button()
+					.setLabel("Configure Profile")
+					.setEmoji(emojis.wrenchWhite)
+					.setCustomId(
+						InteractionIdentifier.Systems.Configuration.Tags.ConfigureTagExternal.create(
+							tag.tagId,
+						),
+					)
+					.setStyle(ButtonStyle.Primary),
+			),
+		];
+	}
+
+	tagTopView(
+		currentTab: "general" | "proxy-tags" | "public-settings",
+		tagId: string,
+		tagUsername: string,
+	) {
+		return [
+			new Container().setComponents(
+				new TextDisplay().setContent(`-# ${tagUsername} • ID: \`${tagId}\``),
+
+				new ActionRow().setComponents(
+					new Button()
+						.setLabel("Back")
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(emojis.undo)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.Tags.Index.create(),
+						),
+					new Button()
+						.setLabel("General")
+						.setStyle(
+							currentTab === "general"
+								? ButtonStyle.Success
+								: ButtonStyle.Secondary,
+						)
+						.setEmoji(
+							currentTab === "general"
+								? emojis.squareCheck
+								: emojis.squareDashed,
+						)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.Tags.GeneralSettings.create(
+								tagId,
+							),
+						),
+				),
+			),
+		];
+	}
+
+	tagGeneral(tag: PTag) {
+		return [
+			new Container().setComponents(
+				new TextDisplay().setContent(
+					this.translations.TAG_GENERAL.replace(
+						"%general%",
+						emojis.settings,
+					).replace("%tag%", tag.tagFriendlyName),
+				),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							this.translations.TAG_SET_DISPLAY_NAME_DESC,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_DISPLAY)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.Tags.SetDisplayName.create(
+									tag.tagId,
+								),
+							),
+					),
+			).setColor("#1190FF")
+		]
+	}
 }

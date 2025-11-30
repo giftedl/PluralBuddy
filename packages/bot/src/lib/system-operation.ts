@@ -10,7 +10,7 @@ import { InteractionIdentifier } from "./interaction-ids";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { getUserById, writeUserById } from "../types/user";
 import { emojis } from "./emojis";
-import { friendlyProtection, listFromMask } from "./privacy-bitmask";
+import { friendlyProtectionSystem, listFromMaskSystems } from "./privacy-bitmask";
 
 export async function createSystemOperation(system: PSystem, operation: Partial<PSystem>, translations: TranslationString, environment: "discord" | "api") {
     let oldSystem: Partial<PSystem> = {};
@@ -32,7 +32,7 @@ export async function createSystemOperation(system: PSystem, operation: Partial<
             return translations.OPERATION_CHANGE_NAME.replace("%name%", operation.systemName as string)
         }
         if (c === "public") {
-            return translations.OPERATION_CHANGE_PRIVACY.replace("%privacy%", ((operation.public ?? 0) > 0 ? `\`${friendlyProtection(translations, listFromMask(operation.public ?? 0)).join("`, `")}\`` : ""))
+            return translations.OPERATION_CHANGE_PRIVACY.replace("%privacy%", ((operation.public ?? 0) > 0 ? `\`${friendlyProtectionSystem(translations, listFromMaskSystems(operation.public ?? 0)).join("`, `")}\`` : ""))
         }
         if (c === "nicknameFormat") {
             return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace("%format%", operation.nicknameFormat as string)
