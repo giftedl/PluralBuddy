@@ -10,6 +10,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "mongodb": "^7.0.0",
     "plurography": "workspace:*",
     "seyfert": "^4.0.1-dev-19573177583.0",
     "yunaforseyfert": "^1.1.3"
