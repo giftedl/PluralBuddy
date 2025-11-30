@@ -5,6 +5,7 @@
 	"scripts": {
 		"bot": "cd packages/bot && bun run bot",
 		"bot:watch": "cd packages/bot && bun run bot:watch",
+		"support:bot": "cd packages/support-bot-module && bun run bot",
 		"docs:dev": "cd apps/docs && bun run dev"
 	},
 	"dependencies": {
