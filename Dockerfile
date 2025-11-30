@@ -8,20 +8,20 @@ WORKDIR /usr/pluralbuddy
 FROM base AS install
 RUN mkdir -p /temp/dev
 RUN mkdir -p /temp/dev/packages/bot
-RUN mkdir -p /temp/dev/packages/pluralkit-types
+RUN mkdir -p /temp/dev/packages/plurography
 COPY package.json bun.lock /temp/dev/
 COPY packages/bot/package.json /temp/dev/packages/bot
-COPY packages/pluralkit-types/package.json /temp/dev/packages/pluralkit-types
+COPY packages/plurography/package.json /temp/dev/packages/plurography
 RUN cd /temp/dev && bun install
 RUN cd /temp/dev/packages/bot && bun install
 
 # install with --production (exclude devDependencies)
 RUN mkdir -p /temp/prod
 RUN mkdir -p /temp/prod/packages/bot
-RUN mkdir -p /temp/prod/packages/pluralkit-types
+RUN mkdir -p /temp/prod/packages/plurography
 COPY package.json bun.lock /temp/prod/
 COPY packages/bot/package.json /temp/prod/packages/bot
-COPY packages/pluralkit-types/package.json /temp/prod/packages/pluralkit-types
+COPY packages/plurography/package.json /temp/prod/packages/plurography
 RUN cd /temp/prod && bun install
 RUN cd /temp/prod/packages/bot && bun install
 
