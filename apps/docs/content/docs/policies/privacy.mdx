@@ -5,4 +5,59 @@ description: Policy for privacy of PluralBuddy
 
 Effective as of December 1st, 2025
 
-Thank you for choosing PluralBuddy as your plurality bot of choice.
+Thank you for choosing PluralBuddy as your plurality bot of choice. This page is designed to explain how PluralBuddy stores and effectively interacts with the data that you provide in the bot. Such is very important to a bot where you provide a crucial amount of data about yourself.
+
+If you have any questions, feel free to open a ticket at our [Support Server](https://gftl.fyi/discord).
+
+## 1. Data we need for moderation purposes
+
+Some data is data that we need in order to deliver our "blacklist" feature to effectively remove bad actors from our bot. Such data that is included is:
+
+> - User IDs of Users using PluralBuddy (or have *ever* used PluralBuddy)
+> - Guild IDs of Guilds using PluralBuddy (or have *ever* invited PluralBuddy)
+> - Certain message data when proxying with your alters such as:
+>   - Message ID of original message
+>   - ID of original Discord account which the message was sent (aka System ID)
+>   - When the message is created
+>   - ID of alter which proxied the message
+
+If you would like to request having all data from either your user or guild removed, please open a ticket at our [Support Server](https://gftl.fyi/discord).
+
+## 2. Handling of users under 13
+
+We do not knowingly store data of users under 13 years of age (or other age based on country). If you know *any* user using any one of our PluralBuddy-related services (support server, OAuth applications, bot, etc.), please report it to us **and** Discord in accordance with Discord's [Terms of Service](https://discord.com/terms#2).
+
+## 3. Data provided by you
+
+### 3a. Data deletion
+
+If you want to delete your system and all related data (in exception to media [see below] and for [moderation purposes](#1-data-we-need-for-moderation-purposes)), you can use the PluralBuddy application command `/system delete` or run in PluralBuddy's DMs or a server with PluralBuddy installed `pb;s delete` to delete your system data.
+
+If you delete your system and would like to remove in addition to your system data, the media on your system, you can use the PluralBuddy application command `/system delete media-included:True` or run in PluralBuddy's DMs or a server with PluralBuddy installed `pb;s delete -mi` to delete your system data and related media.
+
+When the media is deleted with the above method, the media will be [soft-deleted](https://cloud.google.com/storage/docs/soft-delete#overview) for 7 days before being removed permanently. If you would like your media gone immediately and permanently, please open a ticket in [our support server](https://gftl.fyi/discord).
+
+### 3b. Data privacy to other users
+
+All data that is provided by you for systems and alters are completely private by default **unless** you use PluralKit import (as laid out in their [Privacy Policy](https://pluralkit.me/privacy/#data-provided-by-you), all data is public), however you can still configure PluralKit data to be private even so.
+
+### 3c. Exportation of data to other services
+
+Data provided by you can be exported (besides messages) by using `pb;export` and be easily imported using `pb;setup` and selecting PluralBuddy as an option in the setup view.
+
+## 4. Media Intellectual Rights
+
+You are *not* permitted to upload media that infringes on the Intellectual Property of other entities when using the various media upload features present in alters & systems.
+
+## 5. Additional data stored
+
+PluralBuddy also stores additional data to help for other collection purposes which may be required or just for analytical purposes. This includes:
+
+- Periodic total guild & user checks which does not include the users in the guilds themselves.
+- **Anonymous** data about bot exceptions/errors and the Guild ID they occurred in
+- IP Addresses and User Agents if you sign in on the PluralBuddy website*
+- Data about OAuth applications, their users, whether they have given consent, and they provided as part of the application flow.
+
+\* This data can be removed by clearing your sessions on request on the [support server](https://gftl.fyi/discord) by opening a ticket.
+
+No data is ever shared with third parties and only the **lead developers** of PluralBuddy can access data in the database unless **required by law**.
