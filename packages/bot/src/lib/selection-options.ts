@@ -5,6 +5,8 @@ import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "./interaction-ids";
 import { has } from "./privacy-bitmask";
 import { SystemProtectionFlags } from "../types/system";
+import { tagColors, TagProtectionFlags } from "@/types/tag";
+import { getEmojiFromTagColor } from "./emojis";
 
 export const privacySelection = (translations: TranslationString, existing?: number) => [
     new StringSelectOption()
@@ -41,6 +43,31 @@ export const privacySelection = (translations: TranslationString, existing?: num
         .setDefault(has(SystemProtectionFlags.TAGS, existing)),
 ]
 
-export const tagColorSelection = (translations: TranslationString, existing?: number) => [
+export const tagPrivacySelection = (translations: TranslationString, existing?: number) => [
+    new StringSelectOption()
+        .setLabel(translations.PRIVACY_NAME)
+        .setValue(InteractionIdentifier.Selection.PrivacyValues.PRIVACY_NAME.create())
+        .setDefault(has(TagProtectionFlags.NAME, existing)),
+    new StringSelectOption()
+        .setLabel(translations.PRIVACY_DESCRIPTION)
+        .setValue(InteractionIdentifier.Selection.PrivacyValues.PRIVACY_DESCRIPTION.create())
+        .setDefault(has(TagProtectionFlags.DESCRIPTION, existing)),
+    new StringSelectOption()
+        .setLabel(translations.PRIVACY_COLOR)
+        .setValue(InteractionIdentifier.Selection.PrivacyValues.PRIVACY_COLOR.create())
+        .setDefault(has(TagProtectionFlags.COLOR, existing)),
+    new StringSelectOption()
+        .setLabel(translations.PRIVACY_ALTERS)
+        .setValue(InteractionIdentifier.Selection.PrivacyValues.PRIVACY_ALTERS.create())
+        .setDefault(has(TagProtectionFlags.ALTERS, existing)),
 
+]
+
+
+export const tagColorSelection = (translations: TranslationString, existing?: string) => [
+    ...tagColors.map((color) => new StringSelectOption()
+        .setLabel(color)
+        .setEmoji(getEmojiFromTagColor(color))
+        .setValue(InteractionIdentifier.Selection.TagColors[color as keyof typeof InteractionIdentifier.Selection.TagColors].create())
+        .setDefault(existing === color))
 ]

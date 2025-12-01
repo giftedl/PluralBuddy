@@ -3,9 +3,10 @@
 import { AlterProtectionFlags } from "@/types/alter";
 import type { TranslationString } from "../lang";
 import { SystemProtectionFlags } from "../types/system";
+import { TagProtectionFlags } from "@/types/tag";
 
 export function combine(
-	...perms: (SystemProtectionFlags | AlterProtectionFlags)[]
+	...perms: (SystemProtectionFlags | AlterProtectionFlags | TagProtectionFlags)[]
 ): number {
 	return perms.reduce((mask, p) => mask | p, 0);
 }
@@ -24,6 +25,14 @@ export function listFromMaskAlters(mask: number): AlterProtectionFlags[] {
 		.map((v) => v as AlterProtectionFlags);
 }
 
+export function listFromMaskTags(mask: number): TagProtectionFlags[] {
+	return Object.values(TagProtectionFlags)
+		.filter((v): v is number => typeof v === "number")
+		.filter((v) => (mask & v) !== 0)
+		.map((v) => v as TagProtectionFlags);
+}
+
+
 export function friendlyProtectionSystem(
 	translations: TranslationString,
 	flags: SystemProtectionFlags[],
@@ -38,6 +47,21 @@ export function friendlyProtectionSystem(
 			return translations.PRIVACY_DISPLAY_TAG;
 		if (c === SystemProtectionFlags.AVATAR) return translations.PRIVACY_AVATAR;
 		if (c === SystemProtectionFlags.BANNER) return translations.PRIVACY_BANNER;
+
+		return translations.PRIVACY_ALTERS;
+	});
+}
+
+export function friendlyProtectionTags(
+	translations: TranslationString,
+	flags: TagProtectionFlags[],
+): string[] {
+	return flags.map((c) => {
+		if (c === TagProtectionFlags.ALTERS) return translations.PRIVACY_ALTERS;
+		if (c === TagProtectionFlags.NAME) return translations.PRIVACY_NAME;
+		if (c === TagProtectionFlags.DESCRIPTION)
+			return translations.PRIVACY_DESCRIPTION;
+		if (c === TagProtectionFlags.COLOR) return translations.PRIVACY_COLOR;
 
 		return translations.PRIVACY_ALTERS;
 	});
@@ -66,7 +90,7 @@ export function friendlyProtectionAlters(
 }
 
 export function has(
-	perm: SystemProtectionFlags | AlterProtectionFlags,
+	perm: SystemProtectionFlags | AlterProtectionFlags | TagProtectionFlags,
 	mask?: number,
 ): boolean {
 	return ((mask ?? 0) & perm) !== 0;

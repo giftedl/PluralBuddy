@@ -6,7 +6,7 @@ export const translations = {
     INTRODUCTION_MESSAGE: `## Welcome to PluralBuddy
 PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
 
-:track_next:  To get started, click the Next Page button below to setup your system.`,
+:track_next: To get started, click the Next Page button below to setup your system.`,
     IMPORT_MESSAGE: `## Setting up your system
 You can create a new system which will allow you to create your alters and tags by yourself.
 Additionally, you can also import data from another bot like PluralKit or Tupperbox.`,
@@ -102,6 +102,7 @@ Systems can have **privacy values** which are values that describe who can see w
     PRIVACY_USERNAME:      "Username Privacy",
     PRIVACY_DISPLAY_TAG:   "Display Tag Privacy",
     PRIVACY_DESCRIPTION:   "Description Privacy",
+    PRIVACY_COLOR:         "Color Privacy",
     PRIVACY_AVATAR:        "Avatar Privacy",
     PRIVACY_BANNER:        "Banner Privacy",
     PRIVACY_MESSAGE_COUNT: "Message Count Privacy",
@@ -139,7 +140,32 @@ Systems can have **privacy values** which are values that describe who can see w
 
     TAG_GENERAL: "## %general% General Settings - %tag%\nTag's are specific groups your alter can be apart of. Certain values of your tag can be configured here.",
     TAG_SET_DISPLAY_NAME_DESC: "Tag display names are the only form of identification for tags. They can only be less than 100 characters.",
+    TAG_SET_COLOR_DESC: "There are 17 different colors you can pick for your tag all with a unique colored icon to tell them apart.",
+    TAG_SET_PRIVACY_DESC: "By default, all tag values are private. Use the button to set public values.",
     TAG_FORM_TITLE: "Editing Tag",
+    TAG_SET_COLOR: "Set Tag Color",
+    TAG_COLOR_FORM_LABEL: "Tag Color",
+    TAG_SET_PRIVACY: "Set Tag Privacy",
+    TAG_PRIVACY_FORM_LABEL: "Tag Privacy",
+    TAG_PRIVACY_FORM_DESC: "Select all public privacy values.",
+
+    TAG_COLOR_red:    "red",
+    TAG_COLOR_orange: "orange",
+    TAG_COLOR_amber:  "amber",
+    TAG_COLOR_yellow: "yellow",
+    TAG_COLOR_lime:   "lime",
+    TAG_COLOR_green:  "green",
+    TAG_COLOR_emerald: "emerald",
+    TAG_COLOR_teal:   "teal",
+    TAG_COLOR_cyan:   "cyan",
+    TAG_COLOR_sky:    "sky",
+    TAG_COLOR_blue:   "blue",
+    TAG_COLOR_indigo: "indigo",
+    TAG_COLOR_violet: "violet",
+    TAG_COLOR_purple: "purple",
+    TAG_COLOR_fuchsia: "fuchsia",
+    TAG_COLOR_pink:   "pink",
+    TAG_COLOR_rose:   "rose",
 
     ALTER_SET_COLOR: "Set Alter Color",
     ALTER_SET_MODE: "Set Proxy Mode",

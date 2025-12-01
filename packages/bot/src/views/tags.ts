@@ -6,6 +6,7 @@ import { ActionRow, Button, Container, Section, Separator, TextDisplay } from "s
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
+import { friendlyProtectionTags, listFromMaskTags } from "../lib/privacy-bitmask";
 
 export class TagView extends TranslatedView {
 	tagProfileView(tag: PTag, external = false) {
@@ -39,7 +40,7 @@ ${tag.tagDescription !== null ? "\n" : ""}${tag.tagDescription ?? ""}${tag.tagDe
 	}
 
 	tagTopView(
-		currentTab: "general" | "proxy-tags" | "public-settings",
+		currentTab: "general",
 		tagId: string,
 		tagUsername: string,
 	) {
@@ -83,7 +84,7 @@ ${tag.tagDescription !== null ? "\n" : ""}${tag.tagDescription ?? ""}${tag.tagDe
 				new TextDisplay().setContent(
 					this.translations.TAG_GENERAL.replace(
 						"%general%",
-						emojis.settings,
+						getEmojiFromTagColor(tag.tagColor),
 					).replace("%tag%", tag.tagFriendlyName),
 				),
 				new Separator().setSpacing(Spacing.Large),
@@ -103,7 +104,44 @@ ${tag.tagDescription !== null ? "\n" : ""}${tag.tagDescription ?? ""}${tag.tagDe
 								),
 							),
 					),
-			).setColor("#1190FF")
+				new Separator().setSpacing(Spacing.Small),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							this.translations.TAG_SET_COLOR_DESC,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.TAG_SET_COLOR)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.Tags.SetColor.create(
+									tag.tagId,
+								),
+							),
+					),
+				new Separator().setSpacing(Spacing.Small),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							`${this.translations.TAG_SET_PRIVACY_DESC}
+${((tag.public ?? 0) > 0
+								? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionTags(this.translations, listFromMaskTags(tag.public ?? 0)).join("`, `")}\``
+								: "")}`,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.TAG_SET_PRIVACY)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.Tags.SetPrivacy.create(
+									tag.tagId,
+								),
+							),
+					),
+			).setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`)
 		]
 	}
 }

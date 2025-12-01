@@ -45,6 +45,7 @@ export const InteractionIdentifier = {
             PRIVACY_NAME:        createStatic("selection/privacy/name"),
             PRIVACY_DISPLAY_TAG: createStatic("selection/privacy/display_tag"),
             PRIVACY_DESCRIPTION: createStatic("selection/privacy/description"),
+            PRIVACY_COLOR:       createStatic("selection/privacy/color"),
             PRIVACY_AVATAR:      createStatic("selection/privacy/avatar"),
             PRIVACY_BANNER:      createStatic("selection/privacy/banner"),
             PRIVACY_PRONOUNS:    createStatic("selection/privacy/pronouns"),
@@ -123,7 +124,9 @@ export const InteractionIdentifier = {
                 GeneralSettings: createFromAdditionalArg("systems/config/tags/general"),
                 ConfigureTagExternal: createFromAdditionalArg("systems/config/tags/configure-external"),
 
-                SetDisplayName: createFromAdditionalArg("systems/config/tags/set-display")
+                SetDisplayName: createFromAdditionalArg("systems/config/tags/set-display"),
+                SetColor: createFromAdditionalArg("systems/config/tags/set-colors"),
+                SetPrivacy: createFromAdditionalArg("systems/config/tags/set-privacy"),
             },
             PublicProfile: {
                 Index: createStatic("systems/config/public-profile")
@@ -140,6 +143,10 @@ export const InteractionIdentifier = {
                 Tags: {
                     TagDisplayNameType:       createStatic           ("systems/config/type-form/tag/set-display-name"),
                     TagDisplayNameForm:       createFromAdditionalArg("systems/config/set-form/tag/set-display-name"),
+                    TagColorType:             createStatic           ("systems/config/type-form/tag/set-color"),
+                    TagColorForm:             createFromAdditionalArg("systems/config/set-form/tag/set-color"),
+                    TagPrivacyType:           createStatic           ("systems/config/type-form/tag/set-privacy"),
+                    TagPrivacyForm:           createFromAdditionalArg("systems/config/set-form/tag/set-privacy")
                 },
                 Alters: {
                     CreateNewAlterForm: createStatic("systems/config/form/alter"),
