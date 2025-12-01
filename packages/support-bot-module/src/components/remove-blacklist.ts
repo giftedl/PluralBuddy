@@ -18,7 +18,7 @@ export default class RemoveBlacklist extends ComponentCommand {
         const user = await getUserById(userId)
 
         if (!user.blacklisted) {
-            return await ctx.write({
+            return await ctx.update({
                 content: "This user has not been blacklisted.",
                 flags: MessageFlags.Ephemeral
             })
@@ -31,8 +31,8 @@ export default class RemoveBlacklist extends ComponentCommand {
 
         await noteCollection.deleteOne({ associatedUserId: user.userId })
 
-        return await ctx.write({
-			content: "Okay, that use was un-blacklisted.",
+        return await ctx.update({
+			content: "Okay, that user was un-blacklisted.",
 			flags: MessageFlags.Ephemeral,
 		});
     }
