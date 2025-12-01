@@ -31,6 +31,7 @@ export default class RemoveBlacklist extends ComponentCommand {
 
         await noteCollection.deleteOne({ associatedUserId: user.userId })
 
+        
         return await ctx.update({
 			content: "Okay, that user was un-blacklisted.",
 			flags: MessageFlags.Ephemeral,
