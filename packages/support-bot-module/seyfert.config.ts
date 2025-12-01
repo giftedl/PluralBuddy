@@ -5,6 +5,7 @@ export default config.bot({
     locations: {
         base: "src",
         commands: "commands",
+        components: "components"
     },
     intents: ["Guilds", "MessageContent", "GuildMessages", "GuildWebhooks", "DirectMessages"]
 });
