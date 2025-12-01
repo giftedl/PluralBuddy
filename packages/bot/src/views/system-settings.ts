@@ -192,6 +192,7 @@ export class SystemSettingsView extends TranslatedView {
 
 		if (system.alterIds.length === 0) {
 			return [
+				...this.topView("alters", system.associatedUserId),
 				...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
 				new ActionRow().setComponents(
 					new Button()

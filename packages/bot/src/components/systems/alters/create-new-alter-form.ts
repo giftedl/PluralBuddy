@@ -5,6 +5,7 @@ import { alterCollection } from "@/mongodb";
 import { PAlterObject } from "@/types/alter";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -54,6 +55,7 @@ export default class CreateNewAlterForm extends ModalCommand {
         if (alter.error) {
             return await ctx.editResponse({
                 components: [
+                    ...new SystemSettingsView(ctx.userTranslations()).topView("alters", user.system.associatedUserId),
                     ...new AlertView(ctx.userTranslations()).errorViewCustom(`There was an error while creating that alter:
 
 \`\`\`
@@ -78,6 +80,7 @@ ${z.prettifyError(alter.error)}
         
         await ctx.editResponse({
             components: [
+			    ...new SystemSettingsView(ctx.userTranslations()).topView("alters", user.system.associatedUserId),
                 ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATE_NEW_ALTER_DONE
                     .replace("%prefix%", server.prefixes[0] ?? "/")
                     .replace("%alter_id%", alter.data.username))
