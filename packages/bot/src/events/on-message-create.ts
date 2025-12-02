@@ -64,7 +64,7 @@ export default createEvent({
 		);
 
 		if (
-			!userPerms.has(["ManageWebhooks", "ManageMessages"]) ||
+			(!userPerms.has(["ManageWebhooks", "ManageMessages"])) &&
 			!userPerms.has(["ManageNicknames"])
 		)
 			return;
