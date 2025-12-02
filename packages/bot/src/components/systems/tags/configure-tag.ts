@@ -83,7 +83,7 @@ export default class ConfigureTag extends ComponentCommand {
 					tag.tagId.toString(),
 					tag.tagFriendlyName,
 				),
-				...new TagView(ctx.userTranslations()).tagGeneral(tag),
+				...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;"),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

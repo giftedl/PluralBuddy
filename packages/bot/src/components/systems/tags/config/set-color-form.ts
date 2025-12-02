@@ -58,7 +58,7 @@ export default class SetUsernameButton extends ModalCommand {
 				tag.tagId.toString(),
 				tag.tagFriendlyName,
 			),
-			...new TagView(ctx.userTranslations()).tagGeneral(tag),
+			...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;"),
 		],
 		flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 	});

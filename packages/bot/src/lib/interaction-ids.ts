@@ -42,15 +42,18 @@ function createFromAdditionalArg(root: string) {
 export const InteractionIdentifier = {
     Selection: {
         PrivacyValues: {
-            PRIVACY_NAME:        createStatic("selection/privacy/name"),
-            PRIVACY_DISPLAY_TAG: createStatic("selection/privacy/display_tag"),
-            PRIVACY_DESCRIPTION: createStatic("selection/privacy/description"),
-            PRIVACY_COLOR:       createStatic("selection/privacy/color"),
-            PRIVACY_AVATAR:      createStatic("selection/privacy/avatar"),
-            PRIVACY_BANNER:      createStatic("selection/privacy/banner"),
-            PRIVACY_PRONOUNS:    createStatic("selection/privacy/pronouns"),
-            PRIVACY_ALTERS:      createStatic("selection/privacy/alters"),
-            PRIVACY_TAGS:        createStatic("selection/privacy/tags"),
+            PRIVACY_NAME:          createStatic("selection/privacy/name"),
+            PRIVACY_DISPLAY_TAG:   createStatic("selection/privacy/display_tag"),
+            PRIVACY_DESCRIPTION:   createStatic("selection/privacy/description"),
+            PRIVACY_COLOR:         createStatic("selection/privacy/color"),
+            PRIVACY_AVATAR:        createStatic("selection/privacy/avatar"),
+            PRIVACY_BANNER:        createStatic("selection/privacy/banner"),
+            PRIVACY_MESSAGE_COUNT: createStatic("selection/privacy/message_count"),
+            PRIVACY_USERNAME:      createStatic("selection/privacy/username"),
+            PRIVACY_PRONOUNS:      createStatic("selection/privacy/pronouns"),
+            PRIVACY_VISIBILITY:    createStatic("selection/privacy/visibility"),
+            PRIVACY_ALTERS:        createStatic("selection/privacy/alters"),
+            PRIVACY_TAGS:          createStatic("selection/privacy/tags"),
         },
         TagColors: {
             'red':       createStatic("selection/tag-color/red"),
@@ -78,6 +81,8 @@ export const InteractionIdentifier = {
         ConfigurePublicProfile: createFromAdditionalArg("systems/configure-public-profile"),
         Configuration: {
             ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
+            ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
+
             GeneralTab: {
                 Index: createStatic("systems/config/general"),
                 SetName: createStatic("systems/config/general/set-name"),
@@ -91,6 +96,13 @@ export const InteractionIdentifier = {
                 CreateNewAlter: createStatic("systems/config/apg/create"),
                 HideTopView: createFromAdditionalArg("systems/config/apg/hide-top-view")
             },
+            TagPagination: {
+                PreviousPage: createFromAdditionalArg("systems/config/tpg/previous"),
+                NextPage: createFromAdditionalArg("systems/config/tpg/next"),
+                CreateNewTag: createStatic("systems/config/tpg/create"),
+                HideTopView: createFromAdditionalArg("systems/config/tpg/hide-top-view")
+            },
+            
             Alters: {
                 Index: createStatic("systems/config/alters"),
                 GeneralSettings: createFromAdditionalArg("systems/config/alters/general"),
@@ -127,6 +139,7 @@ export const InteractionIdentifier = {
                 SetDisplayName: createFromAdditionalArg("systems/config/tags/set-display"),
                 SetColor: createFromAdditionalArg("systems/config/tags/set-colors"),
                 SetPrivacy: createFromAdditionalArg("systems/config/tags/set-privacy"),
+                SetDescription: createFromAdditionalArg("systems/config/tags/set-description")
             },
             PublicProfile: {
                 Index: createStatic("systems/config/public-profile")
@@ -141,12 +154,16 @@ export const InteractionIdentifier = {
                 NicknameType: createStatic("systems/config/type-form/nickname"),
                 NicknameForm: createFromAdditionalArg("systems/config/set-form/nickname"),
                 Tags: {
+                    CreateNewTagForm: createStatic("systems/config/form/tag"),
+
                     TagDisplayNameType:       createStatic           ("systems/config/type-form/tag/set-display-name"),
                     TagDisplayNameForm:       createFromAdditionalArg("systems/config/set-form/tag/set-display-name"),
                     TagColorType:             createStatic           ("systems/config/type-form/tag/set-color"),
                     TagColorForm:             createFromAdditionalArg("systems/config/set-form/tag/set-color"),
                     TagPrivacyType:           createStatic           ("systems/config/type-form/tag/set-privacy"),
-                    TagPrivacyForm:           createFromAdditionalArg("systems/config/set-form/tag/set-privacy")
+                    TagPrivacyForm:           createFromAdditionalArg("systems/config/set-form/tag/set-privacy"),
+                    TagDescriptionType:       createStatic           ("systems/config/type-form/tag/set-description"),
+                    TagDescriptionForm:       createFromAdditionalArg("systems/config/set-form/tag/set-description")
                 },
                 Alters: {
                     CreateNewAlterForm: createStatic("systems/config/form/alter"),
@@ -167,6 +184,8 @@ export const InteractionIdentifier = {
                     AlterBannerType:            createStatic           ("systems/config/type-form/alters/set-pfp"),
                     AlterColorType:             createStatic           ("systems/config/type-form/alters/set-alter-color"),
                     AlterColorForm:             createFromAdditionalArg("systems/config/set-form/alters/set-alter-color"),
+                    AlterPrivacyType:           createStatic           ("systems/config/type-form/alters/set-privacy"),
+                    AlterPrivacyForm:           createFromAdditionalArg("systems/config/set-form/alters/set-privacy")
                 }
             }
         },

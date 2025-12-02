@@ -41,11 +41,11 @@ export default class SetUsernameButton extends ComponentCommand {
 					.setLabel(ctx.userTranslations().SYSTEM_DESCRIPTION_FORM_LABEL)
 					.setComponent(
 						alter.description === null ? new TextInput()
-							.setStyle(TextInputStyle.Short)
+							.setStyle(TextInputStyle.Paragraph)
 							.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDescriptionType.create())
 							.setLength({ min: 3, max: 2000 })
 							.setRequired(true) : new TextInput()
-							.setStyle(TextInputStyle.Short)
+							.setStyle(TextInputStyle.Paragraph)
 							.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDescriptionType.create())
 							.setLength({ min: 3, max: 2000 })
 							.setRequired(true)

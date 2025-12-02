@@ -12,15 +12,21 @@ import { TranslatedView } from "./translated-view";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import type { PSystem } from "../types/system";
-import { emojis } from "../lib/emojis";
+import { emojis, getEmojiFromTagColor } from "../lib/emojis";
 import { friendlyProtectionSystem, listFromMaskSystems } from "../lib/privacy-bitmask";
-import { alterCollection } from "@/mongodb";
+import { alterCollection, tagCollection } from "@/mongodb";
 import type { FindCursor, WithId } from "mongodb";
 import type { PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlertView } from "./alert";
 
 export const alterPagination: {
+	id: string;
+	memoryPage: number;
+	documentCount: number;
+}[] = [];
+
+export const tagsPagination: {
 	id: string;
 	memoryPage: number;
 	documentCount: number;
@@ -285,6 +291,114 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(
+								pgObj.id,
+							),
+						)
+						.setStyle(ButtonStyle.Primary),
+				),
+			),
+		];
+	}
+
+
+	async tagsSettings(system: PSystem, pgObj?: (typeof tagsPagination)[0]) {
+		const tagsPerPage = 5;
+
+		if (system.alterIds.length === 0) {
+			return [
+				...this.topView("tags", system.associatedUserId),
+				...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
+				new ActionRow().setComponents(
+					new Button()
+						.setLabel("Create new tag")
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
+						)
+						.setStyle(ButtonStyle.Primary),
+				),
+			];
+		}
+
+		const time = Date.now();
+		const tagsCursor = tagCollection
+			.find({ systemId: system.associatedUserId })
+			.limit(tagsPerPage)
+			.skip(((pgObj?.memoryPage ?? 1) - 1) * tagsPerPage);
+
+		const alters = await tagsCursor.toArray();
+		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
+
+		if (pgObj === undefined) {
+			const documentCount = await tagCollection.countDocuments({
+				systemId: system.associatedUserId,
+			});
+
+			tagsPagination.push({
+				id: String(pgId),
+				memoryPage: 1,
+				documentCount,
+			});
+
+			// biome-ignore lint/style/noParameterAssign: not really any other way to do it.
+			pgObj = {
+				id: String(pgId),
+				memoryPage: 1,
+				documentCount,
+			};
+		}
+
+		return [
+			...this.topView("tags", system.associatedUserId),
+			new Container().setComponents(
+				new TextDisplay().setContent(`## Tags - ${system.systemName}`),
+				new Separator().setSpacing(Spacing.Large),
+				...alters.map((tag) => {
+					return new Section()
+						.setAccessory(
+							new Button()
+								.setLabel("Edit Tag")
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.ConfigureTag.create(
+										tag.tagId,
+									),
+								)
+								.setStyle(ButtonStyle.Primary)
+								.setEmoji(emojis.wrenchWhite),
+						)
+						.setComponents(
+							new TextDisplay().setContent(
+								`${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`,
+							),
+						);
+				}),
+				new Separator().setSpacing(Spacing.Large),
+				new TextDisplay().setContent(
+					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)} · Found ${alters.length}/${pgObj.documentCount} tag(s) in ${Date.now() - time}ms`,
+				),
+				new ActionRow().setComponents(
+					new Button()
+						.setEmoji(emojis.plus)
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(pgObj.id),
+						),
+					new Button()
+						.setLabel("Previous Page")
+						.setDisabled(pgObj?.memoryPage === 1)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.TagPagination.PreviousPage.create(
+								pgObj.id,
+							),
+						)
+						.setStyle(ButtonStyle.Primary),
+					new Button()
+						.setLabel("Next Page")
+						.setDisabled(
+							pgObj?.memoryPage ===
+								Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),
+						)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.TagPagination.NextPage.create(
 								pgObj.id,
 							),
 						)

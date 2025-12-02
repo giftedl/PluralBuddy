@@ -6,47 +6,47 @@ import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export default class SetPFPButton extends ComponentCommand {
-   componentType = 'Button' as const;
-   
-   override filter(context: ComponentContext<typeof this.componentType>) {
-       return InteractionIdentifier.Systems.Configuration.Alters.SetPFP.startsWith(context.customId)
-   }
+	componentType = 'Button' as const;
 
-   override async run(ctx: ComponentContext<typeof this.componentType>) {
-	const alterId = InteractionIdentifier.Systems.Configuration.Alters.SetPFP.substring(
-		ctx.customId,
-	)[0];
-
-	const systemId = ctx.author.id;
-	const query = alterCollection.findOne({
-		alterId: Number(alterId),
-		systemId,
-	});
-	const alter = await query;
-
-	if (alter === null) {
-		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-		})
+	override filter(context: ComponentContext<typeof this.componentType>) {
+		return InteractionIdentifier.Systems.Configuration.Alters.SetPFP.startsWith(context.customId)
 	}
 
-	const form = new Modal()
-		.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.create(alter.alterId))
-		.setTitle(ctx.userTranslations().ALTER_FORM_TITLE)
-		.addComponents(
-			[
-				new Label()
-					.setLabel(ctx.userTranslations().ALTER_SET_PFP)
-					.setComponent(
-						new FileUpload()
-                            .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create())
-                            .setRequired(true)
-                            .setMinValues(1)
-                            .setMaxValues(1)
-                    )
-                ]
-            )
-    return await ctx.modal(form);
-   }
+	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		const alterId = InteractionIdentifier.Systems.Configuration.Alters.SetPFP.substring(
+			ctx.customId,
+		)[0];
+
+		const systemId = ctx.author.id;
+		const query = alterCollection.findOne({
+			alterId: Number(alterId),
+			systemId,
+		});
+		const alter = await query;
+
+		if (alter === null) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+			})
+		}
+
+		const form = new Modal()
+			.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.create(alter.alterId))
+			.setTitle(ctx.userTranslations().ALTER_FORM_TITLE)
+			.addComponents(
+				[
+					new Label()
+						.setLabel(ctx.userTranslations().ALTER_SET_PFP)
+						.setComponent(
+							new FileUpload()
+								.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create())
+								.setRequired(true)
+								.setMinValues(1)
+								.setMaxValues(1)
+						)
+				]
+			)
+		return await ctx.modal(form);
+	}
 }

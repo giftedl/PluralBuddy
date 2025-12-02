@@ -30,7 +30,7 @@ export default class SetUsernameButton extends ModalCommand {
 
 	if (tag === null) {
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
+			components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 		})
 	}

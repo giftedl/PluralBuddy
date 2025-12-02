@@ -78,7 +78,7 @@ ${tag.tagDescription !== null ? "\n" : ""}${tag.tagDescription ?? ""}${tag.tagDe
 		];
 	}
 
-	tagGeneral(tag: PTag) {
+	tagGeneral(tag: PTag, prefix: string) {
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
@@ -141,6 +141,24 @@ ${((tag.public ?? 0) > 0
 								),
 							),
 					),
+				new Separator().setSpacing(Spacing.Small),
+				new Section()
+				.addComponents(
+					new TextDisplay().setContent(
+						`You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: \`${prefix}edit-tag description "${tag.tagFriendlyName}"\``,
+					),
+				)
+				.setAccessory(
+					new Button()
+						.setStyle(ButtonStyle.Secondary)
+						.setLabel(this.translations.ALTER_SET_DESCRIPTION)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.Tags.SetDescription.create(
+								tag.tagId,
+							),
+						),
+				),
 			).setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`)
 		]
 	}

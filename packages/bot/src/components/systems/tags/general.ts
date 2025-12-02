@@ -37,7 +37,7 @@ export default class GeneralTagSettings extends ComponentCommand {
         return await ctx.update({
             components: [
                 ...new TagView(ctx.userTranslations()).tagTopView("general", tag.tagId, tag.tagFriendlyName),
-                ...new TagView(ctx.userTranslations()).tagGeneral(tag)
+                ...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;")
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 

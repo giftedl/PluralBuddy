@@ -38,7 +38,9 @@ Systems can have **privacy values** which are values that describe who can see w
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
     ERROR_PAGINATION_TOO_OLD: "That alter pagination component is too old, you cannot proceed. Please hit the \"Alters\" tab at the top of the message to reset the pagination.",
+    ERROR_TAG_PAGINATION_TOO_OLD: "That tag pagination component is too old, you cannot proceed. Please hit the \"Tags\" tab at the top of the message to reset the pagination.",
     ERROR_NO_ALTERS: "You have no alters! Create one below!",
+    ERROR_NO_TAGS: "You have no tags! Create one below!",
     PK_IMPORT_START: "## PluralKit Importing",
 
     PAGE_NEW_SYS_TEXT: "-# Page 3/3 · Some fields haven't been filled out. · * Required",
@@ -51,6 +53,7 @@ Systems can have **privacy values** which are values that describe who can see w
     PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "Importing files cannot be larger than 2mb. Please contact support if you are genuinely trying to import a system larger than 2mb.",
     ERROR_ATTACHMENT_TOO_LARGE: "Attachments for banners or profile pictures cannot be larger than 2mb.",
     CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
+    CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
     PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "The file you imported is not valid JSON.",
 
     ERROR_INTERACTION_TOO_OLD: "This interaction has no longer been kept track of. (have you waited too long?)",

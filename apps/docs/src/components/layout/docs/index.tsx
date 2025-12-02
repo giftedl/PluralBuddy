@@ -172,6 +172,7 @@ export function DocsLayout({
 									{item.icon}
 								</BaseLinkItem>
 							))}
+							<AuthComponents style="docs" />
 						</div>
 						{i18n ? (
 							<LanguageToggle>
