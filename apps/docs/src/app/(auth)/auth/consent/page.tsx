@@ -3,6 +3,7 @@
 
 import { getUserApp } from "@/app/(home)/developers/applications/actions";
 import { scopeList } from "@/components/devs/create-new-app-form";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -22,7 +23,8 @@ import { toast } from "sonner";
 
 export default function ConsentPage() {
 	const params = useSearchParams();
-    const router = useRouter();
+	const router = useRouter();
+	const session = authClient.useSession();
 
 	const { resolvedTheme } = useTheme();
 	const { data, status } = useQuery({
@@ -34,26 +36,39 @@ export default function ConsentPage() {
 	const consentCode = params.get("consent_code");
 	const scopes = params.get("scope")?.split(" ");
 
-    if (consentCode === null) return <>Requires consent code</>
+	if (consentCode === null) return <>Requires consent code</>;
 
-	if (data !== undefined && "message" in data) return <>Invalid application</>
-	if (data !== undefined && !("data" in data)) return <>Invalid application</>
+	if (data !== undefined && "message" in data) return <>Invalid application</>;
+	if (data !== undefined && !("data" in data)) return <>Invalid application</>;
 
 	return (
 		<div className="grid w-full flex-grow relative items-center justify-center px-4">
 			{status === "success" && (
-				<Card className="w-full space-y-6 z-10 justify-center rounded-2xl p-8 sm:w-96">
+				<Card className="w-full space-y-5 z-10 justify-center rounded-2xl p-8 sm:w-96">
 					<header className="text-center">
-						<h1 className="mt-4 text-xl font-medium tracking-tight">
-							{data.data?.name}
+						<div className="flex items-center justify-center">
+							<div className="relative flex items-center">
+								<div className="relative z-10 flex items-center justify-center w-24 h-24 rounded-2xl bg-primary shadow-lg ring-4 ring-card">
+									<Avatar className="w-full h-full !rounded-2xl">
+										<AvatarImage src="/image/solar.png" alt="Solar" />
+										<AvatarFallback>PluralBuddy</AvatarFallback>
+									</Avatar>
+								</div>
+							</div>
+						</div>
+						<h1 className="mt-6 text-xl font-medium tracking-tight">
+							{data.data?.name} is attempting to access data from your system
 						</h1>
 						<span className="text-sm text-muted-foreground">
-							is attempting to access data from your system
+							Signed in as{" "}
+							<span className="font-medium text-foreground">
+								@{session.data?.user.name}
+							</span>
 						</span>
 					</header>
 					<div className="border rounded-lg">
 						<div className="w-full p-4 bg-fd-secondary rounded-t-lg text-center">
-							<span>{data.data?.name} is requesting access to:</span>
+							<span>This will allow {data.data?.name} to:</span>
 						</div>
 						<Separator />
 						{scopes
@@ -105,13 +120,11 @@ export default function ConsentPage() {
 									consent_code: consentCode,
 								});
 
-
-                                if (res.error)
-                                    toast.error("Error while denying consent code")
-                                else {
-                                    toast.success("Okay, done!");
-                                    router.push(res.data.redirectURI)
-                                }
+								if (res.error) toast.error("Error while denying consent code");
+								else {
+									toast.success("Okay, done!");
+									router.push(res.data.redirectURI);
+								}
 							}}
 						>
 							Deny
@@ -128,12 +141,12 @@ export default function ConsentPage() {
 									consent_code: consentCode,
 								});
 
-                                if (res.error)
-                                    toast.error("Error while accepting consent code")
-                                else {
-                                    toast.success("Okay, done!");
-                                    router.push(res.data.redirectURI)
-                                }
+								if (res.error)
+									toast.error("Error while accepting consent code");
+								else {
+									toast.success("Okay, done!");
+									router.push(res.data.redirectURI);
+								}
 							}}
 						>
 							Accept
@@ -144,7 +157,7 @@ export default function ConsentPage() {
 			<Dithering
 				className="w-screen h-screen absolute"
 				colorBack={resolvedTheme === "dark" ? "#000000" : "#ffffff"}
-				colorFront="#fccee8"
+				colorFront="#f2ea57"
 				shape="warp"
 				type="4x4"
 				size={2}

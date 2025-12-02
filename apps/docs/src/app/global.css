@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "fumadocs-ui/css/solar.css";
 @import 'fumadocs-ui/css/shadcn.css';
 @import "fumadocs-ui/css/preset.css";
 @import "tw-animate-css";
@@ -7,8 +6,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
 	--color-sidebar-ring: var(--sidebar-ring);
@@ -82,8 +79,6 @@
     --policies-color: #cc8b00;
     
 	--radius: 0.625rem;
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
@@ -123,12 +118,14 @@
     --color-fd-primary: #fff383;
 }
 
+
+
 .dark {
     --pluralbuddy-color: oklch(89.9% 0.061 343.231);
     --policies-color: #fff383;
 
-	--background: oklch(0.145 0 0);
-	--foreground: oklch(0.985 0 0);
+	--color-fd-foreground: white;
+
 	--card: oklch(0.205 0 0);
 	--card-foreground: oklch(0.985 0 0);
 	--popover: oklch(0.205 0 0);
