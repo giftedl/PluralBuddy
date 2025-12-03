@@ -17,6 +17,7 @@ import { writeUserById } from "../../types/user";
 import { AlertView } from "../../views/alert";
 import { buildExportPayload } from "../../lib/export";
 import { alterCollection } from "../../mongodb";
+import { deleteAttachment, getGcpAccessToken } from "@/gcp";
 
 export default class DeleteSystemButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -72,6 +73,10 @@ export default class DeleteSystemButton extends ComponentCommand {
 			storagePrefix: user.storagePrefix
 		});
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
+
+		const gcpToken = await getGcpAccessToken()
+
+		await deleteAttachment(user.storagePrefix, gcpToken)
 
 		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successView(

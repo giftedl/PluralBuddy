@@ -118,6 +118,8 @@ export const InteractionIdentifier = {
                 SetPFP: createFromAdditionalArg("systems/config/alters/set-pfp"),
                 SetBanner: createFromAdditionalArg("systems/config/alters/set-banner"),
                 SetAlterColor: createFromAdditionalArg("systems/config/alters/set-alter-color"),
+                DeleteAlter: createFromAdditionalArg("systems/config/alters/delete"),
+
                 ProxyMode: {
                     GoBack: createFromAdditionalArg("systems/config/alters-proxy-mode/goback"),
                     Nickname: createFromAdditionalArg("systems/config/alters-proxy-mode/nickname"),
@@ -180,8 +182,8 @@ export const InteractionIdentifier = {
                     AlterServerDisplayNameForm: createFromAdditionalArg("systems/config/set-form/alters/set-server-display-name"),
                     AlterPFPForm:               createFromAdditionalArg("systems/config/set-form/alters/set-pfp"),
                     AlterPFPType:               createStatic           ("systems/config/type-form/alters/set-pfp"),
-                    AlterBannerForm:            createFromAdditionalArg("systems/config/set-form/alters/set-pfp"),
-                    AlterBannerType:            createStatic           ("systems/config/type-form/alters/set-pfp"),
+                    AlterBannerForm:            createFromAdditionalArg("systems/config/set-form/alters/set-banner"),
+                    AlterBannerType:            createStatic           ("systems/config/type-form/alters/set-banner"),
                     AlterColorType:             createStatic           ("systems/config/type-form/alters/set-alter-color"),
                     AlterColorForm:             createFromAdditionalArg("systems/config/set-form/alters/set-alter-color"),
                     AlterPrivacyType:           createStatic           ("systems/config/type-form/alters/set-privacy"),

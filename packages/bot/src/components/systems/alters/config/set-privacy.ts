@@ -14,7 +14,7 @@ export default class SetPrivacyButton extends ComponentCommand {
     }
 
     override async run(ctx: ComponentContext<typeof this.componentType>) {
-        const alterId = InteractionIdentifier.Systems.Configuration.Alters.SetPFP.substring(
+        const alterId = InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.substring(
             ctx.customId,
         )[0];
 
@@ -34,7 +34,7 @@ export default class SetPrivacyButton extends ComponentCommand {
 
 
         const form = new Modal()
-            .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.create(alter.alterId))
+            .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.create(alter.alterId))
             .setTitle(ctx.userTranslations().ALTER_FORM_TITLE)
             .addComponents(
                 [
@@ -43,7 +43,7 @@ export default class SetPrivacyButton extends ComponentCommand {
                         .setDescription(ctx.userTranslations().TAG_PRIVACY_FORM_DESC)
                         .setComponent(
                             new StringSelectMenu()
-                                .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyType.create())
+                                .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyType.create())
                                 .setOptions(alterPrivacySelection(ctx.userTranslations(), alter.public))
                                 .setValuesLength({ min: 0, max: alterPrivacySelection(ctx.userTranslations()).length })
                                 .setRequired(false)

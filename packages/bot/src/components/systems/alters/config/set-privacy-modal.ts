@@ -9,26 +9,27 @@ import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
 import { TagProtectionFlags } from "@/types/tag";
 import { combine } from "@/lib/privacy-bitmask";
+import { AlterProtectionFlags } from "@/types/alter";
 
-export default class SetUsernameButton extends ModalCommand {
+export default class SetPrivacyModal extends ModalCommand {
    
    override filter(context: ModalContext) {
-	   return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyForm.startsWith(context.customId)
+	   return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.startsWith(context.customId)
    }
 
    override async run(ctx: ModalContext) {
-	const tagId = InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyForm.substring(
+	const alterId = InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.substring(
 		ctx.customId,
 	)[0];
 
-	const systemId = ctx.author.id;
-	const query = tagCollection.findOne({
-		tagId,
-		systemId,
-	});
-	let tag = await query;
+    const systemId = ctx.author.id;
+    const query = alterCollection.findOne({
+        alterId: Number(alterId),
+        systemId,
+    });
+    let alter = await query;
 
-	if (tag === null) {
+	if (alter === null) {
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
@@ -36,31 +37,46 @@ export default class SetUsernameButton extends ModalCommand {
 	}
 
 	const newTagPrivacy = ctx.interaction.getInputValue(
-		InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyType.create(),
+		InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyType.create(),
 	) as string[] | undefined ?? [];
 	
     let privacyFlag = 0;
     privacyFlag = combine(...(
         newTagPrivacy.map((val) => {
             if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_NAME.create()) {
-                return TagProtectionFlags.NAME;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_ALTERS.create()) {
-                return TagProtectionFlags.ALTERS;
-            }
-            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_COLOR.create()) {
-                return TagProtectionFlags.COLOR;
+                return AlterProtectionFlags.NAME;
             }
             if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_DESCRIPTION.create()) {
-                return TagProtectionFlags.DESCRIPTION;
+                return AlterProtectionFlags.DESCRIPTION;
+            }
+            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_PRONOUNS.create()) {
+                return AlterProtectionFlags.PRONOUNS;
+            }
+            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_BANNER.create()) {
+                return AlterProtectionFlags.BANNER;
+            }
+            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_AVATAR.create()) {
+                return AlterProtectionFlags.AVATAR;
+            }
+            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_VISIBILITY.create()) {
+                return AlterProtectionFlags.VISIBILITY;
+            }
+            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_TAGS.create()) {
+                return AlterProtectionFlags.TAGS
+            }
+            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_USERNAME.create()) {
+                return AlterProtectionFlags.USERNAME
+            }
+            if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_MESSAGE_COUNT.create()) {
+                return AlterProtectionFlags.MESSAGE_COUNT
             }
 
-            return TagProtectionFlags.ALTERS;
+            return AlterProtectionFlags.NAME;
         })
     ))
 
-	await tagCollection.updateOne(
-		{ tagId, systemId },
+	await alterCollection.updateOne(
+		{ alterId: Number(alterId), systemId },
 		{
 			$set: {
 				public: privacyFlag
@@ -68,21 +84,23 @@ export default class SetUsernameButton extends ModalCommand {
 		},
 	);
 
-	tag = await tagCollection.findOne({
-		tagId,
+	alter = await alterCollection.findOne({
+		alterId: Number(alterId),
 		systemId,
-	}) ?? tag;
+	}) ?? alter;
 	
-	return await ctx.interaction.update({
-		components: [
-			...new TagView(ctx.userTranslations()).tagTopView(
-				"general",
-				tag.tagId.toString(),
-				tag.tagFriendlyName,
-			),
-			...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;"),
-		],
-		flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-	});
+    return await ctx.interaction.update({
+        components: [
+            ...new AlterView(ctx.userTranslations()).alterTopView(
+                "general",
+                alter.alterId.toString(),
+                alter.username,
+            ),
+            ...new AlterView(ctx.userTranslations()).alterGeneralView(
+                alter
+            ),
+        ],
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
    }
 }

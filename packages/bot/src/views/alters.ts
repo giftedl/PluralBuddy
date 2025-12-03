@@ -61,20 +61,20 @@ ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMe
 			!avatarDisplayable || alter.avatarUrl === null
 				? innerComponents
 				: new Section()
-						.setAccessory(
-							new Thumbnail()
-								.setMedia(alter.avatarUrl as string)
-								.setDescription(`${alter.avatarUrl}'s avatar`),
-						)
-						.setComponents(innerComponents),
+					.setAccessory(
+						new Thumbnail()
+							.setMedia(alter.avatarUrl as string)
+							.setDescription(`${alter.avatarUrl}'s avatar`),
+					)
+					.setComponents(innerComponents),
 			...(bannerDisplayable && alter.banner !== null
 				? [
-						new MediaGallery().setItems(
-							new MediaGalleryItem()
-								.setMedia(alter.banner)
-								.setDescription(`${alter.avatarUrl}'s banner`),
-						),
-					]
+					new MediaGallery().setItems(
+						new MediaGalleryItem()
+							.setMedia(alter.banner)
+							.setDescription(`${alter.avatarUrl}'s banner`),
+					),
+				]
 				: []),
 		);
 
@@ -175,9 +175,9 @@ ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMe
 						.addComponents(
 							new TextDisplay().setContent(
 								this.translations.ALTER_SET_PRIVACY_DESC +
-									((alter.public ?? 0) > 0
-										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionAlters(this.translations, listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``
-										: ""),
+								((alter.public ?? 0) > 0
+									? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionAlters(this.translations, listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``
+									: ""),
 							),
 						)
 						.setAccessory(
@@ -186,6 +186,24 @@ ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMe
 								.setStyle(ButtonStyle.Secondary)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.create(
+										alter.alterId,
+									),
+								),
+						),
+
+					new Separator(),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
+								"**This cannot be undone.** Deleting an alter will delete your alter and its data.",
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Danger)
+								.setLabel(this.translations.DELETE_ALTER)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Alters.DeleteAlter.create(
 										alter.alterId,
 									),
 								),
@@ -277,30 +295,30 @@ Please select the mode you would like to use below.
 					),
 				...(currentGuildName.name !== ""
 					? [
-							new Separator().setSpacing(Spacing.Large),
-							new Section()
-								.addComponents(
-									new TextDisplay().setContent(
-										this.translations.ALTER_SET_SERVER_NAME_DESC.replaceAll(
-											"%server%",
-											`**${currentGuildName.name}**`,
-										).replaceAll(
-											"%name%",
-											existingName?.name ?? alter.displayName,
+						new Separator().setSpacing(Spacing.Large),
+						new Section()
+							.addComponents(
+								new TextDisplay().setContent(
+									this.translations.ALTER_SET_SERVER_NAME_DESC.replaceAll(
+										"%server%",
+										`**${currentGuildName.name}**`,
+									).replaceAll(
+										"%name%",
+										existingName?.name ?? alter.displayName,
+									),
+								),
+							)
+							.setAccessory(
+								new Button()
+									.setStyle(ButtonStyle.Secondary)
+									.setLabel(this.translations.ALTER_SET_SERVER_NAME)
+									.setCustomId(
+										InteractionIdentifier.Systems.Configuration.Alters.SetServerDisplayName.create(
+											alter.alterId,
 										),
 									),
-								)
-								.setAccessory(
-									new Button()
-										.setStyle(ButtonStyle.Secondary)
-										.setLabel(this.translations.ALTER_SET_SERVER_NAME)
-										.setCustomId(
-											InteractionIdentifier.Systems.Configuration.Alters.SetServerDisplayName.create(
-												alter.alterId,
-											),
-										),
-								),
-						]
+							),
+					]
 					: []),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()

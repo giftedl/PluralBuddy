@@ -51,7 +51,7 @@ export default class NameCNS extends ComponentCommand {
                     .setComponents(
                         new Button()
                             .setCustomId(InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create())
-                            .setLabel("Configure Alter")
+                            .setLabel("Configure System")
                             .setEmoji(emojis.wrenchWhite)
                             .setStyle(ButtonStyle.Primary)
                     )

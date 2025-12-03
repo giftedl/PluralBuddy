@@ -13,7 +13,7 @@ export async function getGcpAccessToken() {
   const now = Math.floor(Date.now() / 1000);
   const payload = {
     iss: clientEmail,
-    scope: "https://www.googleapis.com/auth/cloud-platform",
+    scope: "https://www.googleapis.com/auth/devstorage.full_control",
     aud: "https://oauth2.googleapis.com/token",
     exp: now + 3600,
     iat: now,
@@ -23,7 +23,7 @@ export async function getGcpAccessToken() {
   const header = {
     alg: "RS256",
     typ: "JWT",
-  };
+  }
 
   function base64url(input: string | Buffer) {
     return Buffer.from(input)
@@ -72,41 +72,78 @@ export async function getGcpAccessToken() {
   return accessToken;
 }
 
+export async function deleteAttachment(storagePrefix: string, accessToken: string) {
+  const prefix = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}`;
+
+
+  const existingResponse = await (await fetch(`https://storage.googleapis.com/storage/v1/b/${process.env.GCP_BUCKET}?fields=lifecycle`, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': "application/json"
+    },
+  })).json();
+
+  const deletionResponse = await fetch(`https://storage.googleapis.com/storage/v1/b/${process.env.GCP_BUCKET}?fields=lifecycle`, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': "application/json"
+    },
+    method: "PATCH",
+    body: JSON.stringify({
+      "lifecycle": {
+        "rule": [
+          {
+            "action": { "type": "Delete" },
+            "condition": {
+              "matchesPrefix": [ prefix ]
+            }
+          },
+          ...((existingResponse as any).lifecycle.rule)
+        ]
+      }
+    })
+  })
+
+  console.log(await deletionResponse.json())
+
+  return deletionResponse;
+}
+
 export async function uploadDiscordAttachmentToGcp(attachment: Attachment, accessToken: string, bucketName: string, objectName: string, metadata: Record<string, string>) {
-    const attachmentUrl = attachment.url;
-    const discordResponse = await fetch(attachmentUrl);
-    
-    if (!discordResponse.ok) {
-        throw new Error("Failed to fetch the image from Discord.");
-    }
+  const attachmentUrl = attachment.url;
+  const discordResponse = await fetch(attachmentUrl);
 
-    if (!discordResponse.body) {
-        throw new Error("Response body is null.");
-    }
+  if (!discordResponse.ok) {
+    throw new Error("Failed to fetch the image from Discord.");
+  }
 
-    const gcpUploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${encodeURIComponent(bucketName)}/o?uploadType=media&name=${encodeURIComponent(objectName)}`;
-    const gcpMetadataUrl = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucketName)}/o/${encodeURIComponent(objectName)}`;
-    
-    const gcpResponse = await fetch(gcpUploadUrl, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': attachment.contentType ?? "application/octet-stream"
-        },
-        body: discordResponse.body,
-    });
+  if (!discordResponse.body) {
+    throw new Error("Response body is null.");
+  }
 
-   const a = await fetch(gcpMetadataUrl, {
-      method: 'PATCH',
-      headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': "application/json"
-      },
-      body: JSON.stringify({
-        metadata
-      }),
-    });
+  const gcpUploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${encodeURIComponent(bucketName)}/o?uploadType=media&name=${encodeURIComponent(objectName)}`;
+  const gcpMetadataUrl = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucketName)}/o/${encodeURIComponent(objectName)}`;
 
-console.log(a)
-    return gcpResponse;
+  const gcpResponse = await fetch(gcpUploadUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': attachment.contentType ?? "application/octet-stream"
+    },
+    body: discordResponse.body,
+  });
+
+  const a = await fetch(gcpMetadataUrl, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': "application/json"
+    },
+    body: JSON.stringify({
+      metadata
+    }),
+  });
+
+  console.log(a)
+  return gcpResponse;
 }

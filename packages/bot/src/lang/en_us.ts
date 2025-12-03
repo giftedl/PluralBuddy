@@ -171,6 +171,7 @@ Systems can have **privacy values** which are values that describe who can see w
     TAG_COLOR_rose:   "rose",
 
     ALTER_SET_COLOR: "Set Alter Color",
+    DELETE_ALTER: "Delete Alter",
     ALTER_SET_MODE: "Set Proxy Mode",
     ALTER_SET_MODE_DESC: `Proxy modes describe how the alter proxies. There are three main methods for alter proxying:
 > - *Nickname*: Your nickname is adjusted based on this alters display name & the system nickname convention. You are required to have the Change Nickname permission for this to work.
