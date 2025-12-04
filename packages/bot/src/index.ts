@@ -19,9 +19,8 @@ import {
 	PluralBuddyModalErrorCommand,
 } from "./error-command";
 import { extendedContext } from "./extended-context";
-import { initializeApplicationCommands } from "./lib/mention-command";
 
-export const buildNumber = 403;
+export const buildNumber = 413;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware"

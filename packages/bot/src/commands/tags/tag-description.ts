@@ -2,7 +2,7 @@
 
 import { SubCommand } from "seyfert"
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { alterCollection } from "@/mongodb";
+import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	type CommandContext,
@@ -14,57 +14,58 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { autocompleteTags } from "@/lib/autocomplete-tags";
 
 const options = {
-	"alter-name": createStringOption({
-		description: "The name of the alter to modify.",
+	"tag-name": createStringOption({
+		description: "The name of the tag to modify.",
 		required: true,
-		autocomplete: autocompleteAlters,
+		autocomplete: autocompleteTags,
 	}),
-	"alter-description": createStringOption({
-		description: "The new description for the alter.",
+	"tag-description": createStringOption({
+		description: "The new description for the tag.",
 		max_length: 2000,
 	}),
 };
 
 @Declare({
 	name: "description",
-	description: "Edit the description of an alter",
+	description: "Edit the description of a tag",
 	aliases: ["desc", "d"],
 	contexts: ["BotDM", "Guild"],
 })
 @Options(options)
-export default class EditAlterDisplayNameCommand extends SubCommand {
+export default class EditTagDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		const {
-			"alter-name": alterName,
-			"alter-description": alterDescription,
+			"tag-name": tagName,
+			"tag-description": tagDescription,
 		} = ctx.options;
 
 		const systemId = ctx.author.id;
-		const query = Number.isNaN(Number.parseInt(alterName))
-			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-			: alterCollection.findOne({
-					$or: [{ username: alterName }, { alterId: Number(alterName) }],
+		const query = Number.isNaN(Number.parseInt(tagName))
+			? tagCollection.findOne({ $or: [{ tagFriendlyName: tagName }], systemId })
+			: tagCollection.findOne({
+					$or: [{ tagFriendlyName: tagName }, { tagId: tagName }],
 					systemId,
 				});
-		const alter = await query;
+		const tag = await query;
 
-		if (alter === null) {
+		if (tag === null) {
 			return await ctx.ephemeral({
 				components: new AlertView(ctx.userTranslations()).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
+					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		if (alterDescription === undefined) {
+		if (tagDescription === undefined) {
 			return await ctx.ephemeral({
 				components: [
 					new Container().setComponents(
 						new TextDisplay().setContent(`\`\`\`
-${alter.description ?? "⛔ Your alter has no description."}
+${tag.tagDescription ?? "⛔ Your tag has no description."}
 \`\`\``),
 					),
 				],
@@ -72,9 +73,9 @@ ${alter.description ?? "⛔ Your alter has no description."}
 			}, true);
 		}
 
-			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
-				{ $set: { description: alterDescription } },
+			await tagCollection.updateOne(
+				{ tagId: tag.tagId },
+				{ $set: { tagDescription } },
 			);
 		
 
@@ -84,7 +85,7 @@ ${alter.description ?? "⛔ Your alter has no description."}
 					ctx
 						.userTranslations().ALTER_SUCCESS_DESC.replace(
 							"%alter%",
-							alter.username,
+							tag.tagFriendlyName,
 						),
 				),
 			],

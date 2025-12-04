@@ -95,12 +95,12 @@ export async function autocompleteTags(ctx: AutocompleteInteraction<boolean>) {
         pipeline.push({
             $sort: {
                 relevanceScore: -1,
-                username: 1
+                tagFriendlyName: 1
             }
         });
     } else {
         pipeline.push({
-            $sort: { username: 1 }
+            $sort: { tagFriendlyName: 1 }
         });
     }
     
@@ -115,5 +115,5 @@ export async function autocompleteTags(ctx: AutocompleteInteraction<boolean>) {
 
     const array = await tagCollection.aggregate(pipeline).toArray();
 
-    return ctx.respond(array.map(v => {return {name: v.username, value: v.username}}))
+    return ctx.respond(array.map(v => {return {name: v.tagFriendlyName, value: v.tagFriendlyName}}))
 }
