@@ -48,6 +48,7 @@ export default class PublicProfileButton extends ComponentCommand {
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",
+					ctx.interaction.message.messageReference === undefined
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

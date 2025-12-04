@@ -19,6 +19,7 @@ import {
 	PluralBuddyModalErrorCommand,
 } from "./error-command";
 import { extendedContext } from "./extended-context";
+import { initializeApplicationCommands } from "./lib/mention-command";
 
 export const buildNumber = 369;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [

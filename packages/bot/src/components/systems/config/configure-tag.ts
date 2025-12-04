@@ -43,7 +43,8 @@ export default class ConfigureAlter extends ComponentCommand {
 					tag.tagId,
 					tag.tagFriendlyName,
 				),
-				...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;"),
+				...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;", 
+				ctx.interaction.message.messageReference === undefined,),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

@@ -33,8 +33,8 @@ Systems can have **privacy values** which are values that describe who can see w
 
     CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
 ### Next Steps
-> - To create a new alter, try using \`%prefix%system new-alter %username% %display name%\`.
-> - To create a new tag, try using \`%prefix%system new-tag %name%\``,
+> - To create a new alter, try using %command1%
+> - To create a new tag, try using %command2%`,
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
     ERROR_PAGINATION_TOO_OLD: "That alter pagination component is too old, you cannot proceed. Please hit the \"Alters\" tab at the top of the message to reset the pagination.",
@@ -92,7 +92,8 @@ Systems can have **privacy values** which are values that describe who can see w
     CONFIRMATION_SYSTEM_DELETION_BTN: "Yes, continue",
     CONFIRMATION_ALTER_DELETION: "Are you sure you'd like to delete @%alter%? **This action cannot be undone.**",
 
-    SYSTEM_DELETION_FINISHED: "Sucessfully deleted your system. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
+    SYSTEM_DELETION_FINISHED: "Successfully deleted your system. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
+    SYSTEM_DELETION_MEDIA_FINISHED: "Successfully deleted your system **and your system's media**. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
     SYSTEM_DELETION_DM: "Here is the export data due to the deletion on %time%:",
     ALTER_DELETION_FINISHED: "Successfully deleted that alter.",
     ALTER_SERVER_DN_FORM_LABEL: "Server Display Name",
@@ -210,7 +211,7 @@ Systems can have **privacy values** which are values that describe who can see w
 
 > PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
-> To get started with using PluralBuddy, use \`%prefix%setup\`.
+> To get started with using PluralBuddy, use %command%.
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 

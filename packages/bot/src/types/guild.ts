@@ -14,9 +14,6 @@ export const PGuildObject = z.object({
     blacklistedRoles: z.string().array().default([]),
     blacklistedChannels: z.string().array().default([]),
 
-    whitelistedNicknameRoles: z.string().array().default([]),
-    blacklistedNicknameRoles: z.string().array().default([]),
-
     managerRoles: z.string().array().default([]),
     allowedAlterModes: z.enum([ "webhook", "nickname", "both" ]).default("both"),
     usersRequiredSystemTag: z.boolean().default(false),

@@ -7,6 +7,7 @@ import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { friendlyProtectionTags, listFromMaskTags } from "../lib/privacy-bitmask";
+import { mentionCommand } from "@/lib/mention-command";
 
 export class TagView extends TranslatedView {
 	tagProfileView(tag: PTag, external = false) {
@@ -78,7 +79,7 @@ ${tag.tagDescription !== null ? "\n" : ""}${tag.tagDescription ?? ""}${tag.tagDe
 		];
 	}
 
-	tagGeneral(tag: PTag, prefix: string) {
+	tagGeneral(tag: PTag, prefix: string, applicationCommand: boolean) {
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
@@ -146,7 +147,7 @@ ${((tag.public ?? 0) > 0
 				.addComponents(
 					new TextDisplay().setContent(
 						`You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
--# To view your description in full, run: \`${prefix}edit-tag description "${tag.tagFriendlyName}"\``,
+-# To view your description in full, run: ${mentionCommand(prefix, "edit-tag description", applicationCommand, tag.tagFriendlyName)}`,
 					),
 				)
 				.setAccessory(

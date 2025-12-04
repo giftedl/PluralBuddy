@@ -1,17 +1,18 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { Command, type CommandContext, Container, Declare, TextDisplay } from "seyfert";
+import { Command, type CommandContext, Container, Declare, Message, TextDisplay } from "seyfert";
 import { buildNumber } from "..";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "../lib/emojis";
+import { mentionCommand } from "@/lib/mention-command";
 
 @Declare({
-	name: "about",
-	description: "PluralBuddy!",
+    name: "about",
+    description: "PluralBuddy!",
     contexts: ["BotDM", "Guild"]
 })
 export default class SystemCommand extends Command {
-	override async run(ctx: CommandContext) {
+    override async run(ctx: CommandContext) {
 
         return await ctx.write({
             components: [
@@ -27,7 +28,7 @@ export default class SystemCommand extends Command {
                                     .replace("%docs%", emojis.book)
                                     .replace("%linein%", emojis.lineIn)
                                     .replace("%lineright%", emojis.lineRight)
-                                    .replace("%prefix%", await ctx.getDefaultPrefix() ?? "pb;")
+                                    .replace("%command%", mentionCommand(await ctx.getDefaultPrefix() ?? "pb;", "setup", ctx.message === undefined))
                             )
                     )
             ],

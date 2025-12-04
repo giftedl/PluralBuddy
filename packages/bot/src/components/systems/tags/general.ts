@@ -15,32 +15,40 @@ export default class GeneralTagSettings extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		const tagId =
+			InteractionIdentifier.Systems.Configuration.Tags.GeneralSettings.substring(
+				ctx.customId,
+			)[0];
 
-        
-		const tagId = InteractionIdentifier.Systems.Configuration.Tags.GeneralSettings.substring(
-            ctx.customId,
-        )[0];
+		const systemId = ctx.author.id;
+		const query = tagCollection.findOne({
+			$and: [{ tagId }, { systemId }],
+		});
+		const tag = await query;
 
-        const systemId = ctx.author.id;
-        const query = tagCollection.findOne({
-			$and: [{ tagId, }, { systemId }],
-        });
-        const tag = await query;
+		if (tag === null) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"ERROR_TAG_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
-        if (tag === null) {
-            return await ctx.write({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
-        }
-
-        return await ctx.update({
-            components: [
-                ...new TagView(ctx.userTranslations()).tagTopView("general", tag.tagId, tag.tagFriendlyName),
-                ...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;")
-            ],
-            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-
-        })
-    }
+		return await ctx.update({
+			components: [
+				...new TagView(ctx.userTranslations()).tagTopView(
+					"general",
+					tag.tagId,
+					tag.tagFriendlyName,
+				),
+				...new TagView(ctx.userTranslations()).tagGeneral(
+					tag,
+					(await ctx.getDefaultPrefix()) ?? "pb;",
+					ctx.interaction.message.messageReference === undefined,
+				),
+			],
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
 }

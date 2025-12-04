@@ -25,6 +25,7 @@ import {
 	listFromMaskSystems,
 } from "@/lib/privacy-bitmask";
 import { AlertView } from "./alert";
+import { mentionCommand } from "@/lib/mention-command";
 
 export class AlterView extends TranslatedView {
 	alterProfileView(alter: PAlter, external = false) {
@@ -266,6 +267,7 @@ Please select the mode you would like to use below.
 		alter: PAlter,
 		currentGuildName: { name: string; id: string },
 		prefix: string,
+		isApplication: boolean
 	) {
 		const existingName = alter.nameMap.find(
 			(v) => currentGuildName.id === v.server,
@@ -377,7 +379,7 @@ Please select the mode you would like to use below.
 					.addComponents(
 						new TextDisplay().setContent(
 							`You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
--# To view your description in full, run: \`${prefix}edit-alter description ${alter.username}\``,
+-# To view your description in full, run: ${mentionCommand(prefix, "edit-alter description", isApplication, alter.username)}`,
 						),
 					)
 					.setAccessory(

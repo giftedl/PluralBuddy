@@ -67,6 +67,8 @@ export default class SetPronounsButton extends ModalCommand {
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",
+
+					ctx.interaction.message?.messageReference === undefined
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
