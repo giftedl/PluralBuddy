@@ -36,5 +36,5 @@ export function mentionCommand(
 ) {
 	if (isApplicationCommand)
 		return `</${commandName}:${loadedApplicationCommands.find((command) => command.name === commandName)?.id}>`;
-	return `\`${defaultPrefix}${commandName} ${textAdditions}\``;
+	return `\`${defaultPrefix}${commandName}${textAdditions !== undefined ? ` ${textAdditions}` : ""}\``;
 }
