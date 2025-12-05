@@ -1,6 +1,6 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
+import { SubCommand } from "seyfert";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -37,10 +37,8 @@ const options = {
 @Options(options)
 export default class EditTagDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
-		const {
-			"tag-name": tagName,
-			"tag-description": tagDescription,
-		} = ctx.options;
+		const { "tag-name": tagName, "tag-description": tagDescription } =
+			ctx.options;
 
 		const systemId = ctx.author.id;
 		const query = Number.isNaN(Number.parseInt(tagName))
@@ -61,32 +59,32 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 		}
 
 		if (tagDescription === undefined) {
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
 ${tag.tagDescription ?? "⛔ Your tag has no description."}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true);
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				true,
+			);
 		}
 
-			await tagCollection.updateOne(
-				{ tagId: tag.tagId },
-				{ $set: { tagDescription } },
-			);
-		
+		await tagCollection.updateOne(
+			{ tagId: tag.tagId },
+			{ $set: { tagDescription } },
+		);
 
 		return await ctx.write({
 			components: [
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx
-						.userTranslations().ALTER_SUCCESS_DESC.replace(
-							"%alter%",
-							tag.tagFriendlyName,
-						),
+						.userTranslations()
+						.ALTER_SUCCESS_DESC.replace("%alter%", tag.tagFriendlyName),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

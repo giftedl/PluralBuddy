@@ -160,7 +160,7 @@ export const InteractionIdentifier = {
 
                     TagDisplayNameType:       createStatic           ("systems/config/type-form/tag/set-display-name"),
                     TagDisplayNameForm:       createFromAdditionalArg("systems/config/set-form/tag/set-display-name"),
-                    TagColorType:             createStatic           ("systems/config/type-form/tag/set-color"),
+                    TagColorType:             createFromAdditionalArg("systems/config/type-form/tag/set-color"),
                     TagColorForm:             createFromAdditionalArg("systems/config/set-form/tag/set-color"),
                     TagPrivacyType:           createStatic           ("systems/config/type-form/tag/set-privacy"),
                     TagPrivacyForm:           createFromAdditionalArg("systems/config/set-form/tag/set-privacy"),
