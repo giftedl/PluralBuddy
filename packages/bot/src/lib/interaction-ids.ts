@@ -134,14 +134,15 @@ export const InteractionIdentifier = {
                 CreateProxyTag: createFromAdditionalArg("systems/config/alters/create-proxy-tag")
             },
             Tags: {
-                Index: createStatic("systems/config/tags"),
+                Index: createStatic("systems/config/tags/index"),
                 GeneralSettings: createFromAdditionalArg("systems/config/tags/general"),
                 ConfigureTagExternal: createFromAdditionalArg("systems/config/tags/configure-external"),
 
                 SetDisplayName: createFromAdditionalArg("systems/config/tags/set-display"),
                 SetColor: createFromAdditionalArg("systems/config/tags/set-colors"),
                 SetPrivacy: createFromAdditionalArg("systems/config/tags/set-privacy"),
-                SetDescription: createFromAdditionalArg("systems/config/tags/set-description")
+                SetDescription: createFromAdditionalArg("systems/config/tags/set-description"),
+                AssignAlter: createFromAdditionalArg("systems/config/tags/assign-alter")
             },
             PublicProfile: {
                 Index: createStatic("systems/config/public-profile")

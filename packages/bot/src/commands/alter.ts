@@ -68,7 +68,7 @@ export default class SystemCommand extends Command {
 
         return await ctx.ephemeral({
             components: [
-                ...(new AlterView(ctx.userTranslations()).alterProfileView(alter, alter.systemId !== ctx.author.id)),
+                ...(await new AlterView(ctx.userTranslations()).alterProfileView(alter, alter.systemId !== ctx.author.id)),
                 ...(alter.systemId === ctx.author.id ? new AlterView(ctx.userTranslations()).alterConfigureButton(alter) : [])
             ],
             flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),

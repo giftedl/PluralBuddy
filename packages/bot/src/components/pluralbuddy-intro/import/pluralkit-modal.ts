@@ -181,6 +181,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 						id: Number(DiscordSnowflake.generate()).toString(),
 					};
 				}),
+				tagIds: [],
 				public: combine(
 					...[
 						...(member.privacy.visibility === "public"

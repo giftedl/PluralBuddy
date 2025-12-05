@@ -16,7 +16,7 @@ import { TranslatedView } from "./translated-view";
 import type { ColorResolvable } from "seyfert/lib/common";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
-import { emojis } from "../lib/emojis";
+import { emojis, getEmojiFromTagColor } from "../lib/emojis";
 import {
 	friendlyProtectionAlters,
 	friendlyProtectionSystem,
@@ -26,9 +26,21 @@ import {
 } from "@/lib/privacy-bitmask";
 import { AlertView } from "./alert";
 import { mentionCommand } from "@/lib/mention-command";
+import { tagCollection } from "@/mongodb";
+import type { PTag } from "@/types/tag";
 
 export class AlterView extends TranslatedView {
-	alterProfileView(alter: PAlter, external = false) {
+	private async getTags(alter: PAlter) {
+		return {
+			data: await tagCollection
+				.find({ associatedAlters: alter.alterId.toString() })
+				.limit(5)
+				.toArray(),
+			count: alter.tagIds.length,
+		};
+	}
+
+	async alterProfileView(alter: PAlter, external = false) {
 		if (external && !has(AlterProtectionFlags.VISIBILITY, alter.public)) {
 			return new AlertView(this.translations).errorView("INVISIBLE_ALTER");
 		}
@@ -50,32 +62,42 @@ export class AlterView extends TranslatedView {
 		const tagsDisplayable =
 			!external || has(AlterProtectionFlags.TAGS, alter.public);
 
+		let tags: PTag[] = [];
+		let tagCount = 0;
+		if (tagsDisplayable) {
+			const { data, count } = await this.getTags(alter);
+
+			tags = data;
+			tagCount = count;
+		}
+
 		const innerComponents =
 			new TextDisplay().setContent(`${displayNameDisplayable ? `## ${alter.displayName}` : ""}
 ${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : usernameDisplayable ? `-# Also known as @${alter.username}` : ""} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
 ${descriptionDisplayable && alter.description !== null ? "\n" : ""}${descriptionDisplayable ? (alter.description ?? "") : ""}${descriptionDisplayable && alter.description !== null ? "\n" : ""}
 ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}` : ""}
-**Associated to:** <@${alter.systemId}> (${alter.systemId})\n
+**Associated to:** <@${alter.systemId}> (${alter.systemId})
+${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`).join(",  ")}${tags.length !== tagCount ? `, and ${tagCount - tags.length} more...` : ""}\n` : ""}
 -# ID: \`${alter.alterId}\``);
 
 		const comp = new Container().setComponents(
 			!avatarDisplayable || alter.avatarUrl === null
 				? innerComponents
 				: new Section()
-					.setAccessory(
-						new Thumbnail()
-							.setMedia(alter.avatarUrl as string)
-							.setDescription(`${alter.avatarUrl}'s avatar`),
-					)
-					.setComponents(innerComponents),
+						.setAccessory(
+							new Thumbnail()
+								.setMedia(alter.avatarUrl as string)
+								.setDescription(`${alter.avatarUrl}'s avatar`),
+						)
+						.setComponents(innerComponents),
 			...(bannerDisplayable && alter.banner !== null
 				? [
-					new MediaGallery().setItems(
-						new MediaGalleryItem()
-							.setMedia(alter.banner)
-							.setDescription(`${alter.avatarUrl}'s banner`),
-					),
-				]
+						new MediaGallery().setItems(
+							new MediaGalleryItem()
+								.setMedia(alter.banner)
+								.setDescription(`${alter.avatarUrl}'s banner`),
+						),
+					]
 				: []),
 		);
 
@@ -176,9 +198,9 @@ ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMe
 						.addComponents(
 							new TextDisplay().setContent(
 								this.translations.ALTER_SET_PRIVACY_DESC +
-								((alter.public ?? 0) > 0
-									? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionAlters(this.translations, listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``
-									: ""),
+									((alter.public ?? 0) > 0
+										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionAlters(this.translations, listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``
+										: ""),
 							),
 						)
 						.setAccessory(
@@ -267,7 +289,7 @@ Please select the mode you would like to use below.
 		alter: PAlter,
 		currentGuildName: { name: string; id: string },
 		prefix: string,
-		isApplication: boolean
+		isApplication: boolean,
 	) {
 		const existingName = alter.nameMap.find(
 			(v) => currentGuildName.id === v.server,
@@ -297,30 +319,30 @@ Please select the mode you would like to use below.
 					),
 				...(currentGuildName.name !== ""
 					? [
-						new Separator().setSpacing(Spacing.Large),
-						new Section()
-							.addComponents(
-								new TextDisplay().setContent(
-									this.translations.ALTER_SET_SERVER_NAME_DESC.replaceAll(
-										"%server%",
-										`**${currentGuildName.name}**`,
-									).replaceAll(
-										"%name%",
-										existingName?.name ?? alter.displayName,
-									),
-								),
-							)
-							.setAccessory(
-								new Button()
-									.setStyle(ButtonStyle.Secondary)
-									.setLabel(this.translations.ALTER_SET_SERVER_NAME)
-									.setCustomId(
-										InteractionIdentifier.Systems.Configuration.Alters.SetServerDisplayName.create(
-											alter.alterId,
+							new Separator().setSpacing(Spacing.Large),
+							new Section()
+								.addComponents(
+									new TextDisplay().setContent(
+										this.translations.ALTER_SET_SERVER_NAME_DESC.replaceAll(
+											"%server%",
+											`**${currentGuildName.name}**`,
+										).replaceAll(
+											"%name%",
+											existingName?.name ?? alter.displayName,
 										),
 									),
-							),
-					]
+								)
+								.setAccessory(
+									new Button()
+										.setStyle(ButtonStyle.Secondary)
+										.setLabel(this.translations.ALTER_SET_SERVER_NAME)
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.Alters.SetServerDisplayName.create(
+												alter.alterId,
+											),
+										),
+								),
+						]
 					: []),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
