@@ -94,13 +94,15 @@ export const InteractionIdentifier = {
                 PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
                 NextPage: createFromAdditionalArg("systems/config/apg/next"),
                 CreateNewAlter: createStatic("systems/config/apg/create"),
-                HideTopView: createFromAdditionalArg("systems/config/apg/hide-top-view")
+                HideTopView: createFromAdditionalArg("systems/config/apg/hide-top-view"),
+                Search: createFromAdditionalArg("systems/config/apg/search")
             },
             TagPagination: {
                 PreviousPage: createFromAdditionalArg("systems/config/tpg/previous"),
                 NextPage: createFromAdditionalArg("systems/config/tpg/next"),
                 CreateNewTag: createStatic("systems/config/tpg/create"),
-                HideTopView: createFromAdditionalArg("systems/config/tpg/hide-top-view")
+                HideTopView: createFromAdditionalArg("systems/config/tpg/hide-top-view"),
+                Search: createFromAdditionalArg("systems/config/tpg/search")
             },
             AlterAssignPagination: {
                 PreviousPage: createFromAdditionalArg("systems/config/ag/previous"),
@@ -168,6 +170,13 @@ export const InteractionIdentifier = {
                     SearchQueryType:          createStatic           ("systems/config/type-form/ag/search-query"),
                     SearchQueryForm:          createFromAdditionalArg("systems/config/set-form/ag/search-query"),
 
+                },
+
+                TagPagination: {
+
+                    SearchQueryType:          createStatic           ("systems/config/type-form/tpg/search-query"),
+                    SearchQueryForm:          createFromAdditionalArg("systems/config/set-form/tpg/search-query"),
+                    
                 },
 
                 Tags: {

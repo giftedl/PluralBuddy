@@ -124,7 +124,7 @@ export class AlertAssignTagView extends TranslatedView {
 					),
 					new ActionRow().setComponents(
 						new Button()
-							.setStyle(ButtonStyle.Secondary)
+							.setStyle(ButtonStyle.Primary)
 							.setEmoji(emojis.undo)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.create(
@@ -153,7 +153,7 @@ export class AlertAssignTagView extends TranslatedView {
 							)
 							.setStyle(ButtonStyle.Primary),
 						new Button()
-							.setStyle(ButtonStyle.Secondary)
+							.setStyle(ButtonStyle.Primary)
 							.setEmoji(emojis.search)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.AlterAssignPagination.Search.create(

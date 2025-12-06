@@ -16,7 +16,7 @@ import { LoadingView } from "../../views/loading";
 import { writeUserById } from "../../types/user";
 import { AlertView } from "../../views/alert";
 import { buildExportPayload } from "../../lib/export";
-import { alterCollection } from "../../mongodb";
+import { alterCollection, tagCollection } from "../../mongodb";
 
 export default class DeleteSystemButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -71,7 +71,9 @@ export default class DeleteSystemButton extends ComponentCommand {
 			blacklisted: false,
 			storagePrefix: user.storagePrefix
 		});
+		
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
+		await tagCollection.deleteMany({ systemId: ctx.author.id });
 
 		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successView(

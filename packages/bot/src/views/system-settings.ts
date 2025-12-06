@@ -13,7 +13,10 @@ import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import type { PSystem } from "../types/system";
 import { emojis, getEmojiFromTagColor } from "../lib/emojis";
-import { friendlyProtectionSystem, listFromMaskSystems } from "../lib/privacy-bitmask";
+import {
+	friendlyProtectionSystem,
+	listFromMaskSystems,
+} from "../lib/privacy-bitmask";
 import { alterCollection, tagCollection } from "@/mongodb";
 import type { FindCursor, WithId } from "mongodb";
 import type { PAlter } from "@/types/alter";
@@ -30,6 +33,7 @@ export const tagsPagination: {
 	id: string;
 	memoryPage: number;
 	documentCount: number;
+	searchQuery?: string | undefined;
 }[] = [];
 export class SystemSettingsView extends TranslatedView {
 	topView(
@@ -272,7 +276,9 @@ export class SystemSettingsView extends TranslatedView {
 						.setEmoji(emojis.plus)
 						.setStyle(ButtonStyle.Primary)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(pgObj.id),
+							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(
+								pgObj.id,
+							),
 						),
 					new Button()
 						.setLabel("Previous Page")
@@ -300,7 +306,6 @@ export class SystemSettingsView extends TranslatedView {
 		];
 	}
 
-
 	async tagsSettings(system: PSystem, pgObj?: (typeof tagsPagination)[0]) {
 		const tagsPerPage = 5;
 
@@ -321,7 +326,10 @@ export class SystemSettingsView extends TranslatedView {
 
 		const time = Date.now();
 		const tagsCursor = tagCollection
-			.find({ systemId: system.associatedUserId })
+			.find({
+				systemId: system.associatedUserId,
+				tagFriendlyName: { $regex: pgObj?.searchQuery ?? "" },
+			})
 			.limit(tagsPerPage)
 			.skip(((pgObj?.memoryPage ?? 1) - 1) * tagsPerPage);
 
@@ -373,14 +381,16 @@ export class SystemSettingsView extends TranslatedView {
 				}),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)} · Found ${alters.length}/${pgObj.documentCount} tag(s) in ${Date.now() - time}ms`,
+					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)} · Found ${alters.length}/${pgObj.documentCount} tag(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\`` : ""}`,
 				),
 				new ActionRow().setComponents(
 					new Button()
 						.setEmoji(emojis.plus)
 						.setStyle(ButtonStyle.Primary)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(pgObj.id),
+							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(
+								pgObj.id,
+							),
 						),
 					new Button()
 						.setLabel("Previous Page")
@@ -403,6 +413,15 @@ export class SystemSettingsView extends TranslatedView {
 							),
 						)
 						.setStyle(ButtonStyle.Primary),
+
+					new Button()
+						.setStyle(ButtonStyle.Primary)
+						.setEmoji(emojis.search)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.TagPagination.Search.create(
+								pgObj.id,
+							),
+						),
 				),
 			),
 		];

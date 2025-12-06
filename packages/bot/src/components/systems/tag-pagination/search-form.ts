@@ -5,26 +5,27 @@ import {
 	AlertAssignTagView,
 	assignTagPagination,
 } from "@/views/alter-assign-tag";
+import { SystemSettingsView, tagsPagination } from "@/views/system-settings";
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export default class SearchFormModal extends ModalCommand {
 	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.AlterAssignPagination.SearchQueryForm.startsWith(
+		return InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryForm.startsWith(
 			context.customId,
 		);
 	}
 
 	override async run(ctx: ModalContext) {
 		const paginationToken =
-			InteractionIdentifier.Systems.Configuration.FormSelection.AlterAssignPagination.SearchQueryForm.substring(
+			InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryForm.substring(
 				ctx.customId,
 			)[0];
-		const corresponding = assignTagPagination.find(
+		const corresponding = tagsPagination.find(
 			(v) => v.id === paginationToken,
 		);
 		const searchQuery = ctx.interaction.getInputValue(
-			InteractionIdentifier.Systems.Configuration.FormSelection.AlterAssignPagination.SearchQueryType.create(),
+			InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryType.create(),
 			true,
 		);
 
@@ -43,7 +44,7 @@ export default class SearchFormModal extends ModalCommand {
 			return await ctx.write({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
-						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
+						"ERROR_TAG_PAGINATION_TOO_OLD",
 					),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -51,7 +52,7 @@ export default class SearchFormModal extends ModalCommand {
 		}
 
 		// Remove the item from the array
-		assignTagPagination.splice(
+		tagsPagination.splice(
 			assignTagPagination.findIndex((v) => v.id === corresponding.id),
 			1,
 		);
@@ -68,13 +69,12 @@ export default class SearchFormModal extends ModalCommand {
         corresponding.memoryPage = 1;
 
 		// Re-add it to the array
-		assignTagPagination.push(corresponding);
+		tagsPagination.push(corresponding);
 
 		return await ctx.interaction.update({
 			components: [
-				...(await new AlertAssignTagView(ctx.userTranslations()).alterAssignTag(
+				...(await new SystemSettingsView(ctx.userTranslations()).tagsSettings(
 					user.system,
-					undefined,
 					corresponding,
 				)),
 			],
