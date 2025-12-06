@@ -64,7 +64,7 @@ export default createEvent({
 		);
 
 		if (
-			(!userPerms.has(["ManageWebhooks", "ManageMessages"])) &&
+			!userPerms.has(["ManageWebhooks", "ManageMessages"]) &&
 			!userPerms.has(["ManageNicknames"])
 		)
 			return;
@@ -79,18 +79,6 @@ export default createEvent({
 		const user = await getUserById(message.author.id);
 		let webhook = null;
 
-		if (similarWebhooks.length >= 1) {
-			webhook = similarWebhooks[0];
-		} else {
-			webhook = await client.webhooks.create(message.channelId, {
-				name: "PluralBuddy Proxy",
-			});
-		}
-
-		if (webhook === null || webhook === undefined) {
-			return;
-		}
-
 		if (user.system === undefined) return;
 		if (user.system.alterIds.length === 0) return;
 
@@ -98,15 +86,6 @@ export default createEvent({
 
 		outer: for (let i = 0; i < user.system.alterIds.length; i++) {
 			const checkAlter = await alters.next();
-			const referencedMessage =
-				message.referencedMessage === undefined ||
-				message.referencedMessage === null
-					? []
-					: [
-							new TextDisplay().setContent(
-								await getReferencedMessageString(message, webhook.id),
-							),
-						];
 
 			for (const proxyTag of checkAlter?.proxyTags ?? []) {
 				if (
@@ -158,6 +137,28 @@ export default createEvent({
 						checkAlter?.alterMode === "both" ||
 						checkAlter?.alterMode === "webhook"
 					) {
+						if (similarWebhooks.length >= 1) {
+							webhook = similarWebhooks[0];
+						} else {
+							webhook = await client.webhooks.create(message.channelId, {
+								name: "PluralBuddy Proxy"
+							});
+						}
+
+						if (webhook === null || webhook === undefined) {
+							return;
+						}
+
+						const referencedMessage =
+							message.referencedMessage === undefined ||
+							message.referencedMessage === null
+								? []
+								: [
+										new TextDisplay().setContent(
+											await getReferencedMessageString(message, webhook.id),
+										),
+									];
+
 						if (!userPerms.has(["ManageWebhooks", "ManageMessages"])) return;
 
 						let contents = message.content;

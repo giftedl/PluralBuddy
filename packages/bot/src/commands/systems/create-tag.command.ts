@@ -1,6 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { getEmojiFromTagColor } from "@/lib/emojis";
+import { mentionCommand } from "@/lib/mention-command";
 import { tagCollection } from "@/mongodb";
 import { PTagObject, tagColors } from "@/types/tag";
 import { getUserById, writeUserById } from "@/types/user";
@@ -116,7 +117,7 @@ ${z.prettifyError(tag.error)}
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx
 						.userTranslations()
-						.CREATE_NEW_TAG_DONE.replace("%prefix%", server.prefixes[0] ?? "/")
+						.CREATE_NEW_TAG_DONE.replace("%command%", mentionCommand((await ctx.getDefaultPrefix()) ?? "pb;", "tag", ctx.message === undefined, tag.data.tagFriendlyName))
 						.replaceAll("%tag_name%", tag.data.tagFriendlyName)
 						.replace("%color_emoji%", getEmojiFromTagColor(color)),
 				),

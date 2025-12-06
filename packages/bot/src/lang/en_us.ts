@@ -84,7 +84,7 @@ Systems can have **privacy values** which are values that describe who can see w
     PLURALBUDDY_OPTIONS_ERROR: "There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
 
     CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
-    CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use `%prefix%tag %tag_name%` for more details.",
+    CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use %command% for more details.",
     TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
     TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
 
@@ -217,7 +217,7 @@ Systems can have **privacy values** which are values that describe who can see w
 > %linein% Programmed w/ :heart_hands: by @giftedly 
 > %lineright% Art by %catjamming% @raincloudzy`,
 
-    TAG_ASSIGN_ALTER: "Assign Alter",
+    TAG_ASSIGN_ALTER: "Assign Tag",
     TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
     ASSIGNED_TAG: "**%tag%** has been successfully assigned to **@%alter%**.",
     FORBIDDEN: "You do not have permission on this server to do this action.",

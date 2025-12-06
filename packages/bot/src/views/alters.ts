@@ -197,6 +197,23 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 					new Section()
 						.addComponents(
 							new TextDisplay().setContent(
+								`You can assign an unlimited amount of tags to an alter and an unlimited amount of alters to a tag.`,
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Secondary)
+								.setLabel(this.translations.TAG_ASSIGN_ALTER)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Tags.AssignAlter.create(
+										alter.alterId,
+									),
+								),
+						),
+					new Separator(),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(
 								this.translations.ALTER_SET_PRIVACY_DESC +
 									((alter.public ?? 0) > 0
 										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionAlters(this.translations, listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``

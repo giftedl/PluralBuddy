@@ -102,6 +102,11 @@ export const InteractionIdentifier = {
                 CreateNewTag: createStatic("systems/config/tpg/create"),
                 HideTopView: createFromAdditionalArg("systems/config/tpg/hide-top-view")
             },
+            AlterAssignPagination: {
+                PreviousPage: createFromAdditionalArg("systems/config/ag/previous"),
+                NextPage: createFromAdditionalArg("systems/config/ag/next"),
+                ToggleAssign: new InteractionObj("systems/config/ag/toggle-assign-", (paginationToken: string, tagId: string) => `systems/config/ag/toggle-assign-${paginationToken}-${tagId}`),
+            },
             
             Alters: {
                 Index: createStatic("systems/config/alters"),

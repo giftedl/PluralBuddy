@@ -169,23 +169,6 @@ ${
 									),
 								),
 						),
-					new Separator().setSpacing(Spacing.Small),
-					new Section()
-						.addComponents(
-							new TextDisplay().setContent(
-								`You can assign an unlimited amount of tags to an alter and an unlimited amount of alters to a tag.`,
-							),
-						)
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.TAG_ASSIGN_ALTER)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.Tags.AssignAlter.create(
-										tag.tagId,
-									),
-								),
-						),
 				)
 				.setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
 		];
