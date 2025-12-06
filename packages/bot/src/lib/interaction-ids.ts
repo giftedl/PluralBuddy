@@ -166,17 +166,19 @@ export const InteractionIdentifier = {
                 NicknameForm: createFromAdditionalArg("systems/config/set-form/nickname"),
 
                 AlterAssignPagination: {
-
                     SearchQueryType:          createStatic           ("systems/config/type-form/ag/search-query"),
                     SearchQueryForm:          createFromAdditionalArg("systems/config/set-form/ag/search-query"),
+                },
 
+                AlterPagination: {
+                    SearchQueryValueType:     createStatic           ("systems/config/type-form/apg/search-type"),
+                    SearchQueryType:          createStatic           ("systems/config/type-form/apg/search-query"),
+                    SearchQueryForm:          createFromAdditionalArg("systems/config/set-form/apg/search-query"),
                 },
 
                 TagPagination: {
-
                     SearchQueryType:          createStatic           ("systems/config/type-form/tpg/search-query"),
                     SearchQueryForm:          createFromAdditionalArg("systems/config/set-form/tpg/search-query"),
-                    
                 },
 
                 Tags: {

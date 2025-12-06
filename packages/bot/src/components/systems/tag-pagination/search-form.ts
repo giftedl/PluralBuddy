@@ -1,10 +1,6 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import {
-	AlertAssignTagView,
-	assignTagPagination,
-} from "@/views/alter-assign-tag";
 import { SystemSettingsView, tagsPagination } from "@/views/system-settings";
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -53,7 +49,7 @@ export default class SearchFormModal extends ModalCommand {
 
 		// Remove the item from the array
 		tagsPagination.splice(
-			assignTagPagination.findIndex((v) => v.id === corresponding.id),
+			tagsPagination.findIndex((v) => v.id === corresponding.id),
 			1,
 		);
 

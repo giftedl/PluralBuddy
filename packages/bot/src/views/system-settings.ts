@@ -27,6 +27,8 @@ export const alterPagination: {
 	id: string;
 	memoryPage: number;
 	documentCount: number;
+	searchQuery?: string | undefined;
+	queryType?: "username" | "display-name" | undefined;
 }[] = [];
 
 export const tagsPagination: {
@@ -217,7 +219,14 @@ export class SystemSettingsView extends TranslatedView {
 
 		const time = Date.now();
 		const altersCursor = alterCollection
-			.find({ systemId: system.associatedUserId })
+			.find({
+				systemId: system.associatedUserId,
+				...(pgObj?.queryType === "display-name"
+					? { displayName: { $regex: pgObj?.searchQuery ?? "" } }
+					: pgObj?.queryType === "username"
+						? { username: { $regex: pgObj?.searchQuery ?? "" } }
+						: {}),
+			})
 			.limit(altersPerPage)
 			.skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
 
@@ -235,7 +244,6 @@ export class SystemSettingsView extends TranslatedView {
 				documentCount,
 			});
 
-			// biome-ignore lint/style/noParameterAssign: not really any other way to do it.
 			pgObj = {
 				id: String(pgId),
 				memoryPage: 1,
@@ -269,7 +277,7 @@ export class SystemSettingsView extends TranslatedView {
 				}),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms`,
+					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})` : ""}`,
 				),
 				new ActionRow().setComponents(
 					new Button()
@@ -301,6 +309,15 @@ export class SystemSettingsView extends TranslatedView {
 							),
 						)
 						.setStyle(ButtonStyle.Primary),
+
+					new Button()
+						.setStyle(ButtonStyle.Primary)
+						.setEmoji(emojis.search)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.Search.create(
+								pgObj.id,
+							),
+						),
 				),
 			),
 		];
@@ -347,7 +364,6 @@ export class SystemSettingsView extends TranslatedView {
 				documentCount,
 			});
 
-			// biome-ignore lint/style/noParameterAssign: not really any other way to do it.
 			pgObj = {
 				id: String(pgId),
 				memoryPage: 1,

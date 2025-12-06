@@ -174,6 +174,10 @@ Systems can have **privacy values** which are values that describe who can see w
 
     SEARCH_FORM_TITLE: "Searching Resources",
     SEARCH_QUERY: "Search Query",
+    SEARCH_QUERY_VALUE: "Search Query Value",
+    SEARCH_QUERY_VALUE_DESC: "You can pick to query different values.",
+    SEARCH_QUERY_DISPLAY_NAME: "Display Name",
+    SEARCH_QUERY_USERNAME: "Username",
     SEARCH_REG_EXPRESSIONS: "You can use regular expressions here.",
 
     ALTER_SET_COLOR: "Set Alter Color",
