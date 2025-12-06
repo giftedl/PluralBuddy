@@ -9,7 +9,8 @@ import { mentionCommand } from "@/lib/mention-command";
 @Declare({
     name: "about",
     description: "PluralBuddy!",
-    contexts: ["BotDM", "Guild"]
+    contexts: ["BotDM", "Guild"],
+    aliases: ["info"]
 })
 export default class SystemCommand extends Command {
     override async run(ctx: CommandContext) {
