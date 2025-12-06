@@ -34,7 +34,7 @@ export default class PreviousPageAlterAssigning extends ComponentCommand {
 			return await ctx.write({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
-						"ERROR_PAGINATION_TOO_OLD",
+						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

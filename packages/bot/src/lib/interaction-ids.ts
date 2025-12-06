@@ -106,6 +106,7 @@ export const InteractionIdentifier = {
                 PreviousPage: createFromAdditionalArg("systems/config/ag/previous"),
                 NextPage: createFromAdditionalArg("systems/config/ag/next"),
                 ToggleAssign: new InteractionObj("systems/config/ag/toggle-assign-", (paginationToken: string, tagId: string) => `systems/config/ag/toggle-assign-${paginationToken}-${tagId}`),
+                Search: createFromAdditionalArg("systems/config/ag/search")
             },
             
             Alters: {
@@ -161,6 +162,14 @@ export const InteractionIdentifier = {
                 ProxyForm: createFromAdditionalArg("systems/config/set-form/proxy"),
                 NicknameType: createStatic("systems/config/type-form/nickname"),
                 NicknameForm: createFromAdditionalArg("systems/config/set-form/nickname"),
+
+                AlterAssignPagination: {
+
+                    SearchQueryType:          createStatic           ("systems/config/type-form/ag/search-query"),
+                    SearchQueryForm:          createFromAdditionalArg("systems/config/set-form/ag/search-query"),
+
+                },
+
                 Tags: {
                     CreateNewTagForm: createStatic("systems/config/form/tag"),
 

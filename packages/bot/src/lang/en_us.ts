@@ -39,6 +39,7 @@ Systems can have **privacy values** which are values that describe who can see w
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
     ERROR_PAGINATION_TOO_OLD: "That alter pagination component is too old, you cannot proceed. Please hit the \"Alters\" tab at the top of the message to reset the pagination.",
     ERROR_TAG_PAGINATION_TOO_OLD: "That tag pagination component is too old, you cannot proceed. Please hit the \"Tags\" tab at the top of the message to reset the pagination.",
+    ERROR_ASSIGN_PAGINATION_TOO_OLD: "That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
     ERROR_NO_ALTERS: "You have no alters! Create one below!",
     ERROR_NO_TAGS: "You have no tags! Create one below!",
     PK_IMPORT_START: "## PluralKit Importing",
@@ -170,6 +171,10 @@ Systems can have **privacy values** which are values that describe who can see w
     TAG_COLOR_fuchsia: "fuchsia",
     TAG_COLOR_pink:   "pink",
     TAG_COLOR_rose:   "rose",
+
+    SEARCH_FORM_TITLE: "Searching Resources",
+    SEARCH_QUERY: "Search Query",
+    SEARCH_REG_EXPRESSIONS: "You can use regular expressions here.",
 
     ALTER_SET_COLOR: "Set Alter Color",
     DELETE_ALTER: "Delete Alter",

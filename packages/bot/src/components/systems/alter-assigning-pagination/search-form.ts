@@ -1,29 +1,33 @@
-import { ComponentCommand, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { tagCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import {
 	AlertAssignTagView,
 	assignTagPagination,
 } from "@/views/alter-assign-tag";
-import { AlertView } from "@/views/alert";
+import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
-export default class NextPagePagination extends ComponentCommand {
-	componentType = "Button" as const;
-
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.AlterAssignPagination.NextPage.startsWith(
+export default class SearchFormModal extends ModalCommand {
+	override filter(context: ModalContext) {
+		return InteractionIdentifier.Systems.Configuration.FormSelection.AlterAssignPagination.SearchQueryForm.startsWith(
 			context.customId,
 		);
 	}
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
+	override async run(ctx: ModalContext) {
 		const paginationToken =
-			InteractionIdentifier.Systems.Configuration.AlterAssignPagination.NextPage.substring(
+			InteractionIdentifier.Systems.Configuration.FormSelection.AlterAssignPagination.SearchQueryForm.substring(
 				ctx.customId,
 			)[0];
 		const corresponding = assignTagPagination.find(
 			(v) => v.id === paginationToken,
 		);
+		const searchQuery = ctx.interaction.getInputValue(
+			InteractionIdentifier.Systems.Configuration.FormSelection.AlterAssignPagination.SearchQueryType.create(),
+			true,
+		);
+
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
@@ -34,8 +38,6 @@ export default class NextPagePagination extends ComponentCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-
-		console.log(corresponding);
 
 		if (corresponding === undefined) {
 			return await ctx.write({
@@ -55,12 +57,19 @@ export default class NextPagePagination extends ComponentCommand {
 		);
 
 		// Increment its page
-		corresponding.memoryPage += 1;
+		corresponding.searchQuery = searchQuery as string;
+
+        const documentCount = await tagCollection.countDocuments({
+            systemId: user.system.associatedUserId,
+            tagFriendlyName: { $regex: searchQuery as string },
+        });
+
+        corresponding.documentCount = documentCount;
 
 		// Re-add it to the array
 		assignTagPagination.push(corresponding);
 
-		return await ctx.update({
+		return await ctx.interaction.update({
 			components: [
 				...(await new AlertAssignTagView(ctx.userTranslations()).alterAssignTag(
 					user.system,
