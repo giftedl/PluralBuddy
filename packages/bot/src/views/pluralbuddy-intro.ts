@@ -16,7 +16,10 @@ import type { PGuild } from "../types/guild";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import { createdSystems } from "../components/pluralbuddy-intro/create-new-system";
-import { friendlyProtectionSystem, listFromMaskSystems } from "../lib/privacy-bitmask";
+import {
+	friendlyProtectionSystem,
+	listFromMaskSystems,
+} from "../lib/privacy-bitmask";
 import { TranslatedView } from "./translated-view";
 import { emojis } from "@/lib/emojis";
 
@@ -242,25 +245,42 @@ export class PluralBuddyIntro extends TranslatedView {
 		const textContainer = new Container();
 		const paginationContainer = new Container();
 
-        textContainer.setComponents(
-            new TextDisplay().setContent(this.translations.PK_IMPORT_START),
-            new Separator().setSpacing(Spacing.Large),
-            new TextDisplay().setContent(`### Step 1: Export PluralKit system contents
-You must export your system JSON file from PluralKit to import into PluralBuddy. To do this, either send \`pk;export\` in a server with PluralKit apart of it or just direct message <@466378653216014359> and send \`pk;export\` as a message.`),        
-            new Separator(),
-            new Section()
-            .setComponents(
-                new TextDisplay().setContent(`### Step 2: Import system contents
-Please download the JSON file sent to you and use the button to upload the attachment to PluralBuddy.`)
-            )
-            .setAccessory(
-                new Button()
-                    .setCustomId(InteractionIdentifier.Setup.PluralKitImport.UploadAttachment.create())
-                    .setEmoji(emojis.plus)
-                    .setLabel("Upload Contents")
-                    .setStyle(ButtonStyle.Primary)
-            )
-        )
+		textContainer.setComponents(
+			new TextDisplay().setContent(this.translations.PK_IMPORT_START),
+			new Separator().setSpacing(Spacing.Large),
+			new TextDisplay().setContent(`### Step 1: Export PluralKit system contents
+You must export your system JSON file from PluralKit to import into PluralBuddy. To do this, either send \`pk;export\` in a server with PluralKit apart of it or just direct message <@466378653216014359> and send \`pk;export\` as a message.`),
+			new Separator(),
+			new Section()
+				.setComponents(
+					new TextDisplay().setContent(`### Step 2: Import system contents
+Please download the JSON file sent to you and use the button to upload the attachment to PluralBuddy.`),
+				)
+				.setAccessory(
+					new Button()
+						.setCustomId(
+							InteractionIdentifier.Setup.PluralKitImport.UploadAttachment.create(),
+						)
+						.setEmoji(emojis.plus)
+						.setLabel("Upload Contents")
+						.setStyle(ButtonStyle.Primary),
+				),
+			new Separator(),
+			new Section()
+				.setComponents(
+					new TextDisplay().setContent(
+						`-# If you are on mobile, you can upload the raw data below.`,
+					),
+				)
+				.setAccessory(
+					new Button()
+						.setCustomId(
+							InteractionIdentifier.Setup.PluralKitImport.RawText.create(),
+						)
+						.setLabel("Upload Raw Text")
+						.setStyle(ButtonStyle.Secondary),
+				),
+		);
 
 		paginationContainer.setComponents([
 			new TextDisplay().setContent(
@@ -270,7 +290,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 				new Button()
 					.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
 					.setStyle(ButtonStyle.Secondary)
-					.setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+					.setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create()),
 			]),
 		]);
 

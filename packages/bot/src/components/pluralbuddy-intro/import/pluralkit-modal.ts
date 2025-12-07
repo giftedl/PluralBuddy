@@ -39,35 +39,43 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
+		let fileData = "";
+
 		const file = ctx.interaction.getFiles(
 			InteractionIdentifier.Setup.FormSelection.PkType.create(),
-			true,
-		)[0];
-		if (!file) {
-			throw new Error("?");
-		}
+		);
 
-		const MAX_FILE_SIZE = 2 * 1024 * 1024;
-		if (file.size > MAX_FILE_SIZE) {
-			return await ctx.editResponse({
-				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
-						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
-					),
-					new ActionRow().addComponents(
-						new Button()
-							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
-							.setCustomId(
-								InteractionIdentifier.Setup.Pagination.Page2.create(),
-							)
-							.setStyle(ButtonStyle.Secondary),
-					),
-				],
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+		if (file === undefined || file[0] === undefined) {
+			fileData = ctx.interaction.getInputValue(
+				InteractionIdentifier.Setup.FormSelection.PkRawTextType.create(),
+			) as string;
+		} else {
+			if (!file) {
+				throw new Error("?");
+			}
 
-		const fileData = await (await fetch(file.url)).text();
+			const MAX_FILE_SIZE = 2 * 1024 * 1024;
+			if (file[0].size > MAX_FILE_SIZE) {
+				return await ctx.editResponse({
+					components: [
+						...new AlertView(ctx.userTranslations()).errorView(
+							"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
+						),
+						new ActionRow().addComponents(
+							new Button()
+								.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
+								.setCustomId(
+									InteractionIdentifier.Setup.Pagination.Page2.create(),
+								)
+								.setStyle(ButtonStyle.Secondary),
+						),
+					],
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				});
+			}
+
+			fileData = await (await fetch(file[0].url)).text();
+		}
 		try {
 			JSON.parse(fileData);
 		} catch (error) {
@@ -165,7 +173,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				zodData: PAlterObject.safeParse({
 					alterId: Number(DiscordSnowflake.generate({ processId: BigInt(i) })),
 					systemId: ctx.author.id,
-					username: member.name,
+					username: member.name.replaceAll(" ", "").replaceAll("/", "").replaceAll("\\", "").replaceAll("@", ""),
 					displayName: member.display_name ?? member.name,
 					nameMap: [],
 					color: member.color,

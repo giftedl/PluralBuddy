@@ -243,9 +243,11 @@ export const InteractionIdentifier = {
             ImportType: createStatic("setup/create-new-system/type-form/import"),
             PkForm: createStatic("setup/create-new-system/set-form/pk-import"),
             PkType: createStatic("setup/create-new-system/type-form/pk-import"),
+            PkRawTextType: createStatic("setup/create-new-system/type-form/pk-raw-text")
         },
         PluralKitImport: {
-            UploadAttachment: createStatic("setup/pk-import/upload")
+            UploadAttachment: createStatic("setup/pk-import/upload"),
+            RawText: createStatic("setup/pk-import/text")
         },
         ImportSelection: {
             Index: createStatic("setup/import-select"),
