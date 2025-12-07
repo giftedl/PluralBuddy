@@ -70,7 +70,7 @@ export default class NameCNS extends ComponentCommand {
 							"%command1%",
 							mentionCommand(
 								(await ctx.getDefaultPrefix()) ?? "",
-								"system new-alter",
+								"system create-alter",
 								ctx.interaction.message.messageReference === undefined,
 								"%username% %display name%",
 							),
@@ -78,7 +78,7 @@ export default class NameCNS extends ComponentCommand {
 							"%command2%",
 							mentionCommand(
 								(await ctx.getDefaultPrefix()) ?? "",
-								"system new-tag",
+								"system create-tag",
 								ctx.interaction.message.messageReference === undefined,
 								"%name%",
 							),

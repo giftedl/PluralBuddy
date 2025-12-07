@@ -37,7 +37,7 @@ export const PSystemObject = z.object({
     systemOperationDM: z.boolean().default(true),
 
     public: z.number(),
-    subAccounts: z.array(z.string())
+    subAccounts: z.array(z.string()).catch([])
 })
 
 export type PSystem = z.infer<typeof PSystemObject>

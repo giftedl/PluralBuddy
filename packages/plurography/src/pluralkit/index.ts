@@ -73,4 +73,16 @@ export const PluralKitSystem = z.object({
         timestamp: z.coerce.date(),
         members: z.string().array(),
     }))
-})
+}).refine((data) => {
+    // Check that all members have unique ids
+    const memberNames = data.members.map(member => member.id?.toLowerCase?.().trim?.() ?? "");
+    const uniqueMemberNames = new Set(memberNames);
+
+    return memberNames.length === uniqueMemberNames.size;
+}, { error: "All members must be unique" }).refine((data) => {
+    // Check that all groups have unique ids
+    const groupNames = data.groups.map(group => group.id?.toLowerCase?.().trim?.() ?? "");
+    const uniqueGroupNames = new Set(groupNames);
+
+    return groupNames.length === uniqueGroupNames.size;
+}, { error: "All groups must be unique" })

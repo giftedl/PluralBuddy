@@ -196,6 +196,7 @@ Systems can have **privacy values** which are values that describe who can see w
     PFP_SUCCESS: "Successfully updated the profile picture for @%alter%.",
     BANNER_SUCCESS: "Successfully updated the banner for @%alter%.",
     RENAME_SUCCESS: "Successfully updated the username for @%alter%.",
+    TAG_RENAME_SUCCESS: "Successfully updated the display name for %tag%.",
     DN_SUCCESS: "Successfully updated the display name for @%alter% to %new-display%.",
     DN_SUCCESS_SS: "Successfully updated the display name for @%alter% to %new-display% **in %server%**.",
     COLOR_SUCCESS: "Successfully updated the color for @%alter%.",

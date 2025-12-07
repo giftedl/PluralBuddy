@@ -32,7 +32,7 @@ export class AlertAssignTagView extends TranslatedView {
 	) {
 		const tagsPerPage = 5;
 
-		if (system.alterIds.length === 0) {
+		if (system.tagIds.length === 0) {
 			return [
 				...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
 				new ActionRow().setComponents(

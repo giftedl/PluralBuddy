@@ -326,7 +326,7 @@ export class SystemSettingsView extends TranslatedView {
 	async tagsSettings(system: PSystem, pgObj?: (typeof tagsPagination)[0]) {
 		const tagsPerPage = 5;
 
-		if (system.alterIds.length === 0) {
+		if (system.tagIds.length === 0) {
 			return [
 				...this.topView("tags", system.associatedUserId),
 				...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
