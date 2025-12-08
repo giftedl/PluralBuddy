@@ -217,9 +217,13 @@ export const InteractionIdentifier = {
                 }
             }
         },
-        UndoOperation: createFromAdditionalArg("systems/undo-operation")
+        UndoOperation: createFromAdditionalArg("systems/undo-operation"),
+        AutoProxy: {
+            Off: createFromAdditionalArg("systems/auto-proxy/off")
+        },
     },
     Setup: {
+        ToggleDisableSystem: createStatic("setup/toggle-disable-system"),
         RemoveOldSystem: createStatic("setup/remove-old-system"),
         Pagination: {
             Page1: createStatic("previous-page/pluralbuddy-intro/1"),

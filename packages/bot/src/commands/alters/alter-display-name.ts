@@ -124,15 +124,12 @@ ${alter.displayName}
 				await alterCollection.updateOne(
 					{ alterId: Number(alter.alterId), systemId },
 					{
-						$set: {
-							nameMap: [
-								...alter.nameMap,
-								{
-									server: ctx.guildId as string,
-									name: alterNewName as string,
-								},
-							],
-						},
+						$push: {
+							nameMap: {
+								server: ctx.guildId as string,
+								name: alterNewName as string,
+							}
+						}
 					},
 				);
 			}

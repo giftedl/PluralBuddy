@@ -1,49 +1,29 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import {
-	ActionRow,
-	Attachment,
-	Button,
-	Container,
-	createEvent,
-	Separator,
-	TextDisplay,
-} from "seyfert";
-import {
-	ButtonStyle,
-	MessageFlags,
-	PermissionFlagsBits,
-	Spacing,
-} from "seyfert/lib/types";
+import { createEvent } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { getUserById } from "../types/user";
 import { alterCollection } from "../mongodb";
-import { BitField } from "seyfert/lib/structures/extra/BitField";
-import { InteractionIdentifier } from "../lib/interaction-ids";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { getReferencedMessageString } from "../lib/proxying/referenced-message";
-import { proxy } from "@/lib/proxying";
-import { processEmojis } from "../lib/proxying/process-emojis";
-import { defaultPrefixes } from "@/types/guild";
 import { AlertView } from "@/views/alert";
-
-function listStartsWith(string: string, list: string[]) {
-	for (const item of list) if (string.startsWith(item)) return true;
-	return false;
-}
+import {
+	performTagProxy,
+	proxyTagValid,
+} from "@/lib/proxying/types/tag-proxying";
+import type { PAlter } from "@/types/alter";
+import {
+	getSimilarWebhooks,
+	isValidDm,
+	notValidPermissions,
+	startsWithPrefix,
+} from "@/lib/proxying/util";
+import { performAlterAutoProxy } from "@/lib/proxying/types/alter-ap";
 
 export default createEvent({
 	data: { name: "messageCreate", once: false },
-	run: async (message, client) => {
+	run: async (message) => {
 		if (message.author.bot === true) return;
-		if (
-			(await message.channel()).isDM() &&
-			!listStartsWith(
-				message.content,
-				defaultPrefixes[
-					(process.env.BRANCH as "production" | "canary") ?? "production"
-				],
-			)
-		) {
+		if (startsWithPrefix(message)) return;
+		if (await isValidDm(message)) {
 			message.reply({
 				components: [
 					// @ts-ignore
@@ -57,147 +37,73 @@ export default createEvent({
 		}
 		if ((await message.channel()).isDM()) return;
 
-		const userPerms = await client.channels.memberPermissions(
-			message.channelId,
-			await client.members.fetch(message.guildId as string, client.botId),
-			true,
-		);
+		if (await notValidPermissions(message)) return;
 
-		if (
-			!userPerms.has(["ManageWebhooks", "ManageMessages"]) &&
-			!userPerms.has(["ManageNicknames"])
-		)
-			return;
-
-		const similarWebhooks = (
-			await client.webhooks.listFromChannel(message.channelId)
-		).filter(
-			(val) =>
-				val.name === "PluralBuddy Proxy" &&
-				(val.user ?? { id: 0 }).id === client.botId,
-		);
+		const similarWebhooks = await getSimilarWebhooks(message);
 		const user = await getUserById(message.author.id);
-		let webhook = null;
 
 		if (user.system === undefined) return;
+		if (
+			user.system.systemAutoproxy.some(
+				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
+			)
+		) {
+			const alter = user.system.systemAutoproxy.find(
+				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
+			)?.autoproxyAlter;
+
+			if (alter) {
+				const fetchedAlter = await alterCollection.findOne({
+					alterId: Number(alter),
+					systemId: message.author.id,
+				});
+
+				if (fetchedAlter)
+					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user);
+			}
+		}
+
 		if (user.system.alterIds.length === 0) return;
+		if (user.system.disabled) return;
 
 		const alters = alterCollection.find({ systemId: message.author.id });
 
+		// Only find the alters that we need
 		outer: for (let i = 0; i < user.system.alterIds.length; i++) {
 			const checkAlter = await alters.next();
 
 			for (const proxyTag of checkAlter?.proxyTags ?? []) {
-				if (
-					(proxyTag.suffix !== "" &&
-						message.content.endsWith(proxyTag.suffix)) ||
-					(proxyTag.prefix !== "" &&
-						message.content.startsWith(proxyTag.prefix))
-				) {
-					alterCollection.updateOne(
-						{ alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
-						{
-							$inc: { messageCount: 1 },
-							$set: { lastMessageTimestamp: new Date() },
-						},
+				if (proxyTagValid(proxyTag, message)) {
+					performTagProxy(
+						checkAlter as PAlter,
+						user,
+						similarWebhooks,
+						proxyTag,
+						message,
 					);
-
-					if (
-						checkAlter?.alterMode === "both" ||
-						checkAlter?.alterMode === "nickname"
-					) {
-						const sendingUserPerms = await client.channels.memberPermissions(
-							message.channelId,
-							await client.members.fetch(
-								message.guildId as string,
-								message.user.id,
-							),
-							true,
-						);
-
-						if (!sendingUserPerms.has(["ChangeNickname"])) return;
-
-						if (
-							!userPerms.has(["ManageNicknames"]) ||
-							!(await message.member?.moderatable())
-						)
-							return;
-
-						const systemFormat = user.system.nicknameFormat ?? "@%username%";
-
-						message.member?.edit({
-							nick: systemFormat
-								.replace("%username%", checkAlter.username)
-								.replace("%display%", checkAlter.displayName)
-								.substring(0, 31),
-						});
-					}
-
-					if (
-						checkAlter?.alterMode === "both" ||
-						checkAlter?.alterMode === "webhook"
-					) {
-						if (similarWebhooks.length >= 1) {
-							webhook = similarWebhooks[0];
-						} else {
-							webhook = await client.webhooks.create(message.channelId, {
-								name: "PluralBuddy Proxy"
-							});
-						}
-
-						if (webhook === null || webhook === undefined) {
-							return;
-						}
-
-						const referencedMessage =
-							message.referencedMessage === undefined ||
-							message.referencedMessage === null
-								? []
-								: [
-										new TextDisplay().setContent(
-											await getReferencedMessageString(message, webhook.id),
-										),
-									];
-
-						if (!userPerms.has(["ManageWebhooks", "ManageMessages"])) return;
-
-						let contents = message.content;
-						if (proxyTag.prefix && contents.startsWith(proxyTag.prefix)) {
-							contents = contents.slice(proxyTag.prefix.length);
-						}
-						if (proxyTag.suffix && contents.endsWith(proxyTag.suffix)) {
-							contents = contents.slice(
-								0,
-								contents.length - proxyTag.suffix.length,
-							);
-						}
-
-						const trimmedContents = contents.trim();
-
-						const { emojis: uploadedEmojis, newMessage: processedContents } =
-							await processEmojis(trimmedContents);
-
-						const messageComponents = [
-							new TextDisplay().setContent(processedContents),
-						];
-
-						proxy(
-							webhook,
-							client,
-							message,
-							processedContents,
-							`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""} ${user.system.systemDisplayTag ?? ""}`,
-							checkAlter?.alterId as number,
-							checkAlter?.systemId as string,
-							[...referencedMessage],
-							messageComponents,
-							uploadedEmojis,
-							checkAlter?.avatarUrl ?? undefined,
-						);
-					}
 
 					break outer;
 				}
+			}
+		}
+
+		if (
+			user.system.systemAutoproxy.some(
+				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
+			)
+		) {
+			const alter = user.system.systemAutoproxy.find(
+				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
+			)?.autoproxyAlter;
+
+			if (alter) {
+				const fetchedAlter = await alterCollection.findOne({
+					alterId: Number(alter),
+					systemId: message.author.id,
+				});
+
+				if (fetchedAlter)
+					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user);
 			}
 		}
 	},

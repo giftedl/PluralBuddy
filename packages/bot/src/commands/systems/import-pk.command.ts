@@ -1,5 +1,7 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import type { CommandContext } from "seyfert";
+import { SubCommand, Declare, createAttachmentOption, Options } from "seyfert";
 import {
 	ComponentCommand,
 	ModalCommand,
@@ -10,11 +12,11 @@ import {
 	Container,
 	TextDisplay,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { LoadingView } from "../../../views/loading";
+import { InteractionIdentifier } from "../../lib/interaction-ids";
+import { LoadingView } from "../../views/loading";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PSystemObject, type PSystem } from "../../../types/system";
-import { AlertView } from "../../../views/alert";
+import { PSystemObject, type PSystem } from "../../types/system";
+import { AlertView } from "../../views/alert";
 import { PluralKitSystem } from "plurography";
 import { AlterProtectionFlags, PAlterObject, type PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
@@ -26,61 +28,63 @@ import { PTagObject, TagProtectionFlags, type PTag } from "@/types/tag";
 import { mentionCommand } from "@/lib/mention-command";
 import { emojis } from "@/lib/emojis";
 
-export default class PluralBuddyImportModal extends ModalCommand {
-	override filter(ctx: ModalContext) {
-		return InteractionIdentifier.Setup.FormSelection.PkForm.equals(
-			ctx.customId,
-		);
-	}
+const options = {
+	attachment: createAttachmentOption({
+		description: "Upload the JSON file from PluralKit",
+        required: true
+	}),
+};
 
-	async run(ctx: ModalContext) {
-		await ctx.interaction.update({
+@Declare({
+	name: "import-pk",
+	description: "Imports from PluralKit",
+	aliases: ["e"],
+	contexts: ["BotDM", "Guild"],
+})
+@Options(options)
+export default class ImportPluralKitCommand extends SubCommand {
+	override async run(ctx: CommandContext<typeof options>) {
+		const { attachment } = ctx.options;
+
+		await ctx.interaction.write({
 			components: new LoadingView(ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
 		let fileData = "";
 
-		const file = ctx.interaction.getFiles(
-			InteractionIdentifier.Setup.FormSelection.PkType.create(),
-		);
+		const file = attachment;
 
-		if (file === undefined || file[0] === undefined) {
-			fileData = ctx.interaction.getInputValue(
-				InteractionIdentifier.Setup.FormSelection.PkRawTextType.create(),
-			) as string;
-
-		} else {
-			if (!file) {
-				throw new Error("?");
-			}
-
-			const MAX_FILE_SIZE = 2 * 1024 * 1024;
-			if (file[0].size > MAX_FILE_SIZE) {
-				return await ctx.editResponse({
-					components: [
-						...new AlertView(ctx.userTranslations()).errorView(
-							"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
-						),
-						new ActionRow().addComponents(
-							new Button()
-								.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
-								.setCustomId(
-									InteractionIdentifier.Setup.Pagination.Page2.create(),
-								)
-								.setStyle(ButtonStyle.Secondary),
-						),
-					],
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				});
-			}
-
-			fileData = await (await fetch(file[0].url)).text();
+		if (!file) {
+			throw new Error("?");
 		}
+
+		const MAX_FILE_SIZE = 2 * 1024 * 1024;
+		if (file.size > MAX_FILE_SIZE) {
+			return await ctx.editResponse({
+				components: [
+					...new AlertView(ctx.userTranslations()).errorView(
+						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
+					),
+					new ActionRow().addComponents(
+						new Button()
+							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
+							.setCustomId(
+								InteractionIdentifier.Setup.Pagination.Page2.create(),
+							)
+							.setStyle(ButtonStyle.Secondary),
+					),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		fileData = await (await fetch(file.url)).text();
+
 		try {
 			JSON.parse(fileData);
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
@@ -143,7 +147,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			systemOperationDM: true,
 			public: 0,
 			subAccounts: [],
-			disabled: false,
+			disabled: false
 		} satisfies PSystem);
 
 		if (newSystem.error) {
@@ -176,7 +180,11 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				zodData: PAlterObject.safeParse({
 					alterId: Number(DiscordSnowflake.generate({ processId: BigInt(i) })),
 					systemId: ctx.author.id,
-					username: member.name.replaceAll(" ", "").replaceAll("/", "").replaceAll("\\", "").replaceAll("@", ""),
+					username: member.name
+						.replaceAll(" ", "")
+						.replaceAll("/", "")
+						.replaceAll("\\", "")
+						.replaceAll("@", ""),
 					displayName: member.display_name ?? member.name,
 					nameMap: [],
 					color: member.color !== null ? `#${member.color}` : null,
@@ -275,6 +283,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				}
 			}
 		});
+        console.log(parsedSafe.map((c) => c.zodData.error))
 
 		systemData.alterIds = parsedSafe
 			.map((v) => v.zodData)

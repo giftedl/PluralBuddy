@@ -183,6 +183,21 @@ export class SystemSettingsView extends TranslatedView {
 					new Section()
 						.setAccessory(
 							new Button()
+								.setStyle(system.disabled ? ButtonStyle.Primary : ButtonStyle.Danger)
+								.setLabel(`${system.disabled ? "Enable" : "Disable"} System`)
+								.setCustomId(
+									InteractionIdentifier.Setup.ToggleDisableSystem.create(),
+								),
+						)
+						.setComponents(
+							new TextDisplay().setContent(
+								"Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
+							),
+						),
+					new Separator(),
+					new Section()
+						.setAccessory(
+							new Button()
 								.setStyle(ButtonStyle.Danger)
 								.setLabel("Delete System")
 								.setCustomId(
@@ -191,7 +206,7 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setComponents(
 							new TextDisplay().setContent(
-								"**This cannot be undone**. Deleting your system will delete your system along with all other alters, tags, and other system assets.",
+								"**This cannot be undone**. Deleting your system will **delete your system __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
 							),
 						),
 				)

@@ -1,6 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 import { type CommandContext, Declare, SubCommand } from "seyfert";

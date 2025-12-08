@@ -89,8 +89,8 @@ Systems can have **privacy values** which are values that describe who can see w
     TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
     TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
 
-    CONFIRMATION_SYSTEM_DELETION: "Are you sure you'd like to delete your system? **This action cannot be undone.**",
-    CONFIRMATION_SYSTEM_DELETION_BTN: "Yes, continue",
+    CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.",
+    CONFIRMATION_SYSTEM_DELETION_BTN: "I acknowledge this is a permanent action, continue",
     CONFIRMATION_ALTER_DELETION: "Are you sure you'd like to delete @%alter%? **This action cannot be undone.**",
 
     SYSTEM_DELETION_FINISHED: "Successfully deleted your system. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
@@ -179,6 +179,10 @@ Systems can have **privacy values** which are values that describe who can see w
     SEARCH_QUERY_DISPLAY_NAME: "Display Name",
     SEARCH_QUERY_USERNAME: "Username",
     SEARCH_REG_EXPRESSIONS: "You can use regular expressions here.",
+    DISABLED_SYSTEM: "Successfully disabled your system. You will **not** be able to proxy anymore as your entire system has been **disabled**.",
+    ENABLED_SYSTEM: "Successfully enabled your system. You will be able to proxy as your entire system has been **enabled**.",
+
+    NOT_IN_LATCH: "You are not in latch mode.",
 
     ALTER_SET_COLOR: "Set Alter Color",
     DELETE_ALTER: "Delete Alter",
@@ -208,11 +212,15 @@ Systems can have **privacy values** which are values that describe who can see w
 
     OPERATION_HEADER: "Operation Transcript:",
     OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
+    OPERATION_DISCORD_AP: "Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+    CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
     NO_PERMISSIONS_PROXY: "I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
     NICKNAME_MANUAL_PROXY: "You cannot proxy here since the alter you specified is using the Nickname proxy mode, and you cannot send a normal message when using the manual proxy command. Please use automatic proxying instead.",
     OPERATION_ID: "Operation ID: %id%",
     OPERATION_CHANGE_NAME: "Set system name to `%name%`.",
     OPERATION_CHANGE_NICKNAME_FORMAT: "Set nickname format to `%format%`.",
+    OPERATION_CHANGE_DISABLED: "Disabled system",
+    OPERATION_CHANGE_ENABLED: "Enabled system",
     OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",
     OPERATION_UNDO_SUCCESS: "Successfully updated %value-count% value(s) as result of an undo action.",
 
@@ -228,6 +236,7 @@ Systems can have **privacy values** which are values that describe who can see w
 > %lineright% Art by %catjamming% @raincloudzy`,
 
     TAG_ASSIGN_ALTER: "Assign Tag",
+    SET_AUTO_PROXY: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
     TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
     ASSIGNED_TAG: "**%tag%** has been successfully assigned to **@%alter%**.",
     FORBIDDEN: "You do not have permission on this server to do this action.",

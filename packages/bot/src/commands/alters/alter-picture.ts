@@ -16,7 +16,6 @@ import { alterCollection } from "../../mongodb";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlertView } from "../../views/alert";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
-import { Storage } from "@google-cloud/storage";
 import {
 	assetStringGeneration,
 	operationStringGeneration,

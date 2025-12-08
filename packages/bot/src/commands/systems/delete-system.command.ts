@@ -8,6 +8,8 @@ import {
 	createBooleanOption,
 	Declare,
 	SubCommand,
+	Container,
+	TextDisplay,
 } from "seyfert";
 import { AlertView } from "../../views/alert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
@@ -34,14 +36,15 @@ export default class SetupCommand extends SubCommand {
 
 		return await ctx.ephemeral({
 			components: [
-				...new AlertView(ctx.userTranslations()).questionView(
-					"CONFIRMATION_SYSTEM_DELETION",
-				),
+				new Container().setComponents(
+					new TextDisplay()
+						.setContent(ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION)
+				).setColor("#FF1717"),
 
 				new ActionRow().setComponents(
 					new Button()
 						.setEmoji(emojis.circleQuestionWhite)
-						.setStyle(ButtonStyle.Primary)
+						.setStyle(ButtonStyle.Danger)
 						.setLabel(ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN)
 						.setCustomId(
 							(mi

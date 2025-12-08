@@ -5,7 +5,6 @@ import { alterCollection } from "../../mongodb";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlertView } from "../../views/alert";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
-import { Storage } from "@google-cloud/storage";
 import { assetStringGeneration, operationStringGeneration } from "../../types/operation";
 import { LoadingView } from "../../views/loading";
 import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";

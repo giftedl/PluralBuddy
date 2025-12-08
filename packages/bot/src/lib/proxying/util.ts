@@ -1,0 +1,79 @@
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+
+import { client } from "@/index";
+import { userCollection } from "@/mongodb";
+import type { PAlter } from "@/types/alter";
+import { defaultPrefixes } from "@/types/guild";
+import type { PSystem } from "@/types/system";
+import type { PUser } from "@/types/user";
+import type { Message } from "seyfert";
+
+function listStartsWith(string: string, list: string[]) {
+	for (const item of list) if (string.startsWith(item)) return true;
+	return false;
+}
+
+export const startsWithPrefix = (message: Message) =>
+	listStartsWith(
+		message.content,
+		defaultPrefixes[
+			(process.env.BRANCH as "production" | "canary") ?? "production"
+		],
+	);
+
+export const isValidDm = async (message: Message) =>
+	(await message.channel()).isDM() &&
+	!listStartsWith(
+		message.content,
+		defaultPrefixes[
+			(process.env.BRANCH as "production" | "canary") ?? "production"
+		],
+	);
+
+export const notValidPermissions = async (message: Message) => {
+	const userPerms = await client.channels.memberPermissions(
+		message.channelId,
+		await client.members.fetch(message.guildId as string, client.botId),
+		true,
+	);
+
+	return (
+		!userPerms.has(["ManageWebhooks", "ManageMessages"]) &&
+		!userPerms.has(["ManageNicknames"])
+	);
+};
+
+export const getSimilarWebhooks = async (message: Message) =>
+	(await client.webhooks.listFromChannel(message.channelId)).filter(
+		(val) =>
+			val.name === "PluralBuddy Proxy" &&
+			(val.user ?? { id: 0 }).id === client.botId,
+	);
+
+export const setLastLatchAlter = async (
+	alter: PAlter,
+	guildId: string,
+	system: PSystem,
+) => {
+	const existingGuildPolicies = system.systemAutoproxy.find(
+		(ap) => ap.serverId === guildId,
+	);
+
+	if (
+		existingGuildPolicies &&
+		existingGuildPolicies.autoproxyMode === "latch"
+	) {
+		await userCollection.updateOne(
+			{ userId: system.associatedUserId },
+			{
+				$set: {
+					"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
+						alter.alterId.toString(),
+				},
+			},
+			{
+				arrayFilters: [{ "serverEntry.serverId": guildId }],
+			},
+		);
+	}
+};

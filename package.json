@@ -1,19 +1,14 @@
 {
 	"name": "pluralbuddy",
+	"devDependencies": {
+		"@biomejs/biome": "2.0.6"
+	},
 	"private": true,
-	"workspaces": ["packages/*"],
 	"scripts": {
 		"bot": "cd packages/bot && bun run bot",
 		"bot:watch": "cd packages/bot && bun run bot:watch",
 		"support:bot": "cd packages/support-bot-module && bun run bot",
 		"docs:dev": "cd apps/docs && bun run dev"
 	},
-	"dependencies": {
-		"@google-cloud/storage": "^7.17.3",
-		"@slipher/redis-adapter": "^0.0.5",
-		"posthog-node": "^5.13.0"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.0.6"
-	}
+	"workspaces": ["packages/*", "apps/*"]
 }

@@ -122,6 +122,7 @@ export class PluralBuddyIntro extends TranslatedView {
 
 				systemAutoproxy: [],
 				public: 0,
+				disabled: false
 			};
 		}
 

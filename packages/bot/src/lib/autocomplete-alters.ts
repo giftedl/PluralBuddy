@@ -109,14 +109,14 @@ export async function autocompleteAlters(ctx: AutocompleteInteraction<boolean>) 
     // Limit to 25 results (Discord's autocomplete limit)
     pipeline.push({ $limit: 25 });
     
-    // Project only username field
     pipeline.push({
         $project: {
-            username: 1
+            username: 1,
+            displayName: 1
         }
     });
 
     const array = await alterCollection.aggregate(pipeline).toArray();
 
-    return ctx.respond(array.map(v => {return {name: v.username, value: v.username}}))
+    return ctx.respond(array.map(v => {return {name: `${v.username} – ${v.displayName}`, value: v.username}}))
 }

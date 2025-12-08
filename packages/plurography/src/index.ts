@@ -18,5 +18,6 @@ export * from "./pluralbuddy/operation";
 export * from "./pluralbuddy/system";
 export * from "./pluralbuddy/tag";
 export * from "./pluralbuddy/user";
+export * from "./pluralbuddy/util"
 
 export * from "./supportbuddy/blacklist-note";

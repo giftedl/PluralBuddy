@@ -37,6 +37,9 @@ export async function createSystemOperation(system: PSystem, operation: Partial<
         if (c === "nicknameFormat") {
             return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace("%format%", operation.nicknameFormat as string)
         }
+        if (c === "disabled") {
+            return operation.disabled ? translations.OPERATION_CHANGE_DISABLED : translations.OPERATION_CHANGE_ENABLED;
+        }
 
         return "";
     })

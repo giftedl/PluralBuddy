@@ -5,6 +5,7 @@ import z from "zod";
 export enum TagProtectionFlags {
     NAME          = 1 << 0,
     DESCRIPTION   = 1 << 1,
+    VISIBILITY    = 1 << 3,
     ALTERS        = 1 << 5,
     COLOR         = 1 << 6
 }

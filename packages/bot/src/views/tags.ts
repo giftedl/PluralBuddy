@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { tagColors, tagHexColors, type PTag } from "@/types/tag";
+import { tagColors, tagHexColors, TagProtectionFlags, type PTag } from "@/types/tag";
 import { TranslatedView } from "./translated-view";
 import {
 	ActionRow,
@@ -15,16 +15,30 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import {
 	friendlyProtectionTags,
+	has,
 	listFromMaskTags,
 } from "../lib/privacy-bitmask";
 import { mentionCommand } from "@/lib/mention-command";
+import { AlterProtectionFlags } from "@/types/alter";
+import { AlertView } from "./alert";
 
 export class TagView extends TranslatedView {
 	tagProfileView(tag: PTag, external = false) {
+
+
+		if (external && !has(AlterProtectionFlags.VISIBILITY, tag.public)) {
+			return new AlertView(this.translations).errorView("INVISIBLE_TAG");
+		}
+
+		const nameDisplayable = !external || has(TagProtectionFlags.NAME, tag.public)
+		const colorDisplayable = !external || has(TagProtectionFlags.COLOR, tag.public)
+		const descriptionDisplayable = !external || has(TagProtectionFlags.DESCRIPTION, tag.public)
+		const altersDisplayable = !external || has(TagProtectionFlags.ALTERS, tag.public)
+
 		const innerComponents =
-			new TextDisplay().setContent(`## ${getEmojiFromTagColor(tag.tagColor)} ${tag.tagFriendlyName}
-${tag.tagDescription !== null ? "\n" : ""}${tag.tagDescription ?? ""}${tag.tagDescription !== null ? "\n" : ""}
-**Alter Count:** ${tag.associatedAlters.length}\n
+			new TextDisplay().setContent(`${colorDisplayable || nameDisplayable ? `## ${colorDisplayable ? getEmojiFromTagColor(tag.tagColor) : ""} ${nameDisplayable ? tag.tagFriendlyName : ""}` : ""}
+${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}${descriptionDisplayable ? tag.tagDescription ?? "" : ""}${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}
+${altersDisplayable ? `**Alter Count:** ${tag.associatedAlters.length}\n` : ""}
 -# ID: \`${tag.tagId}\``);
 
 		return [

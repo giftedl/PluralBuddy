@@ -6,7 +6,7 @@ export async function processEmojis(
     let processedContents = trimmedContents;
 
     // Get all emojis in message
-    const emojiRegex = /(<a?:\w+:\d+>)|(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)/gu;
+    const emojiRegex = /<a?:\w+:\d+>/g;
     const allEmojis: string[] = [];
     let match: RegExpExecArray | null = emojiRegex.exec(processedContents);
     while (match !== null) {
@@ -54,6 +54,22 @@ export async function processEmojis(
             emoji.string,
             `<${createdEmoji.animated ? "a" : ""}:${createdEmoji.name}:${createdEmoji.id}>`
         );
+    }
+
+    // If the new message contains only up to 6 emojis (and nothing else), prepend '# '
+    if (
+        uploadedEmojis.length > 0 &&
+        uploadedEmojis.length <= 6 &&
+        processedContents.trim().length > 0
+    ) {
+        // Check if processedContents is ONLY emoji codes (possibly separated by spaces)
+        const justEmojis = processedContents
+            .trim()
+            .split(/\s+/)
+            .every((part) => /^<a?:\w+:\d+>$/.test(part));
+        if (justEmojis) {
+            processedContents = "# " + processedContents;
+        }
     }
 
     return {
