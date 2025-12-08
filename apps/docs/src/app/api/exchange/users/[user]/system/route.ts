@@ -31,5 +31,6 @@ export async function GET(
 
     const systemData = await userCollection.findOne({ userId: parsedUserId })
 
+	await oauthResponse.mongo.close();
 	return Response.json({ data: systemData?.system ?? null });
 }

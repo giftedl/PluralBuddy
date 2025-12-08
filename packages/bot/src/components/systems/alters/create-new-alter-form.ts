@@ -20,8 +20,6 @@ export default class CreateNewAlterForm extends ModalCommand {
         const username = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameType.create(), true);
         const displayName = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(), true);
 
-        await ctx.write(ctx.loading(ctx.userTranslations()))
-
         const user = await ctx.retrievePUser();
         const server = await ctx.retrievePGuild();
 
@@ -53,7 +51,7 @@ export default class CreateNewAlterForm extends ModalCommand {
         })
 
         if (alter.error) {
-            return await ctx.editResponse({
+            return await ctx.interaction.update({
                 components: [
                     ...new SystemSettingsView(ctx.userTranslations()).topView("alters", user.system.associatedUserId),
                     ...new AlertView(ctx.userTranslations()).errorViewCustom(`There was an error while creating that alter:
@@ -78,13 +76,8 @@ ${z.prettifyError(alter.error)}
 
         alterCollection.insertOne(alter.data);
         
-        await ctx.editResponse({
-            components: [
-			    ...new SystemSettingsView(ctx.userTranslations()).topView("alters", user.system.associatedUserId),
-                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATE_NEW_ALTER_DONE
-                    .replace("%prefix%", server.prefixes[0] ?? "/")
-                    .replace("%alter_id%", alter.data.username))
-            ]
+        await ctx.interaction.update({
+            components: await new SystemSettingsView(ctx.userTranslations()).altersSettings(user.system)
         })
     }
 }

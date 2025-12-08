@@ -44,7 +44,7 @@ const options = {
 	name: "proxy",
 	description: "Proxy as an alter",
 	ignore: IgnoreCommand.Message,
-	contexts: ["Guild"]
+	contexts: ["Guild"],
 })
 @Options(options)
 export default class SystemCommand extends Command {
@@ -97,7 +97,17 @@ export default class SystemCommand extends Command {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 
-		ctx.deferReply(true)
+		if (system?.disabled)
+			return await ctx.write({
+				components: [
+					...new AlertView(ctx.userTranslations()).errorView(
+						"ERROR_DISABLED_SYSTEM",
+					),
+				],
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+
+		ctx.deferReply(true);
 
 		const similarWebhooks = (
 			await client.webhooks.listFromChannel(ctx.channelId)
@@ -211,12 +221,16 @@ export default class SystemCommand extends Command {
 						messageComponents,
 						[],
 						uploadedEmojis,
-                        { channelId: ctx.channelId, guildId: ctx.guildId as string, userId: ctx.author.id }
+						{
+							channelId: ctx.channelId,
+							guildId: ctx.guildId as string,
+							userId: ctx.author.id,
+						},
 					).catch(console.error);
 				} else
-                    for (const emoji of uploadedEmojis) {
-                        emoji.delete();
-                    }
+					for (const emoji of uploadedEmojis) {
+						emoji.delete();
+					}
 
 				ctx.editResponse({
 					components: new AlertView(ctx.userTranslations()).successViewCustom(

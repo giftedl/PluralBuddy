@@ -179,14 +179,22 @@ export class SystemSettingsView extends TranslatedView {
 								"Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
 							),
 						),
-					new Separator(),
+				)
+				.setColor("#1190FF"),
+			new Container()
+				.setColor("#FF1717")
+				.setSpoiler(true)
+				.setComponents(
+					new TextDisplay().setContent("## Danger Zone"),
 					new Section()
 						.setAccessory(
 							new Button()
-								.setStyle(system.disabled ? ButtonStyle.Primary : ButtonStyle.Danger)
+								.setStyle(
+									system.disabled ? ButtonStyle.Primary : ButtonStyle.Danger,
+								)
 								.setLabel(`${system.disabled ? "Enable" : "Disable"} System`)
 								.setCustomId(
-									InteractionIdentifier.Setup.ToggleDisableSystem.create(),
+									InteractionIdentifier.Systems.ToggleDisableSystem.create(),
 								),
 						)
 						.setComponents(
@@ -209,8 +217,7 @@ export class SystemSettingsView extends TranslatedView {
 								"**This cannot be undone**. Deleting your system will **delete your system __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
 							),
 						),
-				)
-				.setColor("#1190FF"),
+				),
 		];
 	}
 

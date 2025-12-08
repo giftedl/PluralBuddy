@@ -63,5 +63,7 @@ export async function authenticateOAuth(request: NextRequest, requiredScopes: st
 		};
 	}
 
+	await client.close();
+
 	return { mongo: client, accountId: discordAccountId?.accountId };
 }

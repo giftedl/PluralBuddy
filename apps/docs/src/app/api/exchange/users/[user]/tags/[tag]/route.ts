@@ -29,5 +29,6 @@ export async function GET(
 		systemId: parsedUserId,
 	});
 
+	await oauthResponse.mongo.close();
 	return Response.json({ isSelf, data: redactTag(isSelf, response) });
 }

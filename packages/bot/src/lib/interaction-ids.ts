@@ -221,9 +221,9 @@ export const InteractionIdentifier = {
         AutoProxy: {
             Off: createFromAdditionalArg("systems/auto-proxy/off")
         },
+        ToggleDisableSystem: createStatic("setup/toggle-disable-system"),
     },
     Setup: {
-        ToggleDisableSystem: createStatic("setup/toggle-disable-system"),
         RemoveOldSystem: createStatic("setup/remove-old-system"),
         Pagination: {
             Page1: createStatic("previous-page/pluralbuddy-intro/1"),

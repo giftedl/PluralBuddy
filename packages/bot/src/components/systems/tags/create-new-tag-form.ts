@@ -22,7 +22,7 @@ export default class CreateNewAlterForm extends ModalCommand {
         const displayName = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameType.create(), true);
         const color = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(), true)
 
-        await ctx.write(ctx.loading(ctx.userTranslations()))
+        await ctx.interaction.update(ctx.loading(ctx.userTranslations()))
 
         const user = await ctx.retrievePUser();
         const server = await ctx.retrievePGuild();
@@ -68,16 +68,10 @@ ${z.prettifyError(tag.error)}
 			},
 		});
 
-		tagCollection.insertOne(tag.data);
+		await tagCollection.insertOne(tag.data);
         
         await ctx.editResponse({
-            components: [
-			    ...new SystemSettingsView(ctx.userTranslations()).topView("tags", user.system.associatedUserId),
-                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATE_NEW_TAG_DONE
-                    .replace("%prefix%", server.prefixes[0] ?? "/")
-                    .replaceAll("%tag_name%", tag.data.tagFriendlyName)
-                    .replace("%color_emoji%", getEmojiFromTagColor(tag.data.tagColor)))
-            ]
+            components: await new SystemSettingsView(ctx.userTranslations()).tagsSettings(user.system)
         })
     }
 }

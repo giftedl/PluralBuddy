@@ -14,6 +14,7 @@ Additionally, you can also import data from another bot like PluralKit or Tupper
     PAGINATION_FINISH: "Finish",
     PAGINATION_PREVIOUS_PAGE: "Previous Page",
     CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
+    ERROR_DISABLED_SYSTEM: "Your system is disabled. You cannot proxy.",
 
     CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,
@@ -89,8 +90,10 @@ Systems can have **privacy values** which are values that describe who can see w
     TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
     TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
 
-    CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.",
+    CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system intead.",
+    CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.", 
     CONFIRMATION_SYSTEM_DELETION_BTN: "I acknowledge this is a permanent action, continue",
+    BACK_TO_SAFETY_BTN: "No, go back to safety",
     CONFIRMATION_ALTER_DELETION: "Are you sure you'd like to delete @%alter%? **This action cannot be undone.**",
 
     SYSTEM_DELETION_FINISHED: "Successfully deleted your system. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
