@@ -35,6 +35,14 @@ const options = {
 export default class SetupCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { "media-included": mi } = ctx.options;
+		const { system } = await ctx.retrievePUser()
+
+		if (!system) {
+            return await ctx.ephemeral({
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+            })
+		}
 
 		return await ctx.ephemeral(
 			{
