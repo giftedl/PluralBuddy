@@ -1,20 +1,22 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, extendContext, Message, TextDisplay } from "seyfert";
+import { ActionRow, Button, Container, extendContext, Interaction, Message, TextDisplay, WebhookMessage } from "seyfert";
 import type { InteractionCreateBodyRequest } from "seyfert/lib/common";
 import { emojis } from "./lib/emojis";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { ButtonStyle, MessageFlags, type APIInteraction } from "seyfert/lib/types";
 import { getUserById } from "./types/user";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import { translations } from "./lang/en_us";
 import type { TranslationString } from "./lang";
 import { LoadingView } from "./views/loading";
+import { client } from ".";
 
 
 export const extendedContext = extendContext((interaction) => {
 	const ephemeral = async (
 		body: InteractionCreateBodyRequest,
 		allowedPublic?: boolean,
+		afterSendTask?: (actions: { editMessage: (body: InteractionCreateBodyRequest) => void, reply?: (body: InteractionCreateBodyRequest) => void }) => void,
 	) => {
 		if (interaction instanceof Message) {
 			if (
@@ -22,7 +24,11 @@ export const extendedContext = extendContext((interaction) => {
 				(interaction.content.endsWith("-p") ||
 					interaction.content.endsWith("-public"))
 			) {
-				return await interaction.reply(body);
+				const writtenMessage = await interaction.reply(body);
+
+				if (afterSendTask)
+					afterSendTask({ reply: writtenMessage.reply, editMessage: interaction.editResponse });
+				return writtenMessage;
 			}
 
 			const message = await interaction.reply(
@@ -56,13 +62,25 @@ export const extendedContext = extendContext((interaction) => {
 
 				if (i.isButton()) {
 					message.delete();
-					return i.write(body);
+					const writtenMessage = await i.write(body, true);
+
+					if (afterSendTask)
+						afterSendTask({ reply: interaction.message?.reply, editMessage: interaction.editResponse });
+
+					return writtenMessage;
 				}
 			});
 
 			return message;
 		}
-		return await interaction.write(body);
+
+
+		const writtenMessage = await interaction.write(body, true);
+
+		if (afterSendTask)
+			afterSendTask({ editMessage: (body: InteractionCreateBodyRequest) => interaction.editMessage('@original', body) });
+
+		return writtenMessage;
 	};
 
 	return {
