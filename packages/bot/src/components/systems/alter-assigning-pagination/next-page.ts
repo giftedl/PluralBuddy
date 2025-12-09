@@ -35,7 +35,6 @@ export default class NextPagePagination extends ComponentCommand {
 			});
 		}
 
-		console.log(corresponding);
 
 		if (corresponding === undefined) {
 			return await ctx.write({

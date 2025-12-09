@@ -104,8 +104,6 @@ export async function deleteAttachment(storagePrefix: string, accessToken: strin
     })
   })
 
-  console.log(await deletionResponse.json())
-
   return deletionResponse;
 }
 

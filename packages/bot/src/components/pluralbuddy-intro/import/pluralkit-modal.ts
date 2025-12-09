@@ -80,7 +80,6 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		try {
 			JSON.parse(fileData);
 		} catch (error) {
-			console.log(error)
 			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(

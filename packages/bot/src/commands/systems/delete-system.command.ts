@@ -98,7 +98,6 @@ export default class SetupCommand extends SubCommand {
 			},
 			false,
 			(message) => {
-				console.log(message);
 				setTimeout(async () => {
 					message.editMessage({
 						components: [

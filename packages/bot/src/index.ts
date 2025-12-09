@@ -20,7 +20,7 @@ import {
 } from "./error-command";
 import { extendedContext } from "./extended-context";
 
-export const buildNumber = 569;
+export const buildNumber = 579;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware"

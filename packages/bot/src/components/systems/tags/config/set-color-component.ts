@@ -18,7 +18,6 @@ export default class SetColorComponent extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        console.log("ran")
 		const tagId =
             InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.substring(
                     ctx.customId,

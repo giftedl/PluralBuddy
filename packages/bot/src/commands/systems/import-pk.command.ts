@@ -84,7 +84,6 @@ export default class ImportPluralKitCommand extends SubCommand {
 		try {
 			JSON.parse(fileData);
 		} catch (error) {
-			console.log(error);
 			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
@@ -283,7 +282,6 @@ export default class ImportPluralKitCommand extends SubCommand {
 				}
 			}
 		});
-        console.log(parsedSafe.map((c) => c.zodData.error))
 
 		systemData.alterIds = parsedSafe
 			.map((v) => v.zodData)
