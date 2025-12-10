@@ -246,4 +246,7 @@ Systems can have **privacy values** which are values that describe who can see w
     ERROR_FAILED_TO_UPLOAD_TO_GCP: "Failed to upload the image to Google Cloud Platform. Please try again later.",
     DN_ERROR_SE: "You cannot use this command in DM's.",
     SYSTEM_SET_NAME: "Successfully changed the name of your system to %name%",
+    SYSTEM_SET_SYSTEM_TAG: "Successfully changed the system tag of your system to %tag%",
+    OPERATION_SYSTEM_SET_SYSTEM_TAG: "Changed the system tag of your system to %tag%",
+    OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
 }

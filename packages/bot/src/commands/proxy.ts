@@ -51,6 +51,17 @@ export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { "alter-name": alterName, message, attachment } = ctx.options;
 		const systemId = ctx.author.id;
+		
+		if (message === undefined && attachment === undefined)
+			return await ctx.write({
+				components: [
+					...new AlertView(ctx.userTranslations()).errorView(
+						"CONTENT_ERROR_PROXY",
+					),
+				],
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+
 
 		const query = Number.isNaN(Number.parseInt(alterName))
 			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
@@ -127,20 +138,10 @@ export default class SystemCommand extends Command {
 		}
 
 		if (webhook === undefined)
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_MANUAL_PROXY",
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-
-		if (message === undefined && attachment === undefined)
-			return await ctx.write({
-				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
-						"CONTENT_ERROR_PROXY",
 					),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

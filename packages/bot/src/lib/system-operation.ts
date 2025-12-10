@@ -40,8 +40,11 @@ export async function createSystemOperation(system: PSystem, operation: Partial<
         if (c === "disabled") {
             return operation.disabled ? translations.OPERATION_CHANGE_DISABLED : translations.OPERATION_CHANGE_ENABLED;
         }
+        if (c === "systemDisplayTag") {
+            return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace("%tag%", operation.systemDisplayTag as string)
+        }
 
-        return "";
+        return translations.OPERATION_FALLBACK.replace("%property%", c).replace("%value%", operation[c]?.toString() ?? "?");
     })
 
     await operationCollection.insertOne(operationDb)
