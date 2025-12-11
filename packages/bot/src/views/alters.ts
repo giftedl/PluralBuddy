@@ -8,6 +8,8 @@ import {
 	MediaGalleryItem,
 	Section,
 	Separator,
+	StringSelectMenu,
+	StringSelectOption,
 	TextDisplay,
 	Thumbnail,
 } from "seyfert";
@@ -33,7 +35,7 @@ export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
 		return {
 			data: await tagCollection
-				.find({ associatedAlters: alter.alterId.toString() })
+				.find({ associatedAlters: alter.alterId.toString().toString() })
 				.limit(5)
 				.toArray(),
 			count: alter.tagIds.length,
@@ -78,7 +80,7 @@ ${descriptionDisplayable && alter.description !== null ? "\n" : ""}${description
 ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}` : ""}
 **Associated to:** <@${alter.systemId}> (${alter.systemId})
 ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`).join(",  ")}${tags.length !== tagCount ? `, and ${tagCount - tags.length} more...` : ""}\n` : ""}
--# ID: \`${alter.alterId}\``);
+-# ID: \`${alter.alterId.toString()}\``);
 
 		const comp = new Container().setComponents(
 			!avatarDisplayable || alter.avatarUrl === null
@@ -120,7 +122,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 							new Button()
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Alters.DeleteProxyTag.create(
-										alter.alterId,
+										alter.alterId.toString(),
 										v.id,
 									),
 								)
@@ -136,7 +138,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.Alters.CreateProxyTag.create(
-								alter.alterId,
+								alter.alterId.toString(),
 							),
 						)
 						.setStyle(ButtonStyle.Primary)
@@ -171,7 +173,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 								.setLabel(this.translations.ALTER_SET_USERNAME)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Alters.SetUsername.create(
-										alter.alterId,
+										alter.alterId.toString(),
 									),
 								),
 						),
@@ -189,7 +191,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 								.setStyle(ButtonStyle.Secondary)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Alters.SetProxyMode.create(
-										alter.alterId,
+										alter.alterId.toString(),
 									),
 								),
 						),
@@ -206,7 +208,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 								.setLabel(this.translations.TAG_ASSIGN_ALTER)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Tags.AssignAlter.create(
-										alter.alterId,
+										alter.alterId.toString(),
 									),
 								),
 						),
@@ -226,11 +228,49 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 								.setStyle(ButtonStyle.Secondary)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.create(
-										alter.alterId,
+										alter.alterId.toString(),
 									),
 								),
 						),
+					new Separator(),
+					new TextDisplay().setContent(`You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
+> *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
+> *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
+> *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`),
 
+					new ActionRow().setComponents(
+						new StringSelectMenu()
+							.setPlaceholder("Select a proxy mode")
+							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
+							.setOptions([
+								new StringSelectOption()
+									.setValue(
+										InteractionIdentifier.Selection.AutoProxyModes.Latch.create(
+											alter.alterId,
+										),
+									)
+									.setLabel("Latch Mode")
+									.setDescription(
+										"Set this alter as the first alter in latch mode.",
+									),
+								new StringSelectOption()
+									.setValue(
+										InteractionIdentifier.Selection.AutoProxyModes.Alter.create(
+											alter.alterId,
+										),
+									)
+									.setLabel("Alter Mode")
+									.setDescription(
+										"Only proxy this alter until auto-proxy is disabled.",
+									),
+								new StringSelectOption()
+									.setValue(
+										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
+									)
+									.setLabel("Off")
+									.setDescription("Disable auto-proxy in your system."),
+							]),
+					),
 					new Separator(),
 					new Section()
 						.addComponents(
@@ -244,7 +284,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 								.setLabel(this.translations.DELETE_ALTER)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Alters.DeleteAlter.create(
-										alter.alterId,
+										alter.alterId.toString(),
 									),
 								),
 						),
@@ -269,7 +309,7 @@ Please select the mode you would like to use below.
 					.setEmoji(emojis.undo)
 					.setCustomId(
 						InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.GoBack.create(
-							alterId,
+							alterId.toString(),
 						),
 					)
 					.setLabel("Back")
@@ -277,7 +317,7 @@ Please select the mode you would like to use below.
 				new Button()
 					.setCustomId(
 						InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Nickname.create(
-							alterId,
+							alterId.toString(),
 						),
 					)
 					.setLabel("Nickname")
@@ -330,7 +370,7 @@ Please select the mode you would like to use below.
 							.setLabel(this.translations.ALTER_SET_DISPLAY)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.SetDisplayName.create(
-									alter.alterId,
+									alter.alterId.toString(),
 								),
 							),
 					),
@@ -355,7 +395,7 @@ Please select the mode you would like to use below.
 										.setLabel(this.translations.ALTER_SET_SERVER_NAME)
 										.setCustomId(
 											InteractionIdentifier.Systems.Configuration.Alters.SetServerDisplayName.create(
-												alter.alterId,
+												alter.alterId.toString(),
 											),
 										),
 								),
@@ -374,7 +414,7 @@ Please select the mode you would like to use below.
 							.setLabel(this.translations.ALTER_SET_PFP)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.SetPFP.create(
-									alter.alterId,
+									alter.alterId.toString(),
 								),
 							),
 					),
@@ -391,7 +431,7 @@ Please select the mode you would like to use below.
 							.setLabel(this.translations.ALTER_SET_BANNER)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.SetBanner.create(
-									alter.alterId,
+									alter.alterId.toString(),
 								),
 							),
 					),
@@ -409,7 +449,7 @@ Please select the mode you would like to use below.
 							.setLabel(this.translations.ALTER_SET_PRONOUNS)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.SetPronouns.create(
-									alter.alterId,
+									alter.alterId.toString(),
 								),
 							),
 					),
@@ -427,7 +467,7 @@ Please select the mode you would like to use below.
 							.setLabel(this.translations.ALTER_SET_DESCRIPTION)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.SetDescription.create(
-									alter.alterId,
+									alter.alterId.toString(),
 								),
 							),
 					),
@@ -444,7 +484,7 @@ Please select the mode you would like to use below.
 							.setLabel(this.translations.ALTER_SET_COLOR)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.Alters.SetAlterColor.create(
-									alter.alterId,
+									alter.alterId.toString(),
 								),
 							),
 					),
@@ -534,10 +574,48 @@ Please select the mode you would like to use below.
 					.setEmoji(emojis.wrenchWhite)
 					.setCustomId(
 						InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.create(
-							alter.alterId,
+							alter.alterId.toString(),
 						),
 					)
 					.setStyle(ButtonStyle.Primary),
+			),
+		];
+	}
+
+	alterProxyModes(alter: PAlter) {
+		return [
+			new ActionRow().setComponents(
+				new StringSelectMenu()
+					.setPlaceholder("Select a proxy mode")
+					.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
+					.setOptions([
+						new StringSelectOption()
+							.setValue(
+								InteractionIdentifier.Selection.AutoProxyModes.Latch.create(
+									alter.alterId,
+								),
+							)
+							.setLabel("Latch Mode")
+							.setDescription(
+								"Set this alter as the first alter in latch mode.",
+							),
+						new StringSelectOption()
+							.setValue(
+								InteractionIdentifier.Selection.AutoProxyModes.Alter.create(
+									alter.alterId,
+								),
+							)
+							.setLabel("Alter Mode")
+							.setDescription(
+								"Only proxy this alter until auto-proxy is disabled.",
+							),
+						new StringSelectOption()
+							.setValue(
+								InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
+							)
+							.setLabel("Off")
+							.setDescription("Disable auto-proxy in your system."),
+					]),
 			),
 		];
 	}

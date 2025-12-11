@@ -240,16 +240,19 @@ Systems can have **privacy values** which are values that describe who can see w
 
     TAG_ASSIGN_ALTER: "Assign Tag",
     SET_AUTO_PROXY: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
+    SET_AUTO_PROXY_DMS: "Successfully set proxy mode to **%mode%** for your system in that server.",
     TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
     ASSIGNED_TAG: "**%tag%** has been successfully assigned to **@%alter%**.",
     FORBIDDEN: "You do not have permission on this server to do this action.",
     ERROR_FAILED_TO_UPLOAD_TO_GCP: "Failed to upload the image to Google Cloud Platform. Please try again later.",
     DN_ERROR_SE: "You cannot use this command in DM's.",
     SYSTEM_SET_NAME: "Successfully changed the name of your system to %name%",
+    SYSTEM_SET_PRONOUNS: "Successfully changed the pronouns of your system to %pronouns%",
     SYSTEM_SET_SYSTEM_TAG: "Successfully changed the system tag of your system to %tag%",
     OPERATION_SYSTEM_SET_SYSTEM_TAG: "Changed the system tag of your system to %tag%",
     OPERATION_AVATAR: "Set system avatar to a **[new image](<%link%>)**.",
     OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
+    OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
     OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
 }
 

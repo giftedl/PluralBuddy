@@ -79,6 +79,9 @@ export async function createSystemOperation(
 				(operation.systemDescription as string).split("\n").join("\n > "),
 			);
 		}
+        if (c === "systemPronouns") {
+            return translations.OPERATION_PRONOUNS.replace("%pronouns%", operation.systemPronouns as string)
+        }
 
 		return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
 			"%value%",

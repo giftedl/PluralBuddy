@@ -3,11 +3,13 @@
 // biome-ignore lint/suspicious/noExplicitAny: buh?
 class InteractionObj<K extends (...args: any[]) => string> {
     matcher: string;
-    func: K;
+    func: K;    
+    create: K;
 
     constructor(matcher: string, func: K) {
         this.matcher = matcher;
         this.func = func;
+        this.create = func.bind(this) as K;
     }
     
     startsWith(input: string) {
@@ -18,15 +20,11 @@ class InteractionObj<K extends (...args: any[]) => string> {
         return this.matcher;
     }
 
-    create(...args: unknown[]) {
-        return this.func(...args)
-    }
-
     equals(input: string) {
         return input === this.matcher
     }
 
-    substring(input: string) {
+    substring(input: string): string[] {
         return input.substring(this.matcher.length).split("-")
     }
 }
@@ -36,7 +34,7 @@ function createStatic(root: string) {
 }
 
 function createFromAdditionalArg(root: string) {
-    return new InteractionObj(`${root}-`, (buh: string) => `${root}-${buh}`)
+    return new InteractionObj(`${root}-`, (buh: string | number) => `${root}-${buh}`)
 }
 
 export const InteractionIdentifier = {
@@ -73,7 +71,15 @@ export const InteractionIdentifier = {
             'fuchsia':   createStatic("selection/tag-color/fuchsia"),
             'pink':      createStatic("selection/tag-color/pink"),
             'rose':      createStatic("selection/tag-color/rose")
-          }
+          },
+        AutoProxyModes: {
+            Latch: new InteractionObj("selection/ap/latch-", (startingAlterId?: number) => `selection/ap/latch-${startingAlterId}`),
+            Alter: new InteractionObj("selection/ap/alter-", (alterId: number) => `selection/ap/alter-${alterId}`),
+            Off: createStatic("selection/ap/off")
+        }
+    },
+    AutoProxy: {
+        AlterMenu: createStatic("selection/ap/alter-menu")
     },
     Systems: {
         DeleteSystem: createStatic("systems/delete"),

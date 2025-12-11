@@ -9,8 +9,6 @@ import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import { translations } from "./lang/en_us";
 import type { TranslationString } from "./lang";
 import { LoadingView } from "./views/loading";
-import { client } from ".";
-
 
 export const extendedContext = extendContext((interaction) => {
 	const ephemeral = async (
@@ -107,6 +105,6 @@ export const extendedContext = extendContext((interaction) => {
 			return defaultPrefixes[
 				(process.env.BRANCH as "production" | "canary") ?? "production"
 			][0];
-		},
+		}
 	};
 });

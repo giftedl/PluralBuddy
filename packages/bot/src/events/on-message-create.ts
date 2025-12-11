@@ -43,6 +43,7 @@ export default createEvent({
 		const user = await getUserById(message.author.id);
 
 		if (user.system === undefined) return;
+		if (user.system.disabled) return;
 		if (
 			user.system.systemAutoproxy.some(
 				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
@@ -64,7 +65,6 @@ export default createEvent({
 		}
 
 		if (user.system.alterIds.length === 0) return;
-		if (user.system.disabled) return;
 
 		const alters = alterCollection.find({ systemId: message.author.id });
 

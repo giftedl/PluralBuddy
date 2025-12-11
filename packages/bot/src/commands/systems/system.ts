@@ -28,7 +28,8 @@ export default class SystemCommand extends Command {
                 ...(new SystemView(ctx.userTranslations()).systemProfileView(user.system)),
                 ...(new SystemView(ctx.userTranslations()).systemConfigureButton(user.system)),
             ],
-            flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+            flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+            allowed_mentions: { parse: [] },
         }, true)
     }
 }
