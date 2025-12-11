@@ -248,5 +248,8 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_SET_NAME: "Successfully changed the name of your system to %name%",
     SYSTEM_SET_SYSTEM_TAG: "Successfully changed the system tag of your system to %tag%",
     OPERATION_SYSTEM_SET_SYSTEM_TAG: "Changed the system tag of your system to %tag%",
+    OPERATION_AVATAR: "Set system avatar to a **[new image](<%link%>)**.",
+    OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
     OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
 }
+

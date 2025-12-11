@@ -13,6 +13,8 @@ import { MessageFlags } from "seyfert/lib/types";
 const options = {
 	"new-name": createStringOption({
 		description: "The new name to set as the system",
+        max_length: 20,
+        min_length: 3,
         required: true
 	}),
 };

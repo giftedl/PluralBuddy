@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { type Attachment, type CommandContext, Container, createAttachmentOption, createStringOption, Declare, MediaGallery, MediaGalleryItem, Options, SubCommand } from "seyfert";
 import { alterCollection } from "../../mongodb";
@@ -8,15 +8,11 @@ import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { assetStringGeneration, operationStringGeneration } from "../../types/operation";
 import { LoadingView } from "../../views/loading";
 import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { createSystemOperation } from "@/lib/system-operation";
 
 const options = {
-    "alter-name": createStringOption({
-        description: "The name of the alter.",
-        required: true,
-        autocomplete: autocompleteAlters
-    }),
     "alter-banner": createAttachmentOption({
-        description: "The banner to use for the alter. (leave blank to clear)",
+        description: "The banner to use for the system. (leave blank to clear)",
         value(data, ok, fail) {
             if (!data.value.contentType?.startsWith("image"))
                 fail("This attachment is not an image.")
@@ -43,27 +39,25 @@ export default class EditAlterPictureCommand extends SubCommand {
         })
 
         const user = await ctx.retrievePUser()
-        const { "alter-name": alterName, "alter-banner": attachment } = ctx.options;
+        const { "alter-banner": attachment } = ctx.options;
         const systemId = ctx.author.id;
-        const query = Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId })
-        const alter = await query;
 
-        if (alter === null) {
+        if (user.system === undefined) {
             return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
         if (attachment === undefined) {
-            await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { avatarUrl: null }})
+			await createSystemOperation(
+				user.system, { systemBanner: null }, ctx.userTranslations(), "discord"
+			);
 
             return await ctx.editResponse({
                 components: [
                     ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().PFP_SUCCESS
-                        .replace("%alter%", alterName))
+                        .replace("@%alter%", "your system"))
                 ],
                 flags: MessageFlags.IsComponentsV2
     
@@ -80,7 +74,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 				accessToken,
 				bucketName,
 				objectName,
-				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "banner" },
+				{ authorId: ctx.author.id, alterId: "@system", type: "banner" },
 			);
         } catch (error) {
             return await ctx.editResponse({
@@ -90,18 +84,20 @@ export default class EditAlterPictureCommand extends SubCommand {
         }
         
         const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
-        await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { banner: publicUrl }})
+		await createSystemOperation(
+			user.system, { systemBanner: publicUrl }, ctx.userTranslations(), "discord"
+		);
 
         return await ctx.editResponse({
             components: [
                 ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().BANNER_SUCCESS
-                    .replace("%alter%", alter.username)),
+                    .replace("@%alter%", "your system")),
                 new Container()
                     .setComponents(
                         new MediaGallery().addItems(
                             new MediaGalleryItem()
                                 .setMedia(`https://wsrv.nl/?url=${publicUrl}&w=1024&h=84`)
-                                .setDescription(`@${alter.username}'s profile`)
+                                .setDescription(`System profile`)
                                 
                         )
                     )

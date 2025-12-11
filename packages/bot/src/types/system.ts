@@ -19,12 +19,13 @@ export enum SystemProtectionFlags {
 
 export const PSystemObject = z.object({
     associatedUserId: z.string(),
+    disabled: z.boolean().catch(false).default(false),
 
     systemName: z.string().max(20).min(1),
     systemDisplayTag: z.string().optional(),
     systemDescription: z.string().max(2000).optional().catch(""),
-    systemAvatar: z.string().optional().catch(""),
-    systemBanner: z.string().optional().catch(""),
+    systemAvatar: z.string().optional().nullable().catch(""),
+    systemBanner: z.string().optional().nullable().catch(""),
     systemPronouns: z.string().optional(),
 
     nicknameFormat: z.string().optional().catch(undefined),
