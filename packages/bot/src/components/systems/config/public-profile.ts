@@ -25,8 +25,6 @@ export default class PublicProfileBtn extends ComponentCommand {
 			});
 		}
 
-        console.log("...")
-
 		return await ctx.update({
 			components: [
 				...new SystemSettingsView(ctx.userTranslations()).topView(
