@@ -17,7 +17,7 @@ export default class CreateProxyTag extends ComponentCommand {
 
         return await context.modal(
             new Modal()
-                .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.ProxyForm.create(alterId))
+                .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.ProxyForm.create(alterId?.toString() ?? ""))
                 .setTitle(context.userTranslations().CREATING_NEW_PT_FORM_TITLE)
                 .addComponents(
                     new Label()

@@ -73,6 +73,12 @@ export async function createSystemOperation(
 				operation.systemAvatar as string,
 			);
 		}
+		if (c === "systemBanner") {
+			return translations.OPERATION_BANNER.replace(
+				"%link%",
+				operation.systemAvatar as string,
+			);
+		}
 		if (c === "systemDescription") {
 			return translations.OPERATION_DESCRIPTION.replace(
 				"%description%",

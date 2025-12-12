@@ -86,13 +86,13 @@ export const extendedContext = extendContext((interaction) => {
 		retrievePUser: async () => getUserById(interaction.user.id),
 		retrievePGuild: async () => getGuildFromId(interaction.guildId ?? "??"),
 		userTranslations: () => translations,
-		loading: (translations: TranslationString) => {
+		loading: () => {
 			return {
 				components: new LoadingView(translations).loadingView(),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			};
 		},
-		loadingEphemeral: (translations: TranslationString) => {
+		loadingEphemeral: () => {
 			return ephemeral({
 				components: new LoadingView(translations).loadingView(),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

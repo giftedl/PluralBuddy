@@ -168,13 +168,22 @@ export const InteractionIdentifier = {
             },
             FormSelection: {
                 NameType: createStatic("systems/config/type-form/name"),
-                NameForm: createFromAdditionalArg("systems/config/set-form/name"),
+                NameForm: createStatic("systems/config/set-form/name"),
                 PrivacyType: createStatic("systems/config/type-form/privacy"),
-                PrivacyForm: createFromAdditionalArg("systems/config/set-form/privacy"),
+                PrivacyForm: createStatic("systems/config/set-form/privacy"),
                 ProxyType: createStatic("systems/config/type-form/proxy"),
                 ProxyForm: createFromAdditionalArg("systems/config/set-form/proxy"),
                 NicknameType: createStatic("systems/config/type-form/nickname"),
-                NicknameForm: createFromAdditionalArg("systems/config/set-form/nickname"),
+                NicknameForm: createStatic("systems/config/set-form/nickname"),
+
+                SystemPFPForm: createStatic("systems/config/set-form/system/set-pfp"),
+                SystemPFPType: createStatic("systems/config/type-form/system/set-pfp"),
+                SystemBannerForm: createStatic("systems/config/set-form/system/set-banner"),
+                SystemBannerType: createStatic("systems/config/type-form/system/set-banner"),
+                SystemPronounsForm: createStatic("systems/config/set-form/system/set-pronouns"),
+                SystemPronounsType: createStatic("systems/config/type-form/system/set-pronouns"),
+                SystemDescriptionForm: createStatic("systems/config/set-form/system/set-description"),
+                SystemDescriptionType: createStatic("systems/config/type-form/system/set-description"),
 
                 AlterAssignPagination: {
                     SearchQueryType:          createStatic           ("systems/config/type-form/ag/search-query"),
