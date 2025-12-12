@@ -28,7 +28,7 @@ export default class GeneralTab extends ComponentCommand {
         return await ctx.update({
             components: [
                 ...new SystemSettingsView(ctx.userTranslations()).topView("general", user.system.associatedUserId),
-                ...new SystemSettingsView(ctx.userTranslations()).generalSettings(user.system)
+                ...new SystemSettingsView(ctx.userTranslations()).generalSettings(user.system, ctx.guildId)
 
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2

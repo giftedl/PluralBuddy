@@ -30,6 +30,8 @@ import { AlertView } from "./alert";
 import { mentionCommand } from "@/lib/mention-command";
 import { tagCollection } from "@/mongodb";
 import type { PTag } from "@/types/tag";
+import type { PSystem } from "@/types/system";
+import { getUserById } from "@/types/user";
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
@@ -150,7 +152,15 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 		];
 	}
 
-	alterGeneralView(alter: PAlter) {
+	async alterGeneralView(alter: PAlter, guildId: string | undefined) {
+		let system = null;
+
+		if (guildId !== undefined) {
+			const user = await getUserById(alter.systemId);
+
+			system = user.system;
+		}
+
 		return [
 			new Container()
 				.setComponents(
@@ -234,9 +244,11 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 						),
 					new Separator(),
 					new TextDisplay().setContent(`You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
-> *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
-> *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
-> *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`),
+> - *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
+> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
+> - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.
+ 
+${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId && a.autoproxyMode !== "off") ? `**Current auto-proxy mode:** ${system?.systemAutoproxy.find((a) => a.serverId)?.autoproxyMode} as ${(system?.systemAutoproxy.find((a) => a.serverId)?.autoproxyAlter ?? "0") === alter.alterId.toString() ? "*this alter*" : "*another alter*"}` : ``}`),
 
 					new ActionRow().setComponents(
 						new StringSelectMenu()
@@ -252,6 +264,13 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 									.setLabel("Latch Mode")
 									.setDescription(
 										"Set this alter as the first alter in latch mode.",
+									)
+									.setDefault(
+										system == null ||
+											system.systemAutoproxy.some(
+												(a) =>
+													a.serverId === guildId && a.autoproxyMode === "latch",
+											),
 									),
 								new StringSelectOption()
 									.setValue(
@@ -262,13 +281,29 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 									.setLabel("Alter Mode")
 									.setDescription(
 										"Only proxy this alter until auto-proxy is disabled.",
+									)
+									.setDefault(
+										system == null ||
+											system.systemAutoproxy.some(
+												(a) =>
+													a.serverId === guildId &&
+													a.autoproxyMode === "alter" &&
+													a.autoproxyAlter === alter.alterId.toString(),
+											),
 									),
 								new StringSelectOption()
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 									)
 									.setLabel("Off")
-									.setDescription("Disable auto-proxy in your system."),
+									.setDescription("Disable auto-proxy in your system.")
+									.setDefault(
+										system == null ||
+											system.systemAutoproxy.some(
+												(a) =>
+													a.serverId === guildId && a.autoproxyMode === "off",
+											),
+									),
 							]),
 					),
 					new Separator(),

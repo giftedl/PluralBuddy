@@ -116,6 +116,11 @@ export const InteractionIdentifier = {
                 ToggleAssign: new InteractionObj("systems/config/ag/toggle-assign-", (paginationToken: string, tagId: string) => `systems/config/ag/toggle-assign-${paginationToken}-${tagId}`),
                 Search: createFromAdditionalArg("systems/config/ag/search")
             },
+
+            SetPFP: createStatic("systems/config/system/set-pfp"),
+            SetBanner: createStatic("systems/config/system/set-banner"),
+            SetPronouns: createStatic("systems/config/alters/set-pronouns"),
+            SetDescription: createStatic("systems/config/alters/set-description"),
             
             Alters: {
                 Index: createStatic("systems/config/alters"),

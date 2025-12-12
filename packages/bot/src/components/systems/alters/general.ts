@@ -37,7 +37,7 @@ export default class GeneralButton extends ComponentCommand {
         return await ctx.update({
             components: [
                 ...new AlterView(ctx.userTranslations()).alterTopView("general", alter.alterId.toString(), alter.username),
-                ...new AlterView(ctx.userTranslations()).alterGeneralView(alter)
+                ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId)
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 

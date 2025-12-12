@@ -15,6 +15,7 @@ Additionally, you can also import data from another bot like PluralKit or Tupper
     PAGINATION_PREVIOUS_PAGE: "Previous Page",
     CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
     ERROR_DISABLED_SYSTEM: "Your system is disabled. You cannot proxy.",
+    OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
 
     CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,

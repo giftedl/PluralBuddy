@@ -1,5 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { ComponentCommand, type ComponentContext } from "seyfert";
+import { ComponentCommand, User, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
 import { MessageFlags } from "seyfert/lib/types";
@@ -42,7 +42,7 @@ export default class ConfigureAlter extends ComponentCommand {
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(ctx.userTranslations()).alterGeneralView(alter),
+				...await new AlterView(ctx.userTranslations()).alterGeneralView(alter,  ctx.guildId),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

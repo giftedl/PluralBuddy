@@ -81,7 +81,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
                     alter.alterId.toString(),
                     alter.username,
                 ),
-                ...new AlterView(ctx.userTranslations()).alterGeneralView(alter),
+                ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId),
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
         });

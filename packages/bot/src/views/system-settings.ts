@@ -6,6 +6,8 @@ import {
 	Container,
 	Section,
 	Separator,
+	StringSelectMenu,
+	StringSelectOption,
 	TextDisplay,
 } from "seyfert";
 import { TranslatedView } from "./translated-view";
@@ -22,6 +24,7 @@ import type { FindCursor, WithId } from "mongodb";
 import type { PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlertView } from "./alert";
+import { mentionCommand } from "@/lib/mention-command";
 
 export const alterPagination: {
 	id: string;
@@ -109,7 +112,7 @@ export class SystemSettingsView extends TranslatedView {
 		];
 	}
 
-	generalSettings(system: PSystem) {
+	generalSettings(system: PSystem, guildId: string | undefined) {
 		return [
 			new Container()
 				.setComponents(
@@ -164,6 +167,63 @@ export class SystemSettingsView extends TranslatedView {
 										: ""),
 							),
 						),
+
+					new Separator(),
+					new TextDisplay().setContent(`You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
+						> - *Alter Mode*: All messages sent from this system will proxy on an alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with an alter regardless of proxy tags. **This requires to select an alter.**
+						> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
+						> - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`),
+
+					new ActionRow().setComponents(
+						new StringSelectMenu()
+							.setPlaceholder(
+								guildId === undefined
+									? "You must be in a guild to proxy"
+									: "Select a proxy mode",
+							)
+							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
+							.setDisabled(guildId === undefined)
+							.setOptions([
+								new StringSelectOption()
+									.setValue(
+										InteractionIdentifier.Selection.AutoProxyModes.Latch.create(),
+									)
+									.setLabel("Latch Mode")
+									.setDescription(
+										"Set this alter as the first alter in latch mode.",
+									)
+									.setDefault(
+										system.systemAutoproxy.some(
+											(a) =>
+												a.serverId === guildId && a.autoproxyMode === "latch",
+										),
+									),
+								new StringSelectOption()
+									.setValue("--")
+									.setLabel("Alter Mode")
+									.setDescription(
+										"This option cannot be selected. You must go into an alter to select this option.",
+									)
+									.setDefault(
+										system.systemAutoproxy.some(
+											(a) =>
+												a.serverId === guildId && a.autoproxyMode === "alter",
+										),
+									),
+								new StringSelectOption()
+									.setValue(
+										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
+									)
+									.setLabel("Off")
+									.setDescription("Disable auto-proxy in your system.")
+									.setDefault(
+										system.systemAutoproxy.some(
+											(a) =>
+												a.serverId === guildId && a.autoproxyMode === "off",
+										),
+									),
+							]),
+					),
 					new Separator(),
 					new Section()
 						.setAccessory(
@@ -306,9 +366,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setEmoji(emojis.plus)
 						.setStyle(ButtonStyle.Primary)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(
-								pgObj.id,
-							),
+							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
 						),
 					new Button()
 						.setLabel("Previous Page")
@@ -426,9 +484,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setEmoji(emojis.plus)
 						.setStyle(ButtonStyle.Primary)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(
-								pgObj.id,
-							),
+							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
 						),
 					new Button()
 						.setLabel("Previous Page")
@@ -465,5 +521,76 @@ export class SystemSettingsView extends TranslatedView {
 		];
 	}
 
-	publicProfile() {}
+	publicProfile(system: PSystem, prefix: string, isApplication: boolean) {
+		return [
+			new Container().setComponents(
+				new TextDisplay().setContent(
+					`## Public Profile - @${system.systemName}\nYour public profile is what your system looks like to other users when they identify your messages.`,
+				),
+				new Separator().setSpacing(Spacing.Large),
+
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							"You can set a **profile picture** by uploading an image using the modal on the right.",
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_PFP)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SetPFP.create(),
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							"You can set a **banner** by uploading an image using the modal on the right.",
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_BANNER)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SetBanner.create(),
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							`You can set pronouns for your system. System pronouns can be at maximum 100 characters long.
+-# ${system.systemName}'s pronouns are: ${system.systemPronouns ?? "Not set"}`,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_PRONOUNS)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SetPronouns.create(),
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							`You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: ${mentionCommand(prefix, "system description", isApplication)}`,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_DESCRIPTION)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SetDescription.create(),
+							),
+					),
+			),
+		];
+	}
 }

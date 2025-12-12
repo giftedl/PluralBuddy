@@ -45,6 +45,7 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 				),
 				...new SystemSettingsView(ctx.userTranslations()).generalSettings(
 					system,
+					ctx.guildId
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
