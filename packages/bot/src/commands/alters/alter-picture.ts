@@ -29,6 +29,9 @@ const options = {
 		required: true,
 		autocomplete: autocompleteAlters,
 	}),
+    "alter-avatar-text": createStringOption({
+        description: "The URL for an avatar to use for the alter.",
+    }),
 	"alter-avatar": createAttachmentOption({
 		description: "The picture to use for the alter. (leave blank to clear)",
 		value(data, ok, fail) {
@@ -56,7 +59,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 		});
 
 		const user = await ctx.retrievePUser()
-		const { "alter-name": alterName, "alter-avatar": attachment } = ctx.options;
+		const { "alter-name": alterName, "alter-avatar": attachment, "alter-avatar-text": attachmentText } = ctx.options;
 		const systemId = ctx.author.id;
 		const query = Number.isNaN(Number.parseInt(alterName))
 			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
@@ -75,7 +78,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		if (attachment === undefined) {
+		if (attachmentText === undefined && attachment === undefined) {
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
 				{ $set: { avatarUrl: null } },
@@ -91,28 +94,31 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}.${((attachment as { value: Attachment }).value.contentType ?? "").replace(/(.*)\//g, "")}`;
-		const bucketName = process.env.GCP_BUCKET ?? "";
-
-		try {
-			const accessToken = await getGcpAccessToken();
-			await uploadDiscordAttachmentToGcp(
-				(attachment as { value: Attachment }).value,
-				accessToken,
-				bucketName,
-				objectName,
-				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "profile-picture" },
-			);
-		} catch (error) {
-			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
-					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+		let objectName: string | undefined;
+		if (attachmentText === undefined) {
+			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}.${((attachment as { value: Attachment }).value.contentType ?? "").replace(/(.*)\//g, "")}`;
+			const bucketName = process.env.GCP_BUCKET ?? "";
+	
+			try {
+				const accessToken = await getGcpAccessToken();
+				await uploadDiscordAttachmentToGcp(
+					(attachment as { value: Attachment }).value,
+					accessToken,
+					bucketName,
+					objectName,
+					{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "profile-picture" },
+				);
+			} catch (error) {
+				return await ctx.editResponse({
+					components: new AlertView(ctx.userTranslations()).errorView(
+						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				});
+			}
 		}
 
-		const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
+		const publicUrl = objectName !== undefined ? `https://pluralbuddy.giftedly.dev/${objectName}` : attachmentText;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
 			{ $set: { avatarUrl: publicUrl } },

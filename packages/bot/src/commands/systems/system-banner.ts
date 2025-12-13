@@ -11,7 +11,10 @@ import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
 import { createSystemOperation } from "@/lib/system-operation";
 
 const options = {
-    "alter-banner": createAttachmentOption({
+    "system-banner-text": createStringOption({
+        description: "The URL for a banner to use for the system.",
+    }),
+    "system-banner": createAttachmentOption({
         description: "The banner to use for the system. (leave blank to clear)",
         value(data, ok, fail) {
             if (!data.value.contentType?.startsWith("image"))
@@ -39,7 +42,7 @@ export default class EditAlterPictureCommand extends SubCommand {
         })
 
         const user = await ctx.retrievePUser()
-        const { "alter-banner": attachment } = ctx.options;
+        const { "system-banner": attachment, "system-banner-text": attachmentText } = ctx.options;
         const systemId = ctx.author.id;
 
         if (user.system === undefined) {
@@ -49,7 +52,7 @@ export default class EditAlterPictureCommand extends SubCommand {
             })
         }
 
-        if (attachment === undefined) {
+        if (attachment === undefined && attachmentText === undefined) {
 			await createSystemOperation(
 				user.system, { systemBanner: null }, ctx.userTranslations(), "discord"
 			);
@@ -64,26 +67,32 @@ export default class EditAlterPictureCommand extends SubCommand {
             })
         }
 
-        const objectName =`${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}.${((attachment as {value: Attachment}).value.contentType ?? "").replace(/(.*)\//g, '')}`;
-        const bucketName = process.env.GCP_BUCKET ?? "";
+        let objectName: string | undefined;
 
-        try {
-            const accessToken = await getGcpAccessToken();
-			await uploadDiscordAttachmentToGcp(
-				(attachment as { value: Attachment }).value,
-				accessToken,
-				bucketName,
-				objectName,
-				{ authorId: ctx.author.id, alterId: "@system", type: "banner" },
-			);
-        } catch (error) {
-            return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_FAILED_TO_UPLOAD_TO_GCP"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+        if (attachmentText === undefined ) {
+            objectName =`${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}.${((attachment as {value: Attachment}).value.contentType ?? "").replace(/(.*)\//g, '')}`;
+            const bucketName = process.env.GCP_BUCKET ?? "";
+    
+            try {
+                const accessToken = await getGcpAccessToken();
+                await uploadDiscordAttachmentToGcp(
+                    (attachment as { value: Attachment }).value,
+                    accessToken,
+                    bucketName,
+                    objectName,
+                    { authorId: ctx.author.id, alterId: "@system", type: "banner" },
+                );
+            } catch (error) {
+                return await ctx.editResponse({
+                    components: new AlertView(ctx.userTranslations()).errorView("ERROR_FAILED_TO_UPLOAD_TO_GCP"),
+                    flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+                })
+            }
         }
+
+        console.log(attachmentText);
         
-        const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
+        const publicUrl = objectName !== undefined ? `https://pluralbuddy.giftedly.dev/${objectName}` : attachmentText;
 		await createSystemOperation(
 			user.system, { systemBanner: publicUrl }, ctx.userTranslations(), "discord"
 		);

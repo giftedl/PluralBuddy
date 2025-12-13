@@ -74,9 +74,9 @@ export async function createSystemOperation(
 			);
 		}
 		if (c === "systemBanner") {
-			return translations[ operation.systemAvatar === null ? "OPERATION_BANNER_UNDEFINED" : "OPERATION_BANNER" ].replace(
+			return translations[ operation.systemBanner === null ? "OPERATION_BANNER_UNDEFINED" : "OPERATION_BANNER" ].replace(
 				"%link%",
-				operation.systemAvatar as string,
+				operation.systemBanner as string,
 			);
 		}
 		if (c === "systemDescription") {
