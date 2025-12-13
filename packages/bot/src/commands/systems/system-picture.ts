@@ -40,7 +40,7 @@ const options = {
 @Declare({
 	name: "avatar",
 	description: "Set an alter's avatar.",
-	aliases: ["pfp", "pic"],
+	aliases: ["pfp", "pic", "picture"],
 	contexts: ["BotDM", "Guild"],
 })
 @Options(options)

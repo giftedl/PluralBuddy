@@ -48,7 +48,7 @@ export default async function DeveloperApplications() {
 
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
-			<div className="flex justify-between items-center gap-6 w-full">
+			<div className="md:flex max-md:space-y-3 justify-between items-center gap-6 w-full">
 				<div className=" gap-3 flex-1 min-w-0">
 					<strong className="text-lg whitespace-nowrap mr-3">
 						OAuth Applications

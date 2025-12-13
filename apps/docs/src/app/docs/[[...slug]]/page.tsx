@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
+import { Separator } from "@/components/ui/separator";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
@@ -27,6 +28,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 		>
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
+			<Separator />
 			<DocsBody>
 				<MDX
 					components={getMDXComponents({
@@ -51,7 +53,7 @@ export async function generateMetadata(
 	if (!page) notFound();
 
 	return {
-		title: page.data.title,
+		title: `${page.data.title} | PluralBuddy`,
 		description: page.data.description,
 		openGraph: {
 			images: getPageImage(page).url,

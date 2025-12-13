@@ -1,0 +1,37 @@
+---
+title: pb;system
+description: The main system command, used for managing and changing values of your system.
+---
+
+The `pb;system` command is the root command for numerous other-system related commands.
+
+## Sub-commands
+_All arguments in `<value>` format are required. All arguments in `[value]` are optional. Attachments can be uploaded directly and privately using Discord application commands as opposed to uploading directly to the command message used._
+
+ - `pb;system pronouns <pronouns>` - Set the pronouns of the system, viewable on the system profile.
+ - `pb;system avatar <picture attachment>` - Set the profile picture of the system, viewable on the system profile.
+ - `pb;system name <name>` - Sets the name of the system, viewable on the system profile.
+ - `pb;system display-tag <display-tag>` - Sets the display tag of the system, appended to the end of all webhook names from any alters in this system.
+ - `pb;system info [-p]` - Opens the profile of the system. Equivalent to using `pb;system`. `-p` sends this message non-ephemerally.
+ - `pb;system import-pk <json file attachment>` - Import a PluralKit configuration **if you have no existing system**.
+ - `pb;system export` - Export a PluralBuddy-compliant system configuration including all of your system data.
+ - `pb;system toggle` - Disable or enable proxying on the system
+ - `pb;system delete [-mi]` - Completely delete the system. Using `-mi` will also remove media uploaded related to the system in 7-8 days after deletion operation.
+ - `pb;system create-tag <display name>` - Creates a new tag in the system.
+ - `pb;system create-alter <username> <display name>` - Creates a new alter in the system.
+ - `pb;system config` - Opens the visual configuration for your system.
+ - `pb;system alters` - Loads a list of your alters.
+
+## Root Usage
+
+Running `pb;system` without any subcommands will show the system profile menu. You can also conveniently use the configuration buttons in that message.
+
+<small>Example preview:</small>
+
+<SystemCardExample />
+
+### Application commands
+
+Usage without any other sub-commands is supported with `pb;system`, however is only allowed when not using Discord application commands. All root commands that have sub-commands must be used with prefix commands.
+
+If you need to, it is recommended to use `pb;system info` (`/system info`) to get the same information as just running `pb;system`.

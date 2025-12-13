@@ -68,13 +68,13 @@ export async function createSystemOperation(
 			);
 		}
 		if (c === "systemAvatar") {
-			return translations.OPERATION_AVATAR.replace(
+			return translations[ operation.systemAvatar === null ? "OPERATION_AVATAR_UNDEFINED" : "OPERATION_AVATAR" ].replace(
 				"%link%",
 				operation.systemAvatar as string,
 			);
 		}
 		if (c === "systemBanner") {
-			return translations.OPERATION_BANNER.replace(
+			return translations[ operation.systemAvatar === null ? "OPERATION_BANNER_UNDEFINED" : "OPERATION_BANNER" ].replace(
 				"%link%",
 				operation.systemAvatar as string,
 			);

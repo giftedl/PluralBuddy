@@ -88,12 +88,6 @@ export class PluralBuddyIntro extends TranslatedView {
 								InteractionIdentifier.Setup.ImportSelection.PluralKit.create(),
 							),
 						new StringSelectOption()
-							.setLabel("Tupperbox")
-							.setDescription(this.translations.IMPORT_TUPPERBOX_DESCRIPTION)
-							.setValue(
-								InteractionIdentifier.Setup.ImportSelection.Tupperbox.create(),
-							),
-						new StringSelectOption()
 							.setLabel("PluralBuddy")
 							.setDescription(this.translations.IMPORT_PLURALBUDDY_DESCRIPTION)
 							.setValue(

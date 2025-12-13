@@ -25,7 +25,8 @@ export default class SystemCommand extends Command {
 
         return ctx.ephemeral({
             components: [
-                ...(new SystemView(ctx.userTranslations()).systemProfileView(user.system)),
+                ...(new SystemView(ctx.userTranslations()).systemProfileView(user.system, 
+                    user.system.associatedUserId !== ctx.author.id,)),
                 ...(new SystemView(ctx.userTranslations()).systemConfigureButton(user.system)),
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

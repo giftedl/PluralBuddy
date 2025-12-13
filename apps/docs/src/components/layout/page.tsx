@@ -238,7 +238,7 @@ export const DocsDescription = forwardRef<
     <p
       ref={ref}
       {...props}
-      className={cn('mb-8 text-lg text-fd-muted-foreground', props.className)}
+      className={cn('mb-2 text-lg text-fd-muted-foreground', props.className)}
     >
       {props.children}
     </p>

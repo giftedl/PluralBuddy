@@ -82,7 +82,7 @@ export default createEvent({
 						message,
 					);
 
-					break outer;
+					return;
 				}
 			}
 		}

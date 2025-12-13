@@ -15,7 +15,7 @@ export default class NameCNS extends ComponentCommand {
     async run(ctx: ComponentContext<typeof this.componentType>) {
         const oldInteractionId = InteractionIdentifier.Setup.CreateNewSystem.Name.substring(ctx.customId);
         const form = new Modal()
-            .setCustomId(InteractionIdentifier.Setup.FormSelection.NameForm.create(oldInteractionId))
+            .setCustomId(InteractionIdentifier.Setup.FormSelection.NameForm.create(oldInteractionId[0] as string))
             .setTitle(ctx.userTranslations().CREATING_NEW_SYSTEM_FORM_TITLE)
             .addComponents(
                 [

@@ -5,6 +5,10 @@
     "root": true,
     "pages": [
       "---Introduction---",
-      "index"
+      "index",
+      "---For Users---",
+      "get-started",
+      "commands",
+      "---For Server Administrators---"
     ]
   }

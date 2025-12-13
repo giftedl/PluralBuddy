@@ -42,6 +42,8 @@ export default class SystemInfoCommand extends SubCommand {
 				components: [
 					...new SystemView(ctx.userTranslations()).systemProfileView(
 						user.system,
+
+						user.system.associatedUserId !== ctx.author.id,
 					),
 					...new SystemView(ctx.userTranslations()).systemConfigureButton(
 						user.system,

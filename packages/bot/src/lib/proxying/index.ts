@@ -17,20 +17,20 @@ import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 
 export const imageOrVideoExtensions = [
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".gif",
-    ".webp",
-    ".bmp",
-    ".svg",
-    ".mp4",
-    ".webm",
-    ".mov",
-    ".mkv",
-    ".mpeg",
-    ".heic",
-    ".heif",
+	".png",
+	".jpg",
+	".jpeg",
+	".gif",
+	".webp",
+	".bmp",
+	".svg",
+	".mp4",
+	".webm",
+	".mov",
+	".mkv",
+	".mpeg",
+	".heic",
+	".heif",
 ];
 
 export async function proxy(
@@ -96,53 +96,54 @@ export async function proxy(
 				),
 			);
 		if (otherFiles.length > 0)
-            for (const attachment of otherFiles)
-                components.push(new File().setMedia(`attachment://${attachment.name}`));
+			for (const attachment of otherFiles)
+				components.push(new File().setMedia(`attachment://${attachment.name}`));
 	}
 
-	// Send the message with file attachments included
-	webhook.messages
-		.write({
-			body: {
-				components,
-				flags: MessageFlags.IsComponentsV2,
-				username: username.substring(0, 80),
-				allowed_mentions: { parse: [] },
-				avatar_url: picture,
-				files: fileAttachments.map((c) =>
-					new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
-				),
-			},
-			query: {
-				wait: true,
-			},
-		})
-		.then((sentMessage) => {
-			messagesCollection.insertOne({
-				messageId: sentMessage?.id ?? "0",
-				alterId,
-				systemId,
-				createdAt: new Date(),
+	if (await message.fetch().catch(() => null)) {
+		// Send the message with file attachments included
+		webhook.messages
+			.write({
+				body: {
+					components,
+					flags: MessageFlags.IsComponentsV2,
+					username: username.substring(0, 80),
+					allowed_mentions: { parse: [] },
+					avatar_url: picture,
+					files: fileAttachments.map((c) =>
+						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
+					),
+				},
+				query: {
+					wait: true,
+				},
+			})
+			.then((sentMessage) => {
+				messagesCollection.insertOne({
+					messageId: sentMessage?.id ?? "0",
+					alterId,
+					systemId,
+					createdAt: new Date(),
+				});
+
+				if (sentMessage?.id) {
+					processUrlIntegrations(
+						webhook,
+						client,
+						message,
+						sentMessage.id,
+						stringContents,
+						reply,
+						mainContents,
+						fileAttachments,
+						uploadedEmojis,
+					).catch(console.error);
+				} else
+					for (const emoji of uploadedEmojis) {
+						emoji.delete();
+					}
 			});
 
-			if (sentMessage?.id) {
-				processUrlIntegrations(
-					webhook,
-					client,
-					message,
-					sentMessage.id,
-					stringContents,
-					reply,
-					mainContents,
-					fileAttachments,
-					uploadedEmojis,
-				).catch(console.error);
-			} else
-				for (const emoji of uploadedEmojis) {
-					emoji.delete();
-				}
-		});
-
-	// Delete original message
-	await message.delete();
+		await message.delete();
+	}
 }

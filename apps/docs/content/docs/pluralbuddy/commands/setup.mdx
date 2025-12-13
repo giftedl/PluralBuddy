@@ -1,0 +1,27 @@
+---
+title: pb;setup
+description: Setup a PluralBuddy system
+---
+
+This command is used to setup a new PluralBuddy system interactively.
+
+## Usage
+
+```
+pb;setup
+```
+
+After running this command, you will be prompted into a process to create a new system. You will be able to pick from a few options to start a new system.
+- Import from PluralKit: Importing from PluralKit requires you to put the data of your system export into a modal.
+- Import from PluralBuddy: Importing from PluralBuddy requires you to put the data of a prior system export into a modal.
+- Create New System: Creating a new system from scratch requires you have the [required options](#creating-system-options)
+
+<Callout title="Deleted Attachments" type="warning">
+    If you used `-mi` when deleting an already exported system (from PluralBuddy), all attachments will be broken when importing and will need to be fixed.
+</Callout>
+
+### Creating system: options
+
+ - System name: PluralBuddy requires a system name to create a system. It must be at _least_ 3 characters and at _most_ 20 characters long.
+ - System privacy: You can set the values that are public to other users when they see your system profile. There are no requirements for these.
+ - System tag: System tags are required depending on if the server you setup the system in requires them or not. System tags are additions to the webhooks that clearly makes a webhook name able to be recognized by system.

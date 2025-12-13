@@ -100,7 +100,7 @@ for (const unfetchedGuild of guilds.values()) {
 client.cache.statistic.set(CacheFrom.Rest, "latest", { guildCount, userCount });
 
 Bun.serve({
-	port: 3000,
+	port: 3030,
 	routes: {
 		"/api/stats": (req) => {
 			if (req.headers.get("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
@@ -111,5 +111,5 @@ Bun.serve({
 	},
 	fetch(req, server) {
 		return Response.error()
-	},
+	}
 });

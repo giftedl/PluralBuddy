@@ -9,7 +9,7 @@ PluralBuddy is a bot designed to fill the gap for quality customizable plurality
 :track_next: To get started, click the Next Page button below to setup your system.`,
     IMPORT_MESSAGE: `## Setting up your system
 You can create a new system which will allow you to create your alters and tags by yourself.
-Additionally, you can also import data from another bot like PluralKit or Tupperbox.`,
+Additionally, you can also import data from another bot like PluralKit`,
     PAGINATION_NEXT_PAGE: "Next Page",
     PAGINATION_FINISH: "Finish",
     PAGINATION_PREVIOUS_PAGE: "Previous Page",
@@ -252,7 +252,9 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_SET_SYSTEM_TAG: "Successfully changed the system tag of your system to %tag%",
     OPERATION_SYSTEM_SET_SYSTEM_TAG: "Changed the system tag of your system to %tag%",
     OPERATION_AVATAR: "Set system avatar to a **[new image](<%link%>)**.",
+    OPERATION_AVATAR_UNDEFINED: "Reset system avatar",
     OPERATION_BANNER: "Set system banner to a **[new image](<%link%>)**.",
+    OPERATION_BANNER_UNDEFINED: "Reset system banner",
     OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
     OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
     OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",

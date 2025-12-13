@@ -36,6 +36,14 @@ import { cn } from "@/lib/utils";
 import { registerOAuthApplication } from "@/app/(home)/developers/applications/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "../ui/drawer";
 
 export const scopeList = [
 	{ title: "profile", description: "Access to your profile data – required." },
@@ -51,7 +59,7 @@ export const scopeList = [
 	{
 		title: "system:admin",
 		description: "Access to read and write to systems AND alters.",
-	}
+	},
 ] as const;
 
 export const urlRegex =
@@ -64,7 +72,7 @@ const formSchema = z.object({
 });
 
 export function CreateNewAppForm({ children }: { children: ReactNode }) {
-	const router = useRouter()
+	const router = useRouter();
 	const form = useForm({
 		defaultValues: {
 			applicationName: "",
@@ -79,147 +87,153 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 			const result = await registerOAuthApplication(value);
 
 			if (!("message" in result))
-				router.push(`/developers/application/${result.clientId}`)
-			else
-				toast.error("Validation error while creating application.")
+				router.push(`/developers/application/${result.clientId}`);
+			else toast.error("Validation error while creating application.");
 		},
 		validators: {
 			onSubmit: formSchema,
 		},
 	});
+	const isDesktop = useMediaQuery("(min-width: 768px)");
+
+	const FormContents = () => (
+		<form
+			onSubmit={(e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				form.handleSubmit();
+			}}
+		>
+			<FieldSet>
+				<FieldGroup>
+					<form.Field name="applicationName">
+						{(field) => {
+							const isInvalid =
+								field.state.meta.isTouched && !field.state.meta.isValid;
+							return (
+								<Field data-invalid={isInvalid} aria-required>
+									<FieldLabel htmlFor="street">Application Name</FieldLabel>
+									<FieldDescription>
+										This is what shows up when the user is in the consent screen
+										checkpoint.
+									</FieldDescription>
+									<Input
+										type="text"
+										placeholder="Acme Inc."
+										aria-invalid={isInvalid}
+										id={field.name}
+										name={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+									/>
+
+									{isInvalid && <FieldError errors={field.state.meta.errors} />}
+								</Field>
+							);
+						}}
+					</form.Field>
+					<form.Field name="redirectUris" mode="array">
+						{(field) => <RedirectURI field={field} />}
+					</form.Field>
+					<form.Field name="scopes" mode="array">
+						{(field) => {
+							const isInvalid =
+								field.state.meta.isTouched && !field.state.meta.isValid;
+							return (
+								<FieldSet>
+									<FieldLegend variant="label">Scopes</FieldLegend>
+									<FieldGroup
+										data-slot="checkbox-group"
+										className="grid grid-cols-2"
+									>
+										{scopeList.map((scope) => (
+											<div key={scope.title} className="space-y-1">
+												<Field
+													orientation="horizontal"
+													data-invalid={isInvalid}
+												>
+													<Checkbox
+														id={`form-tanstack-checkbox-${scope.title}`}
+														name={field.name}
+														aria-invalid={isInvalid}
+														checked={field.state.value.includes(scope.title)}
+														disabled={scope.title === "profile"}
+														onCheckedChange={(checked) => {
+															if (checked) {
+																field.pushValue(scope.title);
+															} else {
+																const index = field.state.value.indexOf(
+																	scope.title,
+																);
+																if (index > -1) {
+																	field.removeValue(index);
+																}
+															}
+														}}
+													/>
+													<FieldLabel
+														htmlFor={`form-tanstack-checkbox-${scope}`}
+														className="font-mono"
+													>
+														{scope.title}
+													</FieldLabel>
+												</Field>
+												<FieldDescription>{scope.description}</FieldDescription>
+											</div>
+										))}
+									</FieldGroup>
+									{isInvalid && <FieldError errors={field.state.meta.errors} />}
+								</FieldSet>
+							);
+						}}
+					</form.Field>
+				</FieldGroup>
+			</FieldSet>
+			<Field orientation="horizontal" className="mt-6">
+				<button
+					type="submit"
+					className={cn(buttonVariants({ variant: "primary" }), "w-full")}
+				>
+					Submit
+				</button>
+			</Field>
+		</form>
+	);
+
+	if (isDesktop)
+		return (
+			<Dialog>
+				<DialogTrigger asChild>{children}</DialogTrigger>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Create OAuth Application</DialogTitle>
+					</DialogHeader>
+
+					<FormContents />
+				</DialogContent>
+			</Dialog>
+		);
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>{children}</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Create OAuth Application</DialogTitle>
-				</DialogHeader>
+		<Drawer>
+			<DrawerTrigger asChild>{children}</DrawerTrigger>
+			<DrawerContent>
+				<DrawerHeader className="text-left">
+					<DrawerTitle>Create OAuth Application</DrawerTitle>
+				</DrawerHeader>
 
-				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						e.stopPropagation();
-						form.handleSubmit();
-					}}
-				>
-					<FieldSet>
-						<FieldGroup>
-							<form.Field name="applicationName">
-								{(field) => {
-									const isInvalid =
-										field.state.meta.isTouched && !field.state.meta.isValid;
-									return (
-										<Field data-invalid={isInvalid} aria-required>
-											<FieldLabel htmlFor="street">Application Name</FieldLabel>
-											<FieldDescription>
-												This is what shows up when the user is in the consent
-												screen checkpoint.
-											</FieldDescription>
-											<Input
-												type="text"
-												placeholder="Acme Inc."
-												aria-invalid={isInvalid}
-												id={field.name}
-												name={field.name}
-												value={field.state.value}
-												onBlur={field.handleBlur}
-												onChange={(e) => field.handleChange(e.target.value)}
-											/>
-
-											{isInvalid && (
-												<FieldError errors={field.state.meta.errors} />
-											)}
-										</Field>
-									);
-								}}
-							</form.Field>
-							<form.Field name="redirectUris" mode="array">
-								{(field) => <RedirectURI field={field} />}
-							</form.Field>
-							<form.Field name="scopes" mode="array">
-								{(field) => {
-									const isInvalid =
-										field.state.meta.isTouched && !field.state.meta.isValid;
-									return (
-										<FieldSet>
-											<FieldLegend variant="label">Scopes</FieldLegend>
-											<FieldGroup
-												data-slot="checkbox-group"
-												className="grid grid-cols-2"
-											>
-												{scopeList.map((scope) => (
-													<div key={scope.title} className="space-y-1">
-														<Field
-															orientation="horizontal"
-															data-invalid={isInvalid}
-														>
-															<Checkbox
-																id={`form-tanstack-checkbox-${scope.title}`}
-																name={field.name}
-																aria-invalid={isInvalid}
-																checked={field.state.value.includes(
-																	scope.title,
-																)}
-																disabled={scope.title === "profile"}
-																onCheckedChange={(checked) => {
-																	if (checked) {
-																		field.pushValue(scope.title);
-																	} else {
-																		const index = field.state.value.indexOf(
-																			scope.title,
-																		);
-																		if (index > -1) {
-																			field.removeValue(index);
-																		}
-																	}
-																}}
-															/>
-															<FieldLabel
-																htmlFor={`form-tanstack-checkbox-${scope}`}
-																className="font-mono"
-															>
-																{scope.title}
-															</FieldLabel>
-														</Field>
-														<FieldDescription>
-															{scope.description}
-														</FieldDescription>
-													</div>
-												))}
-											</FieldGroup>
-											{isInvalid && (
-												<FieldError errors={field.state.meta.errors} />
-											)}
-										</FieldSet>
-									);
-								}}
-							</form.Field>
-						</FieldGroup>
-					</FieldSet>
-					<DialogFooter>
-						<Field orientation="horizontal" className="mt-6">
-							<button
-								type="submit"
-								className={cn(
-									buttonVariants({ variant: "primary" }),
-									"w-full",
-								)}
-							>
-								Submit
-							</button>
-						</Field>
-					</DialogFooter>
-				</form>
-			</DialogContent>
-		</Dialog>
+				<div className="p-8 overflow-y-auto h-full">
+					<FormContents />
+				</div>
+			</DrawerContent>
+		</Drawer>
 	);
 
 	function RedirectURI({ field }: { field: any }) {
 		const [value, setValue] = useState("");
 		const [error, setError] = useState(false);
-		const isInvalid =
-			field.state.meta.isTouched && !field.state.meta.isValid;
+		const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
 		return (
 			<Field data-invalid={error || isInvalid}>
@@ -254,12 +268,18 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 					</InputGroupAddon>
 				</InputGroup>
 				<FieldError
-					errors={[...(error ? [{ message: "Must be a valid URL" }] : []), ...field.state.meta.errors]}
+					errors={[
+						...(error ? [{ message: "Must be a valid URL" }] : []),
+						...field.state.meta.errors,
+					]}
 				/>
 
 				<div className="flex items-center gap-1">
 					{field.state.value.map((_: unknown, index: number) => (
-						<form.Field name={`redirectUris[${index}]`} key={index}>
+						<form.Field
+							name={`redirectUris[${index}]`}
+							key={`${Math.random()}-${index}`}
+						>
 							{(subField) => {
 								return (
 									<Badge className="w-min">
