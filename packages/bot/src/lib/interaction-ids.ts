@@ -81,6 +81,10 @@ export const InteractionIdentifier = {
     AutoProxy: {
         AlterMenu: createStatic("selection/ap/alter-menu")
     },
+    EditMenu: {
+        EditContextForm: createFromAdditionalArg("edit/set-form/context"),
+        EditContextType: createStatic("edit/type-form/context")
+    },
     Systems: {
         DeleteSystem: createStatic("systems/delete"),
         DeleteSystemMedia: createStatic("systems/delete-media"),

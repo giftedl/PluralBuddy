@@ -14,7 +14,7 @@ Additionally, you can also import data from another bot like PluralKit`,
     PAGINATION_FINISH: "Finish",
     PAGINATION_PREVIOUS_PAGE: "Previous Page",
     CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
-    ERROR_DISABLED_SYSTEM: "Your system is disabled. You cannot proxy.",
+    ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",
     OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
 
     CREATING_NEW_SYSTEM_NAME_MESSAGE: `
@@ -39,11 +39,11 @@ Systems can have **privacy values** which are values that describe who can see w
 > - To create a new tag, try using %command2%`,
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
     SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
-    ERROR_PAGINATION_TOO_OLD: "That alter pagination component is too old, you cannot proceed. Please hit the \"Alters\" tab at the top of the message to reset the pagination.",
-    ERROR_TAG_PAGINATION_TOO_OLD: "That tag pagination component is too old, you cannot proceed. Please hit the \"Tags\" tab at the top of the message to reset the pagination.",
-    ERROR_ASSIGN_PAGINATION_TOO_OLD: "That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
-    ERROR_NO_ALTERS: "You have no alters! Create one below!",
-    ERROR_NO_TAGS: "You have no tags! Create one below!",
+    ERROR_PAGINATION_TOO_OLD: "2g – That alter pagination component is too old, you cannot proceed. Please hit the \"Alters\" tab at the top of the message to reset the pagination.",
+    ERROR_TAG_PAGINATION_TOO_OLD: "2h – That tag pagination component is too old, you cannot proceed. Please hit the \"Tags\" tab at the top of the message to reset the pagination.",
+    ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
+    ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
+    ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
     PK_IMPORT_START: "## PluralKit Importing",
 
     PAGE_NEW_SYS_TEXT: "-# Page 3/3 · Some fields haven't been filled out. · * Required",
@@ -53,16 +53,16 @@ Systems can have **privacy values** which are values that describe who can see w
     IMPORT_PLURALBUDDY_DESCRIPTION: "Import from PluralBuddy",
     IMPORT_SOURCE_DESCRIPTION: "Import Source",
     CREATE_NEW_SYS_DESCRIPTION: "Create New System",
-    PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "Importing files cannot be larger than 2mb. Please contact support if you are genuinely trying to import a system larger than 2mb.",
-    ERROR_ATTACHMENT_TOO_LARGE: "Attachments for banners or profile pictures cannot be larger than 2mb.",
+    PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importing files cannot be larger than 2mb. Please contact support if you are genuinely trying to import a system larger than 2mb.",
+    ERROR_ATTACHMENT_TOO_LARGE: "2j – Attachments for banners or profile pictures cannot be larger than 2mb.",
     CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
     CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
-    PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "The file you imported is not valid JSON.",
+    PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – The file you imported is not valid JSON.",
 
-    ERROR_INTERACTION_TOO_OLD: "This interaction has no longer been kept track of. (have you waited too long?)",
-    ERROR_SYSTEM_DOESNT_EXIST: "This operation cannot be concluded because there is no system to operate on.",
-    ERROR_ALTER_DOESNT_EXIST: "This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
-    ERROR_TAG_DOESNT_EXIST: "This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
+    ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
+    ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
+    ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
+    ERROR_TAG_DOESNT_EXIST: "2o – This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
 
     CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
     EDIT_SYSTEM_FORM_TITLE: "Editing System",
@@ -77,14 +77,14 @@ Systems can have **privacy values** which are values that describe who can see w
     CREATING_NEW_PT_FORM_TITLE: "New proxy tag",
     CREATING_NEW_PT_FORM_DESC: "Input the proxy tag where `text` is the text in the message. For example: `text -bob`",
     CREATING_NEW_PT_FORM_LABEL: "Proxy Tag",
-    CREATING_NEW_PT_ERROR: "This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
-    CREATING_NEW_PT_TOO_MANY_CHARS: "There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.", 
+    CREATING_NEW_PT_ERROR: "2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
+    CREATING_NEW_PT_TOO_MANY_CHARS: "2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.", 
     SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
 
     PLURALBUDDY_IMPORT_SOURCE: "JSON Import Data",
     PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below",
-    PLURALBUDDY_IMPORT_ERROR: "There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
-    PLURALBUDDY_OPTIONS_ERROR: "There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
+    PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
+    PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
 
     CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
     CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use %command% for more details.",
@@ -144,8 +144,8 @@ Systems can have **privacy values** which are values that describe who can see w
     ALTER_SET_PFP: "Set Profile Picture",
     ALTER_SET_BANNER: "Set Banner",
     ALTER_SET_PRIVACY: "Set Privacy",
-    ERROR_INVALID_ATTACHMENT_TYPE: "The attachment you uploaded is not an image.",
-    ERROR_INVALID_COLOR: "The color you entered is not a valid hex color.",
+    ERROR_INVALID_ATTACHMENT_TYPE: "2s – The attachment you uploaded is not an image.",
+    ERROR_INVALID_COLOR: "2t – The color you entered is not a valid hex color.",
 
     TAG_GENERAL: "## %general% General Settings - %tag%\nTag's are specific groups your alter can be apart of. Certain values of your tag can be configured here.",
     TAG_SET_DISPLAY_NAME_DESC: "Tag display names are the only form of identification for tags. They can only be less than 100 characters.",
@@ -208,9 +208,9 @@ Systems can have **privacy values** which are values that describe who can see w
     DN_SUCCESS: "Successfully updated the display name for @%alter% to %new-display%.",
     DN_SUCCESS_SS: "Successfully updated the display name for @%alter% to %new-display% **in %server%**.",
     COLOR_SUCCESS: "Successfully updated the color for @%alter%.",
-    ERROR_MANUAL_PROXY: "There was an error while manually proxying. Please try again later.",
+    ERROR_MANUAL_PROXY: "2u – There was an error while manually proxying. Please try again later.",
     SUCCESS_PROXY: "[Your message](<%message-link%>) has been sent!",
-    CONTENT_ERROR_PROXY: "You must either have some text or an attachment to proxy.",
+    CONTENT_ERROR_PROXY: "2v – You must either have some text or an attachment to proxy.",
 
     ERROR_USER_BLACKLISTED: "2a – This user is blacklisted from using PluralBuddy.",
 
@@ -245,8 +245,8 @@ Systems can have **privacy values** which are values that describe who can see w
     TAG_ALREADY_ASSIGNED: "**%tag%** has already been assigned to **@%alter%.",
     ASSIGNED_TAG: "**%tag%** has been successfully assigned to **@%alter%**.",
     FORBIDDEN: "You do not have permission on this server to do this action.",
-    ERROR_FAILED_TO_UPLOAD_TO_GCP: "Failed to upload the image to Google Cloud Platform. Please try again later.",
-    DN_ERROR_SE: "You cannot use this command in DM's.",
+    ERROR_FAILED_TO_UPLOAD_TO_GCP: "2d – Failed to upload the image to Google Cloud Platform. Please try again later.",
+    DN_ERROR_SE: "2e – You cannot use this command in DM's.",
     SYSTEM_SET_NAME: "Successfully changed the name of your system to %name%",
     SYSTEM_SET_PRONOUNS: "Successfully changed the pronouns of your system to %pronouns%",
     SYSTEM_SET_SYSTEM_TAG: "Successfully changed the system tag of your system to %tag%",
@@ -258,5 +258,14 @@ Systems can have **privacy values** which are values that describe who can see w
     OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
     OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
     OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+
+    EDIT_MESSAGE: "Editing message",
+    MESSAGE_CONTENTS: "New Message Contents",
+
+    SUCCESSFULLY_REMOVED_MESSAGE: "Successfully deleted that message.",
+    SUCCESSFULLY_EDITED_MESSAGE: "Successfully edited [that message](<%message%>).",
+
+    ERROR_OWN_MESSAGE: "2c – You do not own this message.",
+    NOT_RECENT_ENOUGH: "2z – You do not have a message in this channel recent enough in this channel."
 }
 

@@ -39,7 +39,7 @@ export default createEvent({
 
 		if (await notValidPermissions(message)) return;
 
-		const similarWebhooks = await getSimilarWebhooks(message);
+		const similarWebhooks = await getSimilarWebhooks(message.channelId);
 		const user = await getUserById(message.author.id);
 
 		if (user.system === undefined) return;

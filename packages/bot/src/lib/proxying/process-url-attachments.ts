@@ -14,6 +14,7 @@
 import type { ColorResolvable } from "seyfert/lib/common";
 import type { Message, WebhookMessage } from "seyfert/lib/structures";
 import { getGifLink } from "./tenor";
+import { ComponentType, type APITextDisplayComponent } from "seyfert/lib/types";
 
 export async function processUrlIntegrations(
 	webhook: Webhook,
@@ -25,7 +26,9 @@ export async function processUrlIntegrations(
 	mainContents: TopLevelBuilders[],
 	fileAttachments: Array<{ buff: Buffer; name: string }>,
 	uploadedEmojis: ApplicationEmoji[],
-	channelReference?: { channelId: string, guildId: string, userId: string }
+	channelReference?: { channelId: string, guildId: string, userId: string } | undefined,
+	altUserId?: string | undefined,
+	altGuildId?: string | undefined,
 ) {
 	const urlAttachments: Array<
 		{ buff: Buffer; name: string } | { link: string }
@@ -34,12 +37,12 @@ export async function processUrlIntegrations(
 	const urlRegex = /(?<!<)(https?:\/\/[^\s>]+)(?!>)/g;
 	const userPerms = await client.channels.memberPermissions(
 		channelReference?.channelId ?? message.channelId,
-		await client.members.fetch(channelReference?.guildId ?? message.guildId as string, channelReference?.userId ?? message.user.id),
+		await client.members.fetch(altGuildId ?? channelReference?.guildId ?? message.guildId as string, altUserId ?? channelReference?.userId ?? message.user.id),
 		true,
 	);
 
 	if (userPerms.has(["EmbedLinks"]) ?? false) {
-		const matches = message.content.match(urlRegex) ?? [];
+		const matches = (message.content + message.components.filter(c => c.type === ComponentType.TextDisplay).map((c) => (c.data as APITextDisplayComponent).content).join("")).match(urlRegex) ?? [];
 		for (const regex of matches) {
 			if (regex.startsWith("https://tenor.com")) {
 				const link = await getGifLink(regex);
@@ -64,7 +67,7 @@ export async function processUrlIntegrations(
                 // biome-ignore lint/suspicious/noExplicitAny: any required.
                 const result = await url.json() as any
 
-				if (result.message === "Invalid or unsupported image format. Is it a valid image?" && !/^https:\/\/([a-zA-Z0-9-]+\.)?discord\.com/.test(regex)) {
+				if (result.message.includes("Is it a valid image?") && !/^https:\/\/([a-zA-Z0-9-]+\.)?discord\.com/.test(regex)) {
 					const meta = await fetch(
 						`${process.env.LINK_SCRAPER_API}?url=${encodeURIComponent(regex)}`,
 						{ signal: AbortSignal.timeout(3000) },
@@ -82,7 +85,7 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 										? [
 												new MediaGallery().setItems(
 													new MediaGalleryItem().setMedia(
-														json?.["og:image"] as string,
+														`https://wsrv.nl/?url=${json?.["og:image"] as string}&w=400&h=210`,
 													),
 												),
 											]

@@ -10,11 +10,13 @@ import {
 	AttachmentBuilder,
 	Thumbnail,
 	File,
+	Embed,
 } from "seyfert";
 import type { Message } from "seyfert/lib/structures";
 import { MessageFlags } from "seyfert/lib/types";
 import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
+import { emojis } from "../emojis";
 
 export const imageOrVideoExtensions = [
 	".png",
@@ -47,7 +49,7 @@ export async function proxy(
 	picture?: string,
 ) {
 	// Process file attachments before sending the message
-	const { fileAttachments, hasTextContent } = await processFileAttachments(
+	const { fileAttachments } = await processFileAttachments(
 		client,
 		message,
 		stringContents,
@@ -68,19 +70,6 @@ export async function proxy(
 		}
 	}
 
-	// If the message is JUST an emoji
-	const customEmojiRegex = /^<a?:\w+:\d+>$/;
-	const unicodeEmojiRegex = /^(?:\p{Emoji_Presentation}|\p{Emoji}\uFE0F)$/u;
-
-	const trimmedString = stringContents.trim();
-
-	if (
-		(customEmojiRegex.test(trimmedString) ||
-			unicodeEmojiRegex.test(trimmedString)) &&
-		!trimmedString.replace(customEmojiRegex, "").replace(unicodeEmojiRegex, "")
-	) {
-	}
-
 	// Build components with file attachments if any
 	const components: TopLevelBuilders[] = [...reply];
 
@@ -99,6 +88,15 @@ export async function proxy(
 			for (const attachment of otherFiles)
 				components.push(new File().setMedia(`attachment://${attachment.name}`));
 	}
+	if ((message.stickerItems ?? []).length > 0) {
+		components.push(
+			...(message.stickerItems ?? []).map((c) =>
+				new MediaGallery().addItems(
+					new MediaGalleryItem().setMedia(`https://wsrv.nl/?url=discordapp.com/stickers/${c.id}.png&w=160&h=160`),
+				),
+			),
+		);
+	}
 
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
@@ -106,25 +104,55 @@ export async function proxy(
 			.write({
 				body: {
 					components,
-					flags: MessageFlags.IsComponentsV2,
+					flags:
+						components.length !== 0
+							? MessageFlags.IsComponentsV2
+							: (0 as MessageFlags),
 					username: username.substring(0, 80),
 					allowed_mentions: { parse: [] },
 					avatar_url: picture,
 					files: fileAttachments.map((c) =>
 						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
 					),
+					embeds:
+						components.length === 0
+							? [
+									await (async () => {
+										const author = await client.users.fetch(systemId, true);
+
+										return new Embed()
+											.setDescription(
+												"This message was unable to be rendered using Components V2 components. This message is not proxy-able.",
+											)
+											.setColor("Red")
+											.setTitle(`${emojis.x}   Unable to render this message.`)
+											.setAuthor({
+												name: author.name,
+												iconUrl: author.avatarURL(),
+											})
+											.setFooter({
+												text: "Unable to proxy this message",
+												iconUrl:
+													"https://pb.giftedly.dev/image/solar-centered.png",
+											});
+									})(),
+								]
+							: [],
 				},
 				query: {
 					wait: true,
 				},
 			})
 			.then((sentMessage) => {
-				messagesCollection.insertOne({
-					messageId: sentMessage?.id ?? "0",
-					alterId,
-					systemId,
-					createdAt: new Date(),
-				});
+				messagesCollection
+					.insertOne({
+						messageId: sentMessage?.id ?? "0",
+						alterId,
+						systemId,
+						createdAt: new Date(),
+						guildId: message.guildId,
+						channelId: message.channelId,
+					});
 
 				if (sentMessage?.id) {
 					processUrlIntegrations(

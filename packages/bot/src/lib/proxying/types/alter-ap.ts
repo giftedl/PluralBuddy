@@ -86,7 +86,7 @@ export async function performAlterAutoProxy(
 		const { emojis: uploadedEmojis, newMessage: processedContents } =
 			await processEmojis(contents);
 
-		const messageComponents = [new TextDisplay().setContent(processedContents)];
+		const messageComponents = processedContents.length === 0 ? [] : [new TextDisplay().setContent(processedContents)];
 
 		proxy(
 			webhook,

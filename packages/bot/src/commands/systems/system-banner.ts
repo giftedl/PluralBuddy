@@ -89,8 +89,6 @@ export default class EditAlterPictureCommand extends SubCommand {
                 })
             }
         }
-
-        console.log(attachmentText);
         
         const publicUrl = objectName !== undefined ? `https://pluralbuddy.giftedly.dev/${objectName}` : attachmentText;
 		await createSystemOperation(

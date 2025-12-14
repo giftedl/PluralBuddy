@@ -209,6 +209,8 @@ export default class SystemCommand extends Command {
 					alterId: alter.alterId,
 					systemId,
 					createdAt: new Date(),
+					channelId: sentMessage?.channelId ?? "0",
+					guildId: sentMessage?.guildId
 				});
 
 				if (sentMessage?.id) {
