@@ -23,8 +23,8 @@ export const PSystemObject = z.object({
     systemName: z.string().max(20).min(1),
     systemDisplayTag: z.string().optional(),
     systemDescription: z.string().max(1000).optional().catch(""),
-    systemAvatar: z.string().optional().catch(""),
-    systemBanner: z.string().optional().catch(""),
+    systemAvatar: z.string().optional().nullable().catch(""),
+    systemBanner: z.string().optional().nullable().catch(""),
     systemPronouns: z.string().optional(),
 
     nicknameFormat: z.string().optional().catch(undefined),
@@ -37,7 +37,8 @@ export const PSystemObject = z.object({
     systemOperationDM: z.boolean().default(true),
 
     public: z.number(),
-    subAccounts: z.array(z.string())
+    subAccounts: z.array(z.string()),
+    disabled: z.boolean().default(false)
 })
 
 export type PSystem = z.infer<typeof PSystemObject>

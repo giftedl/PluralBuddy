@@ -1,0 +1,69 @@
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { alterCollection, messagesCollection, userCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import type { MenuCommandContext } from "seyfert";
+import {
+	ActionRow,
+	Button,
+	ContextMenuCommand,
+	Declare,
+	MessageCommandInteraction,
+} from "seyfert";
+import {
+	ApplicationCommandType,
+	ButtonStyle,
+	MessageFlags,
+} from "seyfert/lib/types";
+
+@Declare({
+	type: ApplicationCommandType.Message,
+	name: "Nudge Author",
+	contexts: ["BotDM", "Guild"],
+})
+export default class DeleteMessageContextMenuCommand extends ContextMenuCommand {
+	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
+		const messageId = ctx.target.id;
+		const message = await messagesCollection.findOne({ messageId });
+
+		if (message === null) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"ERROR_OWN_MESSAGE",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
+        const user = await userCollection.findOne({ userId: message.systemId});
+
+        if ((!user?.nudging.currentlyEnabled) || user.nudging.blockedUsers.includes(ctx.author.id)) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"USER_CANNOT_BE_NUDGED",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+        }
+
+		const alter = await alterCollection.findOne({ alterId: message.alterId });
+
+		return await ctx.write({
+			content: `${emojis.reply} Hey, <@${message.systemId}> (${alter?.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName})! Wake up!\n> ${emojis.lineRight} Nudged by @${ctx.author.name}`,
+			components: [
+				new ActionRow().setComponents(
+					new Button()
+						.setCustomId(InteractionIdentifier.Nudge.Snooze.create())
+						.setLabel(ctx.userTranslations().NUDGE_SNOOZE)
+						.setStyle(ButtonStyle.Primary)
+                        .setEmoji(emojis.xWhite),
+					new Button()
+						.setCustomId(InteractionIdentifier.Nudge.BlockUser.create())
+						.setLabel(ctx.userTranslations().BLOCK_SNOOZE)
+						.setStyle(ButtonStyle.Secondary),
+				),
+			],
+		});
+	}
+}

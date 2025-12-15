@@ -85,6 +85,19 @@ export const InteractionIdentifier = {
         EditContextForm: createFromAdditionalArg("edit/set-form/context"),
         EditContextType: createStatic("edit/type-form/context")
     },
+    Nudge: {
+        Snooze: createStatic("nudge/snooze"),
+        ToggleNudge: createStatic("nudge/toggle"),
+        BlockUser: createStatic("nudge/block"),
+        ExportBlockList: createStatic("nudge/export-block-list"),
+        RemoveBlock: createStatic("nudge/remove"),
+        AddBlock: createStatic("nudge/add"),
+
+        RemoveNudgeForm: createStatic("nudge/set-form/remove"),
+        RemoveNudgeType: createStatic("nudge/type-form/remove"),
+        AddNudgeForm: createStatic("nudge/set-form/add"),
+        AddNudgeType: createStatic("nudge/type-form/add")
+    },
     Systems: {
         DeleteSystem: createStatic("systems/delete"),
         DeleteSystemMedia: createStatic("systems/delete-media"),

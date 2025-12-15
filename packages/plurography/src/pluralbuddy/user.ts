@@ -9,7 +9,14 @@ export const PUserObject = z.object({
 
     system: PSystemObject.optional(),
     storagePrefix: z.string(),
-    blacklisted: z.boolean().default(false)
+    blacklisted: z.boolean().default(false),
+    nudging: z.object({
+        blockedUsers: z.string().array(),
+        currentlyEnabled: z.boolean()
+    }).default({
+        blockedUsers: [],
+        currentlyEnabled: true
+    })
 })
 
 export type PUser = z.infer<typeof PUserObject>
@@ -18,6 +25,10 @@ export const defaultUserStructure = (userId: string) => {
     return {
         userId,
         blacklisted: false,
-        storagePrefix: assetStringGeneration(8)
+        storagePrefix: assetStringGeneration(8),
+        nudging: {
+            blockedUsers: [],
+            currentlyEnabled: true
+        }
     } satisfies PUser
 }

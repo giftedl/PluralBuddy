@@ -261,11 +261,22 @@ Systems can have **privacy values** which are values that describe who can see w
 
     EDIT_MESSAGE: "Editing message",
     MESSAGE_CONTENTS: "New Message Contents",
+    BLOCKLIST_USER: "Blocklist User ID",
+    NUDGE_BLOCKLIST: "Nudge Blocklist",
 
     SUCCESSFULLY_REMOVED_MESSAGE: "Successfully deleted that message.",
     SUCCESSFULLY_EDITED_MESSAGE: "Successfully edited [that message](<%message%>).",
 
-    ERROR_OWN_MESSAGE: "2c – You do not own this message.",
-    NOT_RECENT_ENOUGH: "2z – You do not have a message in this channel recent enough in this channel."
+    NUDGE_SNOOZE: "Permanently snooze nudges",
+    BLOCK_SNOOZE: "Block this user from nudging you",
+
+    ERROR_OWN_MESSAGE: "2c – You do not own this message or this wasn't sent by PluralBuddy.",
+    NOT_RECENT_ENOUGH: "2z – You do not have a message in this channel recent enough in this channel.",
+    DISABLE_NUDGING_DONE: "Successfully disabled nudging for yourself.",
+    USER_CANNOT_BE_NUDGED: "2aa – This user cannot be nudged.",
+    USER_ALREADY_BLOCKED: "2ab – This user has already been blocked.",
+    USER_NOT_BLOCKED: "2ac – This user hasn't been blocked yet.",
+
+    SUCCESSFULLY_BLOCKED: "Successfully blocked that user."
 }
 
