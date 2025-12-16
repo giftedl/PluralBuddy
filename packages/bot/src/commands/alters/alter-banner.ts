@@ -61,7 +61,7 @@ export default class EditAlterPictureCommand extends SubCommand {
         }
 
         if (attachment === undefined && attachmentText === undefined) {
-            await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { avatarUrl: null }})
+            await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { banner: null }})
 
             return await ctx.editResponse({
                 components: [

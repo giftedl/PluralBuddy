@@ -277,6 +277,8 @@ Systems can have **privacy values** which are values that describe who can see w
     USER_ALREADY_BLOCKED: "2ab – This user has already been blocked.",
     USER_NOT_BLOCKED: "2ac – This user hasn't been blocked yet.",
 
-    SUCCESSFULLY_BLOCKED: "Successfully blocked that user."
+    SUCCESSFULLY_BLOCKED: "Successfully blocked that user.",
+    MESSAGE_NOT_MINE: "This message isn't mine.",
+    DATA_DOESNT_EXIST: "The alter or system associated with the message doesn't exist anymore. (?)"
 }
 

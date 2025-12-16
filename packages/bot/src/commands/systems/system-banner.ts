@@ -59,7 +59,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 
             return await ctx.editResponse({
                 components: [
-                    ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().PFP_SUCCESS
+                    ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().BANNER_SUCCESS
                         .replace("@%alter%", "your system"))
                 ],
                 flags: MessageFlags.IsComponentsV2
