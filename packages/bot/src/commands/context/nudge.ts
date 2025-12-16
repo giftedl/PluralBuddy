@@ -50,7 +50,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 		const alter = await alterCollection.findOne({ alterId: message.alterId });
 
 		return await ctx.write({
-			content: `${emojis.reply} Hey, <@${message.systemId}> (${alter?.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName})! Wake up!\n> ${emojis.lineRight} Nudged by @${ctx.author.name}`,
+			content: `-# || \`${ctx.author.id} → ${alter?.systemId}/${alter?.alterId}\` ||\n${emojis.reply} Hey, <@${message.systemId}> (${alter?.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName})! Wake up!\n> ${emojis.lineRight} Nudged by @${ctx.author.name}`,
 			components: [
 				new ActionRow().setComponents(
 					new Button()
@@ -59,7 +59,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 						.setStyle(ButtonStyle.Primary)
                         .setEmoji(emojis.xWhite),
 					new Button()
-						.setCustomId(InteractionIdentifier.Nudge.BlockUser.create())
+						.setCustomId(InteractionIdentifier.Nudge.BlockUser.create(ctx.author.id))
 						.setLabel(ctx.userTranslations().BLOCK_SNOOZE)
 						.setStyle(ButtonStyle.Secondary),
 				),

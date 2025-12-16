@@ -88,7 +88,7 @@ export const InteractionIdentifier = {
     Nudge: {
         Snooze: createStatic("nudge/snooze"),
         ToggleNudge: createStatic("nudge/toggle"),
-        BlockUser: createStatic("nudge/block"),
+        BlockUser: createFromAdditionalArg("nudge/block"),
         ExportBlockList: createStatic("nudge/export-block-list"),
         RemoveBlock: createStatic("nudge/remove"),
         AddBlock: createStatic("nudge/add"),
