@@ -40,8 +40,17 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 		}
 
 		return await ctx.write({
-			components: await new MessageInfo(ctx.userTranslations()).messageInfo(message, alter, user.system, ctx.target, await (await ctx.guild())?.members.fetch(user.userId, true)!, alter.systemId !== ctx.author.id),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+			components: await new MessageInfo(ctx.userTranslations()).messageInfo(
+				message,
+				alter,
+				user.system,
+				ctx.target,
+				await (await ctx.guild())?.members.fetch(user.userId, true)!,
+				alter.systemId !== ctx.author.id,
+			),
+			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			allowed_mentions: { parse: [] }
+			
 		});
 	}
 }

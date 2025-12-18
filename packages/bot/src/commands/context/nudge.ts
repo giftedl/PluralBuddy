@@ -36,18 +36,34 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
-        const user = await userCollection.findOne({ userId: message.systemId});
+		const user = await userCollection.findOne({ userId: message.systemId });
 
-        if ((!user?.nudging.currentlyEnabled) || user.nudging.blockedUsers.includes(ctx.author.id)) {
+		if (
+			!user?.nudging.currentlyEnabled ||
+			user.nudging.blockedUsers.includes(ctx.author.id)
+		) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"USER_CANNOT_BE_NUDGED",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
-        }
+		}
 
 		const alter = await alterCollection.findOne({ alterId: message.alterId });
+
+		if (
+			(
+				alter?.nameMap.find((c) => c.server === ctx.guildId)?.name ??
+				alter?.displayName
+			)?.includes("@everyone")
+		) {
+			return await ctx.write({
+				content:
+					"The alter name has @everyone in it, so this user cannot be nudged.",
+				flags: MessageFlags.Ephemeral,
+			});
+		}
 
 		return await ctx.write({
 			content: `-# || \`${ctx.author.id} → ${alter?.systemId}/${alter?.alterId}\` ||\n${emojis.reply} Hey, <@${message.systemId}> (${alter?.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName})! Wake up!\n> ${emojis.lineRight} Nudged by @${ctx.author.name}`,
@@ -57,9 +73,11 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 						.setCustomId(InteractionIdentifier.Nudge.Snooze.create())
 						.setLabel(ctx.userTranslations().NUDGE_SNOOZE)
 						.setStyle(ButtonStyle.Primary)
-                        .setEmoji(emojis.xWhite),
+						.setEmoji(emojis.xWhite),
 					new Button()
-						.setCustomId(InteractionIdentifier.Nudge.BlockUser.create(ctx.author.id))
+						.setCustomId(
+							InteractionIdentifier.Nudge.BlockUser.create(ctx.author.id),
+						)
 						.setLabel(ctx.userTranslations().BLOCK_SNOOZE)
 						.setStyle(ButtonStyle.Secondary),
 				),

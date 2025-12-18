@@ -8,5 +8,5 @@ export default config.bot({
         components: "components",
         events: "events"
     },
-    intents: ["Guilds", "MessageContent", "GuildMessages", "GuildWebhooks", "DirectMessages"]
+    intents: ["Guilds", "MessageContent", "GuildMessages", "GuildWebhooks", "DirectMessages", "GuildMessageReactions"]
 });

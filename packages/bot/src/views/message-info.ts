@@ -2,7 +2,15 @@
 
 import type { PAlter, PMessage, PSystem } from "plurography";
 import { TranslatedView } from "./translated-view";
-import { Container, Message, Separator, TextDisplay, User, type GuildMemberStructure, type UserStructure } from "seyfert";
+import {
+	Container,
+	Message,
+	Separator,
+	TextDisplay,
+	User,
+	type GuildMemberStructure,
+	type UserStructure,
+} from "seyfert";
 import { ComponentType, Spacing } from "seyfert/lib/types";
 import { AlertView } from "./alert";
 import { AlterView } from "./alters";
@@ -16,7 +24,7 @@ export class MessageInfo extends TranslatedView {
 		alter: PAlter,
 		system: PSystem,
 		messageNative: Message,
-        user: GuildMemberStructure,
+		user: GuildMemberStructure,
 		external: boolean,
 	) {
 		let contents = "";
@@ -41,17 +49,27 @@ export class MessageInfo extends TranslatedView {
 		}
 
 		return [
-            new TextDisplay().setContent("-# Alter Resource:"),
-			...(await new AlterView(this.translations).alterProfileView(
-				alter,
-				external,
-			)),
-            new TextDisplay().setContent("-# System Resource:"),
-			...new SystemView(this.translations).systemProfileView(system, external),
+			new Container().setComponents(
+				...((
+					await new AlterView(this.translations).alterProfileView(
+						alter,
+						external,
+					)
+				)[0]?.components ?? []),
+				new Separator(),
+				...(new SystemView(this.translations).systemProfileView(
+					system,
+					external,
+				)[0]?.components ?? []),
+			),
 			new Separator().setSpacing(Spacing.Large),
 			new Container().setComponents(
 				new TextDisplay().setContent(
 					`**Message ID:** ${messageNative.id}\n**Sent by:** <@${user.id}> (${user.id})\n\n**Account Roles (${((await user.roles.list()) ?? []).length})**\n${((await user.roles.list()) ?? []).map((c) => c.name).join(", ")}`,
+				),
+				new Separator(),
+				new TextDisplay().setContent(
+					`https://discord.com/channels/${message.guildId}/${message.channelId}/${message.messageId}`,
 				),
 			),
 		];
