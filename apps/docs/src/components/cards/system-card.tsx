@@ -34,12 +34,12 @@ export function SystemCardExample() {
 				<Image
 					src="/image/solar.png"
 					alt="Solar"
-					className="h-[85px] mr-6 w-[85px] rounded-[4px]"
+					className="h-[85px] mr-6 w-[85px] rounded-[4px]!"
 					width={85}
 					height={85}
 				/>
 			</Card>
-			<Button className="mt-3 gap-1! bg-[#5865f2] hover:bg-[#5865f2]/90 cursor-pointer border-[#6672f4] border-2 text-white">
+			<Button className="mt-3 gap-1! bg-[#5865f2] hover:bg-[#5865f2]/90 cursor-pointer border-[#6672f4] rounded-[4px]! border-2 text-white">
 				<Wrench className="size-6 text-white"/>
 				Configure Profile
 			</Button>
