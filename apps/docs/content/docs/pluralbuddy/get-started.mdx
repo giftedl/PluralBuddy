@@ -4,3 +4,81 @@ description: "Getting Started with PluralBuddy"
 icon: Rocket
 ---
 
+import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
+
+Hello, and welcome to PluralBuddy! This page will show you how to get started with PluralBuddy.
+
+<InlineTOC items={toc}>Table of Contents</InlineTOC>
+
+## Setting up a system
+
+First, you need to setup a system with the following command:
+
+```
+pb;setup
+```
+
+[That command](/docs/pluralbuddy/commands/setup) will guide you through importing, or creating a new system on PluralBuddy.
+
+## Creating a new alter
+
+Second, you need to create an alter to use in PluralBuddy.
+
+```
+pb;system create-alter solar 🌻 Solar 
+```
+
+<Callout type="info" title="Naming Conventions">
+    Alters are similar to "members" on PluralKit, or "tuppers" on Tupperbox.
+</Callout>
+
+<Callout type="idea" title="Alter Usernames">
+    Notice how alters have usernames, and display names as well. Unlike other plural bots, alters are identified
+    by their username with no spaces or special characters, and not a randomly generated ID.
+
+    This avoids common problems with requiring spaces in alter names when using their relevant commands.
+</Callout>
+
+## Proxy as an alter
+
+Alters have two different ways of expressing "proxying" on PluralBuddy:
+
+ - By changing the nickname of the user depending on the alter proxying
+ - By sending a webhook with the name and avatar of the alter proxying, which is more traditional in bots like PluralKit
+
+<Callout type="warning">
+    Setting the nickname of an alter as the primary and _only_ way to show an alter currently proxying
+    may not be the best decision due to how past messages will be unidentifiable due to how when your nickname changes
+    it changes on _all_ messages.
+</Callout>
+
+You can set the current proxying mode on an alter by using corresponding alter commands.
+
+```
+pbc;edit-alter proxy-mode solar webhook
+pbc;edit-alter proxy-mode solar nickname
+pbc;edit-alter proxy-mode solar both
+```
+
+You can also set proxy tags, which are ways to specify based on a messages content when a certain alter is supposed to be proxying. For example, you can use a proxy tag like `text -solar`, which means any text with `-solar` at the end will be proxying under that alter. This also works the same way for suffixes.
+
+```
+pbc;edit-alter add-proxy-tags solar
+```
+
+## Set a banner and avatar
+
+When proxying as an alter, you can also have an avatar that appears in the webhook when a message is sent. You can also have a banner that appears in the profile of your alter.
+
+```
+pbc;edit-alter avatar solar https://pb.giftedly.dev/image/solar.png
+pbc;edit-alter banner solar https://link.to.website/
+```
+
+<Callout type="warning" title="Storage Limitations">
+    All attachments for alters and systems must be under a megabyte (1mb) if you upload an attachment. Anything put as a link has an unlimited
+    storage limit.
+</Callout>
+<Callout title="Attachments">
+    You can also just upload the picture that you'd like to use in the message of the command when using avatar or banner commands.
+</Callout>

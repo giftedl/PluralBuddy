@@ -21,7 +21,7 @@ const buttonVariants = cva(
 		variants: {
 			variant: {
 				primary:
-					"bg-accent-foreground text-accent hover:bg-accent-foreground/90",
+					"bg-primary text-primary-foreground hover:bg-primary/90",
 				secondary:
 					"border bg-fd-secondary text-fd-secondary-foreground hover:bg-fd-accent",
 			},
@@ -39,9 +39,9 @@ export default function HomePage() {
 				<Hero />
 				<div className="flex flex-col z-2 px-4 size-full max-xl:!pt-32 md:p-12 max-md:items-center max-md:text-center text-left ">
 					<h1 className="text-4xl my-8 leading-tighter font-medium xl:text-5xl xl:mb-12">
-						The new age <br /> of{" "}
-						<span className="text-accent-foreground">
-							plurality data storage
+						The <i>faster</i> age <br /> of{" "}
+						<span className="text-primary">
+							plurality bots
 						</span>
 						.
 					</h1>

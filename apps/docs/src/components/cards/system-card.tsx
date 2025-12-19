@@ -14,7 +14,7 @@ import { Wrench } from "lucide-react";
 export function SystemCardExample() {
 	return (
 		<>
-			<Card className="flex justify-between justify-left not-prose">
+			<Card className="flex justify-between justify-left not-prose" noFlexCol>
 				<div>
 					<CardHeader className="pb-6">
 						<CardTitle>Solar's System</CardTitle>
@@ -34,7 +34,7 @@ export function SystemCardExample() {
 				<Image
 					src="/image/solar.png"
 					alt="Solar"
-					className="h-[85px] mr-6 w-[85px] rounded-lg"
+					className="h-[85px] mr-6 w-[85px] rounded-[4px]"
 					width={85}
 					height={85}
 				/>

@@ -32,7 +32,7 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 							className={cn(
 								buttonVariants({ size: "icon-sm", color: "ghost" }),
 								"cursor-pointer",
-								style === "main" ? "rounded-full border size-[36px]" : "",
+								style === "main" ? "border size-[36px]" : "",
 							)}
 							type="button"
 						>
@@ -62,7 +62,7 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 							className={cn(
 								buttonVariants({ size: "icon-sm", color: "ghost" }),
 								"cursor-pointer",
-								style === "main" ? "rounded-full border size-[36px]" : "",
+								style === "main" ? "border size-[36px]" : "",
 							)}
 							type="button"
 						>

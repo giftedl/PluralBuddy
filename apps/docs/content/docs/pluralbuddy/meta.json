@@ -4,10 +4,10 @@
     "icon": "Handshake",
     "root": true,
     "pages": [
-      "---Introduction---",
       "index",
       "---For Users---",
       "get-started",
+      "context-actions",
       "commands",
       "---For Server Administrators---"
     ]
