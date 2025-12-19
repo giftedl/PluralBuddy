@@ -8,6 +8,9 @@
 @theme inline {
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
+
+	--color-border: var(--border);
+	--color-background: var(--background);
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -23,7 +26,6 @@
 	--color-chart-1: var(--chart-1);
 	--color-ring: var(--ring);
 	--color-input: var(--input);
-	--color-border: var(--border);
 	--color-destructive: var(--destructive);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-accent: var(--accent);
@@ -41,29 +43,6 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
-	--animate-aurora: aurora 8s ease-in-out infinite alternate;
-	@keyframes aurora {
-		0% {
-			background-position: 0% 50%;
-			transform: rotate(-5deg) scale(0.9);
-		}
-		25% {
-			background-position: 50% 100%;
-			transform: rotate(5deg) scale(1.1);
-		}
-		50% {
-			background-position: 100% 50%;
-			transform: rotate(-3deg) scale(0.95);
-		}
-		75% {
-			background-position: 50% 0%;
-			transform: rotate(3deg) scale(1.05);
-		}
-		100% {
-			background-position: 0% 50%;
-			transform: rotate(-5deg) scale(0.9);
-		}
-	}
 }
 
 .pluralbuddy {
@@ -73,41 +52,80 @@
 .policies {
     --color-fd-primary: #cc8b00;
 }
-
 :root {
     --pluralbuddy-color: oklch(53% 33% 342deg);
     --policies-color: #cc8b00;
-    
-	--radius: 0.625rem;
+
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
-	--secondary-foreground: oklch(0.205 0 0);
+	--primary: oklch(0.59 0.22 1);
+	--primary-foreground: oklch(0.97 0.01 343);
+	--secondary: oklch(0.967 0.001 286.375);
+	--secondary-foreground: oklch(0.21 0.006 285.885);
 	--muted: oklch(0.97 0 0);
 	--muted-foreground: oklch(0.556 0 0);
 	--accent: oklch(0.97 0 0);
-	--accent-foreground: oklch(53% 33% 342deg);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: #cccccc80;
+	--accent-foreground: oklch(0.205 0 0);
+	--destructive: oklch(0.58 0.22 27);
+	--border: oklch(0.922 0 0);
 	--input: oklch(0.922 0 0);
 	--ring: oklch(0.708 0 0);
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
-	--sidebar: hsl(0 0% 98%);
-	--sidebar-foreground: hsl(240 5.3% 26.1%);
-	--sidebar-primary: hsl(240 5.9% 10%);
-	--sidebar-primary-foreground: hsl(0 0% 98%);
-	--sidebar-accent: hsl(240 4.8% 95.9%);
-	--sidebar-accent-foreground: hsl(240 5.9% 10%);
-	--sidebar-border: hsl(220 13% 91%);
-	--sidebar-ring: hsl(217.2 91.2% 59.8%);
+	--chart-1: oklch(0.82 0.11 346);
+	--chart-2: oklch(0.73 0.18 350);
+	--chart-3: oklch(0.66 0.21 354);
+	--chart-4: oklch(0.59 0.22 1);
+	--chart-5: oklch(0.52 0.20 4);
+	--radius: 0;
+	--sidebar: oklch(0.985 0 0);
+	--sidebar-foreground: oklch(0.145 0 0);
+	--sidebar-primary: oklch(0.59 0.22 1);
+	--sidebar-primary-foreground: oklch(0.97 0.01 343);
+	--sidebar-accent: oklch(0.97 0 0);
+	--sidebar-accent-foreground: oklch(0.205 0 0);
+	--sidebar-border: oklch(0.922 0 0);
+	--sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+    --pluralbuddy-color: oklch(89.9% 0.061 343.231);
+    --policies-color: #fff383;
+
+	--color-fd-foreground: white;
+	--background: oklch(0.145 0 0);
+	--foreground: oklch(0.985 0 0);
+	--card: oklch(0.205 0 0);
+	--card-foreground: oklch(0.985 0 0);
+	--popover: oklch(0.205 0 0);
+	--popover-foreground: oklch(0.985 0 0);
+	--primary: oklch(0.66 0.21 354);
+	--primary-foreground: oklch(0.97 0.01 343);
+	--secondary: oklch(0.274 0.006 286.033);
+	--secondary-foreground: oklch(0.985 0 0);
+	--muted: oklch(0.269 0 0);
+	--muted-foreground: oklch(0.708 0 0);
+	--accent: oklch(0.371 0 0);
+	--accent-foreground: oklch(0.985 0 0);
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.556 0 0);
+	--chart-1: oklch(0.82 0.11 346);
+	--chart-2: oklch(0.73 0.18 350);
+	--chart-3: oklch(0.66 0.21 354);
+	--chart-4: oklch(0.59 0.22 1);
+	--chart-5: oklch(0.52 0.20 4);
+	--sidebar: oklch(0.205 0 0);
+	--sidebar-foreground: oklch(0.985 0 0);
+	--sidebar-primary: oklch(0.73 0.18 350);
+	--sidebar-primary-foreground: oklch(0.97 0.01 343);
+	--sidebar-accent: oklch(0.269 0 0);
+	--sidebar-accent-foreground: oklch(0.985 0 0);
+	--sidebar-border: oklch(1 0 0 / 10%);
+	--sidebar-ring: oklch(0.556 0 0);
 }
 
 .pluralbuddy.dark, .dark .pluralbuddy {
@@ -118,46 +136,16 @@
     --color-fd-primary: #fff383;
 }
 
-
-
-.dark {
-    --pluralbuddy-color: oklch(89.9% 0.061 343.231);
-    --policies-color: #fff383;
-
-	--color-fd-foreground: white;
-
-	--card: oklch(0.205 0 0);
-	--card-foreground: oklch(0.985 0 0);
-	--popover: oklch(0.205 0 0);
-	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(89.9% 0.061 343.231);
-	--primary-foreground: oklch(0.205 0 0);
-	--secondary: oklch(0.269 0 0);
-	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.269 0 0);
-	--muted-foreground: oklch(0.708 0 0);
-	--accent: oklch(0.269 0 0);
-	--accent-foreground: oklch(89.9% 0.061 343.231);
-	--destructive: oklch(0.704 0.191 22.216);
-	--border: #6663;
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.556 0 0);
-	--chart-1: oklch(0.488 0.243 264.376);
-	--chart-2: oklch(0.696 0.17 162.48);
-	--chart-3: oklch(0.769 0.188 70.08);
-	--chart-4: oklch(0.627 0.265 303.9);
-	--chart-5: oklch(0.645 0.246 16.439);
-	--sidebar: hsl(240 5.9% 10%);
-	--sidebar-foreground: hsl(240 4.8% 95.9%);
-	--sidebar-primary: hsl(224.3 76.3% 48%);
-	--sidebar-primary-foreground: hsl(0 0% 100%);
-	--sidebar-accent: hsl(240 3.7% 15.9%);
-	--sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-	--sidebar-border: hsl(240 3.7% 15.9%);
-	--sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
 @layer base {
+	* {
+		border-color: var(--border);
+		outline-color: var(--ring);
+	}
+	body {
+		background-color: var(--color-background);
+		color: var(--text-base);
+	}
+
 	/* Scrollbar styles for Firefox */
 	html,
 	body {
@@ -178,7 +166,7 @@
     html#pluralbuddy.light {
         scrollbar-color: oklch(53% 33% 342deg) var(--background);
 	}
-	
+
 	body.policies,
     html#policies.light {
         scrollbar-color: #cc8b00 var(--background);
@@ -187,4 +175,14 @@
 
 :root {
 	--fd-layout-width: 1400px;
-  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+	}
+  body {
+	background-color: var(--background);
+	color: var(--foreground)
+	}
+}
