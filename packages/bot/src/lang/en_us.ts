@@ -69,6 +69,7 @@ Systems can have **privacy values** which are values that describe who can see w
     SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
     SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
     ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
+    ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
     ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
     PAGINATION_TITLE: "Page",
     WAITING: "Loading...",
