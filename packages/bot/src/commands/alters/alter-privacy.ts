@@ -24,6 +24,12 @@ const options = {
     })
 }
 
+@Declare({
+	name: "privacy",
+	description: "Set an alter's privacy.",
+    aliases: ["p"],
+    contexts: ["BotDM", "Guild"]
+})
 @Options(options)
 export default class EditAlterPrivacyCommand extends SubCommand {
     override async run(ctx: CommandContext<typeof options>) {
