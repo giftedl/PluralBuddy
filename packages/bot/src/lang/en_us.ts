@@ -279,7 +279,8 @@ Systems can have **privacy values** which are values that describe who can see w
     USER_NOT_BLOCKED: "2ac – This user hasn't been blocked yet.",
 
     SUCCESSFULLY_BLOCKED: "Successfully blocked that user.",
-    MESSAGE_NOT_MINE: "This message isn't mine.",
-    DATA_DOESNT_EXIST: "The alter or system associated with the message doesn't exist anymore. (?)"
+    MESSAGE_NOT_MINE: "2af – This message isn't mine.",
+    DATA_DOESNT_EXIST: "2ae – The alter or system associated with the message doesn't exist anymore. (?)",
+    INSUFFICIENT_DATA_SIZE: "2ad – There is not a sufficient amount of resources under your user context to continue with this operation."
 }
 
