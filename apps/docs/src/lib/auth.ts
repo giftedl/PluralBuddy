@@ -24,26 +24,14 @@ export const auth = betterAuth({
 					},
 				});
 
-				let imageUrl = null;
-
 				const profile: RESTGetAPICurrentUserResult = await response.json();
-				if (profile.avatar === null) {
-					const defaultAvatarNumber =
-						profile.discriminator === "0"
-							? Number(BigInt(profile.id) >> BigInt(22)) % 6
-							: parseInt(profile.discriminator) % 5;
-					imageUrl = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`;
-				} else {
-					const format = profile.avatar.startsWith("a_") ? "gif" : "png";
-					imageUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}`;
-				}
 
 				return {
 					user: {
 						id: profile.id,
 						name: profile.username,
 						email: `${profile.id}@redacted.giftedly.dev`,
-						image: imageUrl,
+						image: `${process.env.BETTER_AUTH_URL}/api/exchange/user-profile-picture/${profile.id}`,
 						// Yep, thats totally the real email. Trust me.
 						emailVerified: true,
 					},

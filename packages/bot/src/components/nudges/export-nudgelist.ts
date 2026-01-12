@@ -1,8 +1,14 @@
-import { ComponentCommand, type ComponentContext } from "seyfert";
+import {
+	ComponentCommand,
+	Container,
+	Separator,
+	TextDisplay,
+	type ComponentContext,
+} from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
 import { AttachmentBuilder } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import { MessageFlags, Spacing } from "seyfert/lib/types";
 
 export default class ExportNudgelist extends ComponentCommand {
 	componentType = "Button" as const;
@@ -28,16 +34,45 @@ export default class ExportNudgelist extends ComponentCommand {
 		}
 		// End database migration
 
-        return await ctx.write({
-			files: [
-				new AttachmentBuilder()
-					.setName("nudge-block-list.json")
-					.setFile(
-						"buffer",
-						Buffer.from(JSON.stringify(user.nudging.blockedUsers)),
-					),
-			],
-            flags: MessageFlags.Ephemeral
-        })
-    }
+		return await ctx.write({
+			files:
+				user.nudging.blockedUsers.length >= 100
+					? [
+							new AttachmentBuilder()
+								.setName("nudge-block-list.json")
+								.setFile(
+									"buffer",
+									Buffer.from(JSON.stringify(user.nudging.blockedUsers)),
+								),
+						]
+					: [],
+			components:
+				user.nudging.blockedUsers.length < 100
+					? [
+							new Container().setComponents(
+								new TextDisplay().setContent("## Nudge List"),
+								new Separator().setSpacing(Spacing.Large),
+								new TextDisplay().setContent(
+									`> - ${(
+										await Promise.all(
+											user.nudging.blockedUsers.map(async (c) => {
+												const user = await ctx.client.users
+													.fetch(c)
+													.catch(() => null);
+
+												return `@${user?.username ?? "unknown-user"} (<@${c}>)`;
+											}),
+										)
+									).join("\n> - ")}`,
+								),
+							),
+						]
+					: [],
+			allowed_mentions: { parse: [] },
+			flags:
+				user.nudging.blockedUsers.length >= 400
+					? MessageFlags.Ephemeral
+					: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+		});
+	}
 }

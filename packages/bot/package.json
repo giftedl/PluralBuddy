@@ -12,7 +12,7 @@
   "dependencies": {
     "@sapphire/snowflake": "^3.5.5",
     "@slipher/redis-adapter": "^0.0.5",
-    "mongodb": "^6.20.0",
+    "mongodb": "6.20.0",
     "plurography": "workspace:*",
     "posthog-node": "^5.17.2",
     "seyfert": "^3.2.7-dev-18661561926.0",

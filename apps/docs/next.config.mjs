@@ -4,7 +4,8 @@ const withMDX = createMDX();
 
 /** @type {import('next').NextConfig} */
 const config = {
-  reactStrictMode: true
+  reactStrictMode: true,
+  serverExternalPackages: ['mongodb']
 };
 
 export default withMDX(config);

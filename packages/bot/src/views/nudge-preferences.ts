@@ -41,7 +41,7 @@ export class NudgePreferences extends TranslatedView {
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel("Export Nudge Blocklist")
+						.setLabel(`${user.nudging.blockedUsers.length >= 100 ? "Export" : "View"} Nudge Blocklist`)
 						.setCustomId(InteractionIdentifier.Nudge.ExportBlockList.create())
 						.setStyle(ButtonStyle.Primary),
 					new Button()
