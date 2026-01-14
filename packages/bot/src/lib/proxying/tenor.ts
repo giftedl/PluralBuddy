@@ -7,22 +7,12 @@ export function extractTenorId(url: string): string | null {
 }
 
 export async function getGifLink(url: string) {
-    const tenorId = extractTenorId(url);
-    if (tenorId === null) return null;
-
-    const response = await fetch(
-        `https://tenor.googleapis.com/v2/posts?key=${process.env.TENOR_API_KEY}&ids=${tenorId}`
+    const meta = await fetch(
+        `${process.env.LINK_SCRAPER_API}?url=${encodeURIComponent(url)}`,
+        { signal: AbortSignal.timeout(3000) },
     );
-    const json = (await response.json()) as {
-        results?: Array<{
-            media_formats?: {
-                gif?: {
-                    url?: string;
-                };
-            };
-        }>;
-    };
+    const json = (await meta.json()) as Record<string, unknown>;
 
-    return json?.results?.[0]?.media_formats?.gif?.url ?? null;
+    return (json?.["og:image"] as string).replace("https://media1.tenor.com/m/", "https://media.tenor.com/");
 }
 
