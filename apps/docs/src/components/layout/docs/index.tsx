@@ -28,13 +28,6 @@ import {
 } from "../../sidebar";
 import { type Option, RootToggle } from "../../root-toggle";
 import {
-	SignInButton,
-	SignUpButton,
-	SignedIn,
-	SignedOut,
-	UserButton,
-} from "@clerk/nextjs";
-import {
 	type BaseLayoutProps,
 	BaseLinkItem,
 	getLinks,
