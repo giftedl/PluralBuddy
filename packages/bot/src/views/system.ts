@@ -40,8 +40,8 @@ export class SystemView extends TranslatedView {
 
 		const innerComponents = new TextDisplay().setContent(
 			`${displayNameDisplayable ? `## ${system.systemName}` : ""}
-${pronounsDisplayable || displayTagDisplayable ? `-# ${displayTagDisplayable ? system.systemDisplayTag : ""}${displayTagDisplayable && pronounsDisplayable ? " · " : ""}${pronounsDisplayable ? system.systemPronouns : ""}` : ""}
-${descriptionDisplayable ? `\n${system.systemDescription}\n` : "\n"}
+${(pronounsDisplayable && system.systemPronouns) || (displayTagDisplayable && system.systemDisplayTag) ? `-# ${(displayTagDisplayable && system.systemDisplayTag) ? system.systemDisplayTag : ""}${(displayTagDisplayable && system.systemDisplayTag) && (pronounsDisplayable && system.systemPronouns) ? " · " : ""}${(pronounsDisplayable && system.systemPronouns) ? system.systemPronouns : ""}` : ""}
+${(descriptionDisplayable && system.systemDescription) ? `\n${system.systemDescription}\n` : "\n"}
 ${altersDisplayable ? `**Alters**: ${(system.alterIds as number[]).length}` : ""}
 ${tagsDisplayable ? `**Tags:** ${(system.tagIds as string[]).length}` : ""}
 **Associated to:** <@${system.associatedUserId}> (${system.associatedUserId})`,
