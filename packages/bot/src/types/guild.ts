@@ -9,5 +9,5 @@ const defaultGuildStructure = (guildId: string) => {
 }
 
 export async function getGuildFromId(id: string): Promise<PGuild> {
-    return await guildCollection.findOne({ id }) ?? defaultGuildStructure(id);
+    return PGuildObject.parse(await guildCollection.findOne({ guildId: id }) ?? defaultGuildStructure(id))  ;
 }

@@ -17,6 +17,14 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
 		const messageId = ctx.target.id;
 		const message = await messagesCollection.findOne({ messageId });
+		const guild = await ctx.retrievePGuild()
+
+        if (guild.getFeatures().disabledMessageInfo) {
+            return await ctx.write({
+                components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
+                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+            })
+        }
 
 		if (message === null) {
 			return await ctx.write({

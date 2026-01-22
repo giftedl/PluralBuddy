@@ -87,7 +87,7 @@ export default class SetupCommand extends SubCommand {
 									mentionCommand(
 										(await ctx.getDefaultPrefix()) ?? "pb;",
 										"system delete",
-										ctx.interaction.message?.messageReference === undefined,
+										ctx.interaction?.message?.messageReference === undefined,
 										"-mi",
 									),
 								),
@@ -137,7 +137,7 @@ export default class SetupCommand extends SubCommand {
 											mentionCommand(
 												(await ctx.getDefaultPrefix()) ?? "pb;",
 												"system delete",
-												ctx.interaction.message?.messageReference === undefined,
+												ctx.interaction?.message?.messageReference === undefined,
 												"-mi",
 											),
 										),

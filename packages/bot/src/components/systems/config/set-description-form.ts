@@ -46,7 +46,7 @@ export default class SetPronounsButton extends ModalCommand {
 				...new SystemSettingsView(ctx.userTranslations()).publicProfile(
 					system,
 					(await ctx.getDefaultPrefix()) ?? "",
-					ctx.interaction.message?.messageReference === undefined,
+					ctx.interaction?.message?.messageReference === undefined,
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

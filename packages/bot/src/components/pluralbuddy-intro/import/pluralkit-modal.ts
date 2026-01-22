@@ -331,13 +331,13 @@ ${
 > - To create a new alter, try using ${mentionCommand(
 					(await ctx.getDefaultPrefix()) ?? "",
 					"system create-alter",
-					ctx.interaction.message?.messageReference === undefined,
+					ctx.interaction?.message?.messageReference === undefined,
 					"%username% %display name%",
 				)}
 > - To create a new tag, try using ${mentionCommand(
 					(await ctx.getDefaultPrefix()) ?? "",
 					"system create-tag",
-					ctx.interaction.message?.messageReference === undefined,
+					ctx.interaction?.message?.messageReference === undefined,
 					"%name%",
 				)}
 `),

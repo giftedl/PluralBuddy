@@ -1,9 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { createEvent } from "seyfert";
+import { CacheFrom, Container, createEvent, TextDisplay } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getUserById } from "../types/user";
-import { alterCollection } from "../mongodb";
+import { alterCollection, errorCollection } from "../mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	performTagProxy,
@@ -17,6 +17,10 @@ import {
 	startsWithPrefix,
 } from "@/lib/proxying/util";
 import { performAlterAutoProxy } from "@/lib/proxying/types/alter-ap";
+import { getGuildFromId } from "@/types/guild";
+import { createError } from "@/lib/create-error";
+import { emojis } from "@/lib/emojis";
+import { createProxyError } from "@/lib/proxying/error";
 
 export default createEvent({
 	data: { name: "messageCreate", once: false },
@@ -41,6 +45,7 @@ export default createEvent({
 
 		const similarWebhooks = await getSimilarWebhooks(message.channelId);
 		const user = await getUserById(message.author.id);
+		const guild = await getGuildFromId(message.guildId ?? "");
 
 		if (user.system === undefined) return;
 		if (user.system.disabled) return;
@@ -66,14 +71,55 @@ export default createEvent({
 
 		if (user.system.alterIds.length === 0) return;
 
-		const alters = alterCollection.find({ systemId: message.author.id });
-
 		// Only find the alters that we need
-		outer: for (let i = 0; i < user.system.alterIds.length; i++) {
-			const checkAlter = await alters.next();
+		for (let i = 0; i < user.system.alterIds.length; i++) {
+			const proxyTags = message.client.cache.alterProxy.get(
+				user.system.alterIds[i]?.toString() ?? "",
+			)?.pt;
+			const reformedProxyTags = proxyTags?.map((c) => {
+				return { prefix: c.p, suffix: c.s };
+			});
 
-			for (const proxyTag of checkAlter?.proxyTags ?? []) {
+			let checkAlter = null;
+
+			if (!proxyTags)
+				checkAlter = await alterCollection.findOne({
+					alterId: user.system.alterIds[i],
+				});
+
+			for (const proxyTag of reformedProxyTags ?? checkAlter?.proxyTags ?? []) {
+				if (checkAlter)
+					message.client.cache.alterProxy.set(
+						CacheFrom.Gateway,
+						checkAlter?.alterId.toString(),
+						{
+							pt: checkAlter?.proxyTags.map((c) => {
+								return { p: c.prefix, s: c.suffix };
+							}),
+						},
+					);
+
 				if (proxyTagValid(proxyTag, message)) {
+					// Check for system tag policy
+					if (
+						guild.getFeatures().requiresGuildTag &&
+						user.system.systemDisplayTag === null
+					) {
+						createProxyError(user, message, {
+							title: "Display Tag Enforcement Policy",
+							description:
+								'This user cannot proxy in this guild without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+							type: "EnforcedGuildTagRegulation",
+						});
+
+						return;
+					}
+
+					// Only get more data about the alter after confirmation of proxy tag
+					checkAlter = await alterCollection.findOne({
+						alterId: user.system.alterIds[i],
+					});
+
 					performTagProxy(
 						checkAlter as PAlter,
 						user,

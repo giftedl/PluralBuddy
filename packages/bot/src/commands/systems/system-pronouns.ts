@@ -13,8 +13,7 @@ import { MessageFlags } from "seyfert/lib/types";
 const options = {
 	"new-pronouns": createStringOption({
 		description: "The new pronouns to set for the system",
-        max_length: 100,
-        required: true
+        max_length: 100
 	}),
 };
 
@@ -41,7 +40,7 @@ export default class NameSetSystemCommand extends SubCommand {
 		const updatedSystem = await createSystemOperation(
 			user.system,
 			{
-				systemPronouns: newSystemPronouns as string,
+				systemPronouns: newSystemPronouns as string ?? null,
 			},
 			ctx.userTranslations(),
 			"discord",
@@ -58,7 +57,7 @@ export default class NameSetSystemCommand extends SubCommand {
 
 		await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				ctx.userTranslations().SYSTEM_SET_PRONOUNS.replace("%pronouns%", newSystemPronouns),
+				ctx.userTranslations().SYSTEM_SET_PRONOUNS.replace("%pronouns%", newSystemPronouns ?? "_Unset_"),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

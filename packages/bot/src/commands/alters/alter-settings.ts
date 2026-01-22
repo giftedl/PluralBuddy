@@ -28,10 +28,9 @@ export default class AlterConfigCommand extends SubCommand {
 
         const { "alter-name": alterName } = ctx.options;
         const systemId = ctx.author.id;
-        const query = Number.isNaN(Number.parseInt(alterName)) 
+        const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
             ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId })
-        const alter = await query;
+            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
 
         if (alter === null) {
             return await ctx.ephemeral({

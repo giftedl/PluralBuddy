@@ -9,7 +9,6 @@ const options = {
     "new-display-tag": createStringOption({
         description: "New system tag to set to",
         max_length: 90,
-        required: true
     })
 }
 
@@ -36,7 +35,7 @@ export default class SystemDisplayTagCommand extends SubCommand {
 		const updatedSystem = await createSystemOperation(
 			user.system,
 			{
-				systemDisplayTag: systemTag as string,
+				systemDisplayTag: systemTag as string ?? null,
 			},
 			ctx.userTranslations(),
 			"discord",
@@ -53,7 +52,7 @@ export default class SystemDisplayTagCommand extends SubCommand {
 
 		await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				ctx.userTranslations().SYSTEM_SET_SYSTEM_TAG.replace("%tag%", systemTag),
+				ctx.userTranslations().SYSTEM_SET_SYSTEM_TAG.replace("%tag%", systemTag ?? "_Unset_"),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

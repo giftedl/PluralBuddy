@@ -20,7 +20,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 
 const options = {
-	"alter-name": createStringOption({
+	"alter": createStringOption({
 		description:
 			"Name of the alter to query. You can use `<user-id>/<alter>` for alters from other systems.",
 		required: true,
@@ -41,7 +41,7 @@ const options = {
 @Options(options)
 export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
-		const { "alter-name": alterName, public: publicMode } = ctx.options;
+		const { "alter": alterName, public: publicMode } = ctx.options;
 		const systemId = ctx.author.id;
         
         const publicMessage = publicMode ? publicMode : (ctx.message as unknown instanceof Message ? (ctx.message as unknown as Message).content.endsWith("-p") : publicMode)

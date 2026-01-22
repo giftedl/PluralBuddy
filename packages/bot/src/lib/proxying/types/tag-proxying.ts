@@ -10,15 +10,17 @@ import { processEmojis } from "../process-emojis";
 import { proxy } from "..";
 import { alterCollection } from "@/mongodb";
 import { setLastLatchAlter } from "../util";
+import { createProxyError } from "../error";
 
-export const proxyTagValid = (proxyTag: {
-    prefix: string;
-    suffix: string;
-    id: string;
-}, message: Message) => (proxyTag.suffix !== "" &&
-    message.content.endsWith(proxyTag.suffix)) ||
-(proxyTag.prefix !== "" &&
-    message.content.startsWith(proxyTag.prefix))
+export const proxyTagValid = (
+	proxyTag: {
+		prefix: string;
+		suffix: string;
+	},
+	message: Message,
+) =>
+	(proxyTag.suffix !== "" && message.content.endsWith(proxyTag.suffix)) ||
+	(proxyTag.prefix !== "" && message.content.startsWith(proxyTag.prefix));
 
 export async function performTagProxy(
 	checkAlter: PAlter,
@@ -27,19 +29,18 @@ export async function performTagProxy(
 	proxyTag: {
 		prefix: string;
 		suffix: string;
-		id: string;
 	},
 	message: Message,
 ) {
-    alterCollection.updateOne(
-        { alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
-        {
-            $inc: { messageCount: 1 },
-            $set: { lastMessageTimestamp: new Date() },
-        },
-    );
+	alterCollection.updateOne(
+		{ alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
+		{
+			$inc: { messageCount: 1 },
+			$set: { lastMessageTimestamp: new Date() },
+		},
+	);
 
-    let webhook = null;
+	let webhook = null;
 	const userPerms = await client.channels.memberPermissions(
 		message.channelId,
 		await client.members.fetch(message.guildId as string, client.botId),
@@ -56,7 +57,32 @@ export async function performTagProxy(
 			true,
 		);
 
+		if (
+			checkAlter?.alterMode === "nickname" &&
+			!sendingUserPerms.has(["ChangeNickname"])
+		) {
+			createProxyError(user, message, {
+				title: "User Cannot Change Nickname",
+				description:
+					"You cannot proxy with an alter that is on \`nickname\` mode, when you do not have the Change Nickname (\`CHANGE_NICKNAME\`) permission yourself.",
+				type: "UserPermissionsRequired",
+			});
+		}
+
 		if (!sendingUserPerms.has(["ChangeNickname"])) return;
+
+		if (
+			checkAlter?.alterMode === "nickname" &&
+			(!userPerms.has(["ManageNicknames"]) ||
+				!(await message.member?.moderatable()))
+		) {
+			createProxyError(user, message, {
+				title: "Bot Cannot Change Nickname",
+				description:
+					"You cannot proxy with an alter that is on \`nickname\` mode, when the bot does not have the Manage Nicknames (\`MANAGE_NICKNAMES\`) permission. Please contact a server administrator if you believe this is incorrect.",
+				type: "BotPermissionsRequired",
+			});
+		}
 
 		if (
 			!userPerms.has(["ManageNicknames"]) ||
@@ -127,8 +153,8 @@ export async function performTagProxy(
 			uploadedEmojis,
 			checkAlter?.avatarUrl ?? undefined,
 		);
-        
-        if (message.guildId && user.system)
-            setLastLatchAlter(checkAlter, message.guildId, user.system)
+
+		if (message.guildId && user.system)
+			setLastLatchAlter(checkAlter, message.guildId, user.system);
 	}
 }

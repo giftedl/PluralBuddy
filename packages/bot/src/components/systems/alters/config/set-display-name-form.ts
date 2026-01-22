@@ -67,7 +67,7 @@ export default class SetUsernameButton extends ModalCommand {
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					await ctx.getDefaultPrefix() ?? "pb;",
-					ctx.interaction.message?.messageReference === undefined,
+					ctx.interaction?.message?.messageReference === undefined,
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

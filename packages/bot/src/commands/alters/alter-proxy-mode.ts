@@ -38,10 +38,9 @@ export default class EditAlterProxyModeCommand extends SubCommand {
 
         const { "alter-name": alterName, "alter-proxy": alterProxy } = ctx.options;
         const systemId = ctx.author.id;
-        const query = Number.isNaN(Number.parseInt(alterName)) 
+        let alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
             ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId })
-        let alter = await query;
+            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
 
         if (alter === null) {
             return await ctx.ephemeral({

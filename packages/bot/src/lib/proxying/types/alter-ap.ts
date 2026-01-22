@@ -9,6 +9,7 @@ import { getReferencedMessageString } from "../referenced-message";
 import { processEmojis } from "../process-emojis";
 import { proxy } from "..";
 import { setLastLatchAlter } from "../util";
+import { createProxyError } from "../error";
 
 export async function performAlterAutoProxy(
 	message: Message,
@@ -38,7 +39,32 @@ export async function performAlterAutoProxy(
 			true,
 		);
 
+		if (
+			alter?.alterMode === "nickname" &&
+			!sendingUserPerms.has(["ChangeNickname"])
+		) {
+			createProxyError(user, message, {
+				title: "User Cannot Change Nickname",
+				description:
+					"You cannot proxy with an alter that is on \`nickname\` mode, when you do not have the Change Nickname (\`CHANGE_NICKNAME\`) permission yourself.",
+				type: "UserPermissionsRequired",
+			});
+		}
+
 		if (!sendingUserPerms.has(["ChangeNickname"])) return;
+
+		if (
+			alter?.alterMode === "nickname" &&
+			(!userPerms.has(["ManageNicknames"]) ||
+				!(await message.member?.moderatable()))
+		) {
+			createProxyError(user, message, {
+				title: "Bot Cannot Change Nickname",
+				description:
+					"You cannot proxy with an alter that is on \`nickname\` mode, when the bot does not have the Manage Nicknames (\`MANAGE_NICKNAMES\`) permission. Please contact a server administrator if you believe this is incorrect.",
+				type: "BotPermissionsRequired",
+			});
+		}
 
 		if (
 			!userPerms.has(["ManageNicknames"]) ||

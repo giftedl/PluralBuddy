@@ -17,6 +17,9 @@ Additionally, you can also import data from another bot like PluralKit`,
     ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",
     OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
 
+    TOO_MANY_BLACKLIST_ITEMS: "There are too many blacklist items. You can only have 25 blacklist roles, and 25 blacklist channels at one time due to Discord modal limitations.",
+    TOO_MANY_MANAGER_ITEMS: "There are too many manager items. You can only have 25 manager roles at one time due to Discord modal limitations.",
+
     CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,
     CREATING_NEW_SYSTEM_NAME_BUTTON: "Set name*",
@@ -62,12 +65,14 @@ Systems can have **privacy values** which are values that describe who can see w
     ERROR_INTERACTION_TOO_OLD: "2l – This interaction has no longer been kept track of. (have you waited too long?)",
     ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
     ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
+    ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – That alter could not be found. Did you mean \`%suggestion%\`?",
     ERROR_TAG_DOESNT_EXIST: "2o – This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
 
     CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
     EDIT_SYSTEM_FORM_TITLE: "Editing System",
     SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
     SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
+    SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
     ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%",
     ALTER_SUCCESS_PRIVACY: "Successfully set the public privacy values for @%alter% to %new% (%number% total values)",
     ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
@@ -143,6 +148,7 @@ Systems can have **privacy values** which are values that describe who can see w
     ALTER_SET_PRONOUNS: "Set Pronouns",
     ALTER_SET_DESCRIPTION: "Set Description",
     ALTER_SET_PFP: "Set Profile Picture",
+    ALTER_SET_TAG: "Set System Tag",
     ALTER_SET_BANNER: "Set Banner",
     ALTER_SET_PRIVACY: "Set Privacy",
     ERROR_INVALID_ATTACHMENT_TYPE: "2s – The attachment you uploaded is not an image.",
@@ -238,7 +244,9 @@ Systems can have **privacy values** which are values that describe who can see w
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
-> %lineright% Art by %catjamming% @raincloudzy`,
+> %lineright% Art by %catjamming% @raincloudzy
+
+-# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
 
     TAG_ASSIGN_ALTER: "Assign Tag",
     SET_AUTO_PROXY: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
@@ -281,6 +289,32 @@ Systems can have **privacy values** which are values that describe who can see w
     SUCCESSFULLY_BLOCKED: "Successfully blocked that user.",
     MESSAGE_NOT_MINE: "2af – This message isn't mine.",
     DATA_DOESNT_EXIST: "2ae – The alter or system associated with the message doesn't exist anymore. (?)",
-    INSUFFICIENT_DATA_SIZE: "2ad – There is not a sufficient amount of resources under your user context to continue with this operation."
+    INSUFFICIENT_DATA_SIZE: "2ad – There is not a sufficient amount of resources under your user context to continue with this operation.",
+    INSUFFICIENT_USER_PERMISSIONS: "2ag – You do not have permission to edit this information.",
+
+    SUCCESS_CHANGED_SERVER_PREFIXES: "This server now has the following prefixes: \n%prefixes%",
+    SUCCESS_ADD_ITEM_BLACKLIST: "%item% has been added to the blacklist successfully.",
+    SUCCESS_REMOVE_ITEM_BLACKLIST: "%item% has been removed from the blacklist successfully.",
+    SUCCESS_CHANGED_SERVER_BLACKLIST: "This server now has the following blacklist configuration: \n%blacklist_items%",
+    PREFIX_ALREADY_EXISTS: "That prefix already exists or there is a duplicate in the array.",
+    BLACKLIST_ALREADY_EXISTS: "That role or channel is already on the blacklist.",
+    SUCCESS_ADD_MANAGER_ROLE: "%item% has been added to the manager role list successfully.",
+    SUCCESS_CHANGED_MANAGER_BLACKLIST: "This server now has the following manager role configuration: \n%manager_roles%",
+    MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
+    SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
+
+    REQUIRE_TAG_ENABLED: "All systems will now be required to enable system tags in order to proxy.",
+    REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable system tags to proxy.",
+    ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
+    FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
+    LOGGING_CHANNEL_SET: "Successfuly set that channel as a logging channel for this guild.",
+    DISABLED_FEATURE: `Successfully disabled that feature.
+
+**%name%**
+> %description%`,
+    ENABLED_FEATURE: `Successfully enabled that feature.
+
+**%name%**
+> %description%`
 }
 

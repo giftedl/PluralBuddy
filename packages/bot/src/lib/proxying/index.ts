@@ -1,5 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { messagesCollection } from "@/mongodb";
+import { alterCollection, messagesCollection } from "@/mongodb";
 import {
 	type Webhook,
 	type UsingClient,
@@ -11,12 +11,17 @@ import {
 	Thumbnail,
 	File,
 	Embed,
+	TextDisplay,
+	Container,
+	Separator,
+	Section,
 } from "seyfert";
 import type { Message } from "seyfert/lib/structures";
-import { MessageFlags } from "seyfert/lib/types";
+import { MessageFlags, Spacing } from "seyfert/lib/types";
 import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 import { emojis } from "../emojis";
+import { getGuildFromId } from "@/types/guild";
 
 export const imageOrVideoExtensions = [
 	".png",
@@ -153,6 +158,40 @@ export async function proxy(
 						guildId: message.guildId,
 						channelId: message.channelId,
 					});
+				try {
+					(async () => {
+						const guild = await getGuildFromId(message.guildId ?? "")
+						const user = await client.users.fetch(message.author.id)
+						const alter = await alterCollection.findOne({ alterId, systemId });
+
+						if (!guild.logChannel)
+							return;
+
+
+						await client.messages.write(guild.logChannel, {
+							components: [
+								new TextDisplay().setContent(`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`),
+								new Container().setComponents(
+									new Section().setComponents(
+										new TextDisplay().setContent(stringContents),
+									).setAccessory(
+										new Thumbnail().setMedia(alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png")
+									),
+									new Separator().setSpacing(Spacing.Large),
+									new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
+-# Mention: @${user.username} (<@${systemId}>)
+-# Alter Mention: @${alter?.username} (${alter?.nameMap.find(c => c.server === guild.guildId)?.name ?? alter?.username})${message.messageReference !== undefined ? `
+-# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}` : ""}
+-# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
+-# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`)
+								).setColor("Green")
+							],
+							flags: MessageFlags.IsComponentsV2,
+							allowed_mentions: { parse: [] }
+						})
+						
+					})()
+				} catch (_: unknown) {}
 
 				if (sentMessage?.id) {
 					processUrlIntegrations(

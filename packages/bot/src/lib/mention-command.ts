@@ -19,20 +19,35 @@ export async function initializeApplicationCommands() {
 		c,
 		...(
 			c.options?.filter(
-				(option) => option.type === ApplicationCommandOptionType.Subcommand,
+				(option) =>
+					option.type === ApplicationCommandOptionType.Subcommand ||
+					option.type === ApplicationCommandOptionType.SubcommandGroup,
 			) ?? []
-		).map((subcommand) => {
+		).flatMap((subcommand) => {
+			if (subcommand.type === ApplicationCommandOptionType.SubcommandGroup) {
+				return (
+					subcommand.options?.filter(
+						(option) => option.type === ApplicationCommandOptionType.Subcommand,
+					) ?? []
+				).map((subsubcommand) => {
+					return {
+						...subsubcommand,
+						id: c.id,
+						name: `${c.name} ${subcommand.name} ${subsubcommand.name}`,
+					};
+				});
+			}
+
 			return { ...subcommand, id: c.id, name: `${c.name} ${subcommand.name}` };
 		}),
 	]);
 }
 
-
 export function mentionCommand(
 	defaultPrefix: string,
 	commandName: string,
 	isApplicationCommand: boolean,
-    textAdditions?: string
+	textAdditions?: string,
 ) {
 	if (isApplicationCommand)
 		return `</${commandName}:${loadedApplicationCommands.find((command) => command.name === commandName)?.id}>`;

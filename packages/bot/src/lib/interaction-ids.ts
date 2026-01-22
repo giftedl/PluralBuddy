@@ -98,6 +98,47 @@ export const InteractionIdentifier = {
         AddNudgeForm: createStatic("nudge/set-form/add"),
         AddNudgeType: createStatic("nudge/type-form/add")
     },
+    Guilds: {
+        GeneralTab: {
+            Index: createStatic("guilds/general/index"),
+            SetPrefixes: createStatic("guilds/general/set-prefixes"),
+            SetLoggingChannel: createStatic("guilds/general/set-logging-channel"),
+
+            AddBlacklistRole: createStatic("guilds/general/blacklist/add-role"),
+            AddBlacklistChannel: createStatic("guilds/general/blacklist/add-channel"),
+            AddManagers: createStatic("guilds/general/add-manager"),
+            ToggleSystemTagRequirement: createStatic("guilds/general/toggle-system-tag"),
+
+
+        },
+        RolesTab: {
+            Index: createStatic("guilds/roles/index"),
+        },
+        FeaturesTab: {
+            Index: createStatic("guilds/features/index"),
+            ToggleFeature: createFromAdditionalArg("guilds/features/toggle"),
+        },
+        ErrorsTab: {
+            Index: createStatic("guilds/errors/index"),
+            ClearError: createFromAdditionalArg("guilds/errors/clear")
+        },
+        FormSelection: {
+            SetPrefixesForm: createStatic("guilds/form/prefixes-form"),
+            SetPrefixesSelection: createStatic("guilds/form/prefixes-selection"),
+
+            AddBlacklistRoleForm: createStatic("guilds/form/add-blacklist-role-form"),
+            AddBlacklistRoleSelection: createStatic("guilds/form/add-blacklist-role"),
+
+            AddBlacklistChannelForm: createStatic("guilds/form/add-blacklist-channel-form"),
+            AddBlacklistChannelSelection: createStatic("guilds/form/add-blacklist-channel"),
+
+            AddManagersForm: createStatic("guilds/form/add-managers-form"),
+            AddManagersSelection: createStatic("guilds/form/add-managers-selection"),
+
+            LoggingChannelForm: createStatic("guilds/form/logging-form"),
+            LoggingChannelSelection: createStatic("guilds/form/logging-selection"),
+        }
+    },
     Systems: {
         DeleteSystem: createStatic("systems/delete"),
         DeleteSystemMedia: createStatic("systems/delete-media"),
@@ -136,6 +177,7 @@ export const InteractionIdentifier = {
 
             SetPFP: createStatic("systems/config/system/set-pfp"),
             SetBanner: createStatic("systems/config/system/set-banner"),
+            SetSystemTag: createStatic("systems/config/system/set-system-tag"),
             SetPronouns: createStatic("systems/config/alters/set-pronouns"),
             SetDescription: createStatic("systems/config/alters/set-description"),
             
@@ -201,6 +243,8 @@ export const InteractionIdentifier = {
                 SystemPronounsType: createStatic("systems/config/type-form/system/set-pronouns"),
                 SystemDescriptionForm: createStatic("systems/config/set-form/system/set-description"),
                 SystemDescriptionType: createStatic("systems/config/type-form/system/set-description"),
+                SystemTagForm: createStatic("systems/config/set-form/system/set-tag"),
+                SystemTagType: createStatic("systems/config/type-form/system/set-tag"),
 
                 AlterAssignPagination: {
                     SearchQueryType:          createStatic           ("systems/config/type-form/ag/search-query"),

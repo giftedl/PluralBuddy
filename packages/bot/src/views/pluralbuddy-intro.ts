@@ -120,7 +120,7 @@ export class PluralBuddyIntro extends TranslatedView {
 			};
 		}
 
-		const filledState = guild.usersRequiredSystemTag
+		const filledState = guild.getFeatures().requiresGuildTag
 			? temporarySystem.systemDisplayTag !== undefined &&
 				temporarySystem.systemName !== undefined
 			: temporarySystem.systemName !== undefined;
@@ -204,7 +204,7 @@ export class PluralBuddyIntro extends TranslatedView {
 							),
 						),
 				),
-			...(guild.usersRequiredSystemTag ? systemTagElements : []),
+			...(guild.getFeatures().requiresGuildTag ? systemTagElements : []),
 			new Separator().setSpacing(Spacing.Large),
 			new Section()
 				.addComponents(

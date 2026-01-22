@@ -19,11 +19,13 @@ import {
 	PluralBuddyModalErrorCommand,
 } from "./error-command";
 import { extendedContext } from "./extended-context";
+import { ProxyResource } from "./cache/system-proxy-tags";
 
-export const buildNumber = 693;
+export const buildNumber = 902;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
-	"blacklistUserMiddleware"
+	"blacklistUserMiddleware",
+	"serverBlacklist"
 ];
 
 export const posthogClient =
@@ -85,6 +87,7 @@ await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
 
 client.cache.statistic = new StatisticResource(client.cache, client);
+client.cache.alterProxy = new ProxyResource(client.cache, client);
 
 const guildCount = (await client.guilds.list()).length;
 const guilds = (await client.guilds.list()) ?? [];

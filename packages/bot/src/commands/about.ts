@@ -5,6 +5,7 @@ import { buildNumber } from "..";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "../lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
+import { AlertView } from "@/views/alert";
 
 @Declare({
     name: "about",
@@ -14,6 +15,24 @@ import { mentionCommand } from "@/lib/mention-command";
 })
 export default class SystemCommand extends Command {
     override async run(ctx: CommandContext) {
+        const guild = await ctx.retrievePGuild();
+
+        if (guild.getFeatures().disabledAbout) {
+            if (ctx.isChat() && ctx.message) {
+                (ctx.message as Message).delete()
+
+                await (ctx.message as Message).author.write({
+                    components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
+                    flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+                })
+                return;
+            }
+
+            return await ctx.write({
+                components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
+                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+            })
+        }
 
         return await ctx.write({
             components: [
@@ -31,7 +50,7 @@ export default class SystemCommand extends Command {
                                     .replace("%lineright%", emojis.lineRight)
                                     .replace("%command%", mentionCommand(await ctx.getDefaultPrefix() ?? "pb;", "setup", ctx.message === undefined))
                             )
-                    )
+                    ).setColor("#FCCEE8")
             ],
             flags: MessageFlags.IsComponentsV2
         });

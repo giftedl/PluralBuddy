@@ -590,6 +590,22 @@ export class SystemSettingsView extends TranslatedView {
 								InteractionIdentifier.Systems.Configuration.SetDescription.create(),
 							),
 					),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.addComponents(
+						new TextDisplay().setContent(
+							`You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
+-# ${system.systemName}'s system tag is: ${system.systemDisplayTag ?? "Not set"}`,
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(this.translations.ALTER_SET_TAG)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SetSystemTag.create(),
+							),
+					),
 			),
 		];
 	}

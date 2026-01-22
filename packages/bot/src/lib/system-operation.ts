@@ -53,7 +53,7 @@ export async function createSystemOperation(
 		if (c === "nicknameFormat") {
 			return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace(
 				"%format%",
-				operation.nicknameFormat as string,
+				operation.nicknameFormat as string ?? "_Unset_",
 			);
 		}
 		if (c === "disabled") {
@@ -64,7 +64,7 @@ export async function createSystemOperation(
 		if (c === "systemDisplayTag") {
 			return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace(
 				"%tag%",
-				operation.systemDisplayTag as string,
+				operation.systemDisplayTag as string ?? "_Unset_",
 			);
 		}
 		if (c === "systemAvatar") {
@@ -82,11 +82,11 @@ export async function createSystemOperation(
 		if (c === "systemDescription") {
 			return translations.OPERATION_DESCRIPTION.replace(
 				"%description%",
-				(operation.systemDescription as string).split("\n").join("\n > "),
+				(operation.systemDescription as string ?? "_Unset_").split("\n").join("\n > "),
 			);
 		}
         if (c === "systemPronouns") {
-            return translations.OPERATION_PRONOUNS.replace("%pronouns%", operation.systemPronouns as string)
+            return translations.OPERATION_PRONOUNS.replace("%pronouns%", operation.systemPronouns as string ?? "_Unset_")
         }
 
 		return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
