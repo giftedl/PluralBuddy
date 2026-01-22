@@ -105,7 +105,16 @@ export async function performAlterAutoProxy(
 						),
 					];
 
-		if (!userPerms.has(["ManageWebhooks", "ManageMessages"])) return;
+		if (!userPerms.has(["ManageWebhooks", "ManageMessages"])) {
+
+			createProxyError(user, message, {
+				title: "Bot Cannot Efffectively Proxy",
+				description:
+					"This bot needs Manage Webhooks (\`MANAGE_WEBHOOKS\`) and (\`MANAGE_MESSAGES\`) to work properly. Please ask for an administrator to grant those permissions.",
+				type: "BotPermissionsRequired",
+			});
+			return
+		};
 
 		const contents = message.content;
 
