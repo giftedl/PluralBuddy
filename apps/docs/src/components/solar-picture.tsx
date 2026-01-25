@@ -23,7 +23,7 @@ export function SolarPicture() {
 					className="rounded-lg"
 				/>
 				<Link href="https://toyhou.se/21588437.solar#111133901" className="text-accent-foreground underline">
-					Solar drawing by @rainecloudzy
+					Solar drawing by @raincloudzy
 				</Link>
 			</TooltipContent>
 		</Tooltip>
