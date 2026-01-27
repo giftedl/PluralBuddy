@@ -103,16 +103,25 @@ export const InteractionIdentifier = {
             Index: createStatic("guilds/general/index"),
             SetPrefixes: createStatic("guilds/general/set-prefixes"),
             SetLoggingChannel: createStatic("guilds/general/set-logging-channel"),
+            SetProxyDelay: createStatic("guilds/general/set-proxy-delay"),
 
             AddBlacklistRole: createStatic("guilds/general/blacklist/add-role"),
             AddBlacklistChannel: createStatic("guilds/general/blacklist/add-channel"),
             AddManagers: createStatic("guilds/general/add-manager"),
             ToggleSystemTagRequirement: createStatic("guilds/general/toggle-system-tag"),
 
-
         },
         RolesTab: {
             Index: createStatic("guilds/roles/index"),
+            GoToPage: createFromAdditionalArg("guilds/roles/page"),
+            Preference: createFromAdditionalArg("guilds/roles/preference"),
+            PreferenceEphemeral: createFromAdditionalArg("guilds/roles/-preference-ephemeral"),
+            CreateNewRolePreference: createStatic("guilds/roles/new"),
+            Search: createStatic("guilds/roles/search"),
+
+            ChangeRoleContents: createFromAdditionalArg("guilds/roles/change-role-contents"),
+            ChangeRoleColor: createFromAdditionalArg("guilds/roles/change-role-color"),
+            ChangeRoleLocation: createFromAdditionalArg("guilds/roles/changle-role-location")
         },
         FeaturesTab: {
             Index: createStatic("guilds/features/index"),
@@ -120,7 +129,9 @@ export const InteractionIdentifier = {
         },
         ErrorsTab: {
             Index: createStatic("guilds/errors/index"),
-            ClearError: createFromAdditionalArg("guilds/errors/clear")
+            ClearError: createFromAdditionalArg("guilds/errors/clear"),
+            Search: createStatic("guilds/errors/search"),
+            GoToPage: createFromAdditionalArg("guilds/errors/page"),
         },
         FormSelection: {
             SetPrefixesForm: createStatic("guilds/form/prefixes-form"),
@@ -137,6 +148,29 @@ export const InteractionIdentifier = {
 
             LoggingChannelForm: createStatic("guilds/form/logging-form"),
             LoggingChannelSelection: createStatic("guilds/form/logging-selection"),
+
+            CreatingNewRoleForm: createStatic("guilds/form/new-role-form"),
+            CreatingNewRoleSelection: createStatic("guilds/form/new-role-selection"),
+
+            SearchingRolePreferencesForm: createStatic("guilds/form/searching-roles-form"),
+            SearchingRolePreferencesSelection: createStatic("guilds/form/searching-roles-selection"),
+
+            SearchingErrorsForm: createStatic("guilds/form/searching-errors-form"),
+            SearchingErrorsUserSelection: createStatic("guilds/form/searching-errors-user-selection"),
+            SearchingErrorsChannelSelection: createStatic("guilds/form/searching-errors-channel-selection"),
+            SearchingErrorsTypeSelection: createStatic("guilds/form/searching-errors-type-selection"),
+
+            ChangeRoleContentsForm: createFromAdditionalArg("guilds/form/change-role-contents-form"),
+            ChangeRoleContentsSelection: createStatic("guilds/form/chanel-role-contents-selection"),
+
+            ChangeRoleColorForm: createFromAdditionalArg("guilds/form/change-role-color-form"),
+            ChangeRoleColorSelection: createStatic("guilds/form/chanel-role-color-selection"),
+
+            ChangeRoleLocationForm: createFromAdditionalArg("guilds/form/change-role-location-form"),
+            ChangeRoleLocationSelection: createStatic("guilds/form/chanel-role-location-selection"),
+
+            SetProxyDelayForm: createStatic("guilds/form/set-proxy-delay-form"),
+            SetProxyDelaySelection: createStatic("guilds/form/set-proxy-delay-selection")
         }
     },
     Systems: {

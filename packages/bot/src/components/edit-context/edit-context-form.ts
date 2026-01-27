@@ -26,6 +26,7 @@ export default class EditContextForm extends ModalCommand {
 		const message = await messagesCollection.findOne(
 			{ messageId },
 		);
+		const guild = await ctx.retrievePGuild();
 
         if (message === null) {
 			return await ctx.write({
@@ -62,7 +63,9 @@ export default class EditContextForm extends ModalCommand {
 		const webhook = similarWebhooks[0];
 		const fetchedMessage = await ctx.client.messages.fetch(message.messageId, message.channelId, true);
 
-		await processEditContents(message, fetchedMessage, webhook, contents as string)
+		if (!ctx.member) throw new Error("No member object.")
+
+		await processEditContents(message, fetchedMessage, webhook, contents as string, guild, ctx.member)
 
 		return ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(

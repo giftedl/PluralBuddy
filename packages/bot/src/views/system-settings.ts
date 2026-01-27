@@ -178,7 +178,7 @@ export class SystemSettingsView extends TranslatedView {
 						new StringSelectMenu()
 							.setPlaceholder(
 								guildId === undefined
-									? "You must be in a guild to proxy"
+									? "You must be in a server to proxy"
 									: "Select a proxy mode",
 							)
 							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())

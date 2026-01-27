@@ -1,5 +1,5 @@
 import {
-    ChannelSelectMenu,
+	ChannelSelectMenu,
 	ComponentCommand,
 	Label,
 	Middlewares,
@@ -28,11 +28,19 @@ export default class SetGuildLogging extends ComponentCommand {
 				.setComponents([
 					new Label()
 						.setComponent(
-							new ChannelSelectMenu()
-                                .setDefaultChannels(guild.logChannel ? [guild.logChannel] : [])
-                                .setValuesLength({min: 1, max: 1})
-                                .setCustomId(InteractionIdentifier.Guilds.FormSelection.LoggingChannelSelection.create())
-                                .setChannelTypes([ ChannelType.GuildText ]),
+							new ChannelSelectMenu({
+								...new ChannelSelectMenu()
+									.setDefaultChannels(
+										guild.logChannel ? [guild.logChannel] : [],
+									)
+									.setValuesLength({ min: 1, max: 1 })
+									.setCustomId(
+										InteractionIdentifier.Guilds.FormSelection.LoggingChannelSelection.create(),
+									)
+									.setChannelTypes([ChannelType.GuildText]).data,
+								// @ts-ignore
+								required: false,
+							}),
 						)
 						.setLabel("Logging Channel"),
 				])

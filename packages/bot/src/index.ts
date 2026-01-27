@@ -21,7 +21,7 @@ import {
 import { extendedContext } from "./extended-context";
 import { ProxyResource } from "./cache/system-proxy-tags";
 
-export const buildNumber = 902;
+export const buildNumber = 1028;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
@@ -35,15 +35,6 @@ export const posthogClient =
 				host: "https://us.i.posthog.com",
 				enableExceptionAutocapture: true,
 			});
-
-console.log(
-	"the branch is:",
-	process.env.BRANCH ?? "unknown",
-	"- so, default prefixes are:",
-	defaultPrefixes[
-		(process.env.BRANCH as "production" | "canary") ?? "production"
-	],
-);
 
 export const client = new Client({
 	commands: {
@@ -69,6 +60,16 @@ export const client = new Client({
 	context: extendedContext,
 	globalMiddlewares,
 });
+
+client.logger.info(
+	"the branch is:",
+	process.env.BRANCH ?? "unknown",
+	"- so, default prefixes are:",
+	defaultPrefixes[
+		(process.env.BRANCH as "production" | "canary") ?? "production"
+	],
+);
+
 
 client.setServices({
 	middlewares: middlewares,

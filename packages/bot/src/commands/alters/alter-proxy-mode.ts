@@ -38,6 +38,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
 
         const { "alter-name": alterName, "alter-proxy": alterProxy } = ctx.options;
         const systemId = ctx.author.id;
+        const guild = await ctx.retrievePGuild();
         let alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
             ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
             : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
@@ -52,7 +53,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
         if (alterProxy === undefined) {
             return await ctx.ephemeral({
                 components: [
-                    ...new AlterView(ctx.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode)
+                    ...new AlterView(ctx.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
                 ],
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })

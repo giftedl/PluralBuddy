@@ -5,7 +5,7 @@ import { MessageFlags } from "seyfert/lib/types";
 @Declare({
 	name: "server-config",
 	description: "Configure server settings",
-	aliases: ["srvcfg", "servercfg", "cfg"],
+	aliases: ["srvcfg", "servercfg", "cfg", "srv-cfg"],
 })
 @AutoLoad()
 @Groups({
@@ -21,6 +21,10 @@ import { MessageFlags } from "seyfert/lib/types";
 		defaultDescription: "Guild manager roles.",
 		aliases: ["mr-role", "mr-roles", "mrole", "mr"],
 	},
+	"role-containers": {
+		defaultDescription: "Role containers.",
+		aliases: ["containers", "roles", "rc"]
+	}
 })
 export default class ServerConfigCommand extends Command {
 	override async run(ctx: CommandContext) {

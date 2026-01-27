@@ -9,6 +9,7 @@ export const defaultPrefixes = {
 
 export const GuildErrorTypes = z.enum([
 	"EnforcedGuildTagRegulation",
+	"EnforcedProxyModeRegulation",
 	"BotPermissionsRequired",
 	"UserPermissionsRequired",
 	"FailedLogging",
@@ -51,12 +52,15 @@ export const PGuildObject = z
 		managerRoles: z.string().array().max(25).default([]),
 		allowedAlterModes: z.enum(["webhook", "nickname", "both"]).default("both"),
 		flags: z.number().catch(0),
-		logChannel: z.string().optional(),
+		logChannel: z.string().optional().nullable().catch(undefined),
+		proxyDelay: z.number().max(2500).optional().catch(0),
 
-		roleMessageTags: z
+		rolePreferences: z
 			.object({
 				roleId: z.string(),
-				containerContents: z.string(),
+				containerContents: z.string().optional().catch(undefined),
+				containerLocation: z.enum(["top", "bottom"]).optional().catch(undefined),
+				containerColor: z.string().optional().catch(undefined)
 			})
 			.array()
 			.default([]),

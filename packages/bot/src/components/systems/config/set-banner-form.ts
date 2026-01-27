@@ -47,18 +47,20 @@ export default class SetPFPForm extends ModalCommand {
 			});
 		}
 
-		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}/${assetStringGeneration(32)}.${(attachment.value.contentType ?? "").replace(/(.*)\//g, '')}`;;
+		let objectName = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}/${assetStringGeneration(32)}`;;
 		const bucketName = process.env.GCP_BUCKET ?? "";
 
 		try {
 			const accessToken = await getGcpAccessToken();
-			await uploadDiscordAttachmentToGcp(
+			const { newObject } = await uploadDiscordAttachmentToGcp(
 				(attachment as { value: Attachment }).value,
 				accessToken,
 				bucketName,
 				objectName,
 				{ authorId: ctx.author.id, alterId: '@system', type: "banner/form" },
 			);
+			
+			objectName = newObject
 		} catch (error) {
 			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(

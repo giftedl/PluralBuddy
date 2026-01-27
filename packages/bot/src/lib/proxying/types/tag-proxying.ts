@@ -3,14 +3,21 @@
 import { client } from "@/index";
 import type { PAlter } from "@/types/alter";
 import type { PUser } from "@/types/user";
-import type { Message, Webhook } from "seyfert";
+import type {
+	GuildMember,
+	Message,
+	TopLevelBuilders,
+	User,
+	Webhook,
+} from "seyfert";
 import { getReferencedMessageString } from "../referenced-message";
-import { TextDisplay } from "seyfert";
+import { Container, TextDisplay } from "seyfert";
 import { processEmojis } from "../process-emojis";
 import { proxy } from "..";
 import { alterCollection } from "@/mongodb";
 import { setLastLatchAlter } from "../util";
 import { createProxyError } from "../error";
+import type { PGuild } from "plurography";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -31,7 +38,10 @@ export async function performTagProxy(
 		suffix: string;
 	},
 	message: Message,
+	guild: PGuild,
+	author: GuildMember,
 ) {
+	console.time("pre-proxy");
 	alterCollection.updateOne(
 		{ alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
 		{
@@ -56,6 +66,20 @@ export async function performTagProxy(
 			await client.members.fetch(message.guildId as string, message.user.id),
 			true,
 		);
+
+		if (
+			checkAlter?.alterMode === "nickname" &&
+			guild.getFeatures().forcedWebhookMode
+		) {
+			createProxyError(user, message, {
+				title: "Server requires Webhook Proxy Mode",
+				description:
+					"You cannot proxy with an alter that is on \`nickname\` mode, as this server requires the use of the Webhook Proxy Mode.",
+				type: "EnforcedProxyModeRegulation",
+			});
+		}
+
+		if (guild.getFeatures().forcedWebhookMode) return;
 
 		if (
 			checkAlter?.alterMode === "nickname" &&
@@ -123,6 +147,20 @@ export async function performTagProxy(
 						),
 					];
 
+		if (
+			checkAlter?.alterMode === "webhook" &&
+			guild.getFeatures().forcedNicknameMode
+		) {
+			createProxyError(user, message, {
+				title: "Server requires Nickname Proxy Mode",
+				description:
+					"You cannot proxy with an alter that is on \`webhook\` mode, as this server requires the use of the Nickname Proxy Mode.",
+				type: "EnforcedProxyModeRegulation",
+			});
+		}
+
+		if (guild.getFeatures().forcedNicknameMode) return;
+
 		if (!userPerms.has(["ManageWebhooks", "ManageMessages"])) {
 			createProxyError(user, message, {
 				title: "Bot Cannot Efffectively Proxy",
@@ -141,13 +179,65 @@ export async function performTagProxy(
 			contents = contents.slice(0, contents.length - proxyTag.suffix.length);
 		}
 
+		const roleBeforeComponents: TopLevelBuilders[] = [];
+		const roleAfterComponents: TopLevelBuilders[] = [];
+
+		if (guild.rolePreferences.length !== 0) {
+			const userRoles = await author.roles.list();
+			const applicableRoles = userRoles.filter((c) =>
+				guild.rolePreferences.some(
+					(v) => v.roleId === c.id && v.containerContents !== undefined,
+				),
+			);
+			const topPositionRole = applicableRoles.sort(
+				(a, b) => a.position - b.position,
+			)[0];
+			if (topPositionRole) {
+				const guildPositionRole = guild.rolePreferences.find(
+					(c) => topPositionRole.id === c.roleId,
+				);
+
+				if (
+					guildPositionRole &&
+					guildPositionRole.containerContents !== undefined
+				) {
+					(guildPositionRole.containerLocation === "top"
+						? roleBeforeComponents
+						: roleAfterComponents
+					).push(
+						guildPositionRole.containerColor !== undefined
+							? new Container()
+									.setComponents(
+										new TextDisplay().setContent(
+											guildPositionRole.containerContents,
+										),
+									)
+									.setColor(guildPositionRole.containerColor as `#${string}`)
+							: new Container().setComponents(
+									new TextDisplay().setContent(
+										guildPositionRole.containerContents,
+									),
+								),
+					);
+				}
+			}
+		}
+
 		const trimmedContents = contents.trim();
 
 		const { emojis: uploadedEmojis, newMessage: processedContents } =
 			await processEmojis(trimmedContents);
 
-		const messageComponents = [new TextDisplay().setContent(processedContents)];
+		const messageComponents =
+			processedContents.length === 0
+				? [...roleBeforeComponents, ...roleAfterComponents]
+				: [
+						...roleBeforeComponents,
+						new TextDisplay().setContent(processedContents),
+						...roleAfterComponents,
+					];
 
+		console.timeEnd("pre-proxy");
 		proxy(
 			webhook,
 			client,
@@ -159,6 +249,7 @@ export async function performTagProxy(
 			[...referencedMessage],
 			messageComponents,
 			uploadedEmojis,
+			guild,
 			checkAlter?.avatarUrl ?? undefined,
 		);
 

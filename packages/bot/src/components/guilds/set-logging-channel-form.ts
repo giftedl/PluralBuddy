@@ -23,15 +23,14 @@ export default class GuildPrefixesForm extends ModalCommand {
 		const newChannel = (
 			ctx.interaction.getInputValue(
 				InteractionIdentifier.Guilds.FormSelection.LoggingChannelSelection.create(),
-				true,
-			) as string[]
+			) as string[] | undefined
 		);
 
-		guildObj.logChannel = newChannel[0];
+		guildObj.logChannel = (newChannel ?? [undefined])[0];
 
 		await guildCollection.updateOne(
 			{ guildId: ctx.guildId },
-			{ $set: { logChannel: newChannel[0] }},
+			{ $set: { logChannel: (newChannel ?? [null])[0] }},
 			{ upsert: true },
 		);
 

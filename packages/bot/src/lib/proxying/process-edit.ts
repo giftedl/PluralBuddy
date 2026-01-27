@@ -1,23 +1,26 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import type { PMessage } from "@/types/message";
-import { AttachmentBuilder, File, TextDisplay, type Message } from "seyfert";
+import { AttachmentBuilder, Container, File, TextDisplay, type Message } from "seyfert";
 import { processEmojis } from "./process-emojis";
 import { processFileAttachments } from "./process-file-attachments";
 import { client } from "@/index";
 import { imageOrVideoExtensions } from ".";
-import type { TopLevelBuilders, Webhook } from "seyfert";
+import type { GuildMember, TopLevelBuilders, Webhook } from "seyfert";
 import { getReferencedMessageString } from "./referenced-message";
 import { MediaGallery } from "seyfert";
 import { MediaGalleryItem } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { processUrlIntegrations } from "./process-url-attachments";
+import type { PGuild } from "plurography";
 
 export async function processEditContents(
 	messageData: PMessage,
 	message: Message,
 	webhook: Webhook,
 	contents: string,
+	guild: PGuild,
+	author: GuildMember
 ) {
 	const { emojis: uploadedEmojis, newMessage: processedContents } =
 		await processEmojis(contents);
@@ -46,6 +49,50 @@ export async function processEditContents(
 		}
 	}
 
+	const roleBeforeComponents: TopLevelBuilders[] = [];
+	const roleAfterComponents: TopLevelBuilders[] = [];
+
+	if (guild.rolePreferences.length !== 0) {
+		const userRoles = await author.roles.list();
+		const applicableRoles = userRoles.filter((c) =>
+			guild.rolePreferences.some(
+				(v) => v.roleId === c.id && v.containerContents !== undefined,
+			),
+		);
+		const topPositionRole = applicableRoles.sort(
+			(a, b) => a.position - b.position,
+		)[0];
+		if (topPositionRole) {
+			const guildPositionRole = guild.rolePreferences.find(
+				(c) => topPositionRole.id === c.roleId,
+			);
+
+			if (
+				guildPositionRole &&
+				guildPositionRole.containerContents !== undefined
+			) {
+				(guildPositionRole.containerLocation === "top"
+					? roleBeforeComponents
+					: roleAfterComponents
+				).push(
+					guildPositionRole.containerColor !== undefined
+						? new Container()
+								.setComponents(
+									new TextDisplay().setContent(
+										guildPositionRole.containerContents,
+									),
+								)
+								.setColor(guildPositionRole.containerColor as `#${string}`)
+						: new Container().setComponents(
+								new TextDisplay().setContent(
+									guildPositionRole.containerContents,
+								),
+							),
+				);
+			}
+		}
+	}
+
 	const referencedMessage =
 		message.referencedMessage === undefined ||
 		message.referencedMessage === null
@@ -55,9 +102,7 @@ export async function processEditContents(
 						await getReferencedMessageString(message, webhook.id),
 					),
 				];
-	const components: TopLevelBuilders[] = [...referencedMessage];
-
-	components.push(...messageComponents);
+	const components: TopLevelBuilders[] = [...referencedMessage, ...roleAfterComponents, ...messageComponents, ...roleBeforeComponents];
 
 	if (fileAttachments.length > 0) {
 		if (mediaFiles.length > 0)

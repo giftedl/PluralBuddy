@@ -81,8 +81,12 @@ export default class EditCommand extends Command {
 			message.channelId,
 			true,
 		);
+		const guild = await ctx.retrievePGuild();
+		const member = ctx.member;
 
-		await processEditContents(message, fetchedMessage, webhook, contents);
+		if (!member) throw new Error("no member.")
+
+		await processEditContents(message, fetchedMessage, webhook, contents, guild, member);
 
 		return ctx
 			.write({

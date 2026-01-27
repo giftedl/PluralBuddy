@@ -46,6 +46,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 		}
 		const user = await userCollection.findOne({ userId: message.systemId });
 
+		if (user && user?.nudging)
 		if (
 			!user?.nudging.currentlyEnabled ||
 			user.nudging.blockedUsers.includes(ctx.author.id)

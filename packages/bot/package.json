@@ -12,6 +12,7 @@
   "dependencies": {
     "@sapphire/snowflake": "^3.5.5",
     "@slipher/redis-adapter": "^0.0.5",
+    "file-type": "^21.3.0",
     "mongodb": "6.20.0",
     "plurography": "workspace:*",
     "posthog-node": "^5.17.2",

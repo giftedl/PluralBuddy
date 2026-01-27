@@ -86,18 +86,19 @@ export default class EditAlterPictureCommand extends SubCommand {
 		let objectName: string | undefined;
 
 		if (attachmentText === undefined ) {
-			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}.${((attachment as { value: Attachment }).value.contentType ?? "").replace(/(.*)\//g, "")}`;
+			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}}`;
 			const bucketName = process.env.GCP_BUCKET ?? "";
 	
 			try {
 				const accessToken = await getGcpAccessToken();
-				await uploadDiscordAttachmentToGcp(
+				const {newObject} = await uploadDiscordAttachmentToGcp(
 					(attachment as { value: Attachment }).value,
 					accessToken,
 					bucketName,
 					objectName,
 					{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture" },
 				);
+				objectName = newObject;
 			} catch (error) {
 				return await ctx.editResponse({
 					components: new AlertView(ctx.userTranslations()).errorView(

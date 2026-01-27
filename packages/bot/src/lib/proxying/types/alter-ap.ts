@@ -4,18 +4,28 @@ import { client } from "@/index";
 import { alterCollection } from "@/mongodb";
 import type { PAlter } from "@/types/alter";
 import type { PUser } from "@/types/user";
-import { TextDisplay, type Message, type Webhook } from "seyfert";
+import {
+	Container,
+	GuildMember,
+	TextDisplay,
+	type Message,
+	type TopLevelBuilders,
+	type Webhook,
+} from "seyfert";
 import { getReferencedMessageString } from "../referenced-message";
 import { processEmojis } from "../process-emojis";
 import { proxy } from "..";
 import { setLastLatchAlter } from "../util";
 import { createProxyError } from "../error";
+import type { PGuild } from "plurography";
 
 export async function performAlterAutoProxy(
 	message: Message,
 	similarWebhooks: Webhook[],
 	alter: PAlter,
-	user: PUser
+	user: PUser,
+	guild: PGuild,
+	author: GuildMember,
 ) {
 	alterCollection.updateOne(
 		{ alterId: alter?.alterId, systemId: alter?.systemId },
@@ -38,6 +48,20 @@ export async function performAlterAutoProxy(
 			await client.members.fetch(message.guildId as string, message.user.id),
 			true,
 		);
+
+		if (
+			alter?.alterMode === "nickname" &&
+			guild.getFeatures().forcedWebhookMode
+		) {
+			createProxyError(user, message, {
+				title: "Server requires Webhook Proxy Mode",
+				description:
+					"You cannot proxy with an alter that is on \`nickname\` mode, as this server requires the use of the Webhook Proxy Mode.",
+				type: "EnforcedProxyModeRegulation",
+			});
+		}
+
+		if (guild.getFeatures().forcedWebhookMode) return;
 
 		if (
 			alter?.alterMode === "nickname" &&
@@ -105,23 +129,87 @@ export async function performAlterAutoProxy(
 						),
 					];
 
-		if (!userPerms.has(["ManageWebhooks", "ManageMessages"])) {
+		if (
+			alter?.alterMode === "webhook" &&
+			guild.getFeatures().forcedNicknameMode
+		) {
+			createProxyError(user, message, {
+				title: "Server requires Nickname Proxy Mode",
+				description:
+					"You cannot proxy with an alter that is on \`webhook\` mode, as this server requires the use of the Nickname Proxy Mode.",
+				type: "EnforcedProxyModeRegulation",
+			});
+		}
 
+		if (guild.getFeatures().forcedNicknameMode) return;
+
+		if (!userPerms.has(["ManageWebhooks", "ManageMessages"])) {
 			createProxyError(user, message, {
 				title: "Bot Cannot Efffectively Proxy",
 				description:
 					"This bot needs Manage Webhooks (\`MANAGE_WEBHOOKS\`) and (\`MANAGE_MESSAGES\`) to work properly. Please ask for an administrator to grant those permissions.",
 				type: "BotPermissionsRequired",
 			});
-			return
-		};
+			return;
+		}
+
+		const roleBeforeComponents: TopLevelBuilders[] = [];
+		const roleAfterComponents: TopLevelBuilders[] = [];
+
+		if (guild.rolePreferences.length !== 0) {
+			const userRoles = await author.roles.list();
+			const applicableRoles = userRoles.filter((c) =>
+				guild.rolePreferences.some(
+					(v) => v.roleId === c.id && v.containerContents !== undefined,
+				),
+			);
+			const topPositionRole = applicableRoles.sort(
+				(a, b) => a.position - b.position,
+			)[0];
+			if (topPositionRole) {
+				const guildPositionRole = guild.rolePreferences.find(
+					(c) => topPositionRole.id === c.roleId,
+				);
+
+				if (
+					guildPositionRole &&
+					guildPositionRole.containerContents !== undefined
+				) {
+					(guildPositionRole.containerLocation === "top"
+						? roleBeforeComponents
+						: roleAfterComponents
+					).push(
+						guildPositionRole.containerColor !== undefined
+							? new Container()
+									.setComponents(
+										new TextDisplay().setContent(
+											guildPositionRole.containerContents,
+										),
+									)
+									.setColor(guildPositionRole.containerColor as `#${string}`)
+							: new Container().setComponents(
+									new TextDisplay().setContent(
+										guildPositionRole.containerContents,
+									),
+								),
+					);
+				}
+			}
+		}
 
 		const contents = message.content;
 
 		const { emojis: uploadedEmojis, newMessage: processedContents } =
 			await processEmojis(contents);
 
-		const messageComponents = processedContents.length === 0 ? [] : [new TextDisplay().setContent(processedContents)];
+		const messageComponents =
+			processedContents.length === 0
+				? []
+				: [
+					...roleBeforeComponents,
+						new TextDisplay().setContent(processedContents),
+						...roleAfterComponents,
+					];
 
 		proxy(
 			webhook,
@@ -134,6 +222,7 @@ export async function performAlterAutoProxy(
 			[...referencedMessage],
 			messageComponents,
 			uploadedEmojis,
+			guild,
 			alter?.avatarUrl ?? undefined,
 		);
 	}

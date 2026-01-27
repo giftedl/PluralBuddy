@@ -9,6 +9,7 @@ import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
 import { assetStringGeneration } from "@/types/operation";
 import { createSystemOperation } from "@/lib/system-operation";
 import { SystemSettingsView } from "@/views/system-settings";
+import { fileTypeFromBuffer } from "file-type";
 
 export default class SetPFPForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -46,19 +47,20 @@ export default class SetPFPForm extends ModalCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-
-		const objectName = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}/${assetStringGeneration(32)}.${(attachment.value.contentType ?? "").replace(/(.*)\//g, '')}`;;
+		
+		let objectName = `${(process.env.BRANCH ?? "c")[0]}/${storagePrefix}/${assetStringGeneration(32)}`;;
 		const bucketName = process.env.GCP_BUCKET ?? "";
 
 		try {
 			const accessToken = await getGcpAccessToken();
-			await uploadDiscordAttachmentToGcp(
+			const { newObject } = await uploadDiscordAttachmentToGcp(
 				(attachment as { value: Attachment }).value,
 				accessToken,
 				bucketName,
 				objectName,
 				{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture/form" },
 			);
+			objectName = newObject
 		} catch (error) {
 			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(

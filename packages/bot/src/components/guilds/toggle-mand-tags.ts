@@ -1,10 +1,11 @@
-import { ComponentCommand, type ComponentContext } from "seyfert";
+import { ComponentCommand, Middlewares, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { GuildFlags, PGuildObject } from "plurography";
 import { guildCollection } from "@/mongodb";
 import { ServerConfigView } from "@/views/server-cfg";
 import { MessageFlags } from "seyfert/lib/types";
 
+@Middlewares(["ensureGuildPermissions"])
 export default class ToggleMandatoryTags extends ComponentCommand {
 	componentType = "Button" as const;
 

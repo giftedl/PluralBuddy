@@ -17,11 +17,11 @@ import {
 	Section,
 } from "seyfert";
 import type { Message } from "seyfert/lib/structures";
-import { MessageFlags, Spacing } from "seyfert/lib/types";
+import { MessageFlags, Spacing, StickerFormatType } from "seyfert/lib/types";
 import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 import { emojis } from "../emojis";
-import { getGuildFromId } from "@/types/guild";
+import { getGuildFromId, type PGuild } from "@/types/guild";
 
 export const imageOrVideoExtensions = [
 	".png",
@@ -51,8 +51,10 @@ export async function proxy(
 	reply: TopLevelBuilders[],
 	mainContents: TopLevelBuilders[],
 	uploadedEmojis: ApplicationEmoji[],
+	guild: PGuild,
 	picture?: string,
 ) {
+	console.time("proxy");
 	// Process file attachments before sending the message
 	const { fileAttachments } = await processFileAttachments(
 		client,
@@ -79,6 +81,7 @@ export async function proxy(
 	const components: TopLevelBuilders[] = [...reply];
 
 	components.push(...mainContents);
+	console.log(mainContents)
 
 	if (fileAttachments.length > 0) {
 		if (mediaFiles.length > 0)
@@ -97,14 +100,19 @@ export async function proxy(
 		components.push(
 			...(message.stickerItems ?? []).map((c) =>
 				new MediaGallery().addItems(
-					new MediaGalleryItem().setMedia(`https://wsrv.nl/?url=discordapp.com/stickers/${c.id}.png&w=160&h=160`),
+					new MediaGalleryItem().setMedia(
+						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=320`,
+					),
 				),
 			),
 		);
 	}
 
+	await new Promise((d) => setTimeout(d, guild.proxyDelay))
+
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
+		console.timeEnd("proxy");
 		webhook.messages
 			.write({
 				body: {
@@ -149,48 +157,57 @@ export async function proxy(
 				},
 			})
 			.then((sentMessage) => {
-				messagesCollection
-					.insertOne({
-						messageId: sentMessage?.id ?? "0",
-						alterId,
-						systemId,
-						createdAt: new Date(),
-						guildId: message.guildId,
-						channelId: message.channelId,
-					});
+				messagesCollection.insertOne({
+					messageId: sentMessage?.id ?? "0",
+					alterId,
+					systemId,
+					createdAt: new Date(),
+					guildId: message.guildId,
+					channelId: message.channelId,
+				});
 				try {
 					(async () => {
-						const guild = await getGuildFromId(message.guildId ?? "")
-						const user = await client.users.fetch(message.author.id)
+						const guild = await getGuildFromId(message.guildId ?? "");
+						const user = await client.users.fetch(message.author.id);
 						const alter = await alterCollection.findOne({ alterId, systemId });
 
-						if (!guild.logChannel)
-							return;
-
+						if (!guild.logChannel) return;
 
 						await client.messages.write(guild.logChannel, {
 							components: [
-								new TextDisplay().setContent(`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`),
-								new Container().setComponents(
-									new Section().setComponents(
-										new TextDisplay().setContent(stringContents),
-									).setAccessory(
-										new Thumbnail().setMedia(alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png")
-									),
-									new Separator().setSpacing(Spacing.Large),
-									new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
+								new TextDisplay().setContent(
+									`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`,
+								),
+								new Container()
+									.setComponents(
+										new Section()
+											.setComponents(
+												new TextDisplay().setContent(stringContents === "" ? "Cannot render message as string - use link above." : stringContents),
+											)
+											.setAccessory(
+												new Thumbnail().setMedia(
+													alter?.avatarUrl ??
+														"https://cdn.discordapp.com/embed/avatars/0.png",
+												),
+											),
+										new Separator().setSpacing(Spacing.Large),
+										new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
 -# Mention: @${user.username} (<@${systemId}>)
--# Alter Mention: @${alter?.username} (${alter?.nameMap.find(c => c.server === guild.guildId)?.name ?? alter?.username})${message.messageReference !== undefined ? `
--# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}` : ""}
+-# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${
+											message.messageReference !== undefined
+												? `
+-# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}`
+												: ""
+										}
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
--# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`)
-								).setColor("Green")
+-# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
+									)
+									.setColor("Green"),
 							],
 							flags: MessageFlags.IsComponentsV2,
-							allowed_mentions: { parse: [] }
-						})
-						
-					})()
+							allowed_mentions: { parse: [] },
+						});
+					})();
 				} catch (_: unknown) {}
 
 				if (sentMessage?.id) {
@@ -211,6 +228,8 @@ export async function proxy(
 					}
 			});
 
+			console.time("post-proxy");
 		await message.delete();
+		console.timeEnd("post-proxy");
 	}
 }

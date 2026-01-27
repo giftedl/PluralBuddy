@@ -39,14 +39,14 @@ export default class SetSystemTag extends ComponentCommand {
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
 									)
-									.setLength({ min: 3, max: 2000 })
+									.setLength({ min: 1, max: 2000 })
 									.setRequired(true)
 							: new TextInput()
 									.setStyle(TextInputStyle.Paragraph)
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
 									)
-									.setLength({ min: 3, max: 2000 })
+									.setLength({ min: 1, max: 2000 })
 									.setRequired(true)
 									.setValue(user.system.systemDisplayTag),
 					),

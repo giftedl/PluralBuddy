@@ -32,6 +32,7 @@ import { tagCollection } from "@/mongodb";
 import type { PTag } from "@/types/tag";
 import type { PSystem } from "@/types/system";
 import { getUserById } from "@/types/user";
+import type { PGuild } from "plurography";
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
@@ -328,7 +329,12 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 		];
 	}
 
-	altersSetMode(alterUsername: string, alterId: number, currentMode: string) {
+	altersSetMode(
+		alterUsername: string,
+		alterId: number,
+		currentMode: string,
+		guild: PGuild,
+	) {
 		return [
 			new Container()
 				.setComponents(
@@ -339,6 +345,18 @@ Please select the mode you would like to use below.
 -# Current mode for @${alterUsername} is ${currentMode[0]?.toUpperCase() + currentMode.slice(1)}`),
 				)
 				.setColor("#1190FF"),
+			...(guild.getFeatures().forcedNicknameMode ||
+			guild.getFeatures().forcedWebhookMode
+				? [
+						new Container()
+							.setComponents(
+								new TextDisplay().setContent(
+									`  ${emojis.x}   **This server enforces a required ${guild.getFeatures().forcedNicknameMode ? "nickname" : "webhook"} policy.** This means that all alters will have to use the ${guild.getFeatures().forcedNicknameMode ? "nickname" : "webhook"} proxy mode in this server specifically. Your message will be blocked from proxying if you are not using the Both proxy mode or using the enforced proxy mode.`,
+								),
+							)
+							.setColor("#B70000"),
+					]
+				: []),
 			new ActionRow().setComponents(
 				new Button()
 					.setEmoji(emojis.undo)

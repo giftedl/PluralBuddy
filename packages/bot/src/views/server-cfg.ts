@@ -11,8 +11,31 @@ import { TranslatedView } from "./translated-view";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
-import { GuildFlags, type PGuild } from "plurography";
+import {
+	GuildErrorTypes,
+	GuildFlags,
+	PGuildObject,
+	type PGuild,
+} from "plurography";
 import { mentionCommand } from "@/lib/mention-command";
+import z from "zod";
+import { DiscordSnowflake } from "@sapphire/snowflake";
+
+const roleDataObj = z.object({
+	roleId: z.string(),
+	containerContents: z.string().optional(),
+	containerLocation: z.enum(["top", "bottom"]).optional(),
+	containerColor: z.string().optional(),
+});
+
+export const errorPagination: {
+	id: string;
+	filters: {
+		userId?: string;
+		channelId?: string;
+		type?: z.infer<typeof GuildErrorTypes>;
+	};
+}[] = [];
 
 export const friendlyFeatureIndex: Record<
 	string,
@@ -54,8 +77,9 @@ export const friendlyFeatureIndex: Record<
 	},
 	DISABLE_PERMISSION_CHECK: {
 		title: "Disable Permission Check Command",
-		description: "This command shows server administrators and members whether they have permissions to do certain things."
-	}
+		description:
+			"This command shows server administrators and members whether they have permissions to do certain things.",
+	},
 };
 
 export class ServerConfigView extends TranslatedView {
@@ -65,7 +89,7 @@ export class ServerConfigView extends TranslatedView {
 	) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(`-# Guild ID: \`${guildId}\``),
+				new TextDisplay().setContent(`-# Server ID: \`${guildId}\``),
 				new ActionRow().setComponents(
 					new Button()
 						.setLabel("General")
@@ -129,7 +153,7 @@ export class ServerConfigView extends TranslatedView {
 	generalSettings(guild: PGuild, prefix: string, isApplication: boolean) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent("## Guild Preferences"),
+				new TextDisplay().setContent("## Server Preferences"),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.setComponents(
@@ -235,12 +259,47 @@ export class ServerConfigView extends TranslatedView {
 							`> This guild's current logging channel is: ${guild.logChannel ? `<#${guild.logChannel}>` : "_Unset_"}`,
 						),
 					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(InteractionIdentifier.Guilds.GeneralTab.SetProxyDelay.create())
+							.setLabel("Set Proxy Delay")
+							.setStyle(ButtonStyle.Primary)
+					).setComponents(
+						new TextDisplay().setContent(`**Proxy Delay**
+> After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`),
+						new TextDisplay().setContent(`> It is not recommended to go over a 1 second proxy delay.
+> This server's proxy delay currently is **${(guild.proxyDelay ?? 0) / 1000} seconds** (${guild.proxyDelay ?? 0}ms)`)
+					)
 			),
 		];
 	}
 
-	errorSettings(guild: PGuild, nativeGuild: Guild<"api" | "cached">) {
-		const renderedErrors = guild.errorLog.slice(0, 200);
+	errorSettings(
+		guild: PGuild,
+		nativeGuild: Guild<"api" | "cached">,
+		currentPage?: number,
+		newData?: typeof guild.errorLog,
+		filters?: (typeof errorPagination)[0]["filters"],
+		paginationId?: string | undefined,
+	) {
+		if (newData && !paginationId) {
+			paginationId = DiscordSnowflake.generate().toString();
+
+			errorPagination.push({
+				id: paginationId,
+				filters: filters ?? {},
+			});
+		}
+
+		newData = newData ?? guild.errorLog;
+		currentPage = currentPage ?? 1;
+
+		const maxPages = Math.ceil((newData.length ?? 0) / 5);
+		const renderedErrors = newData.slice(
+			(currentPage - 1) * 5,
+			(currentPage - 1) * 5 + 5,
+		);
 
 		return [
 			new Container().setComponents(
@@ -249,7 +308,7 @@ export class ServerConfigView extends TranslatedView {
 				...(renderedErrors.length === 0
 					? [
 							new TextDisplay().setContent(
-								`${emojis.catjamming}   Nice! Your guild hasn't ran into any errors!`,
+								`${emojis.catjamming}   Nice! Your server hasn't ran into any errors!`,
 							),
 						]
 					: []),
@@ -274,11 +333,39 @@ export class ServerConfigView extends TranslatedView {
 				}),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`-# Found ${renderedErrors.length}/${guild.errorLog.length} error(s)`,
+					`-# Page ${currentPage}/${maxPages} · Found ${renderedErrors.length}/${newData.length} error(s) ${filters?.channelId || filters?.userId || filters?.type ? `· Searching for ${[filters.channelId ? `<#${filters.channelId}>` : undefined, filters.userId ? `<@${filters.userId}>` : undefined, filters.type].filter((c) => c !== undefined).join(", ")}` : ""}`,
+				),
+				new ActionRow().setComponents(
+					new Button()
+						.setDisabled(currentPage === 1)
+						.setStyle(ButtonStyle.Primary)
+						.setLabel("Previous Page")
+						.setCustomId(
+							InteractionIdentifier.Guilds.ErrorsTab.GoToPage.create(
+								currentPage - 1,
+							),
+						),
+					new Button()
+						.setDisabled(currentPage === maxPages || maxPages === 0)
+						.setLabel("Next Page")
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId(
+							InteractionIdentifier.Guilds.ErrorsTab.GoToPage.create(
+								currentPage + 1,
+							),
+						),
+
+					new Button()
+						.setStyle(ButtonStyle.Primary)
+						.setEmoji(emojis.search)
+						.setCustomId(
+							InteractionIdentifier.Guilds.ErrorsTab.Search.create(),
+						),
 				),
 			),
 		];
 	}
+
 	featuresTab(guild: PGuild, nativeGuild: Guild<"api" | "cached">) {
 		return [
 			new Container().setComponents(
@@ -316,4 +403,194 @@ export class ServerConfigView extends TranslatedView {
 			),
 		];
 	}
+
+	rolesTab(
+		guild: PGuild,
+		nativeGuild: Guild<"api" | "cached">,
+		currentPage?: number,
+		queryData?: PGuild["rolePreferences"],
+	) {
+		currentPage = currentPage ?? 1;
+
+		const maxPages = Math.ceil((guild.rolePreferences.length ?? 0) / 5);
+		const currentRolePreferences = guild.rolePreferences.slice(
+			(currentPage - 1) * 5,
+			(currentPage - 1) * 5 + 5,
+		);
+
+		return [
+			new Container().setComponents(
+				new TextDisplay().setContent(`## Roles - ${nativeGuild.name}
+> The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`),
+				new Separator().setSpacing(Spacing.Large),
+				...(guild.rolePreferences.length === 0
+					? [
+							new TextDisplay().setContent(
+								`-# This server currently has no role preferences. Create one below!`,
+							),
+						]
+					: []),
+				...currentRolePreferences.map((c) =>
+					new Section()
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Guilds.RolesTab.Preference.create(
+										c.roleId,
+									),
+								)
+								.setLabel("Configure Role")
+								.setStyle(ButtonStyle.Primary)
+								.setEmoji(emojis.wrenchWhite),
+						)
+						.setComponents(new TextDisplay().setContent(`<@&${c.roleId}>`)),
+				),
+				new Separator().setSpacing(Spacing.Large),
+				new TextDisplay().setContent(
+					`-# Page ${currentPage}/${maxPages} · Found ${currentRolePreferences.length}/${guild.rolePreferences.length} role preference(s)`,
+				),
+				new ActionRow().setComponents(
+					new Button()
+						.setEmoji(emojis.plus)
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId(
+							InteractionIdentifier.Guilds.RolesTab.CreateNewRolePreference.create(),
+						),
+					new Button()
+						.setDisabled(currentPage === 1)
+						.setStyle(ButtonStyle.Primary)
+						.setLabel("Previous Page")
+						.setCustomId(
+							InteractionIdentifier.Guilds.RolesTab.GoToPage.create(
+								currentPage - 1,
+							),
+						),
+					new Button()
+						.setDisabled(currentPage === maxPages || maxPages === 0)
+						.setLabel("Next Page")
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId(
+							InteractionIdentifier.Guilds.RolesTab.GoToPage.create(
+								currentPage + 1,
+							),
+						),
+
+					new Button()
+						.setStyle(ButtonStyle.Primary)
+						.setEmoji(emojis.search)
+						.setCustomId(InteractionIdentifier.Guilds.RolesTab.Search.create()),
+				),
+			),
+		];
+	}
+
+	roleGeneralView(roleData: z.infer<typeof roleDataObj>) {	
+		return [
+			new Container().setComponents(
+				new TextDisplay().setContent(
+					`-# <@&${roleData.roleId}> • ID: \`${roleData.roleId}\``,
+				),
+				new ActionRow().setComponents(
+					new Button()
+						.setLabel("Back")
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(emojis.undo)
+						.setCustomId(InteractionIdentifier.Guilds.RolesTab.Index.create()),
+				),
+			),
+			new Container().setComponents(
+				new TextDisplay().setContent(`## Role Configuration - <@&${roleData.roleId}>
+> The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Guilds.RolesTab.ChangeRoleContents.create(
+									roleData.roleId,
+								),
+							)
+							.setLabel("Edit Container Contents")
+							.setStyle(ButtonStyle.Primary),
+					)
+					.setComponents(
+						new TextDisplay().setContent(`**Role Container Contents**
+> This is the actual contents inside of the role-specific container. This is required for the container to appear. If this is blank, the container won't appear.`),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Guilds.RolesTab.ChangeRoleColor.create(
+									roleData.roleId,
+								),
+							)
+							.setLabel("Edit Container Color")
+							.setStyle(ButtonStyle.Primary),
+					)
+					.setComponents(
+						new TextDisplay().setContent(`**Role Container Color**
+> Containers on Discord have a color they can be. Otherwise, the color marker shows up as blank (unlike in embeds).`),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Guilds.RolesTab.ChangeRoleLocation.create(
+									roleData.roleId,
+								),
+							)
+							.setLabel("Edit Container Location")
+							.setStyle(ButtonStyle.Primary),
+					)
+					.setComponents(
+						new TextDisplay().setContent(`**Role Container Location**
+> PluralBuddy can place the container either below the message contents or above it.
+
+There is an example below of what an example proxy with this role would look like:`),
+					),
+			),
+			new Separator().setSpacing(Spacing.Large),
+			...(roleData.containerContents === undefined
+				? [
+						new TextDisplay().setContent(
+							"-# There is no role container for this role as the contents are empty.",
+						),
+					]
+				: []),
+			...(roleData.containerContents !== undefined &&
+			(roleData.containerLocation === "top" ||
+				roleData.containerLocation === undefined)
+				? [
+						roleData.containerColor !== undefined
+							? new Container()
+									.setComponents(
+										new TextDisplay().setContent(roleData.containerContents),
+									)
+									.setColor(roleData.containerColor as `#${string}`)
+							: new Container().setComponents(
+									new TextDisplay().setContent(roleData.containerContents),
+								),
+					]
+				: []),
+			new TextDisplay().setContent("Example proxy text. Hi!"),
+			...(roleData.containerContents !== undefined && roleData.containerLocation === "bottom"
+				? [
+						roleData.containerColor !== undefined
+							? new Container()
+									.setComponents(
+										new TextDisplay().setContent(roleData.containerContents),
+									)
+									.setColor(roleData.containerColor as `#${string}`)
+							: new Container().setComponents(
+									new TextDisplay().setContent(roleData.containerContents),
+								),
+					]
+				: []),
+		];
+	}
+}
+
+function capitalize(s: string) {
+	return String(s[0]).toUpperCase() + String(s).slice(1);
 }

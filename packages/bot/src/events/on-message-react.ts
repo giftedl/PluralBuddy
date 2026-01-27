@@ -113,26 +113,27 @@ export default createEvent({
 			const nativeUser = await client.users.fetch(reaction.userId, true);
 			const user = await userCollection.findOne({ userId: message.systemId });
 
-			if (
-				!user?.nudging.currentlyEnabled ||
-				user.nudging.blockedUsers.includes(reaction.userId)
-			) {
-				client.reactions.delete(
-					reaction.messageId,
-					reaction.channelId,
-					emojis.loading,
-					client.applicationId,
-				);
-				return await nativeUser.write({
-					components: [
-						new TextDisplay().setContent(
-							`-# ${emojis.reply} In response to: https://discord.com/channels/${reaction.guildId}/${reaction.channelId}/${reaction.messageId}`,
-						),
-						...new AlertView(translations).errorView("USER_CANNOT_BE_NUDGED"),
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				});
-			}
+			if (user && user?.nudging)
+				if (
+					(!(user?.nudging.currentlyEnabled ?? true)) ||
+					(user?.nudging.blockedUsers.includes(reaction.userId))
+				) {
+					client.reactions.delete(
+						reaction.messageId,
+						reaction.channelId,
+						emojis.loading,
+						client.applicationId,
+					);
+					return await nativeUser.write({
+						components: [
+							new TextDisplay().setContent(
+								`-# ${emojis.reply} In response to: https://discord.com/channels/${reaction.guildId}/${reaction.channelId}/${reaction.messageId}`,
+							),
+							...new AlertView(translations).errorView("USER_CANNOT_BE_NUDGED"),
+						],
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					});
+				}
 
 			const alter = await alterCollection.findOne({ alterId: message.alterId });
 

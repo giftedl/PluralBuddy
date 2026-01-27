@@ -24,6 +24,7 @@ export default class SetProxyMode extends ComponentCommand {
 			$and: [{ alterId: Number(alterId) }, { systemId }],
         });
         const alter = await query;
+        const guild = await context.retrievePGuild();
 
         if (alter === null) {
             return await context.write({
@@ -36,7 +37,7 @@ export default class SetProxyMode extends ComponentCommand {
 
         return await context.update({
             components: [
-                ...new AlterView(context.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode)
+                ...new AlterView(context.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })

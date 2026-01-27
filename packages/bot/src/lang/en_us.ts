@@ -28,7 +28,7 @@ Systems on PluralBuddy require a **system name**. They must be at least 3 charac
     CREATING_NEW_SYSTEM_TAG_BUTTON: "Set system tag*",
     CREATING_NEW_SYSTEM_TAG_SET: "System tag is:",
     CREATING_NEW_SYSTEM_TAG_MESSAGE: `
-This guild requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
+This server requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
 
     CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Set privacy values",
     CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
@@ -153,6 +153,7 @@ Systems can have **privacy values** which are values that describe who can see w
     ALTER_SET_PRIVACY: "Set Privacy",
     ERROR_INVALID_ATTACHMENT_TYPE: "2s – The attachment you uploaded is not an image.",
     ERROR_INVALID_COLOR: "2t – The color you entered is not a valid hex color.",
+    ERROR_INVALID_NUMBER: "2t – The number you entered is not a valid decimal.",
 
     TAG_GENERAL: "## %general% General Settings - %tag%\nTag's are specific groups your alter can be apart of. Certain values of your tag can be configured here.",
     TAG_SET_DISPLAY_NAME_DESC: "Tag display names are the only form of identification for tags. They can only be less than 100 characters.",
@@ -234,6 +235,8 @@ Systems can have **privacy values** which are values that describe who can see w
     OPERATION_CHANGE_ENABLED: "Enabled system",
     OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",
     OPERATION_UNDO_SUCCESS: "Successfully updated %value-count% value(s) as result of an undo action.",
+    NEW_ROLE_PREF: "Creating Role Preference...",
+    ROLE_USAGE: "Role",
 
     ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
 %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
@@ -308,6 +311,19 @@ Systems can have **privacy values** which are values that describe who can see w
     ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
     FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
     LOGGING_CHANNEL_SET: "Successfuly set that channel as a logging channel for this guild.",
+    ROLE_PREFERENCE_ALREADY_EXISTS: "That role preference already exists.",
+    ROLE_PREFERENCE_DOESNT_EXIST: "That role preference doesn't exist.",
+    ROLE_PREFERENCE_SEARCH: "Searching Roles",
+    ERRORS_SEARCH: "Searching Errors",
+    ROLE_CONTENTS: "Role Container Contents",
+    ROLE_COLOR: "Role Container Color",
+    ROLE_LOCATION: "Role Container Location",
+    FORM_ROLE_CONFIG: "Editing Role Configuration",
+    DELAY_CHANGED: "The server proxy delay has been updated to %seconds% seconds (%ms%ms).",
+    ROLE_NO_SPECIAL_CONFIG: "This role doesn't have a special configuration.",
+    SET_CONTAINERS_CONTENT: "Successfully set/cleared the role container <@&%role%>'s content. Above is a preview of the new role container.",
+    SET_CONTAINERS_COLOR: "Successfully set/cleared the role container <@&%role%>'s color. Above is a preview of the new role container.",
+    SET_CONTAINERS_LOCATION: "Successfully set/cleared the role container <@&%role%>'s location. Above is a preview of the new role container.",
     DISABLED_FEATURE: `Successfully disabled that feature.
 
 **%name%**
@@ -315,6 +331,10 @@ Systems can have **privacy values** which are values that describe who can see w
     ENABLED_FEATURE: `Successfully enabled that feature.
 
 **%name%**
-> %description%`
+> %description%`,
+
+    AFFECTED_USER: "Affected User Query",
+    AFFECTED_CHANNEL: "Affected Channel Query",
+    AFFECTED_ERROR_TYPE: "Error Type Query"
 }
 

@@ -40,9 +40,11 @@ export default createEvent({
 			return;
 		}
 		if ((await message.channel()).isDM()) return;
+		if (!message.member) return;
 
 		if (await notValidPermissions(message)) return;
 
+		console.time("proxy tag parse")
 		const similarWebhooks = await getSimilarWebhooks(message.channelId);
 		const user = await getUserById(message.author.id);
 		const guild = await getGuildFromId(message.guildId ?? "");
@@ -64,8 +66,10 @@ export default createEvent({
 					systemId: message.author.id,
 				});
 
+		console.timeEnd("proxy tag parse")
+
 				if (fetchedAlter)
-					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user);
+					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user, guild, message.member);
 			}
 		}
 
@@ -108,7 +112,7 @@ export default createEvent({
 						createProxyError(user, message, {
 							title: "Display Tag Enforcement Policy",
 							description:
-								'This user cannot proxy in this guild without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+								'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
 							type: "EnforcedGuildTagRegulation",
 						});
 
@@ -120,12 +124,15 @@ export default createEvent({
 						alterId: user.system.alterIds[i],
 					});
 
+					console.timeEnd("proxy tag parse")
 					performTagProxy(
 						checkAlter as PAlter,
 						user,
 						similarWebhooks,
 						proxyTag,
 						message,
+						guild,
+						message.member
 					);
 
 					return;
@@ -147,9 +154,10 @@ export default createEvent({
 					alterId: Number(alter),
 					systemId: message.author.id,
 				});
+				console.timeEnd("proxy tag parse")
 
 				if (fetchedAlter)
-					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user);
+					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user, guild, message.member);
 			}
 		}
 	},
