@@ -2,6 +2,8 @@
 @import 'fumadocs-ui/css/shadcn.css';
 @import "fumadocs-ui/css/preset.css";
 @import "tw-animate-css";
+@import "@fontsource-variable/atkinson-hyperlegible-mono";
+@plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -22,6 +24,7 @@
 	--color-chart-5: var(--chart-5);
 	--color-chart-4: var(--chart-4);
 	--color-chart-3: var(--chart-3);
+	--font-mono: "Atkinson Hyperlegible Mono Variable";
 	--color-chart-2: var(--chart-2);
 	--color-chart-1: var(--chart-1);
 	--color-ring: var(--ring);
@@ -43,6 +46,15 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
+	--animate-ripple: ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite;
+  @keyframes ripple {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+		}
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+		}
+	}
 }
 
 .pluralbuddy {
