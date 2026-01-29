@@ -242,7 +242,7 @@ export default function HomePage() {
 						members are chatting – even if they are currently proxying.
 					</div>
 				</span>
-				<span className="justify-center col-span-2 text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-7">
+				<span className="justify-center lg:col-span-2 text-center rounded-2xl border align-middle inline-block h-full pt-9 pb-7">
 					<h2 className="sm:text-md uppercase text-sm text-primary font-mono">
 						Finally correct permissions
 					</h2>
