@@ -1,7 +1,16 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { CacheFrom, Container, createEvent, TextDisplay } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import {
+	ActionRow,
+	Button,
+	CacheFrom,
+	Container,
+	createEvent,
+	StringSelectMenu,
+	StringSelectOption,
+	TextDisplay,
+} from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { getUserById } from "../types/user";
 import { alterCollection, errorCollection } from "../mongodb";
 import { AlertView } from "@/views/alert";
@@ -21,12 +30,89 @@ import { getGuildFromId } from "@/types/guild";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
 import { createProxyError } from "@/lib/proxying/error";
+import { helpPages } from "@/commands/help";
+import { translations } from "@/lang/en_us";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { buildNumber } from "..";
 
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message) => {
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
+		if (message.content === `<@${message.client.applicationId}>`) {
+			const guild = await getGuildFromId(message.guildId ?? "");
+
+			if (guild.getFeatures().disabledHelp) {
+				message.delete();
+
+				await message.author.write({
+					components: new AlertView(translations).errorView(
+						"FEATURE_DISABLED_GUILD",
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+				return;
+			}
+
+			const currentPage = helpPages[0];
+			const contents = await Bun.file(`content/${currentPage?.file}`).text();
+
+			return await message.reply({
+				components: [
+					new TextDisplay().setContent(
+						`Hi! I'm awake, running PluralBuddy \`#${buildNumber}/${process.env.BRANCH ?? "unknown"}\`.`,
+					),
+					new ActionRow().setComponents(
+						[
+							{ n: "Invite", l: "invite" },
+							{ n: "Support", l: "discord" },
+							{ n: "Docs", l: "docs" },
+						].map((c) =>
+							new Button()
+								.setStyle(ButtonStyle.Link)
+								.setURL(`https://gftl.fyi/${c.l}`)
+								.setLabel(c.n),
+						),
+					),
+					new Container()
+						.setComponents(new TextDisplay().setContent(contents))
+						.setColor("#FCCEE8"),
+					new Container().setComponents(
+						new ActionRow().setComponents(
+							new StringSelectMenu()
+								.setCustomId(InteractionIdentifier.Help.Menu.create())
+								.setOptions(
+									helpPages.map((c) =>
+										new StringSelectOption()
+											.setValue(c.id)
+											.setLabel(c.name)
+											.setDescription(c.id)
+											.setDefault(c.id === currentPage?.id),
+									),
+								),
+						),
+						new ActionRow().setComponents(
+							new Button()
+								.setCustomId("disabled")
+								.setDisabled(true)
+								.setLabel("Previous Page")
+								.setStyle(ButtonStyle.Primary),
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Help.Page.create(
+										helpPages[1] ? helpPages[1].id : "",
+									),
+								)
+								.setDisabled(helpPages[1] === undefined)
+								.setLabel("Next Page")
+								.setStyle(ButtonStyle.Primary),
+						),
+					),
+				],
+				flags: MessageFlags.IsComponentsV2,
+			});
+		}
 		if (await isValidDm(message)) {
 			message.reply({
 				components: [
@@ -44,7 +130,7 @@ export default createEvent({
 
 		if (await notValidPermissions(message)) return;
 
-		console.time("proxy tag parse")
+		console.time("proxy tag parse");
 		const similarWebhooks = await getSimilarWebhooks(message.channelId);
 		const user = await getUserById(message.author.id);
 		const guild = await getGuildFromId(message.guildId ?? "");
@@ -66,10 +152,17 @@ export default createEvent({
 					systemId: message.author.id,
 				});
 
-		console.timeEnd("proxy tag parse")
+				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter)
-					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user, guild, message.member);
+					performAlterAutoProxy(
+						message,
+						similarWebhooks,
+						fetchedAlter,
+						user,
+						guild,
+						message.member,
+					);
 			}
 		}
 
@@ -124,7 +217,7 @@ export default createEvent({
 						alterId: user.system.alterIds[i],
 					});
 
-					console.timeEnd("proxy tag parse")
+					console.timeEnd("proxy tag parse");
 					performTagProxy(
 						checkAlter as PAlter,
 						user,
@@ -132,7 +225,7 @@ export default createEvent({
 						proxyTag,
 						message,
 						guild,
-						message.member
+						message.member,
 					);
 
 					return;
@@ -154,10 +247,17 @@ export default createEvent({
 					alterId: Number(alter),
 					systemId: message.author.id,
 				});
-				console.timeEnd("proxy tag parse")
+				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter)
-					performAlterAutoProxy(message, similarWebhooks, fetchedAlter, user, guild, message.member);
+					performAlterAutoProxy(
+						message,
+						similarWebhooks,
+						fetchedAlter,
+						user,
+						guild,
+						message.member,
+					);
 			}
 		}
 	},

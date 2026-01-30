@@ -78,6 +78,10 @@ export const InteractionIdentifier = {
             Off: createStatic("selection/ap/off")
         }
     },
+    Help: {
+        Page: createFromAdditionalArg("help/page"),
+        Menu: createStatic("help/menu")
+    },
     AutoProxy: {
         AlterMenu: createStatic("selection/ap/alter-menu")
     },
@@ -170,7 +174,7 @@ export const InteractionIdentifier = {
             ChangeRoleLocationSelection: createStatic("guilds/form/chanel-role-location-selection"),
 
             SetProxyDelayForm: createStatic("guilds/form/set-proxy-delay-form"),
-            SetProxyDelaySelection: createStatic("guilds/form/set-proxy-delay-selection")
+            SetProxyDelaySelection: createStatic("guilds/form/set-proxy-delay-selection"),
         }
     },
     Systems: {

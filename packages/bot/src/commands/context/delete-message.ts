@@ -8,7 +8,7 @@ import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 
 @Declare({
     type: ApplicationCommandType.Message,
-    name: "Delete Message",
+    name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Delete Message`,
     contexts: ["BotDM", "Guild"]
 })
 export default class DeleteMessageContextMenuCommand extends ContextMenuCommand {

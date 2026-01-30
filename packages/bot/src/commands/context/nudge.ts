@@ -20,7 +20,7 @@ import {
 
 @Declare({
 	type: ApplicationCommandType.Message,
-	name: "Nudge Author",
+	name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Nudge Author`,
 	contexts: ["BotDM", "Guild"],
 })
 export default class DeleteMessageContextMenuCommand extends ContextMenuCommand {

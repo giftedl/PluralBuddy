@@ -21,7 +21,7 @@ import {
 import { extendedContext } from "./extended-context";
 import { ProxyResource } from "./cache/system-proxy-tags";
 
-export const buildNumber = 1028;
+export const buildNumber = 1049;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",

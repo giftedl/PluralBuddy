@@ -14,7 +14,7 @@ import { ApplicationCommandType, TextInputStyle } from "seyfert/lib/types";
 
 @Declare({
 	type: ApplicationCommandType.Message,
-	name: "Edit Message",
+	name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Edit Message`,
 	contexts: ["BotDM", "Guild"],
 })
 export default class EditMessageContextMenuCommand extends ContextMenuCommand {

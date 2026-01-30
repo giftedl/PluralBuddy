@@ -10,7 +10,7 @@ import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 
 @Declare({
 	type: ApplicationCommandType.Message,
-	name: "Get Message Info",
+	name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Get Message Info`,
 	contexts: ["BotDM", "Guild"],
 })
 export default class GetMessageInfoCommand extends ContextMenuCommand {
