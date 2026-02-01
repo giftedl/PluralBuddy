@@ -35,6 +35,8 @@ import { Button } from "@/components/ui/shadcn-button";
 import { Badge } from "@/components/ui/badge";
 import { RedirectURLs } from "@/components/devs/redirect-urls";
 import type { Metadata, Viewport } from "next";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
 	title: 'Application',
@@ -47,21 +49,23 @@ export default async function ApplicationPage({
 }: {
 	params: Promise<{ application: string }>;
 }) {
+
 	const { application } = await params;
-	const app = await getUserApp(application);
+	const apps = await auth.api.getOAuthClients({
+		// This endpoint requires session cookies.
+		headers: await headers(),
+	});
 
-	if ("message" in app) redirect("/developers/applications");
-	if (!("data" in app)) redirect("/developers/applications");
+	const app = apps?.find((app) => app.client_id === application);
 
-    const { data } = app;
-	const { userId, _id, ...safeData } = data;
-
+	if (app === undefined) redirect("/developers/applications");
+	
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
 			<div className="flex justify-between items-center gap-6 w-full">
 				<div className=" gap-3 flex-1 min-w-0">
 					<strong className="text-lg whitespace-nowrap mr-3">
-						{data.name}
+						{app.client_name}
 					</strong>
 					<br />
 					<span className="min-w-0">
@@ -83,7 +87,7 @@ export default async function ApplicationPage({
 						</button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
-						<DeleteAppForm application={safeData}>
+						<DeleteAppForm application={app}>
 							<Trash className="text-red-400" /> Delete Application
 						</DeleteAppForm>
 					</DropdownMenuContent>
@@ -104,7 +108,7 @@ export default async function ApplicationPage({
 							<Input
 								id="client-id"
 								readOnly
-								value={data.clientId}
+								value={app.client_id}
 								className="!w-[245px]"
 							/>
 						</Field>
@@ -115,7 +119,7 @@ export default async function ApplicationPage({
 									If you reset the client secret, you will not see it again.
 								</FieldDescription>
 							</FieldContent>
-							<ClientSecretInput application={safeData} />
+							<ClientSecretInput application={app} />
 						</Field>
 					</FieldGroup>
 				</CardContent>
@@ -126,16 +130,16 @@ export default async function ApplicationPage({
 					<CardTitle>Redirect URI(s)</CardTitle>
 				</CardHeader>
 				<CardContent>
-                    <RedirectURLs application={safeData} />
+                    <RedirectURLs application={app} />
 				</CardContent>
 			</Card>
 
 			<Card className="w-full">
 				<CardHeader>
-					<CardTitle>Authorization URL</CardTitle>
+					<CardTitle>Scopes</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<ScopesForm application={safeData} />
+					<ScopesForm application={app} />
 				</CardContent>
 			</Card>
 		</main>

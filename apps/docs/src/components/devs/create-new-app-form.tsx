@@ -44,6 +44,7 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "../ui/drawer";
+import { authClient } from "@/lib/auth-client";
 
 export const scopeList = [
 	{ title: "profile", description: "Access to your profile data – required." },
@@ -84,11 +85,15 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 			console.log("creating new dev app ->", value);
 
 			// @ts-ignore
-			const result = await registerOAuthApplication(value);
+			const result = await authClient.oauth2.createClient({
+				redirect_uris: value.redirectUris,
+				scope: value.scopes.join(" "),
+				client_name: value.applicationName,
+			});
 
-			if (!("message" in result))
-				router.push(`/developers/application/${result.clientId}`);
-			else toast.error("Validation error while creating application.");
+			if (result.error) return toast.error(result.error.message);
+
+			router.push(`/developers/application/${result.data?.client_id}`);
 		},
 		validators: {
 			onSubmit: formSchema,

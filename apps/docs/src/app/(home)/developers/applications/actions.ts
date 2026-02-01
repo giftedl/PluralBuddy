@@ -34,7 +34,7 @@ export type OAuthApplication = {
 export async function getUserApps() {
 	const client = new MongoClient(process.env.MONGO ?? "");
 	const db = client.db(`${process.env.ENV}-pluralbuddy-app`);
-	const collection = db.collection<OAuthApplication>("oauthApplication");
+	const collection = db.collection<OAuthApplication>("oauthClient");
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
@@ -60,7 +60,7 @@ export async function getUserApps() {
 export async function deleteUserApp(application: string) {
 	const client = new MongoClient(process.env.MONGO ?? "");
 	const db = client.db(`${process.env.ENV}-pluralbuddy-app`);
-	const collection = db.collection<OAuthApplication>("oauthApplication");
+	const collection = db.collection<OAuthApplication>("oauthClient");
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});

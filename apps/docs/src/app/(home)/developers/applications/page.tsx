@@ -26,6 +26,8 @@ import { DeleteAppForm } from "@/components/devs/delete-app-form";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata, Viewport } from "next";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
 	title: 'Developer Applications',
@@ -34,17 +36,12 @@ export const metadata: Metadata = {
   }
 
 export default async function DeveloperApplications() {
-	const applications = await getUserApps();
+	const applications = await auth.api.getOAuthClients({
+		// This endpoint requires session cookies.
+		headers: await headers(),
+	});
 
-	if (applications.message) redirect("/");
-
-	const appsWithoutId =
-		applications.data !== undefined
-			? applications.data.map((app) => {
-					const { _id, userId, ...rest } = app;
-					return rest;
-				})
-			: [];
+	if (applications === null) redirect("/");
 
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
@@ -74,7 +71,7 @@ export default async function DeveloperApplications() {
 			</div>
 			<Separator />
 
-			{applications.data?.length === 0 && (
+			{applications?.length === 0 && (
 				<Empty className="border border-dashed w-full">
 					<EmptyHeader>
 						<EmptyMedia variant="icon">
@@ -86,10 +83,10 @@ export default async function DeveloperApplications() {
 				</Empty>
 			)}
 			<div className="grid grid-cols-3 gap-2 w-full">
-				{appsWithoutId.map((application) => (
-					<Card key={application.clientId}>
+				{applications.map((application) => (
+					<Card key={application.client_id}>
 						<CardContent className="flex justify-between items-center">
-							{application.name}
+							{application.client_name}
 
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -104,7 +101,7 @@ export default async function DeveloperApplications() {
 									</button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
-									<Link href={`/developers/application/${application.clientId}`}>
+									<Link href={`/developers/application/${application.client_id}`}>
 										<DropdownMenuItem>
 											<Pencil /> Edit Application
 										</DropdownMenuItem>

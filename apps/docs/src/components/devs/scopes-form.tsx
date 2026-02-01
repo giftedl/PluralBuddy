@@ -27,16 +27,25 @@ import {
 } from "../ui/input-group";
 import { useCopyToClipboard } from "@/lib/use-copy-to-clipboard";
 import { Check, Copy, LayoutGrid } from "lucide-react";
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
+import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "../ui/empty";
+import { OAuthClient } from "@better-auth/oauth-provider";
+import { Button } from "../ui/shadcn-button";
+import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
-export function ScopesForm({ application }: { application: OAuthApplication }) {
+export function ScopesForm({ application }: { application: OAuthClient }) {
 	const [scopes, setScopes] = useState<string[]>(
-		JSON.parse(application.metadata ?? '{"scopes":""}').scopes.split(" "),
+		(application.scope ?? "").split(" "),
 	);
 	const [redirectUri, setRedirectUri] = useState<string | undefined>(
-		application.redirectUrls === ""
-			? undefined
-			: application.redirectUrls.split(",")[0],
+		application.redirect_uris[0],
 	);
 	const pathname = process.env.NEXT_PUBLIC_HOST;
 	const { copyToClipboard, isCopied } = useCopyToClipboard();
@@ -45,7 +54,6 @@ export function ScopesForm({ application }: { application: OAuthApplication }) {
 		<div>
 			<FieldSet>
 				<FieldGroup className="grid grid-cols-2 gap-2">
-					<FieldLabel className="col-span-2">1. Scopes</FieldLabel>
 					{scopeList.map((scope) => (
 						<div key={scope.title} className="space-y-1">
 							<Field orientation="horizontal">
@@ -79,65 +87,19 @@ export function ScopesForm({ application }: { application: OAuthApplication }) {
 						</div>
 					))}
 				</FieldGroup>
-				<FieldGroup>
-					<Field>
-						<FieldLabel>2. Redirect URI</FieldLabel>
-						{redirectUri !== undefined && (
-							<Select value={redirectUri} onValueChange={setRedirectUri}>
-								<SelectTrigger>
-									<SelectValue placeholder="Choose Redirect URI" />
-								</SelectTrigger>
-								<SelectContent>
-									{application.redirectUrls.split(",").map((uri) => (
-										<SelectItem value={uri} key={uri}>
-											{uri}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						)}
-						{redirectUri === undefined && (
-							<Empty className="border border-dashed w-full">
-								<EmptyHeader>
-									<EmptyMedia variant="icon">
-										<LayoutGrid />
-									</EmptyMedia>
-									<EmptyTitle>This application has no redirect URI(s)</EmptyTitle>
-									<EmptyDescription>
-                                        Create one above – you need one to create a link.
-									</EmptyDescription>
-								</EmptyHeader>
-							</Empty>
-						)}
-					</Field>
-				</FieldGroup>
-				<FieldGroup>
-					<Field>
-						<FieldLabel>3. Resulting URL</FieldLabel>
-
-						<InputGroup className="min-w-[245px]">
-							<InputGroupInput
-								id="client-secret"
-								readOnly
-								value={`${pathname}/api/auth/oauth2/authorize?client_id=${application.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri ?? "")}&scope=${encodeURIComponent(scopes.join(" "))}`}
-							/>
-							<InputGroupAddon align="inline-end">
-								<InputGroupButton
-									aria-label="Copy"
-									title="Copy"
-									size="icon-xs"
-									onClick={() => {
-										copyToClipboard(
-											`${pathname}/api/auth/oauth2/authorize?client_id=${application.clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri ?? "")}&scope=${encodeURIComponent(scopes.join(" "))}`,
-										);
-									}}
-								>
-									{isCopied ? <Check /> : <Copy />}
-								</InputGroupButton>
-							</InputGroupAddon>
-						</InputGroup>
-					</Field>
-				</FieldGroup>
+				<Button onClick={async () => {
+					toast.promise(
+						authClient.oauth2.updateClient({
+							client_id: application.client_id,
+							update: {
+								scope: scopes.join(" ")
+							}
+						}), {
+							success: "Updated scopes!",
+							error: "Failed to update scopes!",
+							loading: "Updating scopes...	"
+						})
+				}}>Update Client</Button>
 			</FieldSet>
 		</div>
 	);

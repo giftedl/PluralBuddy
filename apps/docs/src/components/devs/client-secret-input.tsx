@@ -13,22 +13,27 @@ import { useState } from "react";
 import { generateNewSecret } from "@/app/(home)/developers/application/[application]/actions";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "@/lib/use-copy-to-clipboard";
+import { authClient } from "@/lib/auth-client";
+import { OAuthClient } from "@better-auth/oauth-provider";
 
 export function ClientSecretInput({
 	application,
 }: {
-	application: OAuthApplication;
+	application: OAuthClient;
 }) {
 	const [secret, setSecret] = useState<string | undefined>(undefined);
     const { copyToClipboard, isCopied } = useCopyToClipboard()
 
 	const generateSecret = async () => {
-		const returnData = await generateNewSecret(application.clientId);
+		const returnData = await authClient.oauth2.client.rotateSecret({
+			client_id: application.client_id,
+		});
+		
 
-		if (returnData.message !== undefined)
+		if (returnData.error)
 			toast.error("Error while resetting secret");
 
-		setSecret(returnData.clientSecret);
+		setSecret(returnData.data?.client_secret);
 	};
 
 	return (

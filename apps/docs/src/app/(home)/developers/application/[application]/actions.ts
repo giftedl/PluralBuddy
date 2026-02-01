@@ -11,7 +11,7 @@ import { urlRegex } from "@/components/devs/create-new-app-form";
 export async function generateNewSecret(applicationId: string) {
 	const client = new MongoClient(process.env.MONGO ?? "");
 	const db = client.db(`${process.env.ENV}-pluralbuddy-app`);
-	const collection = db.collection<OAuthApplication>("oauthApplication");
+	const collection = db.collection<OAuthApplication>("oauthClient");
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
@@ -61,7 +61,7 @@ export async function changeRedirectURIs(
 
 	const client = new MongoClient(process.env.MONGO ?? "");
 	const db = client.db(`${process.env.ENV}-pluralbuddy-app`);
-	const collection = db.collection<OAuthApplication>("oauthApplication");
+	const collection = db.collection<OAuthApplication>("oauthClient");
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});

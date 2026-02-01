@@ -50,10 +50,10 @@ export class PluralBuddyIntro extends TranslatedView {
 			paginationContainer,
 		];
 	}
-	pageTwo() {
+	pageTwo(prefix: string) {
 		const textContainer = new Container();
 		textContainer.setComponents(
-			new TextDisplay().setContent(this.translations.IMPORT_MESSAGE),
+			new TextDisplay().setContent(this.translations.IMPORT_MESSAGE.replaceAll("{{ prefix }}", prefix)),
 		);
 
 		const paginationContainer = new Container();

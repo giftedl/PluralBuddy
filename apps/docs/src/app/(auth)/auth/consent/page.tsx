@@ -29,14 +29,11 @@ export default function ConsentPage() {
 	const { resolvedTheme } = useTheme();
 	const { data, status } = useQuery({
 		queryKey: [`application-${params.get("client_id")}`],
-		queryFn: async () => getUserApp(params.get("client_id") ?? "", true),
+		queryFn: async () => authClient.oauth2.publicClient({ query: {client_id: params.get("client_id") ?? ""} }),
 	});
 
 	// Submit consent with the code in the request body
-	const consentCode = params.get("consent_code");
 	const scopes = params.get("scope")?.split(" ");
-
-	if (consentCode === null) return <>Requires consent code</>;
 
 	if (data !== undefined && "message" in data) return <>Invalid application</>;
 	if (data !== undefined && !("data" in data)) return <>Invalid application</>;
@@ -57,7 +54,7 @@ export default function ConsentPage() {
 							</div>
 						</div>
 						<h1 className="mt-6 text-xl font-medium tracking-tight">
-							{data.data?.name} is attempting to access data from your system
+							{data.data?.client_name} is attempting to access data from your system
 						</h1>
 						<span className="text-sm text-muted-foreground">
 							Signed in as{" "}
@@ -68,7 +65,7 @@ export default function ConsentPage() {
 					</header>
 					<div className="border rounded-lg">
 						<div className="w-full p-4 bg-fd-secondary rounded-t-lg text-center">
-							<span>This will allow {data.data?.name} to:</span>
+							<span>This will allow {data.data?.client_name} to:</span>
 						</div>
 						<Separator />
 						{scopes
@@ -94,7 +91,7 @@ export default function ConsentPage() {
 													<CircleAlert size={20} />
 												</TooltipTrigger>
 												<TooltipContent className="max-w-[300px] word-wrap text-center">
-													This allows {data.data?.name} to access not only your
+													This allows {data.data?.client_name} to access not only your
 													entire system, but all access to your alters as well.
 													Grant this permission with caution.
 												</TooltipContent>
@@ -117,13 +114,14 @@ export default function ConsentPage() {
 							onClick={async () => {
 								const res = await authClient.oauth2.consent({
 									accept: false,
-									consent_code: consentCode,
+									scope: (scopes ?? []).join(" "),
 								});
 
 								if (res.error) toast.error("Error while denying consent code");
 								else {
 									toast.success("Okay, done!");
-									router.push(res.data.redirectURI);
+									if (res.data.redirect)
+										router.push(res.data.uri);
 								}
 							}}
 						>
@@ -138,14 +136,14 @@ export default function ConsentPage() {
 							onClick={async () => {
 								const res = await authClient.oauth2.consent({
 									accept: true,
-									consent_code: consentCode,
+									scope: (scopes ?? []).join(" "),
 								});
 
-								if (res.error)
-									toast.error("Error while accepting consent code");
+								if (res.error) toast.error("Error while accepting consent code");
 								else {
 									toast.success("Okay, done!");
-									router.push(res.data.redirectURI);
+									if (res.data.redirect)
+										router.push(res.data.uri);
 								}
 							}}
 						>

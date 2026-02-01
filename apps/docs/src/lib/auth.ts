@@ -1,8 +1,12 @@
 import { betterAuth } from "better-auth";
+import { jwt } from "better-auth/plugins";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 import { oidcProvider } from "better-auth/plugins";
 import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
+
+import { oauthProvider } from "@better-auth/oauth-provider";
+import { DiscordSnowflake } from "@sapphire/snowflake";
 
 const client = new MongoClient(process.env.MONGO ?? "");
 
@@ -13,6 +17,7 @@ export const auth = betterAuth({
 			enabled: true,
 			clientId: process.env.CLIENT_ID as string,
 			clientSecret: process.env.CLIENT_SECRET as string,
+			overrideUserInfoOnSignIn: true,
 			disableDefaultScope: true,
 			scope: ["identify"],
 			getUserInfo: async (token) => {
@@ -23,15 +28,28 @@ export const auth = betterAuth({
 						Authorization: `Bearer ${token.accessToken}`,
 					},
 				});
+				let imageUrl = null;
 
 				const profile: RESTGetAPICurrentUserResult = await response.json();
 
+				if (profile.avatar === null) {
+					const defaultAvatarNumber =
+						profile.discriminator === "0"
+							? Number(BigInt(profile.id) >> BigInt(22)) % 6
+							: parseInt(profile.discriminator) % 5;
+					imageUrl = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`;
+				} else {
+					const format = profile.avatar.startsWith("a_") ? "gif" : "png";
+					imageUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}`;
+				}
+
 				return {
 					user: {
+						
 						id: profile.id,
 						name: profile.username,
 						email: `${profile.id}@redacted.giftedly.dev`,
-						image: `${process.env.BETTER_AUTH_URL}/api/exchange/user-profile-picture/${profile.id}`,
+						image: imageUrl,
 						// Yep, thats totally the real email. Trust me.
 						emailVerified: true,
 					},
@@ -41,11 +59,19 @@ export const auth = betterAuth({
 		},
 	},
 	plugins: [
-		oidcProvider({
+		jwt(),
+		oauthProvider({
+			customAccessTokenClaims: ({user}) => {
+				console.log(user);
+				return {
+					sub: user?.id
+				}
+			},
+			validAudiences: [
+				process.env.BETTER_AUTH_URL ?? "",
+			],
 			loginPage: "/auth/sign-in",
 			consentPage: "/auth/consent",
-			allowDynamicClientRegistration: false,
-			storeClientSecret: "encrypted",
 			scopes: [
 				"profile",
 				"openid",
@@ -60,8 +86,13 @@ export const auth = betterAuth({
 				"system:write",
 				"system:admin",
 			],
-			defaultScope: "profile"
+			defaultScope: "profile",
+			silenceWarnings: {
+				oauthAuthServerConfig: true
+			}
 		}),
 	],
-	disabledPaths: ["/oauth2/register"]
+	disabledPaths: [
+	  "/token",
+	],
 });

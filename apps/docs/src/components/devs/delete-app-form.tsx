@@ -12,21 +12,22 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 import { Field, FieldDescription, FieldLabel, FieldTitle } from "../ui/field";
-import { deleteUserApp, type OAuthApplication } from "@/app/(home)/developers/applications/actions";
+import { deleteUserApp } from "@/app/(home)/developers/applications/actions";
 import { Input } from "../ui/input";
 import { buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { Trash } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { OAuthClient } from "@better-auth/oauth-provider";
+import { authClient } from "@/lib/auth-client";
 
 export function DeleteAppForm({
 	children,
 	application,
 }: {
 	children: ReactNode;
-	application: OAuthApplication;
+	application: OAuthClient;
 }) {
 	const [confirmationValue, setConfirmationValue] = useState("");
 	const [confirmationError, setConfirmationError] = useState(false);
@@ -56,11 +57,11 @@ export function DeleteAppForm({
 				<Field data-invalid={confirmationError}>
 					<FieldLabel>Confirmation</FieldLabel>
 					<FieldDescription>
-						Type "{application.name}" below to continue
+						Type "{application.client_name}" below to continue
 					</FieldDescription>
 					<Input
 						type="text"
-						placeholder={application.name}
+						placeholder={application.client_name}
 						aria-invalid={confirmationError}
 						id="confirmation"
 						name="confirmation"
@@ -73,8 +74,11 @@ export function DeleteAppForm({
 						type="button"
 						className={cn(buttonVariants({ variant: "primary" }), "w-full gap-2")}
                         onClick={async () => {
-                            if (application.name.toLowerCase() === confirmationValue.toLowerCase()) {
-                                await deleteUserApp(application.clientId);
+                            if (application.client_name?.toLowerCase() === confirmationValue.toLowerCase()) {
+								await authClient.oauth2.deleteClient({
+									client_id: application.client_id
+								});
+								
                                 router.push("/developers/applications")
                             }
                         }}

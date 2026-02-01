@@ -15,14 +15,12 @@ import { useState } from "react";
 import { urlRegex } from "./create-new-app-form";
 import { toast } from "sonner";
 import { changeRedirectURIs } from "@/app/(home)/developers/application/[application]/actions";
+import { OAuthClient } from "@better-auth/oauth-provider";
+import { authClient } from "@/lib/auth-client";
 
-export function RedirectURLs({
-	application,
-}: {
-	application: OAuthApplication;
-}) {
+export function RedirectURLs({ application }: { application: OAuthClient }) {
 	const [existingURIs, setExistingURIs] = useState<string[]>(
-		application.redirectUrls === "" ? [] : application.redirectUrls.split(","),
+		application.redirect_uris,
 	);
 	const [value, setValue] = useState<string>("");
 
@@ -42,12 +40,18 @@ export function RedirectURLs({
 					<InputGroupButton
 						variant="secondary"
 						disabled={existingURIs.length === 10}
-						onClick={() => {
+						onClick={async () => {
 							if (!urlRegex.test(value)) toast.error("Value is not a URL");
 							else {
 								setExistingURIs((existing) => [...existing, value]);
 								setValue("");
-								changeRedirectURIs(application.clientId, [...existingURIs, value]);
+								
+								await authClient.oauth2.updateClient({
+									client_id: application.client_id,
+									update: {
+										redirect_uris: [...existingURIs, value],
+									}
+								})
 							}
 						}}
 					>
@@ -64,14 +68,19 @@ export function RedirectURLs({
 							<Button
 								aria-label={`Remove redirect URI ${i + 1}`}
 								className="size-4"
-								onClick={() => {
+								onClick={async() => {
 									const index = existingURIs.indexOf(name);
 									if (index > -1) {
 										const newScopes = [...existingURIs];
 										newScopes.splice(index, 1);
 										setExistingURIs(newScopes);
 
-										changeRedirectURIs(application.clientId, newScopes);
+										await authClient.oauth2.updateClient({
+											client_id: application.client_id,
+											update: {
+												redirect_uris: newScopes,
+											}
+										})
 									}
 								}}
 							>

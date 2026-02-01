@@ -11,6 +11,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@better-auth/oauth-provider": "^1.4.18",
     "@fontsource-variable/atkinson-hyperlegible-mono": "^5.2.5",
     "@fontsource/atkinson-hyperlegible": "^5.2.8",
     "@paper-design/shaders-react": "^0.0.66",
@@ -30,7 +31,7 @@
     "@sapphire/snowflake": "^3.5.5",
     "@tanstack/react-form": "^1.27.1",
     "@tanstack/react-query": "^5.90.12",
-    "better-auth": "^1.4.10",
+    "better-auth": "^1.4.18",
     "botid": "^1.5.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

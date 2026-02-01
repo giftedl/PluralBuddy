@@ -16,9 +16,10 @@ export async function GET(
 	]);
 
 
-	if (oauthResponse.response) return oauthResponse.response;
+	if ("response" in oauthResponse) return oauthResponse.response;
 
 	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
+	console.log(parsedUserId)
 	const db = oauthResponse.mongo.db("pluralbuddy-canary");
 	const userCollection = db.collection<PUser>("users");
 

@@ -9,7 +9,8 @@ PluralBuddy is a bot designed to fill the gap for quality customizable plurality
 :track_next: To get started, click the Next Page button below to setup your system.`,
     IMPORT_MESSAGE: `## Setting up your system
 You can create a new system which will allow you to create your alters and tags by yourself.
-Additionally, you can also import data from another bot like PluralKit`,
+Additionally, you can also import data from another bot like PluralKit.
+-# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
     PAGINATION_NEXT_PAGE: "Next Page",
     PAGINATION_FINISH: "Finish",
     PAGINATION_PREVIOUS_PAGE: "Previous Page",

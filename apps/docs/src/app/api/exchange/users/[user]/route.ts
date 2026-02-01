@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { auth } from "@/lib/auth";
-import { APIError } from "better-auth";
+import { APIError, verifyAccessToken } from "better-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -9,9 +9,11 @@ export async function GET(
 	{ params }: { params: Promise<{ user: string }> },
 ) {
 	const authorization = request.headers.get("authorization");
-	const { user } = await params;
+	const accessToken = authorization?.startsWith("Bearer ")
+		? authorization.replace("Bearer ", "")
+		: authorization;
 
-	if (!authorization) {
+	if (!accessToken) {
 		return NextResponse.json(
 			{
 				error_description: "authorization header not found",
@@ -21,6 +23,7 @@ export async function GET(
 		);
 	}
 
+	const { user } = await params;
 	if (user !== "@me") {
 		return Response.json(
 			{
@@ -33,7 +36,7 @@ export async function GET(
 	}
 
 	try {
-		const userInfo = await auth.api.oAuth2userInfo({
+		const userInfo = await auth.api.oauth2UserInfo({
 			request,
 		});
 

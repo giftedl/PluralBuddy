@@ -18,7 +18,7 @@ export async function GET(
 		"system:admin",
 	]);
 
-	if (oauthResponse.response) return oauthResponse.response;
+	if ("response" in oauthResponse) return oauthResponse.response;
 
 	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
 	const db = oauthResponse.mongo.db("pluralbuddy-canary");
