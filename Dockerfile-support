@@ -8,10 +8,12 @@ WORKDIR /usr/pluralbuddy
 FROM base AS install
 RUN mkdir -p /temp/dev
 RUN mkdir -p /temp/dev/packages/support-bot-module
+RUN mkdir -p /temp/dev/packages/bot
 RUN mkdir -p /temp/dev/packages/plurography
 COPY package.json bun.lock /temp/dev/
 COPY packages/support-bot-module/package.json /temp/dev/packages/support-bot-module
 COPY packages/plurography/package.json /temp/dev/packages/plurography
+COPY packages/bot/package.json /temp/dev/packages/bot
 RUN cd /temp/dev && bun install
 RUN cd /temp/dev/packages/support-bot-module && bun install
 
@@ -19,9 +21,11 @@ RUN cd /temp/dev/packages/support-bot-module && bun install
 RUN mkdir -p /temp/prod
 RUN mkdir -p /temp/prod/packages/support-bot-module
 RUN mkdir -p /temp/prod/packages/plurography
+RUN mkdir -p /temp/prod/packages/bot
 COPY package.json bun.lock /temp/prod/
 COPY packages/support-bot-module/package.json /temp/prod/packages/support-bot-module
 COPY packages/plurography/package.json /temp/prod/packages/plurography
+COPY packages/bot/package.json /temp/prod/packages/bot
 RUN cd /temp/prod && bun install
 RUN cd /temp/prod/packages/support-bot-module && bun install
 
