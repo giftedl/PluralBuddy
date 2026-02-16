@@ -46,7 +46,7 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 	fetch(id: string) {
 		const result = super.get(id);
 
-		if (!result?.webhooks) return { webhooks: [], lastDrip: null };
+		if (!result?.webhooks) return { webhooks: null, lastDrip: null };
 
 		try {
 			return {
@@ -62,7 +62,7 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 				})),
 			};
 		} catch {
-			return { webhooks: [], lastDrip: null };
+			return { webhooks: null, lastDrip: null };
 		}
 	}
 }
