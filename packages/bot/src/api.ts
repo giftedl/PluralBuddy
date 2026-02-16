@@ -6,6 +6,10 @@ import z from "zod";
 import { mongoClient } from "./mongodb";
 import type { ImportStage } from "plurography";
 import type { BaseResource } from "seyfert";
+import { AlertView } from "./views/alert";
+import { translations } from "./lang/en_us";
+import { LoadingView } from "./views/loading";
+import { MessageFlags } from "seyfert/lib/types";
 
 const app = new Hono();
 
@@ -49,6 +53,21 @@ export const clientRoutes = app
 					{ error: "Provided import stage hasn't been responded to yet." },
 					{ status: 400 },
 				);
+
+			if (
+				importStage.response.dataType === "PluralKit" &&
+				importStage.importMode === "replace"
+			) {
+				await client.interactions.editMessage(
+					importStage.webhook.token,
+					importStage.webhook.id,
+					{
+						components: new LoadingView(translations).loadingView(),
+						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+					},
+				);
+				json({ done: "Handed back off to the user." });
+			}
 		},
 	)
 	.get("/api/health", (c) =>

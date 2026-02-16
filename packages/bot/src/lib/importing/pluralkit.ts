@@ -4,7 +4,10 @@ import {
 	AlterProtectionFlags,
 	PAlterObject,
 	PluralKitSystem,
+	PTagObject,
+	TagProtectionFlags,
 	type PAlter,
+	type PTag,
 } from "plurography";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { combine } from "../privacy-bitmask";
@@ -118,14 +121,80 @@ export async function replace(
 		}))
 		.filter((c) => c.group !== undefined)
 		.map(
-			(c) =>
-				c.group !== undefined && {
-					a: "a",
-				},
-		);
+			({ group, pluralbuddy }) =>
+				group !== undefined &&
+				PTagObject.safeParse({
+					tagId: pluralbuddy.tagId,
+					systemId: existing.userId,
+
+					tagFriendlyName: group.display_name ?? group.name,
+					tagDescription: group.description ?? undefined,
+					tagColor: "pink",
+
+					associatedAlters: pluralbuddy.associatedAlters,
+
+					public: combine(
+						...[
+							...(group.privacy.description_privacy === "public"
+								? [TagProtectionFlags.DESCRIPTION]
+								: []),
+							...(group.privacy.name_privacy === "public"
+								? [TagProtectionFlags.NAME]
+								: []),
+							...(group.privacy.metadata_privacy === "public"
+								? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
+								: []),
+						],
+					),
+				} satisfies PTag),
+		)
+		.filter((res) => res !== false);
 
 	// TODO: finish
-	return null;
+	return ImportEntry.parse({
+		alters: existing.alters.map((alter) => {
+			const replacement = newAlters.find((na) => {
+				const member = pk.members.find((m) => m.id === na.originalPkId);
+				const sanitized = member
+					? member.name
+							.replaceAll(" ", "")
+							.replaceAll("/", "")
+							.replaceAll("\\", "")
+							.replaceAll("@", "")
+					: na.zodData.success
+						? na.zodData.data.username
+						: undefined;
+				return sanitized === alter.username;
+			});
+
+			if (replacement) {
+				return replacement.zodData.success ? replacement.zodData.data : alter;
+			}
+
+			return alter;
+		}),
+		tags: existing.tags.map((tag) => {
+			const replacement = correspondingPKTags.find((na) => {
+				const group = pk.groups.find(
+					(group) =>
+						group.display_name ?? group.name === na.data?.tagFriendlyName,
+				);
+				const sanitized = group
+					? (group.display_name ?? group.name)
+					: na.success
+						? na.data.tagFriendlyName
+						: undefined;
+				return sanitized === tag.tagFriendlyName;
+			});
+
+			if (replacement) {
+				return replacement.success ? replacement.data : tag;
+			}
+
+			return tag;
+		}),
+		userId: existing.userId,
+	} satisfies z.infer<typeof ImportEntry>);
 }
 
 export async function add() {}

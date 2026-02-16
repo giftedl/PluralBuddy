@@ -20,7 +20,7 @@ export default class RoleContentsForm extends ModalCommand {
 			)[0];
 		let newLocation = (ctx.interaction.getInputValue(
 			InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationSelection.create(),
-		) ?? ["top"])[0] as "top" | "bottom";
+		) ?? ["top"]) as "top" | "bottom";
 		const guild = await ctx.retrievePGuild();
 		const role = guild.rolePreferences.find((c) => c.roleId === roleId);
 

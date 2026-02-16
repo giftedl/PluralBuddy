@@ -1,7 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import type { PMessage } from "@/types/message";
-import { AttachmentBuilder, Container, File, TextDisplay, type Message } from "seyfert";
+import {
+	AttachmentBuilder,
+	Container,
+	File,
+	TextDisplay,
+	type Message,
+} from "seyfert";
 import { processEmojis } from "./process-emojis";
 import { processFileAttachments } from "./process-file-attachments";
 import { client } from "@/index";
@@ -10,9 +16,14 @@ import type { GuildMember, TopLevelBuilders, Webhook } from "seyfert";
 import { getReferencedMessageString } from "./referenced-message";
 import { MediaGallery } from "seyfert";
 import { MediaGalleryItem } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import {
+	ComponentType,
+	MessageFlags,
+	type APITextDisplayComponent,
+} from "seyfert/lib/types";
 import { processUrlIntegrations } from "./process-url-attachments";
 import type { PGuild } from "plurography";
+import { emojis } from "../emojis";
 
 export async function processEditContents(
 	messageData: PMessage,
@@ -20,7 +31,7 @@ export async function processEditContents(
 	webhook: Webhook,
 	contents: string,
 	guild: PGuild,
-	author: GuildMember
+	author: GuildMember,
 ) {
 	const { emojis: uploadedEmojis, newMessage: processedContents } =
 		await processEmojis(contents);
@@ -30,8 +41,8 @@ export async function processEditContents(
 		client,
 		message,
 		contents,
-        messageData.systemId,
-        messageData.guildId
+		messageData.systemId,
+		messageData.guildId,
 	);
 
 	const mediaFiles: typeof fileAttachments = [];
@@ -93,16 +104,29 @@ export async function processEditContents(
 		}
 	}
 
-	const referencedMessage =
-		message.referencedMessage === undefined ||
-		message.referencedMessage === null
-			? []
-			: [
-					new TextDisplay().setContent(
-						await getReferencedMessageString(message, webhook.id),
-					),
-				];
-	const components: TopLevelBuilders[] = [...referencedMessage, ...roleAfterComponents, ...messageComponents, ...roleBeforeComponents];
+	const referencedMessage = !message.components.some(
+		(v) =>
+			v.data.type === ComponentType.TextDisplay &&
+			v.data.content.startsWith(`-# ${emojis.reply}`),
+	)
+		? []
+		: [
+				new TextDisplay().setContent(
+					(
+						message.components.find(
+							(v) =>
+								v.data.type === ComponentType.TextDisplay &&
+								v.data.content.startsWith(`-# ${emojis.reply}`),
+						)?.data as APITextDisplayComponent
+					).content,
+				),
+			];
+	const components: TopLevelBuilders[] = [
+		...referencedMessage,
+		...roleBeforeComponents,
+		...messageComponents,
+		...roleAfterComponents,
+	];
 
 	if (fileAttachments.length > 0) {
 		if (mediaFiles.length > 0)
@@ -142,9 +166,9 @@ export async function processEditContents(
 						messageComponents,
 						fileAttachments,
 						uploadedEmojis,
-                        undefined,
-                        messageData.systemId,
-                        messageData.guildId,
+						undefined,
+						messageData.systemId,
+						messageData.guildId,
 					).catch(console.error);
 				} else
 					for (const emoji of uploadedEmojis) {

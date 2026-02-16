@@ -1,6 +1,6 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
+import { SubCommand } from "seyfert";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -30,22 +30,25 @@ const options = {
 @Declare({
 	name: "description",
 	description: "Edit the description of an alter",
-	aliases: ["desc", "d"],
+	aliases: ["desc", "d", "bio"],
 	contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
-		const {
-			"alter-name": alterName,
-			"alter-description": alterDescription,
-		} = ctx.options;
+		const { "alter-name": alterName, "alter-description": alterDescription } =
+			ctx.options;
 
 		const systemId = ctx.author.id;
 
-        const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
+		const alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
 
 		if (alter === null) {
 			return await ctx.ephemeral({
@@ -57,32 +60,32 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 		}
 
 		if (alterDescription === undefined) {
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
 ${alter.description ?? "⛔ Your alter has no description."}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true);
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				true,
+			);
 		}
 
-			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
-				{ $set: { description: alterDescription } },
-			);
-		
+		await alterCollection.updateOne(
+			{ alterId: alter.alterId },
+			{ $set: { description: alterDescription } },
+		);
 
 		return await ctx.write({
 			components: [
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx
-						.userTranslations().ALTER_SUCCESS_DESC.replace(
-							"%alter%",
-							alter.username,
-						),
+						.userTranslations()
+						.ALTER_SUCCESS_DESC.replace("%alter%", alter.username),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

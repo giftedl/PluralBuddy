@@ -5,8 +5,10 @@ import {
 	Modal,
 	StringSelectMenu,
 	StringSelectOption,
+	RadioGroup,
 	TextInput,
 	type ComponentContext,
+	RadioGroupOption,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
@@ -43,26 +45,27 @@ export default class RoleGeneralLocationButton extends ComponentCommand {
 				)
 				.setTitle(ctx.userTranslations().FORM_ROLE_CONFIG)
 				.setComponents([
-					new Label().setLabel(ctx.userTranslations().ROLE_COLOR).setComponent(
-						new StringSelectMenu()
-							.setValuesLength({ min: 1, max: 1 })
-							.setRequired(true)
-							.setOptions([
-								new StringSelectOption()
-									.setValue("top")
-									.setDefault(role.containerLocation === "top")
-									.setLabel("Top")
-									.setEmoji("⬆️"),
-								new StringSelectOption()
-									.setValue("bottom")
-									.setDefault(role.containerLocation === "bottom")
-									.setLabel("Bottom")
-									.setEmoji("⬇️"),
-							])
-							.setCustomId(
-								InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationSelection.create(),
-							),
-					),
+					new Label()
+						.setLabel(ctx.userTranslations().ROLE_LOCATION)
+						.setComponent(
+							new RadioGroup()
+								.setRequired(true)
+								.setOptions([
+									new RadioGroupOption()
+										.setValue("top")
+										.setDefault(role.containerLocation === "top")
+										.setLabel("Top")
+										.setDescription("Above the proxied message"),
+									new RadioGroupOption()
+										.setValue("bottom")
+										.setDefault(role.containerLocation === "bottom")
+										.setLabel("Bottom")
+										.setDescription("Below the proxied message"),
+								])
+								.setCustomId(
+									InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationSelection.create(),
+								),
+						),
 				]),
 		);
 	}

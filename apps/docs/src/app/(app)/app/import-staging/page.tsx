@@ -31,27 +31,29 @@ export default async function ImportStagingPage({
 		return <DiscordLoginComponent />;
 	}
 	const accountId = await getDiscordIdBySessionId(session.user.id);
+	const isInvalidSession =
+		importData === null ||
+		importData.originatingSystemId !== accountId ||
+		importData.response !== null;
 
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
 				<Card
 					className={
-						importData === null || importData.originatingSystemId !== accountId
+						isInvalidSession
 							? "flex w-full items-center justify-center h-[calc(100vh-300px)]"
 							: "h-[calc(100vh-90px)] overflow-y-auto"
 					}
 				>
 					<CardContent
 						className={
-							importData === null ||
-							importData.originatingSystemId !== accountId
+							isInvalidSession
 								? "text-sm flex items-center justify-center h-full"
 								: " h-full w-full relative"
 						}
 					>
-						{importData === null ||
-						importData.originatingSystemId !== accountId ? (
+						{isInvalidSession ? (
 							<Empty className="h-full w-full flex items-center justify-center">
 								<EmptyHeader>
 									<EmptyMedia variant="icon">

@@ -50,6 +50,7 @@ import {
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Callout } from "../callout";
+import { markImportStagingDone } from "@/app/(app)/app/import-staging/actions";
 
 const formSchema = z.object({
 	from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {
@@ -75,7 +76,9 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 	const [open, setOpen] = useState(false);
 	const [alterCount, setAlterCount] = useState(0);
 	const [tagCount, setTagCount] = useState(0);
-	const [type, setType] = useState("");
+	const [type, setType] = useState<
+		"PluralKit" | "PluralBuddy" | "TupperBox" | ""
+	>("");
 	const [data, setData] = useState("");
 
 	const form = useForm({
@@ -87,7 +90,7 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 			onSubmit: formSchema,
 		},
 		onSubmit: async ({ value }) => {
-			setType(value.from);
+			setType(value.from as "PluralBuddy" | "PluralKit" | "TupperBox");
 			switch (value.from) {
 				case "PluralKit": {
 					const parsedData = PluralKitSystem.safeParse(JSON.parse(value.data));
@@ -307,9 +310,25 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
-            <Button type="submit" onClick={() => {
-              
-						}}>
+						<Button
+							type="submit"
+							onClick={() => {
+								toast.promise(
+									() =>
+										markImportStagingDone({
+											from: type as "PluralBuddy" | "PluralKit" | "TupperBox",
+											importStagingId: importData.webhook.id,
+											data,
+										}),
+									{
+										loading: "Sending import staging data...",
+										error: (v) =>
+											`There was an error while sending import stage data. Has the import stage timed out? (${v})`,
+										success: "Successfully sent import staging data.",
+									},
+								);
+							}}
+						>
 							Finalize & Import
 						</Button>
 					</DialogFooter>

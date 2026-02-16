@@ -292,9 +292,24 @@ export default createEvent({
 				return;
 			}
 
-			const alter = user.system.systemAutoproxy.find(
+			const currentAutoProxyPolicy = user.system.systemAutoproxy.find(
 				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			)?.autoproxyAlter;
+			);
+
+			const HOUR = 3_600_000;
+
+			if (user.system.latchExpiration)
+				if (
+					(currentAutoProxyPolicy?.lastLatchTimestamp?.getTime() ??
+						Date.now()) +
+						user.system.latchExpiration * HOUR <
+					Date.now()
+				) {
+					setLastLatchAlter(guild.guildId, user.system);
+					return;
+				}
+
+			const alter = currentAutoProxyPolicy?.autoproxyAlter;
 
 			if (alter) {
 				const fetchedAlter = await alterCollection.findOne({
