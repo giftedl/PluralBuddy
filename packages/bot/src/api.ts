@@ -5,6 +5,7 @@ import { zValidator } from "@hono/zod-validator";
 import z from "zod";
 import { mongoClient } from "./mongodb";
 import type { ImportStage } from "plurography";
+import type { BaseResource } from "seyfert";
 
 const app = new Hono();
 
@@ -18,7 +19,12 @@ app.use(trimTrailingSlash());
 
 export const clientRoutes = app
 	.get("/api/stats", ({ req, json }) => {
-		return json(client.cache.statistic.get("latest"));
+		return json(
+			(
+				(client.cache as unknown as { statistic: BaseResource })
+					.statistic as unknown as BaseResource
+			).get("latest"),
+		);
 	})
 	.post(
 		"/api/import-staging-reminder",
