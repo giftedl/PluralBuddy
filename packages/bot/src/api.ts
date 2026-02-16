@@ -16,7 +16,7 @@ app.use("/api/*", async (ctx, next) => {
 });
 app.use(trimTrailingSlash());
 
-const clientRoutes = app
+export const clientRoutes = app
 	.get("/api/stats", ({ req, json }) => {
 		return json(client.cache.statistic.get("latest"));
 	})
@@ -53,8 +53,6 @@ const clientRoutes = app
 				.map((v) => v.path),
 		}),
 	);
-
-export type ClientType = typeof clientRoutes;
 
 export default {
 	port: 3030,
