@@ -6,6 +6,7 @@ import {
 	CacheFrom,
 	Container,
 	createEvent,
+	Message,
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
@@ -77,7 +78,7 @@ export type PWebhook = {
 
 export default createEvent({
 	data: { name: "messageCreate", once: false },
-	run: async (message) => {
+	run: async (message: Message) => {
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
 		if (message.content === `<@${message.client.applicationId}>`) {

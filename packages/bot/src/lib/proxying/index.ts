@@ -126,11 +126,19 @@ export async function proxy(
 								? MessageFlags.IsComponentsV2
 								: (0 as MessageFlags),
 						username: username.substring(0, 80),
-						allowed_mentions: { parse: [] },
 						avatar_url: picture,
 						files: fileAttachments.map((c) =>
 							new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
 						),
+						allowed_mentions:
+							message.referencedMessage &&
+							!message.mentions.users
+								.map((v) => v.id)
+								.includes(message.referencedMessage.author.id)
+								? {
+										parse: [],
+									}
+								: undefined,
 						embeds:
 							components.length === 0
 								? [
