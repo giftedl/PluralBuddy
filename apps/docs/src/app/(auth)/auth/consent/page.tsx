@@ -1,7 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 "use client";
 
-import { getUserApp } from "@/app/(home)/developers/applications/actions";
 import { scopeList } from "@/components/devs/create-new-app-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
@@ -29,7 +28,10 @@ export default function ConsentPage() {
 	const { resolvedTheme } = useTheme();
 	const { data, status } = useQuery({
 		queryKey: [`application-${params.get("client_id")}`],
-		queryFn: async () => authClient.oauth2.publicClient({ query: {client_id: params.get("client_id") ?? ""} }),
+		queryFn: async () =>
+			authClient.oauth2.publicClient({
+				query: { client_id: params.get("client_id") ?? "" },
+			}),
 	});
 
 	// Submit consent with the code in the request body
@@ -54,7 +56,8 @@ export default function ConsentPage() {
 							</div>
 						</div>
 						<h1 className="mt-6 text-xl font-medium tracking-tight">
-							{data.data?.client_name} is attempting to access data from your system
+							{data.data?.client_name} is attempting to access data from your
+							system
 						</h1>
 						<span className="text-sm text-muted-foreground">
 							Signed in as{" "}
@@ -91,9 +94,9 @@ export default function ConsentPage() {
 													<CircleAlert size={20} />
 												</TooltipTrigger>
 												<TooltipContent className="max-w-[300px] word-wrap text-center">
-													This allows {data.data?.client_name} to access not only your
-													entire system, but all access to your alters as well.
-													Grant this permission with caution.
+													This allows {data.data?.client_name} to access not
+													only your entire system, but all access to your alters
+													as well. Grant this permission with caution.
 												</TooltipContent>
 											</Tooltip>
 										)}
@@ -120,8 +123,7 @@ export default function ConsentPage() {
 								if (res.error) toast.error("Error while denying consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect)
-										router.push(res.data.uri);
+									if (res.data.redirect) router.push(res.data.uri);
 								}
 							}}
 						>
@@ -139,11 +141,11 @@ export default function ConsentPage() {
 									scope: (scopes ?? []).join(" "),
 								});
 
-								if (res.error) toast.error("Error while accepting consent code");
+								if (res.error)
+									toast.error("Error while accepting consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect)
-										router.push(res.data.uri);
+									if (res.data.redirect) router.push(res.data.uri);
 								}
 							}}
 						>
