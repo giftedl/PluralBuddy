@@ -1,22 +1,23 @@
 {
-  "name": "support-bot-module",
-  "module": "index.ts",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "mongodb": "^7.0.0",
-    "plurography": "workspace:*",
-    "seyfert": "^4.0.1-dev-19573177583.0",
-    "yunaforseyfert": "^1.1.3"
-  },
-  "scripts": {
-    "bot": "bun run src",
-    "bot:watch": "bun run --watch src/index.ts"
-  }
+	"name": "support-bot-module",
+	"module": "index.ts",
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"private": true,
+	"type": "module",
+	"dependencies": {
+		"mongodb": "^7.0.0",
+		"plurography": "workspace:*",
+		"bot": "workspace:*",
+		"seyfert": "^4.0.1-dev-19573177583.0",
+		"yunaforseyfert": "^1.1.3"
+	},
+	"scripts": {
+		"bot": "bun run src",
+		"bot:watch": "bun run --watch src/index.ts"
+	}
 }

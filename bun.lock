@@ -139,6 +139,7 @@
     "packages/support-bot-module": {
       "name": "support-bot-module",
       "dependencies": {
+        "bot": "workspace:*",
         "mongodb": "^7.0.0",
         "plurography": "workspace:*",
         "seyfert": "^4.0.1-dev-19573177583.0",

@@ -10,6 +10,7 @@ import { AlertView } from "./views/alert";
 import { translations } from "./lang/en_us";
 import { LoadingView } from "./views/loading";
 import { MessageFlags } from "seyfert/lib/types";
+import type { StatisticResource } from "./cache/statistics";
 
 const app = new Hono();
 
@@ -26,7 +27,7 @@ export const clientRoutes = app
 		return json(
 			(
 				(client.cache as unknown as { statistic: BaseResource })
-					.statistic as unknown as BaseResource
+					.statistic as unknown as StatisticResource
 			).get("latest"),
 		);
 	})
