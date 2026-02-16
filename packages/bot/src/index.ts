@@ -98,6 +98,7 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 );
 
 const guildCount = (await client.guilds.list()).length;
+console.log(guildCount);
 const guilds = (await client.guilds.list()) ?? [];
 let userCount = 0;
 for (const unfetchedGuild of guilds.values()) {
