@@ -217,6 +217,39 @@ export default createEvent({
 
 		if (user.system.alterIds.length === 0) return;
 
+		if (
+			user.system.systemAutoproxy.some(
+				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
+			)
+		) {
+			if (message.content.startsWith("\\")) {
+				setLastLatchAlter(guild.guildId, user.system);
+				return;
+			}
+
+			const alter = user.system.systemAutoproxy.find(
+				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
+			)?.autoproxyAlter;
+
+			if (alter) {
+				const fetchedAlter = await alterCollection.findOne({
+					alterId: Number(alter),
+					systemId: message.author.id,
+				});
+				console.timeEnd("proxy tag parse");
+
+				if (fetchedAlter)
+					performAlterAutoProxy(
+						message,
+						similarWebhooks,
+						fetchedAlter,
+						user,
+						guild,
+						message.member,
+					);
+			}
+		}
+
 		// Only find the alters that we need
 		for (let i = 0; i < user.system.alterIds.length; i++) {
 			const proxyTags = message.client.cache.alterProxy.get(
@@ -279,39 +312,6 @@ export default createEvent({
 
 					return;
 				}
-			}
-		}
-
-		if (
-			user.system.systemAutoproxy.some(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			)
-		) {
-			if (message.content.startsWith("\\")) {
-				setLastLatchAlter(guild.guildId, user.system);
-				return;
-			}
-
-			const alter = user.system.systemAutoproxy.find(
-				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
-			)?.autoproxyAlter;
-
-			if (alter) {
-				const fetchedAlter = await alterCollection.findOne({
-					alterId: Number(alter),
-					systemId: message.author.id,
-				});
-				console.timeEnd("proxy tag parse");
-
-				if (fetchedAlter)
-					performAlterAutoProxy(
-						message,
-						similarWebhooks,
-						fetchedAlter,
-						user,
-						guild,
-						message.member,
-					);
 			}
 		}
 	},
