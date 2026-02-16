@@ -48,17 +48,21 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 
 		if (!result?.webhooks) return { webhooks: [], lastDrip: null };
 
-		return {
-			...result,
-			webhooks: result?.webhooks.map((c) => ({
-				...c,
-				messages: {
-					write: (payload: ApplicableWebhookWritePayload) =>
-						this.client.webhooks.writeMessage(c.id, c.token ?? "", payload),
-					edit: (payload: ApplicableWebhookEditPayload) =>
-						this.client.webhooks.editMessage(c.id, c.token ?? "", payload),
-				},
-			})),
-		};
+		try {
+			return {
+				...result,
+				webhooks: result?.webhooks.map((c) => ({
+					...c,
+					messages: {
+						write: (payload: ApplicableWebhookWritePayload) =>
+							this.client.webhooks.writeMessage(c.id, c.token ?? "", payload),
+						edit: (payload: ApplicableWebhookEditPayload) =>
+							this.client.webhooks.editMessage(c.id, c.token ?? "", payload),
+					},
+				})),
+			};
+		} catch {
+			return { webhooks: [], lastDrip: null };
+		}
 	}
 }
