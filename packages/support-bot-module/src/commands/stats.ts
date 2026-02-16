@@ -7,6 +7,7 @@ import {
 	TextDisplay,
 	type CommandContext,
 } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
 	name: "stats",
@@ -28,6 +29,7 @@ export default class InfoCommand extends Command {
 -# Last updated <t:${stats.lastDrip}:R>`),
 				),
 			],
+			flags: MessageFlags.IsComponentsV2,
 		});
 	}
 }
