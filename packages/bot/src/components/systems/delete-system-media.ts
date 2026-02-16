@@ -16,7 +16,7 @@ import { LoadingView } from "../../views/loading";
 import { writeUserById } from "../../types/user";
 import { AlertView } from "../../views/alert";
 import { buildExportPayload } from "../../lib/export";
-import { alterCollection, tagCollection } from "../../mongodb";
+import { alterCollection, tagCollection, userCollection } from "../../mongodb";
 import { deleteAttachment, getGcpAccessToken } from "@/gcp";
 import { assetStringGeneration } from "@/types/operation";
 
@@ -39,7 +39,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
-			),
+				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
@@ -57,7 +57,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 			],
 			flags: MessageFlags.IsComponentsV2,
 		});
-        await ctx.author.write({
+		await ctx.author.write({
 			files: [
 				new AttachmentBuilder()
 					.setName("system.json")
@@ -65,20 +65,15 @@ export default class DeleteSystemButton extends ComponentCommand {
 						"buffer",
 						Buffer.from(await buildExportPayload(user.system)),
 					),
-			]
-        })
-
-		// Add lifecycle rule to delete prefixed storage prefixes
-		const gcpToken = await getGcpAccessToken()
-
-		await deleteAttachment(user.storagePrefix, gcpToken)
-
-		await writeUserById(ctx.author.id, {
-			userId: ctx.author.id,
-			blacklisted: false,
-			storagePrefix: assetStringGeneration(8)
+			],
 		});
 
+		// Add lifecycle rule to delete prefixed storage prefixes
+		const gcpToken = await getGcpAccessToken();
+
+		await deleteAttachment(user.storagePrefix, gcpToken);
+
+		await userCollection.deleteOne({ userId: ctx.author.id });
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
 		await tagCollection.deleteMany({ systemId: ctx.author.id });
 

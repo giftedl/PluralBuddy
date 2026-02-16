@@ -9,8 +9,17 @@ import {
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
+	WebhookMessage,
+	type WebhookMessageStructure,
 } from "seyfert";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import {
+	ButtonStyle,
+	MessageFlags,
+	type RESTPatchAPIWebhookWithTokenMessageJSONBody,
+	type RESTPatchAPIWebhookWithTokenMessageQuery,
+	type RESTPostAPIWebhookWithTokenJSONBody,
+	type RESTPostAPIWebhookWithTokenQuery,
+} from "seyfert/lib/types";
 import { getUserById } from "../types/user";
 import { alterCollection, errorCollection } from "../mongodb";
 import { AlertView } from "@/views/alert";
@@ -23,17 +32,48 @@ import {
 	getSimilarWebhooks,
 	isValidDm,
 	notValidPermissions,
+	setLastLatchAlter,
 	startsWithPrefix,
 } from "@/lib/proxying/util";
 import { performAlterAutoProxy } from "@/lib/proxying/types/alter-ap";
-import { getGuildFromId } from "@/types/guild";
+import { getGuildFromId, PGuildObject } from "@/types/guild";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
 import { createProxyError } from "@/lib/proxying/error";
 import { helpPages } from "@/commands/help";
 import { translations } from "@/lang/en_us";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { buildNumber } from "..";
+import { buildNumber, client } from "..";
+import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
+
+export type ApplicableWebhookWritePayload = {
+	body: Omit<
+		RESTPostAPIWebhookWithTokenJSONBody,
+		"components" | "embeds" | "poll" | "content"
+	> &
+		SendResolverProps;
+	query?: RESTPostAPIWebhookWithTokenQuery | undefined;
+};
+export type ApplicableWebhookEditPayload = {
+	body: Omit<
+		RESTPatchAPIWebhookWithTokenMessageJSONBody,
+		"components" | "content" | "embeds" | "poll"
+	> &
+		ResolverProps;
+	messageId: string;
+	query?: RESTPatchAPIWebhookWithTokenMessageQuery | undefined;
+};
+export type PWebhook = {
+	id: string;
+	messages: {
+		write: (
+			payload: ApplicableWebhookWritePayload,
+		) => Promise<WebhookMessage | null>;
+		edit: (
+			payload: ApplicableWebhookEditPayload,
+		) => Promise<WebhookMessageStructure>;
+	};
+};
 
 export default createEvent({
 	data: { name: "messageCreate", once: false },
@@ -131,9 +171,14 @@ export default createEvent({
 		if (await notValidPermissions(message)) return;
 
 		console.time("proxy tag parse");
-		const similarWebhooks = await getSimilarWebhooks(message.channelId);
+		const similarWebhooks =
+			client.cache.similarWebhookResource.fetch(message.channelId)?.webhooks ??
+			(await getSimilarWebhooks(message.channelId));
 		const user = await getUserById(message.author.id);
-		const guild = await getGuildFromId(message.guildId ?? "");
+		const guild = PGuildObject.parse(
+			client.cache.pguild.get(message.guildId ?? "")?.g ??
+				(await getGuildFromId(message.guildId ?? "")),
+		);
 
 		if (user.system === undefined) return;
 		if (user.system.disabled) return;
@@ -145,6 +190,10 @@ export default createEvent({
 			const alter = user.system.systemAutoproxy.find(
 				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
 			)?.autoproxyAlter;
+
+			if (message.content.startsWith("\\")) {
+				return;
+			}
 
 			if (alter) {
 				const fetchedAlter = await alterCollection.findOne({
@@ -238,6 +287,11 @@ export default createEvent({
 				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
 			)
 		) {
+			if (message.content.startsWith("\\")) {
+				setLastLatchAlter(guild.guildId, user.system);
+				return;
+			}
+
 			const alter = user.system.systemAutoproxy.find(
 				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
 			)?.autoproxyAlter;

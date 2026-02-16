@@ -37,7 +37,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
-			),
+				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
@@ -55,7 +55,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 			],
 			flags: MessageFlags.IsComponentsV2,
 		});
-        await ctx.author.write({
+		await ctx.author.write({
 			files: [
 				new AttachmentBuilder()
 					.setName("system.json")
@@ -63,15 +63,16 @@ export default class DeleteSystemButton extends ComponentCommand {
 						"buffer",
 						Buffer.from(await buildExportPayload(user.system)),
 					),
-			]
-        })
+			],
+		});
 
 		await writeUserById(ctx.author.id, {
 			userId: ctx.author.id,
 			blacklisted: false,
-			storagePrefix: user.storagePrefix
+			nudging: user.nudging,
+			storagePrefix: user.storagePrefix,
 		});
-		
+
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
 		await tagCollection.deleteMany({ systemId: ctx.author.id });
 

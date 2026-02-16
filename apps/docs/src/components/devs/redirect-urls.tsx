@@ -1,6 +1,5 @@
 "use client";
 
-import { OAuthApplication } from "@/app/(home)/developers/applications/actions";
 import { Field, FieldDescription } from "../ui/field";
 import {
 	InputGroup,
@@ -14,7 +13,6 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { urlRegex } from "./create-new-app-form";
 import { toast } from "sonner";
-import { changeRedirectURIs } from "@/app/(home)/developers/application/[application]/actions";
 import { OAuthClient } from "@better-auth/oauth-provider";
 import { authClient } from "@/lib/auth-client";
 

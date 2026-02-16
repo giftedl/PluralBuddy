@@ -33,7 +33,6 @@ import { Button } from "../ui/shadcn-button";
 import { Checkbox } from "../ui/checkbox";
 import { buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { registerOAuthApplication } from "@/app/(home)/developers/applications/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
@@ -49,7 +48,7 @@ import { authClient } from "@/lib/auth-client";
 export const scopeList = [
 	{ title: "profile", description: "Access to your profile data – required." },
 	{ title: "openid", description: "Access to your Discord user ID" },
-	{ title: "email", description: "Access to your email address" },
+	{ title: "offline_access", description: "Access to refresh access to this service" },
 	{ title: "alter:read", description: "Access to read alter data" },
 	{ title: "alter:write", description: "Access to change alter settings" },
 	{ title: "tags:read", description: "Access to read tag data" },

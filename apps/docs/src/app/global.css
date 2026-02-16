@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import 'fumadocs-ui/css/shadcn.css';
+@import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
 @import "tw-animate-css";
 @import "@fontsource-variable/atkinson-hyperlegible-mono";
@@ -46,27 +46,29 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
-	--animate-ripple: ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite;
-  @keyframes ripple {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
+	--animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s)
+		infinite;
+	@keyframes ripple {
+		0%,
+		100% {
+			transform: translate(-50%, -50%) scale(1);
 		}
-  50% {
-    transform: translate(-50%, -50%) scale(0.9);
+		50% {
+			transform: translate(-50%, -50%) scale(0.9);
 		}
 	}
 }
 
 .pluralbuddy {
-    --color-fd-primary: oklch(53% 33% 342deg);
+	--color-fd-primary: oklch(53% 33% 342deg);
 }
 
 .policies {
-    --color-fd-primary: #cc8b00;
+	--color-fd-primary: #cc8b00;
 }
 :root {
-    --pluralbuddy-color: oklch(53% 33% 342deg);
-    --policies-color: #cc8b00;
+	--pluralbuddy-color: oklch(53% 33% 342deg);
+	--policies-color: #cc8b00;
 
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
@@ -90,7 +92,7 @@
 	--chart-2: oklch(0.73 0.18 350);
 	--chart-3: oklch(0.66 0.21 354);
 	--chart-4: oklch(0.59 0.22 1);
-	--chart-5: oklch(0.52 0.20 4);
+	--chart-5: oklch(0.52 0.2 4);
 	--radius: 0;
 	--sidebar: oklch(0.985 0 0);
 	--sidebar-foreground: oklch(0.145 0 0);
@@ -103,8 +105,8 @@
 }
 
 .dark {
-    --pluralbuddy-color: oklch(89.9% 0.061 343.231);
-    --policies-color: #fff383;
+	--pluralbuddy-color: oklch(89.9% 0.061 343.231);
+	--policies-color: #fff383;
 
 	--color-fd-foreground: white;
 	--background: oklch(0.145 0 0);
@@ -129,7 +131,7 @@
 	--chart-2: oklch(0.73 0.18 350);
 	--chart-3: oklch(0.66 0.21 354);
 	--chart-4: oklch(0.59 0.22 1);
-	--chart-5: oklch(0.52 0.20 4);
+	--chart-5: oklch(0.52 0.2 4);
 	--sidebar: oklch(0.205 0 0);
 	--sidebar-foreground: oklch(0.985 0 0);
 	--sidebar-primary: oklch(0.73 0.18 350);
@@ -140,12 +142,14 @@
 	--sidebar-ring: oklch(0.556 0 0);
 }
 
-.pluralbuddy.dark, .dark .pluralbuddy {
-    --color-fd-primary: oklch(89.9% 0.061 343.231);
+.pluralbuddy.dark,
+.dark .pluralbuddy {
+	--color-fd-primary: oklch(89.9% 0.061 343.231);
 }
 
-.policies.dark, .dark .policies {
-    --color-fd-primary: #fff383;
+.policies.dark,
+.dark .policies {
+	--color-fd-primary: #fff383;
 }
 
 @layer base {
@@ -164,24 +168,24 @@
 		scrollbar-width: thin;
 	}
 
-    body.policies,
-    html#policies.dark {
-        scrollbar-color: #fff383 var(--background);
-    }
-
-    body.pluralbuddy,
-    html#pluralbuddy.dark {
-        scrollbar-color: oklch(89.9% 0.061 343.231) var(--background);
-    }
+	body.policies,
+	html#policies.dark {
+		scrollbar-color: #fff383 var(--background);
+	}
 
 	body.pluralbuddy,
-    html#pluralbuddy.light {
-        scrollbar-color: oklch(53% 33% 342deg) var(--background);
+	html#pluralbuddy.dark {
+		scrollbar-color: oklch(89.9% 0.061 343.231) var(--background);
+	}
+
+	body.pluralbuddy,
+	html#pluralbuddy.light {
+		scrollbar-color: oklch(53% 33% 342deg) var(--background);
 	}
 
 	body.policies,
-    html#policies.light {
-        scrollbar-color: #cc8b00 var(--background);
+	html#policies.light {
+		scrollbar-color: #cc8b00 var(--background);
 	}
 }
 
@@ -190,11 +194,11 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+	* {
+		@apply border-border outline-ring/50;
 	}
-  body {
-	background-color: var(--background);
-	color: var(--foreground)
+	body {
+		background-color: var(--background);
+		color: var(--foreground);
 	}
 }

@@ -4,8 +4,9 @@ import type { ParseGlobalMiddlewares, ParseMiddlewares } from "seyfert";
 import type { extendedContext } from "./extended-context";
 import type { middlewares } from "./middleware";
 import type { StatisticResource } from "./cache/statistics";
-import type { ProxyResource } from "./cache/system-proxy-tags"
+import type { ProxyResource } from "./cache/system-proxy-tags";
 import type { SimilarWebhookResource } from "./cache/similar-webhooks";
+import type { PGuildCache } from "./cache/plural-guild";
 
 declare module "seyfert" {
 	interface ExtendContext extends ReturnType<typeof extendedContext> {}
@@ -13,6 +14,7 @@ declare module "seyfert" {
 		statistic: StatisticResource;
 		alterProxy: ProxyResource;
 		similarWebhookResource: SimilarWebhookResource;
+		pguild: PGuildCache;
 	}
 
 	// Register the middlewares on seyfert types

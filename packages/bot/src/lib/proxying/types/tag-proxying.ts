@@ -11,13 +11,14 @@ import type {
 	Webhook,
 } from "seyfert";
 import { getReferencedMessageString } from "../referenced-message";
-import { Container, TextDisplay } from "seyfert";
+import { CacheFrom, Container, TextDisplay } from "seyfert";
 import { processEmojis } from "../process-emojis";
 import { proxy } from "..";
 import { alterCollection } from "@/mongodb";
 import { setLastLatchAlter } from "../util";
 import { createProxyError } from "../error";
 import type { PGuild } from "plurography";
+import type { PWebhook } from "@/events/on-message-create";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -32,7 +33,7 @@ export const proxyTagValid = (
 export async function performTagProxy(
 	checkAlter: PAlter,
 	user: PUser,
-	similarWebhooks: Webhook[],
+	similarWebhooks: PWebhook[],
 	proxyTag: {
 		prefix: string;
 		suffix: string;
@@ -131,6 +132,11 @@ export async function performTagProxy(
 			webhook = await client.webhooks.create(message.channelId, {
 				name: "PluralBuddy Proxy",
 			});
+			client.cache.similarWebhookResource.set(
+				CacheFrom.Gateway,
+				message.channelId,
+				[webhook],
+			);
 		}
 
 		if (webhook === null || webhook === undefined) {
@@ -254,6 +260,6 @@ export async function performTagProxy(
 		);
 
 		if (message.guildId && user.system)
-			setLastLatchAlter(checkAlter, message.guildId, user.system);
+			setLastLatchAlter(message.guildId, user.system, checkAlter);
 	}
 }

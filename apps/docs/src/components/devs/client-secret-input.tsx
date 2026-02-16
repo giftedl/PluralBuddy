@@ -1,6 +1,5 @@
 "use client";
 
-import { OAuthApplication } from "@/app/(home)/developers/applications/actions";
 import { Input } from "../ui/input";
 import {
 	InputGroup,
@@ -10,7 +9,6 @@ import {
 } from "../ui/input-group";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
-import { generateNewSecret } from "@/app/(home)/developers/application/[application]/actions";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "@/lib/use-copy-to-clipboard";
 import { authClient } from "@/lib/auth-client";

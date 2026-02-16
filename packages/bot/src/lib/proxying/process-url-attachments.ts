@@ -15,9 +15,10 @@ import type { ColorResolvable } from "seyfert/lib/common";
 import type { Message, WebhookMessage } from "seyfert/lib/structures";
 import { getGifLink } from "./tenor";
 import { ComponentType, type APITextDisplayComponent } from "seyfert/lib/types";
+import type { PWebhook } from "@/events/on-message-create";
 
 export async function processUrlIntegrations(
-	webhook: Webhook,
+	webhook: PWebhook,
 	client: UsingClient,
 	message: Message | WebhookMessage,
 	messageId: string,
@@ -26,7 +27,9 @@ export async function processUrlIntegrations(
 	mainContents: TopLevelBuilders[],
 	fileAttachments: Array<{ buff: Buffer; name: string }>,
 	uploadedEmojis: ApplicationEmoji[],
-	channelReference?: { channelId: string, guildId: string, userId: string } | undefined,
+	channelReference?:
+		| { channelId: string; guildId: string; userId: string }
+		| undefined,
 	altUserId?: string | undefined,
 	altGuildId?: string | undefined,
 ) {
@@ -37,12 +40,22 @@ export async function processUrlIntegrations(
 	const urlRegex = /(?<!<)(https?:\/\/[^\s>]+)(?!>)/g;
 	const userPerms = await client.channels.memberPermissions(
 		channelReference?.channelId ?? message.channelId,
-		await client.members.fetch(altGuildId ?? channelReference?.guildId ?? message.guildId as string, altUserId ?? channelReference?.userId ?? message.user.id),
+		await client.members.fetch(
+			altGuildId ?? channelReference?.guildId ?? (message.guildId as string),
+			altUserId ?? channelReference?.userId ?? message.user.id,
+		),
 		true,
 	);
 
 	if (userPerms.has(["EmbedLinks"]) ?? false) {
-		const matches = (message.content + message.components.filter(c => c.type === ComponentType.TextDisplay).map((c) => (c.data as APITextDisplayComponent).content).join("")).match(urlRegex) ?? [];
+		const matches =
+			(
+				message.content +
+				message.components
+					.filter((c) => c.type === ComponentType.TextDisplay)
+					.map((c) => (c.data as APITextDisplayComponent).content)
+					.join("")
+			).match(urlRegex) ?? [];
 		for (const regex of matches) {
 			if (regex.startsWith("https://tenor.com")) {
 				const link = await getGifLink(regex);
@@ -64,10 +77,13 @@ export async function processUrlIntegrations(
 			if (url.ok) {
 				urlAttachments.push({ link: regex });
 			} else {
-                // biome-ignore lint/suspicious/noExplicitAny: any required.
-                const result = await url.json() as any
+				// biome-ignore lint/suspicious/noExplicitAny: any required.
+				const result = (await url.json()) as any;
 
-				if (result.message.includes("Is it a valid image?") && !/^https:\/\/([a-zA-Z0-9-]+\.)?discord\.com/.test(regex)) {
+				if (
+					result.message.includes("Is it a valid image?") &&
+					!/^https:\/\/([a-zA-Z0-9-]+\.)?discord\.com/.test(regex)
+				) {
 					const meta = await fetch(
 						`${process.env.LINK_SCRAPER_API}?url=${encodeURIComponent(regex)}`,
 						{ signal: AbortSignal.timeout(3000) },
@@ -90,9 +106,15 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 												),
 											]
 										: []),
-									...(json?.["og:site_name"] !== undefined ? [new TextDisplay().setContent(
-										json?.["og:site_name"] !== undefined ? `-# ${json?.["og:site_name"]}` : ""
-									)] : [])
+									...(json?.["og:site_name"] !== undefined
+										? [
+												new TextDisplay().setContent(
+													json?.["og:site_name"] !== undefined
+														? `-# ${json?.["og:site_name"]}`
+														: "",
+												),
+											]
+										: []),
 								)
 								.setColor(
 									(json?.["theme-color"] as ColorResolvable | undefined) ??
@@ -126,7 +148,7 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 		await webhook.messages.edit({
 			messageId,
 			body: {
-                allowed_mentions: { parse: [] },
+				allowed_mentions: { parse: [] },
 				components: [
 					...reply,
 					...(hasTextContent ? mainContents : []),

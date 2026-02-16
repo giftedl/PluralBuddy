@@ -16,12 +16,12 @@ export default function SignInPage() {
 	return (
 		<div className="grid w-full flex-grow relative items-center justify-center px-4">
 			<Card className="w-full space-y-4 z-10 justify-center rounded-2xl p-8 sm:w-96">
-				<header className="text-center border-dashed border rounded-lg p-2">
+				<header className="text-center rounded-lg p-2">
 					<div className="flex items-center justify-center">
 						<div className="relative flex items-center">
-							<div className="relative z-10 flex items-center justify-center w-24 h-24 rounded-2xl bg-primary shadow-lg ring-4 ring-card">
-								<Avatar className="w-full h-full !rounded-2xl">
-									<AvatarImage src="/image/solar.png" alt="Solar" />
+							<div className="relative z-10 flex items-center justify-center w-24 h-24 rounded-2xl ring-4 ring-card">
+								<Avatar className="w-full h-full rounded-full">
+									<AvatarImage src="/image/solar-centered.png" alt="Solar" />
 									<AvatarFallback>PluralBuddy</AvatarFallback>
 								</Avatar>
 							</div>

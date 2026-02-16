@@ -1,4 +1,12 @@
-import { ComponentCommand, Label, Middlewares, Modal, RoleSelectMenu, TextInput, type ComponentContext } from "seyfert";
+import {
+	ComponentCommand,
+	Label,
+	Middlewares,
+	Modal,
+	RoleSelectMenu,
+	TextInput,
+	type ComponentContext,
+} from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
 
@@ -37,6 +45,6 @@ export default class ManageManagersButton extends ComponentCommand {
 					InteractionIdentifier.Guilds.FormSelection.AddManagersForm.create(),
 				)
 				.setTitle("Updating Guild"),
-            )
-    }
+		);
+	}
 }

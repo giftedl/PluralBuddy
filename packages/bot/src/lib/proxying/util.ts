@@ -6,7 +6,7 @@ import type { PAlter } from "@/types/alter";
 import { defaultPrefixes } from "@/types/guild";
 import type { PSystem } from "@/types/system";
 import type { PUser } from "@/types/user";
-import type { Message } from "seyfert";
+import { CacheFrom, type Message } from "seyfert";
 
 function listStartsWith(string: string, list: string[]) {
 	for (const item of list) if (string.startsWith(item)) return true;
@@ -43,17 +43,22 @@ export const notValidPermissions = async (message: Message) => {
 	);
 };
 
-export const getSimilarWebhooks = async (channelId: string) =>
-	(await client.webhooks.listFromChannel(channelId)).filter(
+export const getSimilarWebhooks = async (channelId: string) => {
+	const result = (await client.webhooks.listFromChannel(channelId)).filter(
 		(val) =>
 			val.name === "PluralBuddy Proxy" &&
 			(val.user ?? { id: 0 }).id === client.botId,
 	);
 
+	client.cache.similarWebhookResource.set(CacheFrom.Gateway, channelId, result);
+
+	return result;
+};
+
 export const setLastLatchAlter = async (
-	alter: PAlter,
 	guildId: string,
 	system: PSystem,
+	alter?: PAlter,
 ) => {
 	const existingGuildPolicies = system.systemAutoproxy.find(
 		(ap) => ap.serverId === guildId,
@@ -67,8 +72,9 @@ export const setLastLatchAlter = async (
 			{ userId: system.associatedUserId },
 			{
 				$set: {
-					"system.systemAutoproxy.$[serverEntry].autoproxyAlter":
-						alter.alterId.toString(),
+					"system.systemAutoproxy.$[serverEntry].autoproxyAlter": alter
+						? alter.alterId.toString()
+						: undefined,
 				},
 			},
 			{

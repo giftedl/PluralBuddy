@@ -7,7 +7,7 @@ import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
 	name: "alters",
-	description: "Configure the system",
+	description: "See system alters",
 	aliases: ["a", "m", "members"],
 	contexts: ["BotDM", "Guild"],
 })
@@ -26,9 +26,9 @@ export default class AlterListCommand extends SubCommand {
 
 		return await ctx.ephemeral({
 			components: [
-				...await new SystemSettingsView(ctx.userTranslations()).altersSettings(
+				...(await new SystemSettingsView(ctx.userTranslations()).altersSettings(
 					user.system,
-				),
+				)),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});

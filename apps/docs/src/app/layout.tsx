@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-	themeColor: '#fccee8'
-}
+	themeColor: "#fccee8",
+};
 
 export default function Layout({ children }: LayoutProps<"/">) {
 	return (
@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
 					}}
 				>
 					{children}
-					<Toaster position="bottom-center" />
+					<Toaster position="bottom-right" />
 				</RootProvider>
 			</Body>
 		</Html>

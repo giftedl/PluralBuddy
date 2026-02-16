@@ -1,6 +1,14 @@
+import type {
+	ApplicableWebhookEditPayload,
+	ApplicableWebhookWritePayload,
+} from "@/events/on-message-create";
 import { BaseResource, CacheFrom, Webhook, type ReturnCache } from "seyfert";
-import type { MakeDeepPartial } from "seyfert/lib/common";
-import type { APIWebhook } from "seyfert/lib/types";
+import type { MakeDeepPartial, SendResolverProps } from "seyfert/lib/common";
+import type {
+	APIWebhook,
+	RESTPostAPIWebhookWithTokenJSONBody,
+	RESTPostAPIWebhookWithTokenQuery,
+} from "seyfert/lib/types";
 
 type SimilarWebhookObject = {
 	webhooks: APIWebhook[];
@@ -40,7 +48,15 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 
 		return {
 			...result,
-			webhooks: result?.webhooks.map((c) => new Webhook(this.client, c)),
+			webhooks: result?.webhooks.map((c) => ({
+				...c,
+				messages: {
+					write: (payload: ApplicableWebhookWritePayload) =>
+						this.client.webhooks.writeMessage(c.id, c.token ?? "", payload),
+					edit: (payload: ApplicableWebhookEditPayload) =>
+						this.client.webhooks.editMessage(c.id, c.token ?? "", payload),
+				},
+			})),
 		};
 	}
 }

@@ -20,12 +20,15 @@ import {
 } from "./error-command";
 import { extendedContext } from "./extended-context";
 import { ProxyResource } from "./cache/system-proxy-tags";
+import { PGuildCache } from "./cache/plural-guild";
+import { SimilarWebhookResource } from "./cache/similar-webhooks";
+import api from "./api";
 
 export const buildNumber = 1049;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
-	"serverBlacklist"
+	"serverBlacklist",
 ];
 
 export const posthogClient =
@@ -70,7 +73,6 @@ client.logger.info(
 	],
 );
 
-
 client.setServices({
 	middlewares: middlewares,
 	handleCommand: PluralBuddyHandleCommand,
@@ -89,6 +91,11 @@ await client.uploadCommands({ cachePath: "./commands.json" });
 
 client.cache.statistic = new StatisticResource(client.cache, client);
 client.cache.alterProxy = new ProxyResource(client.cache, client);
+client.cache.pguild = new PGuildCache(client.cache, client);
+client.cache.similarWebhookResource = new SimilarWebhookResource(
+	client.cache,
+	client,
+);
 
 const guildCount = (await client.guilds.list()).length;
 const guilds = (await client.guilds.list()) ?? [];
@@ -103,17 +110,5 @@ for (const unfetchedGuild of guilds.values()) {
 
 client.cache.statistic.set(CacheFrom.Rest, "latest", { guildCount, userCount });
 
-Bun.serve({
-	port: 3030,
-	routes: {
-		"/api/stats": (req) => {
-			if (req.headers.get("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
-				return Response.json({ error: "invalid key" }, { status: 400 })
-
-			return Response.json(client.cache.statistic.get("latest"));
-		},
-	},
-	fetch(req, server) {
-		return Response.error()
-	}
-});
+export type { ClientType } from "./api";
+export default api;

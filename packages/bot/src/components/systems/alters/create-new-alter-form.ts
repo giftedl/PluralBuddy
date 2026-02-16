@@ -12,72 +12,89 @@ import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
 
 export default class CreateNewAlterForm extends ModalCommand {
-    override filter(context: ModalContext) {
-        return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.CreateNewAlterForm.equals(context.customId)
-    }
+	override filter(context: ModalContext) {
+		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.CreateNewAlterForm.equals(
+			context.customId,
+		);
+	}
 
-    override async run(ctx: ModalContext) {
-        const username = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameType.create(), true);
-        const displayName = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(), true);
+	override async run(ctx: ModalContext) {
+		const username = ctx.interaction.getInputValue(
+			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameType.create(),
+			true,
+		);
+		const displayName = ctx.interaction.getInputValue(
+			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(),
+			true,
+		);
 
-        const user = await ctx.retrievePUser();
-        const server = await ctx.retrievePGuild();
+		const user = await ctx.retrievePUser();
+		const server = await ctx.retrievePGuild();
 
-        if (user.system === undefined) {
-            return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
-        }
+		if (user.system === undefined) {
+			return await ctx.ephemeral({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"ERROR_SYSTEM_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
-        const alter = PAlterObject.safeParse({
-            alterId: Number(DiscordSnowflake.generate()),
-            systemId: user.system.associatedUserId,
+		const alter = PAlterObject.safeParse({
+			alterId: Number(DiscordSnowflake.generate()),
+			systemId: user.system.associatedUserId,
 
-            username,
-            displayName,
-            nameMap: [],
-            color: null,
-            pronouns: null,
-            description: null,
-            created: new Date(),
-            avatarUrl: null,
-            webhookAvatarUrl: null,
-            banner: null,
-            lastMessageTimestamp: null,
-            messageCount: 0,
-            alterMode: "webhook",
-            public: 0
-        })
+			username,
+			displayName,
+			nameMap: [],
+			color: null,
+			pronouns: null,
+			description: null,
+			created: new Date(),
+			avatarUrl: null,
+			webhookAvatarUrl: null,
+			banner: null,
+			lastMessageTimestamp: null,
+			messageCount: 0,
+			alterMode: "webhook",
+			public: 0,
+		});
 
-        if (alter.error) {
-            return await ctx.interaction.update({
-                components: [
-                    ...new SystemSettingsView(ctx.userTranslations()).topView("alters", user.system.associatedUserId),
-                    ...new AlertView(ctx.userTranslations()).errorViewCustom(`There was an error while creating that alter:
+		if (alter.error) {
+			return await ctx.interaction.update({
+				components: [
+					...new SystemSettingsView(ctx.userTranslations()).topView(
+						"alters",
+						user.system.associatedUserId,
+					),
+					...new AlertView(
+						ctx.userTranslations(),
+					).errorViewCustom(`There was an error while creating that alter:
 
 \`\`\`
 ${z.prettifyError(alter.error)}
-\`\`\`                        `)
-                ]
-            })
-        }
+\`\`\`                        `),
+				],
+			});
+		}
 
-        await writeUserById(user.system.associatedUserId, {
-            ...(await getUserById(user.system.associatedUserId)),
-            system: {
-                ...user.system,
-                alterIds: [
-                    ...user.system.alterIds,
-                    alter.data.alterId
-                ]
-            }
-        })
+		await writeUserById(user.system.associatedUserId, {
+			...(await getUserById(user.system.associatedUserId)),
+			system: {
+				...user.system,
+				alterIds: [...user.system.alterIds, alter.data.alterId],
+			},
+		});
 
-        alterCollection.insertOne(alter.data);
-        
-        await ctx.interaction.update({
-            components: await new SystemSettingsView(ctx.userTranslations()).altersSettings(user.system)
-        })
-    }
+		alterCollection.insertOne(alter.data);
+
+		await ctx.interaction.update({
+			components: await new SystemSettingsView(
+				ctx.userTranslations(),
+			).altersSettings({
+				...user.system,
+				alterIds: [...user.system.alterIds, alter.data.alterId],
+			}),
+		});
+	}
 }

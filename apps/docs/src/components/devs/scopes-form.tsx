@@ -1,6 +1,5 @@
 "use client";
 
-import { OAuthApplication } from "@/app/(home)/developers/applications/actions";
 import { useState } from "react";
 import { scopeList } from "./create-new-app-form";
 import {

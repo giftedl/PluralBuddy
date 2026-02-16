@@ -22,6 +22,10 @@ import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 import { emojis } from "../emojis";
 import { getGuildFromId, type PGuild } from "@/types/guild";
+import type {
+	ApplicableWebhookWritePayload,
+	PWebhook,
+} from "@/events/on-message-create";
 
 export const imageOrVideoExtensions = [
 	".png",
@@ -41,7 +45,7 @@ export const imageOrVideoExtensions = [
 ];
 
 export async function proxy(
-	webhook: Webhook,
+	webhook: PWebhook,
 	client: UsingClient,
 	message: Message,
 	stringContents: string,
@@ -81,7 +85,6 @@ export async function proxy(
 	const components: TopLevelBuilders[] = [...reply];
 
 	components.push(...mainContents);
-	console.log(mainContents)
 
 	if (fileAttachments.length > 0) {
 		if (mediaFiles.length > 0)
@@ -108,127 +111,147 @@ export async function proxy(
 		);
 	}
 
-	await new Promise((d) => setTimeout(d, guild.proxyDelay))
+	await new Promise((d) => setTimeout(d, guild.proxyDelay));
 
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
 		console.timeEnd("proxy");
-		webhook.messages
-			.write({
-				body: {
-					components,
-					flags:
-						components.length !== 0
-							? MessageFlags.IsComponentsV2
-							: (0 as MessageFlags),
-					username: username.substring(0, 80),
-					allowed_mentions: { parse: [] },
-					avatar_url: picture,
-					files: fileAttachments.map((c) =>
-						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
-					),
-					embeds:
-						components.length === 0
-							? [
-									await (async () => {
-										const author = await client.users.fetch(systemId, true);
+		try {
+			webhook.messages
+				.write({
+					body: {
+						components,
+						flags:
+							components.length !== 0
+								? MessageFlags.IsComponentsV2
+								: (0 as MessageFlags),
+						username: username.substring(0, 80),
+						allowed_mentions: { parse: [] },
+						avatar_url: picture,
+						files: fileAttachments.map((c) =>
+							new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
+						),
+						embeds:
+							components.length === 0
+								? [
+										await (async () => {
+											const author = await client.users.fetch(systemId, true);
 
-										return new Embed()
-											.setDescription(
-												"This message was unable to be rendered using Components V2 components. This message is not proxy-able.",
-											)
-											.setColor("Red")
-											.setTitle(`${emojis.x}   Unable to render this message.`)
-											.setAuthor({
-												name: author.name,
-												iconUrl: author.avatarURL(),
-											})
-											.setFooter({
-												text: "Unable to proxy this message",
-												iconUrl:
-													"https://pb.giftedly.dev/image/solar-centered.png",
-											});
-									})(),
-								]
-							: [],
-				},
-				query: {
-					wait: true,
-				},
-			})
-			.then((sentMessage) => {
-				messagesCollection.insertOne({
-					messageId: sentMessage?.id ?? "0",
-					alterId,
-					systemId,
-					createdAt: new Date(),
-					guildId: message.guildId,
-					channelId: message.channelId,
-				});
-				try {
-					(async () => {
-						const guild = await getGuildFromId(message.guildId ?? "");
-						const user = await client.users.fetch(message.author.id);
-						const alter = await alterCollection.findOne({ alterId, systemId });
+											return new Embed()
+												.setDescription(
+													"This message was unable to be rendered using Components V2 components. This message is not proxy-able.",
+												)
+												.setColor("Red")
+												.setTitle(
+													`${emojis.x}   Unable to render this message.`,
+												)
+												.setAuthor({
+													name: author.name,
+													iconUrl: author.avatarURL(),
+												})
+												.setFooter({
+													text: "Unable to proxy this message",
+													iconUrl:
+														"https://pb.giftedly.dev/image/solar-centered.png",
+												});
+										})(),
+									]
+								: [],
+					},
+					query: {
+						wait: true,
+					},
+				})
+				.then((sentMessage) => {
+					messagesCollection.insertOne({
+						messageId: sentMessage?.id ?? "0",
+						alterId,
+						systemId,
+						createdAt: new Date(),
+						guildId: message.guildId,
+						channelId: message.channelId,
+					});
+					try {
+						(async () => {
+							const guild = await getGuildFromId(message.guildId ?? "");
+							const user = await client.users.fetch(message.author.id);
+							const alter = await alterCollection.findOne({
+								alterId,
+								systemId,
+							});
 
-						if (!guild.logChannel) return;
+							if (!guild.logChannel) return;
 
-						await client.messages.write(guild.logChannel, {
-							components: [
-								new TextDisplay().setContent(
-									`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`,
-								),
-								new Container()
-									.setComponents(
-										new Section()
-											.setComponents(
-												new TextDisplay().setContent(stringContents === "" ? "Cannot render message as string - use link above." : stringContents),
-											)
-											.setAccessory(
-												new Thumbnail().setMedia(
-													alter?.avatarUrl ??
-														"https://cdn.discordapp.com/embed/avatars/0.png",
+							await client.messages.write(guild.logChannel, {
+								components: [
+									new TextDisplay().setContent(
+										`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`,
+									),
+									new Container()
+										.setComponents(
+											new Section()
+												.setComponents(
+													new TextDisplay().setContent(
+														stringContents === ""
+															? "Cannot render message as string - use link above."
+															: stringContents,
+													),
+												)
+												.setAccessory(
+													new Thumbnail().setMedia(
+														alter?.avatarUrl ??
+															"https://cdn.discordapp.com/embed/avatars/0.png",
+													),
 												),
-											),
-										new Separator().setSpacing(Spacing.Large),
-										new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
+											new Separator().setSpacing(Spacing.Large),
+											new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
 -# Mention: @${user.username} (<@${systemId}>)
 -# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${
-											message.messageReference !== undefined
-												? `
+												message.messageReference !== undefined
+													? `
 -# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}`
-												: ""
-										}
+													: ""
+											}
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
-									)
-									.setColor("Green"),
-							],
-							flags: MessageFlags.IsComponentsV2,
-							allowed_mentions: { parse: [] },
-						});
-					})();
-				} catch (_: unknown) {}
+										)
+										.setColor("Green"),
+								],
+								flags: MessageFlags.IsComponentsV2,
+								allowed_mentions: { parse: [] },
+							});
+						})();
+					} catch (_: unknown) {}
 
-				if (sentMessage?.id) {
-					processUrlIntegrations(
-						webhook,
-						client,
-						message,
-						sentMessage.id,
-						stringContents,
-						reply,
-						mainContents,
-						fileAttachments,
-						uploadedEmojis,
-					).catch(console.error);
-				} else
-					for (const emoji of uploadedEmojis) {
-						emoji.delete();
-					}
-			});
+					if (sentMessage?.id) {
+						processUrlIntegrations(
+							webhook,
+							client,
+							message,
+							sentMessage.id,
+							stringContents,
+							reply,
+							mainContents,
+							fileAttachments,
+							uploadedEmojis,
+						).catch(console.error);
+					} else
+						for (const emoji of uploadedEmojis) {
+							emoji.delete();
+						}
+				})
+				.catch((e) => {
+					client.logger.warn(e);
 
-			console.time("post-proxy");
+					client.cache.similarWebhookResource.remove(message.channelId);
+				});
+		} catch (e) {
+			client.logger.warn(e);
+
+			client.cache.similarWebhookResource.remove(message.channelId);
+		}
+
+		console.time("post-proxy");
 		await message.delete();
 		console.timeEnd("post-proxy");
 	}

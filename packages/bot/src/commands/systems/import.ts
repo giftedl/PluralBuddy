@@ -1,21 +1,15 @@
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
+import { SystemSettingsView } from "@/views/system-settings";
 import { CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
-    name: "import",
-    description: "Import data from another source.",
-
+	name: "import",
+	description: "Import data from another source.",
 })
 export default class ImportCommand extends SubCommand {
-    override async run(ctx: CommandContext) {
-        
-		await ctx.write({
-			components: new LoadingView(ctx.userTranslations()).loadingView(),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-
+	override async run(ctx: CommandContext) {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
@@ -27,12 +21,11 @@ export default class ImportCommand extends SubCommand {
 			});
 		}
 
-
-		return await ctx.editResponse({
-			components: new AlertView(ctx.userTranslations()).successView(
-				"SYSTEM_EXPORT_FINISHED",
+		return await ctx.ephemeral({
+			components: new SystemSettingsView(ctx.userTranslations()).importSettings(
+				user.system,
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
-    }
+	}
 }

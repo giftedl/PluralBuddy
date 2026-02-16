@@ -18,10 +18,15 @@ import { proxy } from "..";
 import { setLastLatchAlter } from "../util";
 import { createProxyError } from "../error";
 import type { PGuild } from "plurography";
+import type {
+	ApplicableWebhookWritePayload,
+	PWebhook,
+} from "@/events/on-message-create";
+import { CacheFrom } from "seyfert";
 
 export async function performAlterAutoProxy(
 	message: Message,
-	similarWebhooks: Webhook[],
+	similarWebhooks: PWebhook[],
 	alter: PAlter,
 	user: PUser,
 	guild: PGuild,
@@ -113,6 +118,11 @@ export async function performAlterAutoProxy(
 			webhook = await client.webhooks.create(message.channelId, {
 				name: "PluralBuddy Proxy",
 			});
+			client.cache.similarWebhookResource.set(
+				CacheFrom.Gateway,
+				message.channelId,
+				[webhook],
+			);
 		}
 
 		if (webhook === null || webhook === undefined) {
@@ -206,7 +216,7 @@ export async function performAlterAutoProxy(
 			processedContents.length === 0
 				? []
 				: [
-					...roleBeforeComponents,
+						...roleBeforeComponents,
 						new TextDisplay().setContent(processedContents),
 						...roleAfterComponents,
 					];

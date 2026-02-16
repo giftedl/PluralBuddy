@@ -5,6 +5,7 @@ import {
 	Button,
 	Container,
 	Section,
+	SelectMenu,
 	Separator,
 	StringSelectMenu,
 	StringSelectOption,
@@ -133,7 +134,6 @@ export class SystemSettingsView extends TranslatedView {
 								"The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
 							),
 						),
-					new Separator(),
 					new Section()
 						.setAccessory(
 							new Button()
@@ -168,7 +168,6 @@ export class SystemSettingsView extends TranslatedView {
 							),
 						),
 
-					new Separator(),
 					new TextDisplay().setContent(`You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
 						> - *Alter Mode*: All messages sent from this system will proxy on an alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with an alter regardless of proxy tags. **This requires to select an alter.**
 						> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
@@ -237,6 +236,20 @@ export class SystemSettingsView extends TranslatedView {
 						.setComponents(
 							new TextDisplay().setContent(
 								"Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
+							),
+						),
+					new Section()
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Secondary)
+								.setLabel("Import System")
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
+								),
+						)
+						.setComponents(
+							new TextDisplay().setContent(
+								"Importing your system will allow you to take data from other bots in various import modes.",
 							),
 						),
 				)
@@ -606,6 +619,43 @@ export class SystemSettingsView extends TranslatedView {
 								InteractionIdentifier.Systems.Configuration.SetSystemTag.create(),
 							),
 					),
+			),
+		];
+	}
+
+	importSettings(system: PSystem) {
+		return [
+			new Container().setComponents(
+				new TextDisplay().setContent(`## Import data from another bot`),
+				new Separator().setSpacing(Spacing.Large),
+				new TextDisplay().setContent(
+					`Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
+				),
+				new Separator().setSpacing(Spacing.Large).setDivider(false),
+				new ActionRow().setComponents(
+					new StringSelectMenu()
+						.setCustomId(InteractionIdentifier.Systems.ImportMode.create())
+						.setOptions([
+							new StringSelectOption()
+								.setDescription(
+									"Replace will replace existing data in your system with data. Does not make new system data.",
+								)
+								.setLabel("Replace")
+								.setValue("replace"),
+							new StringSelectOption()
+								.setDescription(
+									"Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
+								)
+								.setLabel("Add")
+								.setValue("add"),
+							new StringSelectOption()
+								.setDescription(
+									"Full import mode will both replace existing alters and add new ones.",
+								)
+								.setLabel("Full Import")
+								.setValue("full-import"),
+						]),
+				),
 			),
 		];
 	}

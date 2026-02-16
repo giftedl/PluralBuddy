@@ -1,7 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { redirect } from "next/navigation";
-import { getUserApp } from "../../applications/actions";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -39,17 +38,17 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
 export const metadata: Metadata = {
-	title: 'Application',
-	description: 'Use PluralBuddy\'s OAuth API to get data about system and alters dynamically without over-exposing details about your users.',
-	applicationName: 'PluralBuddy',
-  }
+	title: "Application",
+	description:
+		"Use PluralBuddy's OAuth API to get data about system and alters dynamically without over-exposing details about your users.",
+	applicationName: "PluralBuddy",
+};
 
 export default async function ApplicationPage({
 	params,
 }: {
 	params: Promise<{ application: string }>;
 }) {
-
 	const { application } = await params;
 	const apps = await auth.api.getOAuthClients({
 		// This endpoint requires session cookies.
@@ -59,7 +58,7 @@ export default async function ApplicationPage({
 	const app = apps?.find((app) => app.client_id === application);
 
 	if (app === undefined) redirect("/developers/applications");
-	
+
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
 			<div className="flex justify-between items-center gap-6 w-full">
@@ -130,7 +129,7 @@ export default async function ApplicationPage({
 					<CardTitle>Redirect URI(s)</CardTitle>
 				</CardHeader>
 				<CardContent>
-                    <RedirectURLs application={app} />
+					<RedirectURLs application={app} />
 				</CardContent>
 			</Card>
 

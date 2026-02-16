@@ -7,7 +7,12 @@ import { TupperBoxSystem } from "./tupperbox";
 import { TupperBoxGroup } from "./tupperbox/group";
 import { Tupper } from "./tupperbox/tupper";
 
-export { PluralKitConfiguration, PluralKitGroup, PluralKitMember, PluralKitSystem };
+export {
+	PluralKitConfiguration,
+	PluralKitGroup,
+	PluralKitMember,
+	PluralKitSystem,
+};
 export { Tupper, TupperBoxGroup, TupperBoxSystem };
 
 export * from "./pluralbuddy/alter";
@@ -18,6 +23,8 @@ export * from "./pluralbuddy/operation";
 export * from "./pluralbuddy/system";
 export * from "./pluralbuddy/tag";
 export * from "./pluralbuddy/user";
-export * from "./pluralbuddy/util"
+export * from "./pluralbuddy/util";
+export * from "./pluralbuddy/import-staging";
+export * from "./pluralbuddy/import-notation";
 
 export * from "./supportbuddy/blacklist-note";
