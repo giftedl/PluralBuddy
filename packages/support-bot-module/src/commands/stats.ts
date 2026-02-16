@@ -26,7 +26,7 @@ export default class InfoCommand extends Command {
 > **User Count:** ${stats.userCount}
 > **Guild Count:** ${stats.guildCount}
 
--# Last updated <t:${stats.lastDrip}:R>`),
+-# Last updated <t:${Math.floor(Number(stats.lastDrip) / 1000)}:R>`),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,
