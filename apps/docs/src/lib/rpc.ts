@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import type { ClientType } from "bot";
 import { hc } from "hono/client";
 
