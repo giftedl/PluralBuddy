@@ -10,6 +10,7 @@ import { defaultUserStructure, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { NudgePreferences } from "@/views/nudge-preferences";
+import { userCollection } from "@/mongodb";
 
 export default class AddUserForm extends ComponentCommand {
 	componentType = "Button" as const;
@@ -23,6 +24,18 @@ export default class AddUserForm extends ComponentCommand {
 			ctx.customId,
 		)[0];
 		const user = await ctx.retrievePUser();
+
+		// Database migration (12/04/25)
+		if (user.nudging === undefined) {
+			await userCollection.updateOne(
+				{ userId: user.userId },
+				{ $set: { nudging: { blockedUsers: [], currentlyEnabled: true } } },
+			);
+
+			// Set user in memory
+			user.nudging = { blockedUsers: [], currentlyEnabled: true };
+		}
+		// End database migration
 
 		if (user.nudging.blockedUsers.includes(userId as string)) {
 			return await ctx.write({
