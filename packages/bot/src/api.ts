@@ -3,7 +3,12 @@ import { buildNumber, client } from ".";
 import { trimTrailingSlash } from "hono/trailing-slash";
 import { zValidator } from "@hono/zod-validator";
 import z from "zod";
-import { mongoClient } from "./mongodb";
+import {
+	alterCollection,
+	mongoClient,
+	tagCollection,
+	userCollection,
+} from "./mongodb";
 import type { ImportStage } from "plurography";
 import type { BaseResource } from "seyfert";
 import { AlertView } from "./views/alert";
@@ -11,6 +16,7 @@ import { translations } from "./lang/en_us";
 import { LoadingView } from "./views/loading";
 import { MessageFlags } from "seyfert/lib/types";
 import type { StatisticResource } from "./cache/statistics";
+import { add, both, replace } from "./lib/importing/pluralkit";
 
 const app = new Hono();
 
@@ -55,20 +61,82 @@ export const clientRoutes = app
 					{ status: 400 },
 				);
 
-			if (
-				importStage.response.dataType === "PluralKit" &&
-				importStage.importMode === "replace"
-			) {
-				await client.interactions.editMessage(
-					importStage.webhook.token,
-					importStage.webhook.id,
-					{
-						components: new LoadingView(translations).loadingView(),
+			client.interactions
+				.editOriginal(importStage.webhook.token, {
+					components: new LoadingView(translations).loadingViewLongTerm(),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				})
+				.then(async (message) => {
+					if (importStage.response === null) return;
+
+					const system = await userCollection.findOne({
+						userId: importStage.originatingSystemId,
+					});
+					const alters = await alterCollection
+						.find({ systemId: system?.userId })
+						.toArray();
+					const tags = await tagCollection
+						.find({ systemId: system?.userId })
+						.toArray();
+					let response = null;
+
+					if (
+						importStage.response.dataType === "PluralKit" &&
+						importStage.importMode === "replace"
+					) {
+						response = await replace({
+							existing: {
+								alters,
+								tags,
+								userId: importStage.originatingSystemId,
+							},
+							pk: JSON.parse(importStage.response?.data ?? ""),
+						});
+					}
+
+					if (
+						importStage.response.dataType === "PluralKit" &&
+						importStage.importMode === "add"
+					) {
+						response = await add({
+							existing: {
+								alters,
+								tags,
+								userId: importStage.originatingSystemId,
+							},
+							pk: JSON.parse(importStage.response?.data ?? ""),
+						});
+					}
+
+					if (
+						importStage.response.dataType === "PluralKit" &&
+						importStage.importMode === "full-mode"
+					) {
+						response = await both({
+							existing: {
+								alters,
+								tags,
+								userId: importStage.originatingSystemId,
+							},
+							pk: JSON.parse(importStage.response?.data ?? ""),
+						});
+					}
+
+					client.interactions.editOriginal(importStage.webhook.token, {
+						components: new AlertView(translations).successViewCustom(
+							translations.SYSTEM_ADVANCED_IMPORT.replace(
+								"{{ alter-count }}",
+								String(response?.affected.alters ?? 0),
+							).replace(
+								"{{ tag-count }}",
+								String(response?.affected.tags ?? 0),
+							),
+						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-					},
-				);
-				json({ done: "Handed back off to the user." });
-			}
+					});
+				});
+
+			return json({ done: "Handed back off to the user." });
 		},
 	)
 	.get("/api/health", (c) =>

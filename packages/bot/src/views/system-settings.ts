@@ -631,7 +631,7 @@ export class SystemSettingsView extends TranslatedView {
 				new TextDisplay().setContent(
 					`Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
 				),
-				new Separator().setSpacing(Spacing.Large).setDivider(false),
+				new Separator().setSpacing(Spacing.Small).setDivider(false),
 				new ActionRow().setComponents(
 					new StringSelectMenu()
 						.setCustomId(InteractionIdentifier.Systems.ImportMode.create())
@@ -653,7 +653,7 @@ export class SystemSettingsView extends TranslatedView {
 									"Full import mode will both replace existing alters and add new ones.",
 								)
 								.setLabel("Full Import")
-								.setValue("full-import"),
+								.setValue("full-mode"),
 						]),
 				),
 			),

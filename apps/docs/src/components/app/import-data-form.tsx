@@ -51,6 +51,8 @@ import {
 import { Label } from "../ui/label";
 import { Callout } from "../callout";
 import { markImportStagingDone } from "@/app/(app)/app/import-staging/actions";
+import { useRouter } from "next/navigation";
+import Spinner from "../ui/spinner";
 
 const formSchema = z.object({
 	from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {
@@ -76,10 +78,12 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 	const [open, setOpen] = useState(false);
 	const [alterCount, setAlterCount] = useState(0);
 	const [tagCount, setTagCount] = useState(0);
+	const router = useRouter();
 	const [type, setType] = useState<
 		"PluralKit" | "PluralBuddy" | "TupperBox" | ""
 	>("");
 	const [data, setData] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const form = useForm({
 		defaultValues: {
@@ -308,27 +312,26 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 					</DialogHeader>
 					<DialogFooter>
 						<DialogClose asChild>
-							<Button variant="outline">Cancel</Button>
+							<Button variant="outline" disabled={loading}>
+								Cancel
+							</Button>
 						</DialogClose>
 						<Button
 							type="submit"
-							onClick={() => {
-								toast.promise(
-									() =>
-										markImportStagingDone({
-											from: type as "PluralBuddy" | "PluralKit" | "TupperBox",
-											importStagingId: importData.webhook.id,
-											data,
-										}),
-									{
-										loading: "Sending import staging data...",
-										error: (v) =>
-											`There was an error while sending import stage data. Has the import stage timed out? (${v})`,
-										success: "Successfully sent import staging data.",
-									},
-								);
+							disabled={loading}
+							onClick={async () => {
+								setLoading(true);
+
+								await markImportStagingDone({
+									from: type as "PluralBuddy" | "PluralKit" | "TupperBox",
+									importStagingId: importData.webhook.id,
+									data,
+								});
+
+								router.push("/app/import-staging/done");
 							}}
 						>
+							{loading && <Spinner />}
 							Finalize & Import
 						</Button>
 					</DialogFooter>

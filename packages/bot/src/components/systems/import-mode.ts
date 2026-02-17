@@ -24,7 +24,7 @@ export default class ImportMode extends ComponentCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.update({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
