@@ -275,8 +275,8 @@ export const InteractionIdentifier = {
 			SetPFP: createStatic("systems/config/system/set-pfp"),
 			SetBanner: createStatic("systems/config/system/set-banner"),
 			SetSystemTag: createStatic("systems/config/system/set-system-tag"),
-			SetPronouns: createStatic("systems/config/alters/set-pronouns"),
-			SetDescription: createStatic("systems/config/alters/set-description"),
+			SetPronouns: createStatic("systems/config/system/set-pronouns"),
+			SetDescription: createStatic("systems/config/system/set-description"),
 
 			Alters: {
 				Index: createStatic("systems/config/alters"),
