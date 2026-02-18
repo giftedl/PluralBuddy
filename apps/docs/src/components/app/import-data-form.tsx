@@ -272,7 +272,9 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 									? "replaced"
 									: importData.importMode === "add"
 										? "added"
-										: "replaced and added"}{" "}
+										: importData.importMode === "delete"
+											? "possibly removed"
+											: "replaced and added"}{" "}
 								into your system.
 							</li>
 							<li>
@@ -281,7 +283,9 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 									? "replaced"
 									: importData.importMode === "add"
 										? "added"
-										: "replaced and added"}{" "}
+										: importData.importMode === "delete"
+											? "possibly removed"
+											: "replaced and added"}{" "}
 								into your system.
 							</li>
 						</ul>

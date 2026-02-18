@@ -229,7 +229,7 @@ export default createEvent({
 
 			let checkAlter = null;
 
-			if (!proxyTags)
+			if (!proxyTags || proxyTags.length === 0)
 				checkAlter = await alterCollection.findOne({
 					alterId: user.system.alterIds[i],
 				});
