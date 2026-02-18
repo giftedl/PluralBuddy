@@ -79,7 +79,11 @@ export async function add(
 	input: z.infer<typeof PluralBuddyImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
 	const newAlters = input.import.alters
-		.filter((v) => input.existing.alters.some((c) => c.username !== v.username))
+		.filter((v) =>
+			input.existing.alters.length > 0
+				? input.existing.alters.some((c) => c.username !== v.username)
+				: true,
+		)
 		.map(
 			(v, i) =>
 				({
@@ -103,7 +107,11 @@ export async function add(
 
 	const newTags = input.import.tags
 		.filter((v) =>
-			input.existing.tags.some((c) => c.tagFriendlyName === v.tagFriendlyName),
+			input.existing.tags.length > 0
+				? input.existing.tags.some(
+						(c) => c.tagFriendlyName === v.tagFriendlyName,
+					)
+				: true,
 		)
 		.map((v) => ({
 			existing: input.existing.tags.find(

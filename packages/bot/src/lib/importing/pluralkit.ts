@@ -188,15 +188,17 @@ export async function add(
 
 	const newAlters = pk.members
 		.filter((v) =>
-			existing.alters.some(
-				(c) =>
-					c.username !==
-					v.name
-						.replaceAll(" ", "")
-						.replaceAll("/", "")
-						.replaceAll("\\", "")
-						.replaceAll("@", ""),
-			),
+			existing.alters.length > 0
+				? existing.alters.some(
+						(c) =>
+							c.username !==
+							v.name
+								.replaceAll(" ", "")
+								.replaceAll("/", "")
+								.replaceAll("\\", "")
+								.replaceAll("@", ""),
+					)
+				: true,
 		)
 		.map(
 			(member, i) =>
@@ -270,9 +272,11 @@ export async function add(
 
 	const newTags = pk.groups
 		.filter((v) =>
-			existing.tags.some(
-				(tag) => v.display_name ?? v.name !== tag.tagFriendlyName,
-			),
+			existing.tags.length > 0
+				? existing.tags.some(
+						(tag) => v.display_name ?? v.name !== tag.tagFriendlyName,
+					)
+				: true,
 		)
 		.map((group, i) =>
 			PTagObject.safeParse({

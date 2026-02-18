@@ -155,15 +155,17 @@ export async function add(
 
 	const newAlters = tb.tuppers
 		.filter((v) =>
-			existing.alters.some(
-				(c) =>
-					c.username !==
-					v.name
-						.replaceAll(" ", "")
-						.replaceAll("/", "")
-						.replaceAll("\\", "")
-						.replaceAll("@", ""),
-			),
+			existing.alters.length > 0
+				? existing.alters.some(
+						(c) =>
+							c.username !==
+							v.name
+								.replaceAll(" ", "")
+								.replaceAll("/", "")
+								.replaceAll("\\", "")
+								.replaceAll("@", ""),
+					)
+				: true,
 		)
 		.map((member, i) => {
 			const combinedBrackets: string[][] = [];
@@ -221,7 +223,11 @@ export async function add(
 	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
 
 	const newTags = tb.groups
-		.filter((v) => existing.tags.some((tag) => v.name !== tag.tagFriendlyName))
+		.filter((v) =>
+			existing.tags.length > 0
+				? existing.tags.some((tag) => v.name !== tag.tagFriendlyName)
+				: true,
+		)
 		.map((group, i) =>
 			PTagObject.safeParse({
 				tagId: String(DiscordSnowflake.generate({ workerId: BigInt(i) })),
