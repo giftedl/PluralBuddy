@@ -290,8 +290,50 @@ export async function both(
 	} satisfies z.infer<typeof ImportOutput>);
 }
 
+export async function deleteM(
+	input: z.infer<typeof TupperBoxImportEntry>,
+): Promise<z.infer<typeof ImportOutput>> {
+	const pendingDeletedAlters = input.existing.alters.filter((v) =>
+		input.import.tuppers.some((c) => v.username !== c.name),
+	);
+
+	await alterCollection.deleteMany({
+		alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
+	});
+
+	const pendingDeletedTags = input.existing.tags.filter((v) =>
+		input.import.groups.some((c) => c.name === v.tagFriendlyName),
+	);
+
+	await tagCollection.deleteMany({
+		tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
+	});
+	await userCollection.updateOne(
+		{
+			userId: input.existing.userId,
+		},
+		{
+			$pull: {
+				"system.alterIds": pendingDeletedAlters.map((v) => v.alterId),
+				"system.tagIds": pendingDeletedTags.map((v) => v.tagId),
+			},
+		},
+	);
+
+	return ImportOutput.parse({
+		alters: pendingDeletedAlters,
+		tags: pendingDeletedTags,
+		userId: input.existing.userId,
+		affected: {
+			alters: pendingDeletedAlters.length,
+			tags: pendingDeletedTags.length,
+		},
+	} satisfies z.infer<typeof ImportOutput>);
+}
+
 export default {
 	replace,
 	add,
 	both,
+	deleteM,
 };

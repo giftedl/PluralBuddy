@@ -14,7 +14,7 @@ export const ImportStageObject = z.object({
 		.default(null),
 
 	originatingSystemId: z.string(),
-	importMode: z.enum(["replace", "add", "full-mode"]),
+	importMode: z.enum(["replace", "add", "full-mode", "delete"]),
 	createdAt: z.coerce.date(),
 });
 

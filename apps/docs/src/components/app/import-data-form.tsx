@@ -302,6 +302,12 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 										only required PluralKit identification property.
 									</p>
 								)}
+								{importData.importMode === "delete" && (
+									<p>
+										In delete mode, you may unintentionally delete alter/tags
+										which PluralBuddy couldn't find a equivalent alter/tag for.
+									</p>
+								)}
 								<p>
 									Please keep these differences in mind! This is why there are
 									different modes (ie. replace and add) before changing an

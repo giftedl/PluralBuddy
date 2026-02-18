@@ -11,10 +11,11 @@ type ImportController<T> = {
 	add: ValidInputFunction<T>;
 	replace: ValidInputFunction<T>;
 	both: ValidInputFunction<T>;
+	deleteM: ValidInputFunction<T>;
 };
 
 export const importControllers = {
-	PluralKit: PluralKit as ImportController<PKEntry>,
-	PluralBuddy: PluralBuddy as ImportController<PBEntry>,
-	TupperBox: TupperBox as ImportController<TBEntry>,
+	PluralKit: PluralKit satisfies ImportController<PKEntry>,
+	PluralBuddy: PluralBuddy satisfies ImportController<PBEntry>,
+	TupperBox: TupperBox satisfies ImportController<TBEntry>,
 };

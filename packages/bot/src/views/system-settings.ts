@@ -654,6 +654,12 @@ export class SystemSettingsView extends TranslatedView {
 								)
 								.setLabel("Full Import")
 								.setValue("full-mode"),
+							new StringSelectOption()
+								.setDescription(
+									"Delete import mode will remove existing alters/tags missing from the import.",
+								)
+								.setLabel("Delete")
+								.setValue("delete"),
 						]),
 				),
 			),
