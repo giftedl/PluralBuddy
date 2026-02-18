@@ -12,11 +12,11 @@ import {
 import type { ImportStage } from "plurography";
 import type { BaseResource } from "seyfert";
 import { AlertView } from "./views/alert";
+import { importControllers } from "./lib/importing/importControllers";
 import { translations } from "./lang/en_us";
 import { LoadingView } from "./views/loading";
 import { MessageFlags } from "seyfert/lib/types";
 import type { StatisticResource } from "./cache/statistics";
-import { add, both, replace } from "./lib/importing/pluralkit";
 
 const app = new Hono();
 
@@ -80,47 +80,19 @@ export const clientRoutes = app
 						.toArray();
 					let response = null;
 
-					if (
-						importStage.response.dataType === "PluralKit" &&
-						importStage.importMode === "replace"
-					) {
-						response = await replace({
-							existing: {
-								alters,
-								tags,
-								userId: importStage.originatingSystemId,
-							},
-							pk: JSON.parse(importStage.response?.data ?? ""),
-						});
-					}
-
-					if (
-						importStage.response.dataType === "PluralKit" &&
-						importStage.importMode === "add"
-					) {
-						response = await add({
-							existing: {
-								alters,
-								tags,
-								userId: importStage.originatingSystemId,
-							},
-							pk: JSON.parse(importStage.response?.data ?? ""),
-						});
-					}
-
-					if (
-						importStage.response.dataType === "PluralKit" &&
-						importStage.importMode === "full-mode"
-					) {
-						response = await both({
-							existing: {
-								alters,
-								tags,
-								userId: importStage.originatingSystemId,
-							},
-							pk: JSON.parse(importStage.response?.data ?? ""),
-						});
-					}
+					response = await importControllers[importStage.response.dataType][
+						importStage.importMode.replace("full-mode", "full") as
+							| "both"
+							| "add"
+							| "replace"
+					]({
+						existing: {
+							alters,
+							tags,
+							userId: importStage.originatingSystemId,
+						},
+						import: JSON.parse(importStage.response?.data ?? ""),
+					});
 
 					client.interactions.editOriginal(importStage.webhook.token, {
 						components: new AlertView(translations).successViewCustom(

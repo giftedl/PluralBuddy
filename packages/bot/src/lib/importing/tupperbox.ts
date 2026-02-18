@@ -1,31 +1,31 @@
-import z from "zod";
-import { ImportEntry, ImportOutput } from ".";
 import {
 	AlterProtectionFlags,
 	PAlterObject,
-	PluralKitSystem,
 	PTagObject,
 	TagProtectionFlags,
+	TupperBoxSystem,
 	type PAlter,
 	type PTag,
 } from "plurography";
+import { ImportEntry, ImportOutput } from ".";
+import z from "zod";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { combine } from "../privacy-bitmask";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 
-const PluralKitImportEntry = z.object({
+const TupperBoxImportEntry = z.object({
 	existing: ImportEntry,
-	import: PluralKitSystem,
+	import: TupperBoxSystem,
 });
-export type PKEntry = z.infer<typeof PluralKitImportEntry>;
+export type TBEntry = z.infer<typeof TupperBoxImportEntry>;
 
 export async function replace(
-	input: z.infer<typeof PluralKitImportEntry>,
+	input: z.infer<typeof TupperBoxImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
-	const { existing, import: pk } = PluralKitImportEntry.parse(input);
+	const { existing, import: tb } = TupperBoxImportEntry.parse(input);
 	const newAlters = existing.alters
 		.filter((alter) =>
-			pk.members.some(
+			tb.tuppers.some(
 				(v) =>
 					v.name
 						.replaceAll(" ", "")
@@ -36,7 +36,7 @@ export async function replace(
 		)
 		.map((alter) => ({
 			pluralbuddy: alter,
-			member: pk.members.find(
+			member: tb.tuppers.find(
 				(v) =>
 					v.name
 						.replaceAll(" ", "")
@@ -46,8 +46,18 @@ export async function replace(
 			),
 		}))
 		.filter((c) => c.member !== undefined)
-		.map(
-			({ pluralbuddy, member }) =>
+		.map(({ pluralbuddy, member }) => {
+			const combinedBrackets: string[][] = [];
+
+			Array.from(
+				{ length: Math.floor((member?.brackets.length ?? 0) / 2) },
+				(_, i) => {
+					const slicableItem = member?.brackets.slice(i * 2, i * 2 + 2);
+					if (slicableItem) combinedBrackets.push(slicableItem);
+				},
+			);
+
+			return (
 				member !== undefined && {
 					zodData: PAlterObject.safeParse({
 						alterId: pluralbuddy.alterId,
@@ -57,79 +67,48 @@ export async function replace(
 							.replaceAll("/", "")
 							.replaceAll("\\", "")
 							.replaceAll("@", ""),
-						displayName: member.display_name ?? member.name,
+						displayName: member.nick ?? member.name,
 						nameMap: pluralbuddy.nameMap,
-						color: member.color !== null ? `#${member.color}` : null,
+						color: pluralbuddy.color,
 						alterMode: "webhook",
 						description: member.description,
 						created: new Date(),
-						pronouns: member.pronouns,
-						avatarUrl: member.avatar_url ?? member.webhook_avatar_url,
+						pronouns: pluralbuddy.pronouns,
+						avatarUrl: member.avatar_url ?? pluralbuddy.avatarUrl,
 						webhookAvatarUrl: null,
 						banner: member.banner,
 						lastMessageTimestamp: null,
 						messageCount: 0,
-						proxyTags: member.proxy_tags.map((tag) => {
+						proxyTags: combinedBrackets.map(([prefix, suffix]) => {
 							return {
-								prefix: tag.prefix?.replaceAll('"', "") ?? "",
-								suffix: tag.suffix?.replaceAll('"', "") ?? "",
+								prefix: prefix?.replaceAll('"', "") ?? "",
+								suffix: suffix?.replaceAll('"', "") ?? "",
 								id: Number(DiscordSnowflake.generate()).toString(),
 							};
 						}),
 						tagIds: pluralbuddy.tagIds,
-						public: combine(
-							...[
-								...(member.privacy.visibility === "public"
-									? [AlterProtectionFlags.VISIBILITY]
-									: []),
-								...(member.privacy.pronoun_privacy === "public"
-									? [AlterProtectionFlags.PRONOUNS]
-									: []),
-								...(member.privacy.description_privacy === "public"
-									? [AlterProtectionFlags.DESCRIPTION]
-									: []),
-								...(member.privacy.avatar_privacy === "public"
-									? [AlterProtectionFlags.AVATAR]
-									: []),
-								...(member.privacy.banner_privacy === "public"
-									? [AlterProtectionFlags.BANNER]
-									: []),
-								...(member.privacy.metadata_privacy === "public"
-									? [
-											AlterProtectionFlags.MESSAGE_COUNT,
-											AlterProtectionFlags.TAGS,
-										]
-									: []),
-								...(member.privacy.name_privacy === "public"
-									? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
-									: []),
-							],
-						),
+						public: pluralbuddy.public,
 					} satisfies PAlter),
 					originalPkId: member.id,
-				},
-		)
+				}
+			);
+		})
 		.filter((res) => res !== false);
 
 	for (const replacedAlter of newAlters
 		.map((c) => c.zodData)
 		.filter((v) => v.data !== undefined)) {
-		console.log("change!");
 		await alterCollection.replaceOne(
 			{ alterId: replacedAlter.data?.alterId },
 			replacedAlter.data,
 		);
 	}
 
-	const correspondingPKTags = existing.tags
-		.filter((tag) =>
-			pk.groups.some((v) => v.display_name ?? v.name === tag.tagFriendlyName),
-		)
+	const correspondingTBTags = existing.tags
+		.filter((tag) => tb.groups.some((v) => v.name === tag.tagFriendlyName))
 		.map((tag) => ({
 			pluralbuddy: tag,
-			group: pk.groups.find(
-				(c) => tag.tagFriendlyName === (c.display_name ?? c.name),
-			),
+			group: tb.groups.find((c) => tag.tagFriendlyName === c.name),
 		}))
 		.filter((c) => c.group !== undefined)
 		.map(
@@ -139,30 +118,18 @@ export async function replace(
 					tagId: pluralbuddy.tagId,
 					systemId: existing.userId,
 
-					tagFriendlyName: group.display_name ?? group.name,
+					tagFriendlyName: group.name,
 					tagDescription: group.description ?? undefined,
 					tagColor: pluralbuddy.tagColor,
 
 					associatedAlters: pluralbuddy.associatedAlters,
 
-					public: combine(
-						...[
-							...(group.privacy.description_privacy === "public"
-								? [TagProtectionFlags.DESCRIPTION]
-								: []),
-							...(group.privacy.name_privacy === "public"
-								? [TagProtectionFlags.NAME]
-								: []),
-							...(group.privacy.metadata_privacy === "public"
-								? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
-								: []),
-						],
-					),
+					public: pluralbuddy.public,
 				} satisfies PTag),
 		)
 		.filter((res) => res !== false);
 
-	for (const replacedTag of correspondingPKTags.filter(
+	for (const replacedTag of correspondingTBTags.filter(
 		(v) => v.data !== undefined,
 	))
 		await tagCollection.replaceOne(
@@ -172,21 +139,21 @@ export async function replace(
 
 	return ImportOutput.parse({
 		alters: newAlters.map((c) => c.zodData.data).filter((c) => c !== undefined),
-		tags: correspondingPKTags.map((c) => c.data).filter((c) => c !== undefined),
+		tags: correspondingTBTags.map((c) => c.data).filter((c) => c !== undefined),
 		userId: existing.userId,
 		affected: {
 			alters: newAlters.length,
-			tags: correspondingPKTags.length,
+			tags: correspondingTBTags.length,
 		},
 	} satisfies z.infer<typeof ImportOutput>);
 }
 
 export async function add(
-	input: z.infer<typeof PluralKitImportEntry>,
+	input: z.infer<typeof TupperBoxImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
-	const { existing, import: pk } = PluralKitImportEntry.parse(input);
+	const { existing, import: tb } = TupperBoxImportEntry.parse(input);
 
-	const newAlters = pk.members
+	const newAlters = tb.tuppers
 		.filter((v) =>
 			existing.alters.some(
 				(c) =>
@@ -198,8 +165,18 @@ export async function add(
 						.replaceAll("@", ""),
 			),
 		)
-		.map(
-			(member, i) =>
+		.map((member, i) => {
+			const combinedBrackets: string[][] = [];
+
+			Array.from(
+				{ length: Math.floor((member?.brackets.length ?? 0) / 2) },
+				(_, i) => {
+					const slicableItem = member?.brackets.slice(i * 2, i * 2 + 2);
+					if (slicableItem) combinedBrackets.push(slicableItem);
+				},
+			);
+
+			return (
 				member !== undefined && {
 					zodData: PAlterObject.safeParse({
 						alterId: Number(DiscordSnowflake.generate({ workerId: BigInt(i) })),
@@ -209,58 +186,33 @@ export async function add(
 							.replaceAll("/", "")
 							.replaceAll("\\", "")
 							.replaceAll("@", ""),
-						displayName: member.display_name ?? member.name,
+						displayName: member.nick ?? member.name,
 						nameMap: [],
-						color: member.color !== null ? `#${member.color}` : null,
+						color: null,
 						alterMode: "webhook",
 						description: member.description,
 						created: new Date(),
-						pronouns: member.pronouns,
-						avatarUrl: member.avatar_url ?? member.webhook_avatar_url,
+						pronouns: null,
+						avatarUrl: member.avatar_url,
 						webhookAvatarUrl: null,
 						banner: member.banner,
 						lastMessageTimestamp: null,
 						messageCount: 0,
-						proxyTags: member.proxy_tags.map((tag) => {
+						proxyTags: combinedBrackets.map(([prefix, suffix]) => {
 							return {
-								prefix: tag.prefix?.replaceAll('"', "") ?? "",
-								suffix: tag.suffix?.replaceAll('"', "") ?? "",
+								prefix: prefix?.replaceAll('"', "") ?? "",
+								suffix: suffix?.replaceAll('"', "") ?? "",
 								id: Number(DiscordSnowflake.generate()).toString(),
 							};
 						}),
 						tagIds: [],
-						public: combine(
-							...[
-								...(member.privacy.visibility === "public"
-									? [AlterProtectionFlags.VISIBILITY]
-									: []),
-								...(member.privacy.pronoun_privacy === "public"
-									? [AlterProtectionFlags.PRONOUNS]
-									: []),
-								...(member.privacy.description_privacy === "public"
-									? [AlterProtectionFlags.DESCRIPTION]
-									: []),
-								...(member.privacy.avatar_privacy === "public"
-									? [AlterProtectionFlags.AVATAR]
-									: []),
-								...(member.privacy.banner_privacy === "public"
-									? [AlterProtectionFlags.BANNER]
-									: []),
-								...(member.privacy.metadata_privacy === "public"
-									? [
-											AlterProtectionFlags.MESSAGE_COUNT,
-											AlterProtectionFlags.TAGS,
-										]
-									: []),
-								...(member.privacy.name_privacy === "public"
-									? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
-									: []),
-							],
-						),
+						// TupperBox has no permission values... lol
+						public: 0,
 					} satisfies PAlter),
 					originalPkId: member.id,
-				},
-		)
+				}
+			);
+		})
 		.filter((v) => v !== false)
 		.map((v) => v.zodData)
 		.filter((v) => v.data !== undefined)
@@ -268,36 +220,20 @@ export async function add(
 
 	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
 
-	const newTags = pk.groups
-		.filter((v) =>
-			existing.tags.some(
-				(tag) => v.display_name ?? v.name !== tag.tagFriendlyName,
-			),
-		)
+	const newTags = tb.groups
+		.filter((v) => existing.tags.some((tag) => v.name !== tag.tagFriendlyName))
 		.map((group, i) =>
 			PTagObject.safeParse({
 				tagId: String(DiscordSnowflake.generate({ workerId: BigInt(i) })),
 				systemId: existing.userId,
 
-				tagFriendlyName: group.display_name ?? group.name,
+				tagFriendlyName: group.name,
 				tagDescription: group.description ?? undefined,
 				tagColor: "pink",
 
 				associatedAlters: [],
 
-				public: combine(
-					...[
-						...(group.privacy.description_privacy === "public"
-							? [TagProtectionFlags.DESCRIPTION]
-							: []),
-						...(group.privacy.name_privacy === "public"
-							? [TagProtectionFlags.NAME]
-							: []),
-						...(group.privacy.metadata_privacy === "public"
-							? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
-							: []),
-					],
-				),
+				public: 0,
 			} satisfies PTag),
 		)
 		.filter((v) => v.data !== undefined)
@@ -329,7 +265,7 @@ export async function add(
 }
 
 export async function both(
-	input: z.infer<typeof PluralKitImportEntry>,
+	input: z.infer<typeof TupperBoxImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
 	const replaceInput = await replace(input);
 	const addInput = await add({

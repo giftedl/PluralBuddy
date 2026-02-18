@@ -100,6 +100,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				lastMessageTimestamp: null,
 				messageCount: 0,
 				alterId: Number(DiscordSnowflake.generate({ processId: BigInt(i) })),
+				created: new Date(),
 			};
 		});
 
@@ -118,7 +119,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				...v,
 				tagId: DiscordSnowflake.generate({ processId: BigInt(i) }).toString(),
 				systemId: ctx.author.id,
-				associatedAlters: newAlterIds.filter((c) => c !== undefined).map((c) => c.alterId.toString()),
+				associatedAlters: newAlterIds
+					.filter((c) => c !== undefined)
+					.map((c) => c.alterId.toString()),
 			};
 		});
 
@@ -144,7 +147,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		data.system.tagIds = newTags.map((v) => v.tagId);
 
 		await alterCollection.insertMany(patchedAlters);
-        await tagCollection.insertMany(newTags)
+		await tagCollection.insertMany(newTags);
 
 		await writeUserById(ctx.author.id, {
 			...(await getUserById(ctx.author.id)),

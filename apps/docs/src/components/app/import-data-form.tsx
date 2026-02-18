@@ -113,7 +113,8 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 					const parsedData = TupperBoxSystem.safeParse(JSON.parse(value.data));
 
 					if (parsedData.error) {
-						toast.error("This is not a valid PluralKit configuration.");
+						console.log(parsedData.error);
+						toast.error("This is not a valid TupperBox configuration.");
 						return;
 					}
 
