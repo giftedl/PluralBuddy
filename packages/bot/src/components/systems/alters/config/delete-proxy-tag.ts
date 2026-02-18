@@ -8,38 +8,41 @@ import { MessageFlags } from "seyfert/lib/types";
 import { AlterView } from "../../../../views/alters";
 
 export default class DeleteProxyTag extends ComponentCommand {
-    componentType = 'Button' as const;
+	componentType = "Button" as const;
 
-    override filter(context: ComponentContext<typeof this.componentType>) {
-        return InteractionIdentifier.Systems.Configuration.Alters.DeleteProxyTag.startsWith(context.customId)
-    }
+	override filter(context: ComponentContext<typeof this.componentType>) {
+		return InteractionIdentifier.Systems.Configuration.Alters.DeleteProxyTag.startsWith(
+			context.customId,
+		);
+	}
 
-    override async run(context: ComponentContext<typeof this.componentType>) {
-        
+	override async run(context: ComponentContext<typeof this.componentType>) {
 		const alterId =
-            InteractionIdentifier.Systems.Configuration.Alters.DeleteProxyTag.substring(
-                context.customId,
-            )[0];
-        const proxyTag = 
-            InteractionIdentifier.Systems.Configuration.Alters.DeleteProxyTag.substring(
-                context.customId,
-            )[1];
+			InteractionIdentifier.Systems.Configuration.Alters.DeleteProxyTag.substring(
+				context.customId,
+			)[0];
+		const proxyTag =
+			InteractionIdentifier.Systems.Configuration.Alters.DeleteProxyTag.substring(
+				context.customId,
+			)[1];
 
-
-        const systemId = context.author.id;
-        const query = alterCollection.findOne({
+		const systemId = context.author.id;
+		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
-        });
-        let alter = await query;
+		});
+		let alter = await query;
 
-        if (alter === null || alter.proxyTags.filter(v => v.id === proxyTag).length !== 1) {
-            return await context.write({
-                components: new AlertView(context.userTranslations()).errorView(
-                    "ERROR_ALTER_DOESNT_EXIST",
-                ),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-            });
-        }
+		if (
+			alter === null ||
+			alter.proxyTags.filter((v) => v.id === proxyTag).length !== 1
+		) {
+			return await context.write({
+				components: new AlertView(context.userTranslations()).errorView(
+					"ERROR_ALTER_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
 
 		await alterCollection.updateOne(
 			{ alterId: Number(alterId), systemId },
@@ -50,10 +53,12 @@ export default class DeleteProxyTag extends ComponentCommand {
 			},
 		);
 
-		alter = await alterCollection.findOne({
-			alterId: Number(alterId),
-			systemId,
-		}) ?? alter;
+		alter =
+			(await alterCollection.findOne({
+				alterId: Number(alterId),
+				systemId,
+			})) ?? alter;
+		if (alterId) context.client.cache.alterProxy.remove(alterId);
 
 		return await context.interaction.update({
 			components: [
@@ -66,5 +71,5 @@ export default class DeleteProxyTag extends ComponentCommand {
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
-    }
+	}
 }

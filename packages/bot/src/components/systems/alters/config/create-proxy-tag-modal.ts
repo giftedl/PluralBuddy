@@ -86,10 +86,13 @@ export default class CreateProxyTagModal extends ModalCommand {
 			},
 		);
 
-		alter = await alterCollection.findOne({
-			alterId: Number(alterId),
-			systemId,
-		}) ?? alter;
+		alter =
+			(await alterCollection.findOne({
+				alterId: Number(alterId),
+				systemId,
+			})) ?? alter;
+
+		if (alterId) context.client.cache.alterProxy.remove(alterId);
 
 		return await context.interaction.update({
 			components: [
