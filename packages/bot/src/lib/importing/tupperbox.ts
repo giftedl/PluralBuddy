@@ -314,8 +314,8 @@ export async function deleteM(
 		},
 		{
 			$pull: {
-				"system.alterIds": pendingDeletedAlters.map((v) => v.alterId),
-				"system.tagIds": pendingDeletedTags.map((v) => v.tagId),
+				"system.alterIds": { $in: pendingDeletedAlters.map((v) => v.alterId) },
+				"system.tagIds": { $in: pendingDeletedTags.map((v) => v.tagId) },
 			},
 		},
 	);
