@@ -144,6 +144,28 @@ export async function add(
 	} satisfies z.infer<typeof ImportOutput>);
 }
 
+export async function both(
+	input: z.infer<typeof PluralBuddyImportEntry>,
+): Promise<z.infer<typeof ImportOutput>> {
+	const replaceInput = await replace(input);
+	const addInput = await add({
+		existing: replaceInput,
+		import: input.import,
+	});
+
+	return ImportOutput.parse({
+		alters: addInput?.alters ?? [],
+		tags: addInput?.tags ?? [],
+		userId: input.existing.userId,
+		affected: {
+			alters: replaceInput.affected.alters + addInput.affected.alters,
+			tags: replaceInput.affected.tags + addInput.affected.tags,
+		},
+	} satisfies z.infer<typeof ImportOutput>);
+}
+
 export default {
 	replace,
+	add,
+	both,
 };
