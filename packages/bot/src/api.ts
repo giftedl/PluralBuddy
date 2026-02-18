@@ -81,7 +81,7 @@ export const clientRoutes = app
 					let response = null;
 
 					response = await importControllers[importStage.response.dataType][
-						importStage.importMode.replace("full-mode", "full") as
+						importStage.importMode.replace("full-mode", "both") as
 							| "both"
 							| "add"
 							| "replace"
