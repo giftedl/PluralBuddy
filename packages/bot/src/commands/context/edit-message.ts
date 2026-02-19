@@ -1,6 +1,8 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { emojis } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { messagesCollection } from "@/mongodb";
 import {
 	Declare,
 	Label,
@@ -10,7 +12,12 @@ import {
 	TextInput,
 } from "seyfert";
 import { ContextMenuCommand } from "seyfert";
-import { ApplicationCommandType, TextInputStyle } from "seyfert/lib/types";
+import {
+	ApplicationCommandType,
+	ComponentType,
+	TextInputStyle,
+	type APITextDisplayComponent,
+} from "seyfert/lib/types";
 
 @Declare({
 	type: ApplicationCommandType.Message,
@@ -19,6 +26,12 @@ import { ApplicationCommandType, TextInputStyle } from "seyfert/lib/types";
 })
 export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
+		const contents = ctx.target.components.find(
+			(v) =>
+				v.data.type === ComponentType.TextDisplay &&
+				!v.data.content.startsWith(`-# ${emojis.reply}`),
+		);
+
 		const modal = new Modal()
 			.setCustomId(
 				InteractionIdentifier.EditMenu.EditContextForm.create(ctx.target.id),
@@ -32,11 +45,12 @@ export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 							.setCustomId(
 								InteractionIdentifier.EditMenu.EditContextType.create(),
 							)
+							.setValue((contents?.data as APITextDisplayComponent).content)
 							.setStyle(TextInputStyle.Paragraph)
 							.setRequired(true),
 					),
 			]);
 
-        return await ctx.modal(modal);
+		return await ctx.modal(modal);
 	}
 }

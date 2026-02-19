@@ -24,6 +24,7 @@ import {
 import { processUrlIntegrations } from "./process-url-attachments";
 import type { PGuild } from "plurography";
 import { emojis } from "../emojis";
+import { alterCollection, messagesCollection } from "@/mongodb";
 
 export async function processEditContents(
 	messageData: PMessage,
@@ -82,24 +83,50 @@ export async function processEditContents(
 				guildPositionRole &&
 				guildPositionRole.containerContents !== undefined
 			) {
-				(guildPositionRole.containerLocation === "top"
-					? roleBeforeComponents
-					: roleAfterComponents
-				).push(
-					guildPositionRole.containerColor !== undefined
-						? new Container()
-								.setComponents(
+				const lastMessageInChannel = await message.channel();
+				let continueBool = true;
+
+				if (
+					lastMessageInChannel.isTextable() &&
+					lastMessageInChannel.lastMessageId
+				) {
+					const messageLast = await lastMessageInChannel.messages.list({
+						limit: 2,
+						before: message.id,
+					});
+
+					if (messageLast[0]) {
+						const message = await messagesCollection.findOne({
+							$and: [
+								{ messageId: messageLast[0].id },
+								{ alterId: messageData.alterId },
+							],
+						});
+						if (message) {
+							continueBool = false;
+						}
+					}
+				}
+
+				if (continueBool)
+					(guildPositionRole.containerLocation === "top"
+						? roleBeforeComponents
+						: roleAfterComponents
+					).push(
+						guildPositionRole.containerColor !== undefined
+							? new Container()
+									.setComponents(
+										new TextDisplay().setContent(
+											guildPositionRole.containerContents,
+										),
+									)
+									.setColor(guildPositionRole.containerColor as `#${string}`)
+							: new Container().setComponents(
 									new TextDisplay().setContent(
 										guildPositionRole.containerContents,
 									),
-								)
-								.setColor(guildPositionRole.containerColor as `#${string}`)
-						: new Container().setComponents(
-								new TextDisplay().setContent(
-									guildPositionRole.containerContents,
 								),
-							),
-				);
+					);
 			}
 		}
 	}

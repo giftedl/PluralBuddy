@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { client } from "@/index";
-import { alterCollection } from "@/mongodb";
+import { alterCollection, messagesCollection } from "@/mongodb";
 import type { PAlter } from "@/types/alter";
 import type { PUser } from "@/types/user";
 import {
@@ -185,24 +185,49 @@ export async function performAlterAutoProxy(
 					guildPositionRole &&
 					guildPositionRole.containerContents !== undefined
 				) {
-					(guildPositionRole.containerLocation === "top"
-						? roleBeforeComponents
-						: roleAfterComponents
-					).push(
-						guildPositionRole.containerColor !== undefined
-							? new Container()
-									.setComponents(
+					const lastMessageInChannel = await message.channel();
+					let continueBool = true;
+
+					if (
+						lastMessageInChannel.isTextable() &&
+						lastMessageInChannel.lastMessageId
+					) {
+						const messageLast = await lastMessageInChannel.messages.list({
+							limit: 2,
+						});
+
+						if (messageLast[1]) {
+							const message = await messagesCollection.findOne({
+								$and: [
+									{ messageId: messageLast[1].id },
+									{ alterId: alter.alterId },
+								],
+							});
+							if (message) {
+								continueBool = false;
+							}
+						}
+					}
+
+					if (continueBool)
+						(guildPositionRole.containerLocation === "top"
+							? roleBeforeComponents
+							: roleAfterComponents
+						).push(
+							guildPositionRole.containerColor !== undefined
+								? new Container()
+										.setComponents(
+											new TextDisplay().setContent(
+												guildPositionRole.containerContents,
+											),
+										)
+										.setColor(guildPositionRole.containerColor as `#${string}`)
+								: new Container().setComponents(
 										new TextDisplay().setContent(
 											guildPositionRole.containerContents,
 										),
-									)
-									.setColor(guildPositionRole.containerColor as `#${string}`)
-							: new Container().setComponents(
-									new TextDisplay().setContent(
-										guildPositionRole.containerContents,
 									),
-								),
-					);
+						);
 				}
 			}
 		}

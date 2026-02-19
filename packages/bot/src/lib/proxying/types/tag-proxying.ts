@@ -14,7 +14,7 @@ import { getReferencedMessageString } from "../referenced-message";
 import { CacheFrom, Container, TextDisplay } from "seyfert";
 import { processEmojis } from "../process-emojis";
 import { proxy } from "..";
-import { alterCollection } from "@/mongodb";
+import { alterCollection, messagesCollection } from "@/mongodb";
 import { setLastLatchAlter } from "../util";
 import { createProxyError } from "../error";
 import type { PGuild } from "plurography";
@@ -207,24 +207,49 @@ export async function performTagProxy(
 					guildPositionRole &&
 					guildPositionRole.containerContents !== undefined
 				) {
-					(guildPositionRole.containerLocation === "top"
-						? roleBeforeComponents
-						: roleAfterComponents
-					).push(
-						guildPositionRole.containerColor !== undefined
-							? new Container()
-									.setComponents(
+					const lastMessageInChannel = await message.channel();
+					let continueBool = true;
+
+					if (
+						lastMessageInChannel.isTextable() &&
+						lastMessageInChannel.lastMessageId
+					) {
+						const messageLast = await lastMessageInChannel.messages.list({
+							limit: 2,
+						});
+
+						if (messageLast[1]) {
+							const message = await messagesCollection.findOne({
+								$and: [
+									{ messageId: messageLast[1].id },
+									{ alterId: checkAlter.alterId },
+								],
+							});
+							if (message) {
+								continueBool = false;
+							}
+						}
+					}
+
+					if (continueBool)
+						(guildPositionRole.containerLocation === "top"
+							? roleBeforeComponents
+							: roleAfterComponents
+						).push(
+							guildPositionRole.containerColor !== undefined
+								? new Container()
+										.setComponents(
+											new TextDisplay().setContent(
+												guildPositionRole.containerContents,
+											),
+										)
+										.setColor(guildPositionRole.containerColor as `#${string}`)
+								: new Container().setComponents(
 										new TextDisplay().setContent(
 											guildPositionRole.containerContents,
 										),
-									)
-									.setColor(guildPositionRole.containerColor as `#${string}`)
-							: new Container().setComponents(
-									new TextDisplay().setContent(
-										guildPositionRole.containerContents,
 									),
-								),
-					);
+						);
 				}
 			}
 		}

@@ -75,6 +75,7 @@ export async function markImportStagingDone(
 		.db(`${process.env.ENV}-pluralbuddy-app`)
 		.collection<ImportStage>("import-staging")
 		.updateOne(
+			// @ts-ignore
 			{ "webhook.id": input.importStagingId },
 			{
 				$set: {
