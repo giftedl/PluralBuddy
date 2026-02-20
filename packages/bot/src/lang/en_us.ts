@@ -323,6 +323,8 @@ Systems can have **privacy values** which are values that describe who can see w
 		"2d – Failed to upload the image to Google Cloud Platform. Please try again later.",
 	DN_ERROR_SE: "2e – You cannot use this command in DM's.",
 	SYSTEM_SET_NAME: "Successfully changed the name of your system to %name%",
+	SYSTEM_SET_LATCH_DELAY:
+		"Successfully changed the latch delay to %delay%. Latch alters will be cleared after that time period.",
 	SYSTEM_SET_PRONOUNS:
 		"Successfully changed the pronouns of your system to %pronouns%",
 	SYSTEM_SET_SYSTEM_TAG:
@@ -335,6 +337,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	OPERATION_BANNER_UNDEFINED: "Reset system banner",
 	OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
 	OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
+	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
 	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
 
 	EDIT_MESSAGE: "Editing message",
@@ -382,6 +385,8 @@ Systems can have **privacy values** which are values that describe who can see w
 		"%item% has been added to the manager role list successfully.",
 	SUCCESS_CHANGED_MANAGER_BLACKLIST:
 		"This server now has the following manager role configuration: \n%manager_roles%",
+	LATCH_DELAY_INVALID:
+		"Latch delays cannot be longer than 10 hours, or be an invalid input. ",
 	MANAGER_ALREADY_EXISTS:
 		"That manager role is already on the manager role list.",
 	SUCCESS_REMOVE_MANAGER_ROLE:

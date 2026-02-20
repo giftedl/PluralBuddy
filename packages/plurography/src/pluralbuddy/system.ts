@@ -35,7 +35,7 @@ export const PSystemObject = z.object({
 	systemAutoproxy: z.array(PAutoProxyObj),
 	systemOperationDM: z.boolean().default(true),
 
-	latchExpiration: z.number().min(1).max(6).optional(),
+	latchExpiration: z.number().min(0).max(36000000).optional(),
 
 	public: z.number(),
 	/** WIP */

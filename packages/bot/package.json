@@ -21,6 +21,7 @@
 		"file-type": "^21.3.0",
 		"hono": "^4.11.9",
 		"mongodb": "6.20.0",
+		"parse-duration": "^2.1.5",
 		"plurography": "workspace:*",
 		"posthog-node": "^5.17.2",
 		"seyfert": "^4.2.1",

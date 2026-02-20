@@ -14,6 +14,7 @@ import {
 	friendlyProtectionSystem,
 	listFromMaskSystems,
 } from "./privacy-bitmask";
+import convert from "./delay-converter";
 
 export async function createSystemOperation(
 	system: PSystem,
@@ -53,7 +54,7 @@ export async function createSystemOperation(
 		if (c === "nicknameFormat") {
 			return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace(
 				"%format%",
-				operation.nicknameFormat as string ?? "_Unset_",
+				(operation.nicknameFormat as string) ?? "_Unset_",
 			);
 		}
 		if (c === "disabled") {
@@ -64,30 +65,45 @@ export async function createSystemOperation(
 		if (c === "systemDisplayTag") {
 			return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace(
 				"%tag%",
-				operation.systemDisplayTag as string ?? "_Unset_",
+				(operation.systemDisplayTag as string) ?? "_Unset_",
 			);
 		}
 		if (c === "systemAvatar") {
-			return translations[ operation.systemAvatar === null ? "OPERATION_AVATAR_UNDEFINED" : "OPERATION_AVATAR" ].replace(
-				"%link%",
-				operation.systemAvatar as string,
-			);
+			return translations[
+				operation.systemAvatar === null
+					? "OPERATION_AVATAR_UNDEFINED"
+					: "OPERATION_AVATAR"
+			].replace("%link%", operation.systemAvatar as string);
 		}
 		if (c === "systemBanner") {
-			return translations[ operation.systemBanner === null ? "OPERATION_BANNER_UNDEFINED" : "OPERATION_BANNER" ].replace(
-				"%link%",
-				operation.systemBanner as string,
-			);
+			return translations[
+				operation.systemBanner === null
+					? "OPERATION_BANNER_UNDEFINED"
+					: "OPERATION_BANNER"
+			].replace("%link%", operation.systemBanner as string);
 		}
 		if (c === "systemDescription") {
 			return translations.OPERATION_DESCRIPTION.replace(
 				"%description%",
-				(operation.systemDescription as string ?? "_Unset_").split("\n").join("\n > "),
+				((operation.systemDescription as string) ?? "_Unset_")
+					.split("\n")
+					.join("\n > "),
 			);
 		}
-        if (c === "systemPronouns") {
-            return translations.OPERATION_PRONOUNS.replace("%pronouns%", operation.systemPronouns as string ?? "_Unset_")
-        }
+		if (c === "systemPronouns") {
+			return translations.OPERATION_PRONOUNS.replace(
+				"%pronouns%",
+				(operation.systemPronouns as string) ?? "_Unset_",
+			);
+		}
+		if (c === "latchExpiration") {
+			return translations.OPERATION_LATCH_DELAY.replace(
+				"%delay%",
+				operation.latchExpiration
+					? convert(Math.floor(operation.latchExpiration / 1000))
+					: "_Unset_",
+			);
+		}
 
 		return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
 			"%value%",

@@ -24,7 +24,7 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import api from "./api";
 
-export const buildNumber = 1049;
+export const buildNumber = 1291;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
