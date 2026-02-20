@@ -75,6 +75,8 @@ export const setLastLatchAlter = async (
 					"system.systemAutoproxy.$[serverEntry].autoproxyAlter": alter
 						? alter.alterId.toString()
 						: undefined,
+					"system.systemAutoproxy.$[serverEntry].lastLatchTimestamp":
+						new Date(),
 				},
 			},
 			{
