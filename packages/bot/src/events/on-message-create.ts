@@ -303,7 +303,7 @@ export default createEvent({
 				if (
 					(currentAutoProxyPolicy?.lastLatchTimestamp?.getTime() ??
 						Date.now()) +
-						user.system.latchExpiration * HOUR <
+						user.system.latchExpiration <
 					Date.now()
 				) {
 					setLastLatchAlter(guild.guildId, user.system);
