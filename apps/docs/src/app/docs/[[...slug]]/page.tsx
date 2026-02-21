@@ -11,7 +11,8 @@ import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { Separator } from "@/components/ui/separator";
 import { Feedback } from "@/components/feedback/client";
-import posthog, { PostHog } from "posthog-js";
+import { PostHog } from "posthog-node";
+import { after } from "next/server";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
@@ -43,11 +44,18 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 				onSendAction={async (feedback) => {
 					"use server";
 
-					posthog.init(process.env.POSTHOG_API_KEY ?? "", {
-						api_host: "https://us.i.posthog.com",
+					const posthog = new PostHog(process.env.POSTHOG_API_KEY ?? "", {
+						host: "https://us.i.posthog.com",
+						flushAt: 1, // flush immediately in serverless environment
+						flushInterval: 0, // same
 					});
 
-					posthog.capture("on_rate_docs", feedback);
+					await posthog.captureImmediate({
+						event: "on_rate_block",
+						properties: feedback,
+					});
+
+					after(() => posthog.shutdown());
 
 					return { githubUrl: "https://github.com/giftedl/PluralBuddy" };
 				}}

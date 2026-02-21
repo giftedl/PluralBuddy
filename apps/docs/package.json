@@ -50,6 +50,7 @@
 		"nextjs-toploader": "^3.9.17",
 		"plurography": "workspace:*",
 		"posthog-js": "^1.352.0",
+		"posthog-node": "^5.24.17",
 		"radix-ui": "^1.4.3",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",

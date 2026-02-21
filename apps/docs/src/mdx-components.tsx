@@ -3,7 +3,8 @@ import type { MDXComponents } from "mdx/types";
 import { ImageZoom } from "./components/image-zoom";
 import { SystemCardExample } from "@/components/cards/system-card";
 import { FeedbackBlock } from "./components/feedback/client";
-import posthog from "posthog-js";
+import { PostHog } from "posthog-node";
+import { after } from "next/server";
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
 	return {
@@ -19,11 +20,18 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
 				onSendAction={async (feedback) => {
 					"use server";
 
-					posthog.init(process.env.POSTHOG_API_KEY ?? "", {
-						api_host: "https://us.i.posthog.com",
+					const posthog = new PostHog(process.env.POSTHOG_API_KEY ?? "", {
+						host: "https://us.i.posthog.com",
+						flushAt: 1, // flush immediately in serverless environment
+						flushInterval: 0, // same
 					});
 
-					posthog.capture("on_rate_block", feedback);
+					await posthog.captureImmediate({
+						event: "on_rate_block",
+						properties: feedback,
+          });
+					
+					after(() => posthog.shutdown())
 
 					return { githubUrl: "https://github.com/giftedl/PluralBuddy" };
 				}}
