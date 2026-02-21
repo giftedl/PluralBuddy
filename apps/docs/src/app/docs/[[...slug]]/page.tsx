@@ -51,7 +51,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 					});
 
 					await posthog.captureImmediate({
-						event: "on_rate_block",
+						event: "on_rate_docs",
 						properties: feedback,
 					});
 
