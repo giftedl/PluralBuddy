@@ -10,8 +10,11 @@
 		"autoproxy",
 		"app",
 		"delete",
+		"edit",
 		"help",
-		"nudge-preferences"
+		"nudge-preferences",
+		"tags",
+		"checkpermissions"
 	],
 	"defaultOpen": true
 }

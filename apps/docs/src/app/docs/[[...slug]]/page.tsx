@@ -10,6 +10,8 @@ import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { Separator } from "@/components/ui/separator";
+import { Feedback } from "@/components/feedback/client";
+import posthog, { PostHog } from "posthog-js";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
@@ -37,6 +39,19 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 					})}
 				/>
 			</DocsBody>
+			<Feedback
+				onSendAction={async (feedback) => {
+					"use server";
+
+					posthog.init(process.env.POSTHOG_API_KEY ?? "", {
+						api_host: "https://us.i.posthog.com",
+					});
+
+					posthog.capture("on_rate_docs", feedback);
+
+					return { githubUrl: "https://github.com/giftedl/PluralBuddy" };
+				}}
+			/>
 		</DocsPage>
 	);
 }

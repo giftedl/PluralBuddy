@@ -2,7 +2,7 @@
 import { Check, ChevronsUpDown } from "lucide-react";
 import { type ComponentProps, type ReactNode, useMemo, useState } from "react";
 import Link from "fumadocs-core/link";
-import { usePathname } from "fumadocs-core/framework";
+import { usePathname } from "next/navigation";
 import { cn } from "../lib/cn";
 import { isTabActive } from "../lib/is-active";
 import { useSidebar } from "fumadocs-ui/contexts/sidebar";
