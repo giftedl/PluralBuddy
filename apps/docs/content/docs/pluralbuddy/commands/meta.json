@@ -1,6 +1,17 @@
 {
-    "title": "Commands",
-    "icon": "Command",
-    "pages": ["index", "system", "proxy", "about", "setup"],
-    "defaultOpen": true
-  }
+	"title": "Commands",
+	"icon": "Command",
+	"pages": [
+		"index",
+		"system",
+		"proxy",
+		"about",
+		"setup",
+		"autoproxy",
+		"app",
+		"delete",
+		"help",
+		"nudge-preferences"
+	],
+	"defaultOpen": true
+}

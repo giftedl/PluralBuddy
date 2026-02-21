@@ -8,15 +8,23 @@ The `pb;system` command is the root command for numerous other-system related co
 ## Sub-commands
 _All arguments in `<value>` format are required. All arguments in `[value]` are optional. Attachments can be uploaded directly and privately using Discord application commands as opposed to uploading directly to the command message used._
 
+ - `pb;system alters` - View all alters in a system. Searchable.
+ - `pb;system tags` - View all tags in a system. Searchable.
+ - `pb;system description [description]` - Set or view the current system description.
+ - `pb;system toggle` - Toggle system being able to proxy. (disabled systems will NOT be able to proxy)
  - `pb;system pronouns <pronouns>` - Set the pronouns of the system, viewable on the system profile.
- - `pb;system avatar <picture attachment>` - Set the profile picture of the system, viewable on the system profile.
+ - `pb;system avatar [avatar url or attachment]` - Set the profile picture of the system, viewable on the system profile. Cleared when not provided.
+ - `pb;system banner [banner url or attachment]` - Set the banner of the system, viewable on the system profile. Cleared when not provided.
  - `pb;system name <name>` - Sets the name of the system, viewable on the system profile.
  - `pb;system display-tag <display-tag>` - Sets the display tag of the system, appended to the end of all webhook names from any alters in this system.
  - `pb;system info [-p]` - Opens the profile of the system. Equivalent to using `pb;system`. `-p` sends this message non-ephemerally.
- - `pb;system import-pk <json file attachment>` - Import a PluralKit configuration **if you have no existing system**.
+ - `pb;system import` - Prompt to open the system import menu.
  - `pb;system export` - Export a PluralBuddy-compliant system configuration including all of your system data.
  - `pb;system toggle` - Disable or enable proxying on the system
  - `pb;system delete [-mi]` - Completely delete the system. Using `-mi` will also remove media uploaded related to the system in 7-8 days after deletion operation.
+ - `pb;system nickname-format <new format>` - Set the nickname format for alters, where `%username%` is the username and `%display%` is the alter display name in `new format`.
+ - `pb;system latch-delay <new delay>` - Set delay after sending last message before clearing latch alter.
+ - `pb;system random [-qt]` - View a random alter. Optionally query a tag with `-qt`. 
  - `pb;system create-tag <display name>` - Creates a new tag in the system.
  - `pb;system create-alter <username> <display name>` - Creates a new alter in the system.
  - `pb;system config` - Opens the visual configuration for your system.

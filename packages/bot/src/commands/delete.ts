@@ -3,7 +3,14 @@
 import { getSimilarWebhooks } from "@/lib/proxying/util";
 import { messagesCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import { Command, CommandContext, Declare, Message, Options } from "seyfert";
+import {
+	Command,
+	CommandContext,
+	createStringOption,
+	Declare,
+	Message,
+	Options,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
@@ -14,20 +21,27 @@ import { MessageFlags } from "seyfert/lib/types";
 })
 export default class DeleteCommand extends Command {
 	override async run(ctx: CommandContext) {
-		const message = 
-			await messagesCollection
-				.findOneAndDelete({ systemId: ctx.author.id, channelId: ctx.channelId }, { sort: { createdAt: -1 } });
-        
-        if (message === null) {
+		const referencedMessageId = (ctx.message as Message | undefined)
+			?.referencedMessage?.id;
+		const message = await messagesCollection.findOneAndDelete(
+			{
+				systemId: ctx.author.id,
+				channelId: ctx.channelId,
+				...(referencedMessageId ? { messageId: referencedMessageId } : {}),
+			},
+			{ sort: { createdAt: -1 } },
+		);
+
+		if (message === null) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"NOT_RECENT_ENOUGH",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
-        }
-        
-        const { messageId } = message;
+		}
+
+		const { messageId } = message;
 
 		if (
 			message?.systemId !== ctx.author.id ||
@@ -59,18 +73,22 @@ export default class DeleteCommand extends Command {
 			`Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
 		);
 
-		return ctx.write({
-			components: new AlertView(ctx.userTranslations()).successView(
-				"SUCCESSFULLY_REMOVED_MESSAGE",
-			),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		}).then(() => {
-            if (ctx.message as unknown instanceof Message) {
-                const message = ctx.message as unknown as Message;
+		return ctx
+			.write({
+				components: new AlertView(ctx.userTranslations()).successView(
+					"SUCCESSFULLY_REMOVED_MESSAGE",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			})
+			.then(() => {
+				if ((ctx.message as unknown) instanceof Message) {
+					const message = ctx.message as unknown as Message;
 
-                message.delete(`Removed after user request of @${ctx.author.username} (${ctx.author.id})`)
-            }
-            setTimeout(() => ctx.deleteResponse(), 1000)
-        });
+					message.delete(
+						`Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
+					);
+				}
+				setTimeout(() => ctx.deleteResponse(), 1000);
+			});
 	}
 }
