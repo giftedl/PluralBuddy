@@ -40,6 +40,7 @@ export default class AddPrefixCommand extends SubCommand {
 			{ guildId: guildObj.guildId },
 			{ $pull: { blacklistedRoles: role.id } },
 		);
+		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(`${ctx.userTranslations().SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${ctx

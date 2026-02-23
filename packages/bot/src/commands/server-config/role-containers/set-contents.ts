@@ -64,6 +64,8 @@ export default class ViewRoleContainer extends SubCommand {
 				},
 			);
 
+		ctx.client.cache.pguild.remove(guild.guildId)
+
 		guild.rolePreferences = [
 			...guild.rolePreferences.filter((c) => c.roleId !== role.id),
 			{ ...roleData, containerContents: contents },

@@ -3,6 +3,7 @@ import { DiscordSnowflake } from "@sapphire/snowflake";
 import type { GuildErrorTypes } from "plurography";
 import type { Guild } from "seyfert";
 import type z from "zod";
+import { client } from "..";
 
 export async function createError(
 	guildId: string,
@@ -28,6 +29,7 @@ export async function createError(
 		{ guildId },
 		{ $push: { errorLog: { ...opts, id: guildErrorId, timestamp: new Date() } } },
 	);
+	client.cache.pguild.remove(guildId)
 
     return {guildErrorId, ...opts};
 }

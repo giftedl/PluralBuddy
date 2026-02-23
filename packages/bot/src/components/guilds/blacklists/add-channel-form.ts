@@ -1,7 +1,7 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { guildCollection } from "@/mongodb";
 import { ServerConfigView } from "@/views/server-cfg";
-import { Middlewares, ModalCommand, ModalContext } from "seyfert";
+import { Middlewares, ModalCommand, ModalContext, type AllChannels } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Middlewares(["ensureGuildPermissions"])
@@ -14,9 +14,9 @@ export default class AddChannelForm extends ModalCommand {
 
 	override async run(ctx: ModalContext) {
 		const newChannels =
-			(ctx.interaction.getInputValue(
+			(ctx.interaction.getChannels(
 				InteractionIdentifier.Guilds.FormSelection.AddBlacklistChannelSelection.create(),
-			) as string[]) ?? [];
+			) as AllChannels[]).map(v => v.id) ?? [];
 		const pluralGuild = await ctx.retrievePGuild();
 
 		pluralGuild.blacklistedChannels = newChannels;
@@ -25,6 +25,7 @@ export default class AddChannelForm extends ModalCommand {
 			{ guildId: pluralGuild.guildId },
 			{ $set: { blacklistedChannels: newChannels } },
 		);
+		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
 		return await ctx.interaction.update({
 			components: [

@@ -55,6 +55,7 @@ export default class AddPrefixCommand extends SubCommand {
 			{ guildId: guildObj.guildId },
 			{ $push: { blacklistedRoles: role.id } },
 		);
+		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(

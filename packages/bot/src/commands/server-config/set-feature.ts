@@ -63,6 +63,7 @@ export default class SetLogChannel extends SubCommand {
 			{ $set: { flags: guildObj.flags } },
 			{ upsert: true },
 		);
+		ctx.client.cache.pguild.remove(nativeGuild.id)
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(

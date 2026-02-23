@@ -10,5 +10,8 @@
 		"support:bot": "cd packages/support-bot-module && bun run bot",
 		"docs:dev": "cd apps/docs && bun run dev"
 	},
-	"workspaces": ["packages/*", "apps/*"]
+	"workspaces": ["packages/*", "apps/*"],
+	"dependencies": {
+		"posthog-node": "^5.24.17"
+	}
 }

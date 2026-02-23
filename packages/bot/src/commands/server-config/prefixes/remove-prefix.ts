@@ -87,6 +87,7 @@ export default class AddPrefixCommand extends SubCommand {
 			{ guildId: guildObj.guildId },
 			{ $pull: { prefixes: prefix } },
 		);
+		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(

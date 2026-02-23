@@ -33,6 +33,7 @@ export default class AddPrefixCommand extends SubCommand {
         guildObj.prefixes.push(newPrefix)
 
         await guildCollection.updateOne({ guildId: guildObj.guildId }, { $push: { prefixes: newPrefix } });
+		ctx.client.cache.pguild.remove(guildObj.guildId)
 
         return await ctx.write({
             components: new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().SUCCESS_CHANGED_SERVER_PREFIXES.replace("%prefixes%", guildObj.prefixes.map((c) => `> - ${c}`).join("\n"))),

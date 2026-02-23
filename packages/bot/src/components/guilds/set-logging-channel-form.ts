@@ -3,6 +3,7 @@ import {
 	Middlewares,
 	ModalCommand,
 	ModalContext,
+	type AllChannels,
 	type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -21,18 +22,19 @@ export default class GuildPrefixesForm extends ModalCommand {
 	override async run(ctx: ModalContext) {
 		const guildObj = await ctx.retrievePGuild();
 		const newChannel = (
-			ctx.interaction.getInputValue(
+			ctx.interaction.getChannels(
 				InteractionIdentifier.Guilds.FormSelection.LoggingChannelSelection.create(),
-			) as string[] | undefined
+			) as AllChannels[] | undefined
 		);
 
-		guildObj.logChannel = (newChannel ?? [undefined])[0];
+		guildObj.logChannel = (newChannel ?? [undefined])[0]?.id;
 
 		await guildCollection.updateOne(
 			{ guildId: ctx.guildId },
-			{ $set: { logChannel: (newChannel ?? [null])[0] }},
+			{ $set: { logChannel: (newChannel ?? [undefined])[0]?.id }},
 			{ upsert: true },
 		);
+		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.interaction.update({
 			components: [

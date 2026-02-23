@@ -34,6 +34,7 @@ export default class GuildPrefixesForm extends ModalCommand {
 			{ $set: { prefixes: newPrefixes } },
 			{ upsert: true },
 		);
+		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.interaction.update({
 			components: [

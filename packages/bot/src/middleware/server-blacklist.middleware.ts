@@ -1,3 +1,5 @@
+import { emojis } from "@/lib/emojis";
+import { getApplicableCase } from "@/lib/libby";
 import { AlertView } from "@/views/alert";
 import { createMiddleware, Message } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -16,9 +18,44 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		if (ctx.isChat() && ctx.message) {
 			(ctx.message as Message).delete();
 
+			if (
+				process.env.LIBBY_DEBUG === "true" ||
+				ctx.guildId === process.env.LIBBY_SERVER_ID
+			) {
+				console.log("hi");
+				const caseObj = await getApplicableCase(ctx.author.id);
+
+				if (caseObj) {
+					await (ctx.message as Message).author.write({
+						components: new AlertView(ctx.userTranslations()).errorViewCustom(
+							ctx
+								.userTranslations()
+								.BLACKLISTED_PC.replace(
+									"{{ libbyReasoning }}",
+									caseObj.reasoning,
+								)
+								.replace("{{ reply }}", emojis.lineRight)
+								.replace(
+									"{{ libbyExpirationDate }}",
+									caseObj.expires ? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>` : "Never",
+								)
+								.replace("{{ libbyCaseId }}", caseObj.blacklistId),
+						),
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					});
+
+					return await middle.pass();
+				}
+			}
+
 			await (ctx.message as Message).author.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
-					"FEATURE_DISABLED_GUILD",
+				components: new AlertView(ctx.userTranslations()).errorViewCustom(
+					ctx
+						.userTranslations()
+						.BLACKLISTED.replace(
+							"{{ guild }}",
+							(await ctx.guild())?.name ?? "",
+						),
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});

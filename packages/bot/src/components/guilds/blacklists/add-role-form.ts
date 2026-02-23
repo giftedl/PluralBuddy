@@ -1,7 +1,7 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { guildCollection } from "@/mongodb";
 import { ServerConfigView } from "@/views/server-cfg";
-import { Middlewares, ModalCommand, ModalContext } from "seyfert";
+import { GuildRole, Middlewares, ModalCommand, ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Middlewares(["ensureGuildPermissions"])
@@ -13,10 +13,11 @@ export default class AddRoleForm extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
+
 		const newRoles =
-			(ctx.interaction.getInputValue(
-				InteractionIdentifier.Guilds.FormSelection.AddBlacklistRoleSelection.create(),
-			) as string[]) ?? [];
+			(ctx.interaction.getRoles(
+				"guilds/form/add-blacklist-role"
+			) as GuildRole[]).map(v => v.id) ?? [];
 		const pluralGuild = await ctx.retrievePGuild();
 
 		pluralGuild.blacklistedRoles = newRoles;
@@ -25,6 +26,7 @@ export default class AddRoleForm extends ModalCommand {
 			{ guildId: pluralGuild.guildId },
 			{ $set: { blacklistedRoles: newRoles } },
 		);
+		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
 		return await ctx.interaction.update({
 			components: [

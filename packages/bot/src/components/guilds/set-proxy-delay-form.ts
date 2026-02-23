@@ -32,6 +32,7 @@ export default class SetProxyDelayForm extends ModalCommand {
 				$set: { proxyDelay: proxyDelay * 1000 },
 			},
 		);
+		ctx.client.cache.pguild.remove(guild.guildId)
         
         guild.proxyDelay = proxyDelay * 1000;
 

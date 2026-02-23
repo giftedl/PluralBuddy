@@ -32,6 +32,7 @@ export default class ManageManagersForm extends ModalCommand {
 			{ $set: { managerRoles: newRoles } },
 			{ upsert: true }
 		);
+		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
 		return await ctx.interaction.update({
 			components: [

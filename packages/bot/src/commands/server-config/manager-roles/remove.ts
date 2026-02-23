@@ -25,6 +25,7 @@ export default class AddManagerRole extends SubCommand {
         pluralGuild.managerRoles = pluralGuild.managerRoles.filter((c) => c !== ctx.options.role.id);
 
         await guildCollection.updateOne({ guildId: pluralGuild.guildId }, { $pull: { managerRoles: ctx.options.role.id }});
+		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
         return await ctx.write({
             

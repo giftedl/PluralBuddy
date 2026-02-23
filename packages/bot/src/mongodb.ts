@@ -8,6 +8,7 @@ import type { POperation } from "./types/operation";
 import type { PMessage } from "./types/message";
 import type { PTag } from "./types/tag";
 import type { PGuildError } from "plurography";
+import { connectMongo } from "./lib/libby";
 
 export let mongoClient: MongoClient;
 export let mainDb: Db;
@@ -23,6 +24,7 @@ export async function setupMongoDB() {
     mongoClient = new MongoClient(process.env.MONGO ?? "")
 
     await mongoClient.connect()
+    await connectMongo();
 }
 
 export async function createPeriodicExpirationDates() {

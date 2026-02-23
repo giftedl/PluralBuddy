@@ -1,0 +1,49 @@
+---
+title: pb;edit-alter
+description: Alter settings
+---
+
+import { AlterProtectionFlags } from "plurography"
+
+This command changes information about alters in your system.
+
+## Sub-commands
+_All arguments in `<value>` format are required. All arguments in `[value]` are optional. Attachments can be uploaded directly and privately using Discord application commands as opposed to uploading directly to the command message used._
+
+ - `pb;edit-alter assign <alter name> <tag name>` - Assign a tag to an alter
+ - `pb;edit-alter avatar <alter name> [alter text/attachment]` - Set avatar for alter. If empty, clear avatar.
+ - `pb;edit-alter banner <alter name> [banner text/attachment]` - Set banner for alter. If empty, clear banner.
+ - `pb;edit-alter color <alter name> [color]` - Set color for alter. If empty, clear color.
+ - `pb;edit-alter description <alter name> [description]` - Set description for alter. If empty, show current description.
+ - `pb;edit-alter display-name <alter name> [new name] [-se]` - Set display name for alter. If `-se` is set, display name will be server-specific. If empty, show current display name.
+ - `pb;edit-alter privacy <alter name> [privacy subject] [private|public]` - Set privacy value for alter. If empty, current privacy subjects will be shown for alter. See [privacy subject](#privacy-subject).
+ - `pb;edit-alter pronouns <alter name> [pronouns]` - Set pronouns for alter. 
+ - `pb;edit-alter proxy-mode <alter name> [nickname|webhook|both]` - Set proxy mode for alters. If empty, shows current mode.
+ - `pb;edit-alter proxy-tags <alter name>` - Configure proxy tags for alter.
+ - `pb;edit-alter rename <alter name> <new name>` - Rename alter.
+ - `pb;edit-alter config <alter name>` - Open alter configuration interface.
+ - `pb;edit-alter delete <alter name>` - Delete alter from system.
+
+## Privacy subject
+
+Alters can have the following privacy "subjects":
+
+<ul>
+    <FeedbackBlock 
+        body={Object.keys(AlterProtectionFlags)
+            .filter(c => Number.isNaN(Number(c)))
+            .map(v => v.toLocaleLowerCase()).join("\n- ")}
+        id="alter-protection"
+    >
+        <div className="in-[.prose-no-margin]:prose-no-margin">
+            {
+            Object.keys(AlterProtectionFlags)
+                .filter(c => Number.isNaN(Number(c)))
+                .map(v => v.toLocaleLowerCase())
+                .map((v) => <li key={v}><code>{v}</code></li>)
+            }
+        </div>
+    </FeedbackBlock>
+</ul>
+
+The list above updates live from the same dataset from the real command.

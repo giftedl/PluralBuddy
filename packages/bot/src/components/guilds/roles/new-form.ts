@@ -40,6 +40,7 @@ export default class NewRolePreferenceForm extends ModalCommand {
 			{ guildId: guild.guildId },
 			{ $push: { rolePreferences: { roleId } } },
 		);
+		ctx.client.cache.pguild.remove(guild.guildId)
 
 		return await ctx.interaction.update({
 			components: new ServerConfigView(ctx.userTranslations()).roleGeneralView({

@@ -13,6 +13,12 @@ Additionally, you can also import data from another bot like PluralKit.
 -# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
 	PAGINATION_NEXT_PAGE: "Next Page",
 	PAGINATION_FINISH: "Finish",
+	BLACKLISTED: "You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
+	BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
+
+> **Reason:** {{ libbyReasoning }}
+> **Expires:** {{ libbyExpirationDate }}
+> -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
 	PAGINATION_PREVIOUS_PAGE: "Previous Page",
 	CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
 	ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",

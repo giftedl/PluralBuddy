@@ -21,12 +21,12 @@ export default class SearchingRolePreferencesForm extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		const channelId = ctx.interaction.getInputValue(
+		const channelId = ctx.interaction.getChannels(
 			InteractionIdentifier.Guilds.FormSelection.SearchingErrorsChannelSelection.create(),
-		)?.[0] as string | undefined;
-		const userId = ctx.interaction.getInputValue(
+		)?.[0]?.id as string | undefined;
+		const userId = ctx.interaction.getUsers(
 			InteractionIdentifier.Guilds.FormSelection.SearchingErrorsUserSelection.create(),
-		)?.[0] as string | undefined;
+		)?.[0]?.id as string | undefined;
 		const type = ctx.interaction.getInputValue(
 			InteractionIdentifier.Guilds.FormSelection.SearchingErrorsTypeSelection.create(),
 		)?.[0] as string | undefined;

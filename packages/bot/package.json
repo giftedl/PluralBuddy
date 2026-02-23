@@ -17,16 +17,16 @@
 	"dependencies": {
 		"@hono/zod-validator": "^0.7.6",
 		"@sapphire/snowflake": "^3.5.5",
-		"@slipher/redis-adapter": "^0.0.5",
+		"@slipher/redis-adapter": "^0.0.6",
 		"file-type": "^21.3.0",
-		"hono": "^4.11.9",
-		"mongodb": "6.20.0",
+		"hono": "^4.12.1",
+		"mongodb": "^7.1.0",
 		"parse-duration": "^2.1.5",
 		"plurography": "workspace:*",
 		"posthog-node": "^5.17.2",
-		"seyfert": "^4.2.1",
+		"seyfert": "^4.2.2",
 		"yunaforseyfert": "^1.1.3",
-		"zod": "^4.1.12"
+		"zod": "^4.3.6"
 	},
 	"scripts": {
 		"bot": "bun run src",

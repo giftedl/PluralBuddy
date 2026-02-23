@@ -47,6 +47,7 @@ export const clientRoutes = app
 			const importStageCollection =
 				appDb.collection<ImportStage>("import-staging");
 			const importStage = await importStageCollection.findOne({
+				// @ts-ignore
 				"webhook.id": importStageId,
 			});
 

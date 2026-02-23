@@ -37,6 +37,7 @@ export default class SetProxyDelay extends SubCommand {
 				$set: { proxyDelay: proxyDelay * 1000 },
 			},
 		);
+		ctx.client.cache.pguild.remove(guild.guildId)
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(

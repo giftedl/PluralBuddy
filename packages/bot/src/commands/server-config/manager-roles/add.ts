@@ -39,6 +39,7 @@ export default class AddManagerRole extends SubCommand {
         pluralGuild.managerRoles.push(ctx.options.role.id);
 
         await guildCollection.updateOne({ guildId: pluralGuild.guildId }, { $push: { managerRoles: ctx.options.role.id }});
+		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
         return await ctx.write({
             

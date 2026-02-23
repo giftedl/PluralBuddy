@@ -45,6 +45,7 @@ export default class RoleContentsForm extends ModalCommand {
 			{ guildId: guild.guildId, "rolePreferences.roleId": roleId },
 			{ $set: { "rolePreferences.$.containerContents": newContents } },
 		);
+		ctx.client.cache.pguild.remove(guild.guildId)
 
 		return await ctx.interaction.update({
 			components: new ServerConfigView(ctx.userTranslations()).roleGeneralView(

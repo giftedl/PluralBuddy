@@ -5,7 +5,6 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
 	reactStrictMode: true,
-	serverExternalPackages: ["mongodb"],
 	typescript: {
 		// TypeScript is strictly for IDE support for the frontend.
 		ignoreBuildErrors: true,

@@ -20,7 +20,7 @@ const options = {
 @Declare({
 	name: "add-proxy-tags",
 	description: "Modify the proxy tags of a alter",
-    aliases: ["proxy", "pt", "ptags", "apts", "tags", "tag"],
+    aliases: ["proxy", "proxy-tags", "pt", "ptags", "apts", "tags", "tag"],
     contexts: ["BotDM", "Guild"]
 })
 @Options(options)

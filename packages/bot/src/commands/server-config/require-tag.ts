@@ -44,6 +44,7 @@ export default class RequireSystemTags extends SubCommand {
 				},
 			},
 		);
+		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successView(

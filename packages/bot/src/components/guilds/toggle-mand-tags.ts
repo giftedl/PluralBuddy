@@ -30,6 +30,7 @@ export default class ToggleMandatoryTags extends ComponentCommand {
 			{ $set: { flags: guildObj.flags } },
 			{ upsert: true },
 		);
+		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.interaction.update({
 			components: [
