@@ -3,9 +3,18 @@ import type { MDXComponents } from "mdx/types";
 import { ImageZoom } from "./components/image-zoom";
 import { SystemCardExample } from "@/components/cards/system-card";
 import { FeedbackBlock } from "./components/feedback/client";
-import { PostHog } from "posthog-node";
-import { after } from "next/server";
 import { AppCardExample } from "./components/cards/app-card";
+import { CheckPermsCardExample } from "./components/cards/check-perms-card";
+import { onSendFeedback } from "./app/actions";
+
+export const MDXFeedbackBlock = (props: any) => (
+	<FeedbackBlock
+		{...props}
+		onSendAction={onSendFeedback}
+	>
+		{props.children}
+	</FeedbackBlock>
+)
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
 	return {
@@ -15,31 +24,10 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
 		},
 		SystemCardExample,
 		AppCardExample,
+		CheckPermsCardExample,
 
 		FeedbackBlock: (props) => (
-			<FeedbackBlock
-				{...props}
-				onSendAction={async (feedback) => {
-					"use server";
-
-					const posthog = new PostHog(process.env.POSTHOG_API_KEY ?? "", {
-						host: "https://us.i.posthog.com",
-						flushAt: 1, // flush immediately in serverless environment
-						flushInterval: 0, // same
-					});
-
-					await posthog.captureImmediate({
-						event: "on_rate_block",
-						properties: feedback,
-          });
-					
-					after(() => posthog.shutdown())
-
-					return { githubUrl: "https://github.com/giftedl/PluralBuddy" };
-				}}
-			>
-				{props.children}
-			</FeedbackBlock>
+			<MDXFeedbackBlock {...props} />
 		),
 		...components,
 	};

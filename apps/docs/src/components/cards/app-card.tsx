@@ -14,6 +14,7 @@ import {
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { CorrectHeaderFixer } from "../correct-header-fixer";
+import { MDXFeedbackBlock } from "@/mdx-components";
 
 export function AppCardExample() {
 	const { resolvedTheme } = useTheme();
@@ -23,6 +24,7 @@ export function AppCardExample() {
 
 	if (!mounted) return null;
 	return (
+		<MDXFeedbackBlock id="app-card" body="App Card (#response)">
 		<DiscordMessages
 			className="py-4 font-[gg_sans] rounded-[8px] border"
 			lightTheme={resolvedTheme === "light"}
@@ -75,5 +77,6 @@ export function AppCardExample() {
 			</DiscordMessage>
 			<CorrectHeaderFixer />
 		</DiscordMessages>
+		</MDXFeedbackBlock>
 	);
 }

@@ -230,3 +230,7 @@
 discord-header:first-child:nth-child(2) {
 	margin: 0 -1 !important;
 }
+
+.discord-left-border {
+	width: 8px !important;
+}
