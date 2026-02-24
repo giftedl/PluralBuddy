@@ -24,6 +24,7 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 		return super.set(from, id, {
 			webhooks: webhooks.map(
 				(c) =>
+					
 					({
 						id: c.id,
 						type: c.type,

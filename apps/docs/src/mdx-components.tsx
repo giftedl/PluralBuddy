@@ -5,6 +5,7 @@ import { SystemCardExample } from "@/components/cards/system-card";
 import { FeedbackBlock } from "./components/feedback/client";
 import { PostHog } from "posthog-node";
 import { after } from "next/server";
+import { AppCardExample } from "./components/cards/app-card";
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
 	return {
@@ -13,6 +14,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
 			return <ImageZoom {...(props as any)} {...(props.src as any)} />;
 		},
 		SystemCardExample,
+		AppCardExample,
 
 		FeedbackBlock: (props) => (
 			<FeedbackBlock

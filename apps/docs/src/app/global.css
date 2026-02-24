@@ -7,12 +7,36 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+	font-family: 'gg sans';
+	src: url('/font/gg-sans.ttf') format('truetype');
+	font-weight: 400;
+  }
+  
+  @font-face {
+	font-family: 'gg sans';
+	src: url('/font/gg-sans-medium.ttf') format('truetype');
+	font-weight: 500;
+  }
+  
+  @font-face {
+	font-family: 'gg sans';
+	src: url('/font/gg-sans-semibold.ttf') format('truetype');
+	font-weight: 600;
+  }
+  
+  @font-face {
+	font-family: 'gg sans';
+	src: url('/font/gg-sans-bold.ttf') format('truetype');
+	font-weight: 700;
+  }
+
 @theme inline {
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
 
 	--color-border: var(--border);
-	--color-background: var(--background);
+	--color-background: var(--background-shad);
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -70,7 +94,7 @@
 	--pluralbuddy-color: oklch(53% 33% 342deg);
 	--policies-color: #cc8b00;
 
-	--background: oklch(1 0 0);
+	--background-shad: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
@@ -109,7 +133,7 @@
 	--policies-color: #fff383;
 
 	--color-fd-foreground: white;
-	--background: oklch(0.145 0 0);
+	--background-shad: oklch(0.145 0 0);
 	--foreground: oklch(0.985 0 0);
 	--card: oklch(0.205 0 0);
 	--card-foreground: oklch(0.985 0 0);
@@ -170,22 +194,22 @@
 
 	body.policies,
 	html#policies.dark {
-		scrollbar-color: #fff383 var(--background);
+		scrollbar-color: #fff383 var(--background-shad);
 	}
 
 	body.pluralbuddy,
 	html#pluralbuddy.dark {
-		scrollbar-color: oklch(89.9% 0.061 343.231) var(--background);
+		scrollbar-color: oklch(89.9% 0.061 343.231) var(--background-shad);
 	}
 
 	body.pluralbuddy,
 	html#pluralbuddy.light {
-		scrollbar-color: oklch(53% 33% 342deg) var(--background);
+		scrollbar-color: oklch(53% 33% 342deg) var(--background-shad);
 	}
 
 	body.policies,
 	html#policies.light {
-		scrollbar-color: #cc8b00 var(--background);
+		scrollbar-color: #cc8b00 var(--background-shad);
 	}
 }
 
@@ -198,7 +222,11 @@
 		@apply border-border outline-ring/50;
 	}
 	body {
-		background-color: var(--background);
+		background-color: var(--background-shad);
 		color: var(--foreground);
 	}
+}
+
+discord-header:first-child:nth-child(2) {
+	margin: 0 -1 !important;
 }
