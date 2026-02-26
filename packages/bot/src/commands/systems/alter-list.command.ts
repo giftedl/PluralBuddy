@@ -4,13 +4,15 @@ import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 import { type CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { Shortcut } from "yunaforseyfert";
 
 @Declare({
 	name: "alters",
 	description: "See system alters",
-	aliases: ["a", "m", "members"],
+	aliases: ["a", "m", "members", "l", "list"],
 	contexts: ["BotDM", "Guild"],
 })
+@Shortcut()
 export default class AlterListCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
 		const user = await ctx.retrievePUser();
