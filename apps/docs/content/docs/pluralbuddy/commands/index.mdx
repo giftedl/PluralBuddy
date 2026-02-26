@@ -4,3 +4,52 @@ index: true
 description: All commands.
 icon: Command
 ---
+
+- `pb;about` - Get information about PluralBuddy
+- `pb;alter <alter OR userid/alter>` - Get information about an alter
+- `pb;app` - Inform users why PluralBuddy is not an app
+- `pb;autoproxy alter <alter>` - Proxy exclusively with an alter.
+- `pb;autoproxy latch [starting alter]` - Proxy with the last alter used, and optionally start with an alter.
+- `pb;autoproxy off` - Disable auto-proxy
+- `pb;checkpermissions` - Check PluralBuddy permissions
+- `pb;delete` - Delete proxied message
+- `pb;edit <new message contents>` - Edit proxied message
+- `pb;edit-alter assign <alter name> <tag name>` - Assign a tag to an alter
+- `pb;edit-alter avatar <alter name> [alter text/attachment]` - Set avatar for alter. If empty, clear avatar.
+- `pb;edit-alter banner <alter name> [banner text/attachment]` - Set banner for alter. If empty, clear banner.
+- `pb;edit-alter color <alter name> [color]` - Set color for alter. If empty, clear color.
+- `pb;edit-alter config <alter name>` - Open alter configuration interface.
+- `pb;edit-alter delete <alter name>` - Delete alter from system.
+- `pb;edit-alter description <alter name> [description]` - Set description for alter. If empty, show current description.
+- `pb;edit-alter display-name <alter name> [new name] [-se]` - Set display name for alter. If `-se` is set, display name will be server-specific. If empty, show current display name.
+- `pb;edit-alter privacy <alter name> [privacy subject] [private|public]` - Set privacy value for alter. If empty, current privacy subjects will be shown for alter. See [privacy subject](#privacy-subject).
+- `pb;edit-alter pronouns <alter name> [pronouns]` - Set pronouns for alter. 
+- `pb;edit-alter proxy-mode <alter name> [nickname|webhook|both]` - Set proxy mode for alters. If empty, shows current mode.
+- `pb;edit-alter proxy-tags <alter name>` - Configure proxy tags for alter.
+- `pb;edit-alter rename <alter name> <new name>` - Rename alter.
+- `pb;edit-tag color <tag>` - Specify a new color for the tag after running the command.
+- `pb;edit-tag description <tag> [description]` - New description to set to the tag. Without description, PluralBuddy will display existing description.
+- `pb;edit-tag rename <tag> <new tag display name>` - Rename the tag display name
+- `pb;help` - Get information about PluralBuddy commands
+- `pb;nudge-preferences` - Configure settings about nudging
+- `pb;proxy` - Proxy as an alter via slash command
+- `pb;setup` - Setup new PluralBuddy system
+- `pb;system alters` - View all alters in a system. Searchable.
+- `pb;system avatar [avatar url or attachment]` - Set the profile picture of the system, viewable on the system profile. Cleared when not provided.
+- `pb;system banner [banner url or attachment]` - Set the banner of the system, viewable on the system profile. Cleared when not provided.
+- `pb;system config` - Opens the visual configuration for your system.
+- `pb;system create-alter <username> <display name>` - Creates a new alter in the system.
+- `pb;system create-tag <display name>` - Creates a new tag in the system.
+- `pb;system delete [-mi]` - Completely delete the system. Using `-mi` will also remove media uploaded related to the system in 7-8 days after deletion operation.
+- `pb;system description [description]` - Set or view the current system description.
+- `pb;system display-tag <display-tag>` - Sets the display tag of the system, appended to the end of all webhook names from any alters in this system.
+- `pb;system export` - Export a PluralBuddy-compliant system configuration including all of your system data.
+- `pb;system import` - Prompt to open the system import menu.
+- `pb;system info [-p]` - Opens the profile of the system. Equivalent to using `pb;system`. `-p` sends this message non-ephemerally.
+- `pb;system latch-delay <new delay>` - Set delay after sending last message before clearing latch alter.
+- `pb;system name <name>` - Sets the name of the system, viewable on the system profile.
+- `pb;system nickname-format <new format>` - Set the nickname format for alters, where `%username%` is the username and `%display%` is the alter display name in `new format`.
+- `pb;system pronouns <pronouns>` - Set the pronouns of the system, viewable on the system profile.
+- `pb;system random [-qt]` - View a random alter. Optionally query a tag with `-qt`. 
+- `pb;system tags` - View all tags in a system. Searchable.
+- `pb;system toggle` - Toggle system being able to proxy. (disabled systems will NOT be able to proxy)
