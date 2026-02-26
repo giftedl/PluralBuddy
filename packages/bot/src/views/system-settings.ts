@@ -322,6 +322,7 @@ export class SystemSettingsView extends TranslatedView {
 						? { username: { $regex: pgObj?.searchQuery ?? "" } }
 						: {}),
 			})
+			.sort({ username: 1 })
 			.limit(altersPerPage)
 			.skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
 
@@ -440,6 +441,7 @@ export class SystemSettingsView extends TranslatedView {
 				systemId: system.associatedUserId,
 				tagFriendlyName: { $regex: pgObj?.searchQuery ?? "" },
 			})
+			.sort({ tagFriendlyName: 1 })
 			.limit(tagsPerPage)
 			.skip(((pgObj?.memoryPage ?? 1) - 1) * tagsPerPage);
 
