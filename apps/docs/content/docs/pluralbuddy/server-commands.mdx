@@ -1,0 +1,34 @@
+---
+title: Server Commands
+description: All server-management related commands.
+icon: Command
+---
+
+The `pb;server-config` set of commands deals with configuration regarding server management values in PluralBuddy.
+
+<Callout type="warning">
+    You must have the **Administrator**, **Manage Guild**, or be a **server manager** to use these commands.
+</Callout>
+
+## Sub-commands
+
+- `pb;server-config view` - View server configuration interface
+- `pb;server-config set-proxy-delay <proxy-delay>` - Set proxy delay. 
+- `pb;server-config set-feature <feature> <on|off>` - Slash command only, sets specific server features.
+- `pb;server-config set-log-channel <channel>` - Sets PluralBuddy log channel.
+- `pb;server-config errors` - View errors regarding server permissions from your users.
+- `pb;server-config role-containers view` - View all role containers
+- `pb;server-config role-containers set-contents <role id or mention> [contents]` - Sets contents of a role container. If blank, contents will be cleared.
+- `pb;server-config role-containers set-color <role id or mention> [hex color|"role"]` - Sets color of a role container. If color is "role", it will be set to the primary color of the role. If blank, color will be cleared.
+- `pb;server-config role-containers set-location <role id or mention> <top|bottom>` - Sets location of a role container, either to the top or bottom of a proxied message.
+- `pb;server-config prefixes add-prefix <prefix>` - Add a PluralBuddy prefix
+- `pb;server-config prefixes list-prefixes` - List all PluralBuddy prefixes
+- `pb;server-config prefixes remove-prefix <prefix>` - Remove a PluralBuddy prefix
+- `pb;server-config manager-roles add <role id or mention>` - Add manager role which is able to access PluralBuddy server configuration commands. **Requires Administrator or Manage Guild to use.**
+- `pb;server-config manager-roles list` - List current manager roles.
+- `pb;server-config manager-roles remove <role id or mention>` - Remove manager role from PluralBuddy. **Requires Administrator or Manage Guild to use.**
+- `pb;server-config blacklist add-channel <channel>` - Add channel where PluralBuddy will not work.
+- `pb;server-config blacklist add-role <role id or mention>` - Add role where having this role will disallow users from proxying.
+- `pb;server-config blacklist list` - List all blacklist items.
+- `pb;server-config blacklist remove-channel <channel>` - Remove channel where PluralBuddy will not work.
+- `pb;server-config blacklist remove-role <role id or mention>` - Remove role where having this role will disallow users from proxying.
