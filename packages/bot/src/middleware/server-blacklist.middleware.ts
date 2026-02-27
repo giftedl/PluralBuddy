@@ -9,8 +9,16 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		await middle.context.retrievePGuild();
 	const { context: ctx } = middle;
 
+	if (blacklistedChannels.includes(middle.context.channelId)) {
+		return await ctx.write({
+			components: new AlertView(ctx.userTranslations()).errorView(
+				"FEATURE_DISABLED_GUILD",
+			),
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
+
 	if (
-		blacklistedChannels.includes(middle.context.channelId) ||
 		((await ctx.member?.roles.list()) ?? []).some((c) =>
 			blacklistedRoles.includes(c.id),
 		)
@@ -22,7 +30,6 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 				process.env.LIBBY_DEBUG === "true" ||
 				ctx.guildId === process.env.LIBBY_SERVER_ID
 			) {
-				console.log("hi");
 				const caseObj = await getApplicableCase(ctx.author.id);
 
 				if (caseObj) {
@@ -37,7 +44,9 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 								.replace("{{ reply }}", emojis.lineRight)
 								.replace(
 									"{{ libbyExpirationDate }}",
-									caseObj.expires ? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>` : "Never",
+									caseObj.expires
+										? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
+										: "Never",
 								)
 								.replace("{{ libbyCaseId }}", caseObj.blacklistId),
 						),
@@ -61,13 +70,6 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 			});
 			return await middle.pass();
 		}
-
-		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView(
-				"FEATURE_DISABLED_GUILD",
-			),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
 	}
 
 	return middle.next();

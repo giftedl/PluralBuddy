@@ -20,6 +20,7 @@ import {
 import { mentionCommand } from "@/lib/mention-command";
 import z from "zod";
 import { DiscordSnowflake } from "@sapphire/snowflake";
+import { friendlyFeatureIndex } from "../../../plurography/src/pluralbuddy/guild";
 
 const roleDataObj = z.object({
 	roleId: z.string(),
@@ -36,51 +37,6 @@ export const errorPagination: {
 		type?: z.infer<typeof GuildErrorTypes>;
 	};
 }[] = [];
-
-export const friendlyFeatureIndex: Record<
-	string,
-	{ title: string; description: string }
-> = {
-	DISABLE_APP_EXPLAIN: {
-		title: "Disable \`[APP]\`/\`[BOT]\` explanation command",
-		description:
-			"This command allows users to explain how users proxying with PluralBuddy are not applications/bots.",
-	},
-	DISABLE_ABOUT: {
-		title: "Disable about command",
-		description: "This command shows information about PluralBuddy.",
-	},
-	DISABLE_HELP: {
-		title: "Disable help command",
-		description:
-			"This command shows information about the features & commands of PluralBuddy.",
-	},
-	DISABLE_NUDGING: {
-		title: "Disable Nudging",
-		description:
-			'This allows users to ping ("nudge") other proxied users main account. Users can block other users not allowing them to be nudged.',
-	},
-	DISABLE_MESSAGE_INFO: {
-		title: "Disable Message Info",
-		description:
-			"This allows users to gain public information about another user based on a message they sent.",
-	},
-	FORCED_WEBHOOK_MODE: {
-		title: "Forced Webhook Mode",
-		description:
-			"This forces all users to proxy with webhook mode only. **This will not work if you have Forced Nickname Mode also enabled.**",
-	},
-	FORCED_NICKNAME_MODE: {
-		title: "Forced Nickname Mode",
-		description:
-			"This forces all users to proxy with nickname mode only. **This will not work if you have Forced Webhook Mode also enabled.**",
-	},
-	DISABLE_PERMISSION_CHECK: {
-		title: "Disable Permission Check Command",
-		description:
-			"This command shows server administrators and members whether they have permissions to do certain things.",
-	},
-};
 
 export class ServerConfigView extends TranslatedView {
 	topView(

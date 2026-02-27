@@ -1,0 +1,132 @@
+---
+title: "Management Concepts"
+description: "PluralBuddy concepts regarding server management"
+icon: SquareDashedKanban
+---
+
+import { friendlyFeatureIndex } from "plurography";
+
+PluralBuddy has many features that are cattered directly towards server administrators, moderators, and managers. Many of them elevate the experience of users on your server, or employ a strategy which makes PluralBuddy align with your server outline.
+
+## Blacklisted Channels/Roles
+
+PluralBuddy allows both the blacklist of channels in your server and the blacklist of specific roles.
+ - Blacklisted channels doesn't allow users to proxy when in a specific channel.
+ - Blacklisted roles doesn't allow users to proxy if their host account contains a specific role.
+
+Blacklisted roles will see the following message in DMs when attempting to proxy or use a command:
+
+<BlacklistedRoleExample />
+
+Blacklisted channels will see the following messages in DMs when attempting to proxy or use a command:
+
+<BlacklistedChannelExample />
+
+### Commands
+
+They can be enabled with the following commands:
+
+- `pb;server-config blacklist add-channel <channel>` - Add channel where PluralBuddy will not work.
+- `pb;server-config blacklist add-role <role id or mention>` - Add role where having this role will disallow users from proxying.
+- `pb;server-config blacklist list` - List all blacklist items.
+- `pb;server-config blacklist remove-channel <channel>` - Remove channel where PluralBuddy will not work.
+- `pb;server-config blacklist remove-role <role id or mention>` - Remove role where having this role will disallow users from proxying.
+
+## Role Containers
+
+Role containers are a feature which allow users to be identified by their role. For example, if your users would want to see who is a moderator or not, role containers would look like this on a user:
+
+<RoleContainerExample />
+
+Role containers have unique characteristics like how they wont remain after sending one or more consecutive messages and being directly attached to a role which makes them special compared to doing other more manual alternatives.
+
+### Commands
+
+Role containers can be modified or enabled with the following commands:
+
+- `pb;server-config role-containers view` - View all role containers
+- `pb;server-config role-containers set-contents <role id or mention> [contents]` - Sets contents of a role container. If blank, contents will be cleared.
+- `pb;server-config role-containers set-color <role id or mention> [hex color|"role"]` - Sets color of a role container. If color is "role", it will be set to the primary color of the role. If blank, color will be cleared.
+- `pb;server-config role-containers set-location <role id or mention> <top|bottom>` - Sets location of a role container, either to the top or bottom of a proxied message.
+
+## Error Log
+
+PluralBuddy stores logs when things go wrong related to permissions or other issues in the server. For example, if the server enforces a guild tag, that will both appear as an error in the server log and send a notification to the user.
+
+They can be easily cleared, and usually aren't super critical issues. If you run into critical issues, please contact [PluralBuddy Support](https://gftl.fyi/discord).
+
+You can access the error log using `pb;server-config errors`.
+
+## Proxy Delay
+
+Usually, PluralBuddy tries to proxy messages as quickly as possible (\<600ms speeds). However, this creates an offset issue which may occur where moderation bots may not recogonize or may run into an error cleaning up messages from PluralBuddy-proxied messages due to the speed of proxies.
+
+PluralBuddy's solution to this is **proxy delays**. They work by waiting a certain amount of time before proxying any message sent in a guild, and after this delay, will check if the originally sent host message still exists, and if not, **the proxy will be canceled.**
+
+This often will allow moderation bots to get a chance to delete messages before PluralBuddy will eventually delete the host message regardless.
+
+<Callout type="warning">
+    Proxy delays can be **at most** 2.5 seconds.
+</Callout>
+
+### Commands
+
+- `pb;server-config set-proxy-delay <proxy-delay>` - Set proxy delay.
+
+## Server managers
+
+Server managers have the power to use any management related commands with PluralBuddy, besides users without Administrator or Manage Guild.
+
+### Commands
+
+- `pb;server-config manager-roles add <role id or mention>` - Add manager role which is able to access PluralBuddy server configuration commands. **Requires Administrator or Manage Guild to use.**
+- `pb;server-config manager-roles list` - List current manager roles.
+- `pb;server-config manager-roles remove <role id or mention>` - Remove manager role from PluralBuddy. **Requires Administrator or Manage Guild to use.**
+
+## Custom Prefixes
+
+PluralBuddy allows you to set custom prefixes besides `pb;` and `pb!`, which are the default ones.
+
+### Commands
+
+- `pb;server-config prefixes add-prefix <prefix>` - Add a PluralBuddy prefix
+- `pb;server-config prefixes list-prefixes` - List all PluralBuddy prefixes
+- `pb;server-config prefixes remove-prefix <prefix>` - Remove a PluralBuddy prefix
+
+## Enforce System Tag
+
+Enforcing system tag will enforce system prefixes/tags for all users proxying with PluralBuddy. Commands will not require system tags to be used unlike blacklists.
+
+### Commands
+
+- `pb;server-config require-tag <on|off>` - Whether to enforce system tags or not.
+
+## Feature Flags
+
+<ul>
+    <FeedbackBlock 
+        body={Object.keys(friendlyFeatureIndex)
+            .filter(c => Number.isNaN(Number(c)))
+            .map(v => v.toLocaleLowerCase()).join("\n- ")}
+        id="alter-protection"
+    >
+        <div className="in-[.prose-no-margin]:prose-no-margin">
+            {Object.values(friendlyFeatureIndex)
+                .map((v) => <li key={v}><b>{v.title}</b>: {v.description}</li>)}
+        </div>
+    </FeedbackBlock>
+</ul>
+
+Above are all of the feature flags that PluralBuddy currently have. PluralBuddy feature flags disable or enable certain functionality of the bot.
+
+<Callout type="warning">
+    Some features start with "disable", and when enabled the feature preceeding the "disabled" part is actually disabled.
+</Callout>
+
+### Commands
+
+<Callout type="info">
+    This command is slash command only, meaning it can only be accessed when starting your command with a slash and using the native menu.
+</Callout>
+
+- `pb;server-config set-feature <feature> <on|off>` - Slash command only, sets specific server features.

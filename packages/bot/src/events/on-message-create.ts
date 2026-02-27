@@ -46,6 +46,7 @@ import { translations } from "@/lang/en_us";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
+import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
 
 export type ApplicableWebhookWritePayload = {
 	body: Omit<
@@ -204,7 +205,10 @@ export default createEvent({
 
 				console.timeEnd("proxy tag parse");
 
-				if (fetchedAlter)
+				if (fetchedAlter) {
+					if (!await blacklistedRole(guild, message)) return;
+					if (!blacklistedChannel(guild, message)) return;
+					
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,
@@ -213,6 +217,7 @@ export default createEvent({
 						guild,
 						message.member,
 					);
+				}
 			}
 		}
 
@@ -268,6 +273,10 @@ export default createEvent({
 					});
 
 					console.timeEnd("proxy tag parse");
+
+					if (!await blacklistedRole(guild, message)) return;
+					if (!blacklistedChannel(guild, message)) return;
+
 					performTagProxy(
 						checkAlter as PAlter,
 						user,
@@ -319,7 +328,10 @@ export default createEvent({
 				});
 				console.timeEnd("proxy tag parse");
 
-				if (fetchedAlter)
+				if (fetchedAlter) {
+					if (!await blacklistedRole(guild, message)) return;
+					if (!blacklistedChannel(guild, message)) return;
+
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,
@@ -328,6 +340,7 @@ export default createEvent({
 						guild,
 						message.member,
 					);
+				}
 			}
 		}
 	},

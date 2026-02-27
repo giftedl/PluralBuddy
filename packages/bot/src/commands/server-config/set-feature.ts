@@ -1,7 +1,8 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { guildCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import { friendlyFeatureIndex, ServerConfigView } from "@/views/server-cfg";
+import { ServerConfigView } from "@/views/server-cfg";
+import { friendlyFeatureIndex } from "../../../../plurography/src/pluralbuddy/guild";
 import { GuildFlags } from "plurography";
 import {
 	CommandContext,
