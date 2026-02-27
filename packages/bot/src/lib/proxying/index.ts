@@ -138,7 +138,9 @@ export async function proxy(
 								? {
 										parse: [],
 									}
-								: undefined,
+								: {
+									parse: ["users"]
+								},
 						embeds:
 							components.length === 0
 								? [

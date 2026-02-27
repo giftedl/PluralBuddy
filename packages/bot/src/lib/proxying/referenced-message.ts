@@ -16,6 +16,7 @@ export async function getReferencedMessageString(
 					.replace("https://", "")
 					.replace("http://", "")
 					.replace(/<@!?(\d+)>/g, "")
+					.replace("@everyone", ":myhonestreaction:")
 	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)`;
 
 	if (message.referencedMessage?.webhookId === proxyWHId) {
@@ -60,6 +61,7 @@ export async function getReferencedMessageString(
 								.replace("https://", "")
 								.replace("http://", "")
 								.replace(/<@!?(\d+)>/g, "")
+								.replace("@everyone", ":myhonestreaction:")
 				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)`;
 			}
 		}

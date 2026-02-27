@@ -148,7 +148,6 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 		await webhook.messages.edit({
 			messageId,
 			body: {
-				allowed_mentions: { parse: [] },
 				components: [
 					...reply,
 					...(hasTextContent ? mainContents : []),
