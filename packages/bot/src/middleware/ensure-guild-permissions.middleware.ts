@@ -14,7 +14,7 @@ export const ensureGuildPermissions = createMiddleware<void>(async (middle) => {
         });
     }
 
-    const member = await ctx.client.members.fetch(ctx.guildId, ctx.author.id, true).catch(() => null);
+    const member = await ctx.client.members.fetch(ctx.guildId, ctx.author.id).catch(() => null);
     const pluralGuild = await ctx.retrievePGuild()
     const apiGuild = await ctx.guild()
 
