@@ -14,7 +14,7 @@ export const administrativeGuildPermissions = createMiddleware<void>(async (midd
         });
     }
 
-    const member = await ctx.client.members.fetch(ctx.guildId, ctx.author.id, true).catch(() => null);
+    const member = await ctx.client.members.fetch(ctx.guildId, ctx.author.id).catch(() => null);
     const apiGuild = await ctx.guild()
 
     if (!member) throw new Error("no member")
