@@ -1,5 +1,6 @@
 import {
 	ComponentCommand,
+	GuildRole,
 	Middlewares,
 	ModalCommand,
 	ModalContext,
@@ -20,16 +21,16 @@ export default class ManageManagersForm extends ModalCommand {
 
 	override async run(ctx: ModalContext) {
 		const newRoles =
-			(ctx.interaction.getInputValue(
+			(ctx.interaction.getRoles(
 				InteractionIdentifier.Guilds.FormSelection.AddManagersSelection.create(),
-			) as string[]) ?? [];
+			) as GuildRole[]) ?? [];
 		const pluralGuild = await ctx.retrievePGuild();
 
-		pluralGuild.managerRoles = newRoles;
+		pluralGuild.managerRoles = newRoles.map(v => v.id);
 
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
-			{ $set: { managerRoles: newRoles } },
+			{ $set: { managerRoles: newRoles.map(v => v.id) } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
