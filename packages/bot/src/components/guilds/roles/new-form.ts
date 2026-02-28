@@ -1,6 +1,7 @@
 import {
 	ComponentCommand,
 	Container,
+	GuildRole,
 	Middlewares,
 	ModalCommand,
 	ModalContext,
@@ -21,13 +22,13 @@ export default class NewRolePreferenceForm extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		const roleId = ctx.interaction.getInputValue(
+		const roleId = ctx.interaction.getRoles(
 			InteractionIdentifier.Guilds.FormSelection.CreatingNewRoleSelection.create(),
 			true,
-		)[0] as string;
+		)[0] as GuildRole;
 		const guild = await ctx.retrievePGuild();
 
-		if (guild.rolePreferences.some((c) => c.roleId === roleId)) {
+		if (guild.rolePreferences.some((c) => c.roleId === roleId.id)) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ROLE_PREFERENCE_ALREADY_EXISTS",
@@ -38,13 +39,13 @@ export default class NewRolePreferenceForm extends ModalCommand {
 
 		await guildCollection.updateOne(
 			{ guildId: guild.guildId },
-			{ $push: { rolePreferences: { roleId } } },
+			{ $push: { rolePreferences: { roleId: roleId.id } } },
 		);
 		ctx.client.cache.pguild.remove(guild.guildId)
 
 		return await ctx.interaction.update({
 			components: new ServerConfigView(ctx.userTranslations()).roleGeneralView({
-				roleId,
+				roleId: roleId.id,
 			}),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },
