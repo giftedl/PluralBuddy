@@ -14,7 +14,7 @@ export const ensureGuildPermissions = createMiddleware<void>(async (middle) => {
         });
     }
 
-    const member = await ctx.client.members.fetch(ctx.guildId, ctx.author.id, true).catch(() => null);
+    const member = await ctx.client.members.fetch(ctx.guildId, ctx.author.id).catch(() => null);
     const pluralGuild = await ctx.retrievePGuild()
     const apiGuild = await ctx.guild()
 
@@ -22,7 +22,7 @@ export const ensureGuildPermissions = createMiddleware<void>(async (middle) => {
     if (!apiGuild) throw new Error("no guild")
 
     const memberPermissions = await member.fetchPermissions()
-    const memberRoles = (await member.roles.list(true)).map((c) => c.id);
+    const memberRoles = (await member.roles.list()).map((c) => c.id);
     const managerRolesIntersect = memberRoles.filter(c => pluralGuild.managerRoles.includes(c)).length >= 1;
 
     if (!(
