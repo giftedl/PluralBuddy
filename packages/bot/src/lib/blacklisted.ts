@@ -87,5 +87,20 @@ export async function blacklistedChannel(
 			} catch (_) {}
 		return false;
 	}
+	if (guild.blacklistedCategories.length !== 0) {
+		const channel = await message.channel();
+		if ("parentId" in channel && channel.isCategory())
+			if (guild.blacklistedCategories.includes(channel.parentId ?? "")) {
+				if (!silent)
+					try {
+						await message.author.write({
+							components: new AlertView(translations).errorView(
+								"FEATURE_DISABLED_GUILD",
+							),
+							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+						});
+					} catch (_) {}
+			}
+	}
 	return true;
 }
