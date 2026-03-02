@@ -44,15 +44,22 @@ export const notValidPermissions = async (message: Message) => {
 };
 
 export const getSimilarWebhooks = async (channelId: string) => {
-	const result = (await client.webhooks.listFromChannel(channelId)).filter(
-		(val) =>
-			val.name === "PluralBuddy Proxy" &&
-			(val.user ?? { id: 0 }).id === client.botId,
-	);
+	try {
+		const result = (await client.webhooks.listFromChannel(channelId)).filter(
+			(val) =>
+				val.name === "PluralBuddy Proxy" &&
+				(val.user ?? { id: 0 }).id === client.botId,
+		);
 
-	client.cache.similarWebhookResource.set(CacheFrom.Gateway, channelId, result);
+		client.cache.similarWebhookResource.set(CacheFrom.Gateway, channelId, result);
 
-	return result;
+		return result;
+	} catch (error) {
+		console.error("[unurgent]", error);
+		return [];
+	}
+
+
 };
 
 export const setLastLatchAlter = async (
