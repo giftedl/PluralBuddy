@@ -21,6 +21,7 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 
 	// We override set to apply the typing and format we want
 	override set(from: CacheFrom, id: string, webhooks: Webhook[]) {
+
 		return super.set(from, id, {
 			webhooks: webhooks.map(
 				(c) =>
@@ -30,7 +31,7 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 						type: c.type,
 						guild_id: c.guildId,
 						channel_id: c.channelId,
-						user: c.user,
+						user: c.user?.id,
 						name: c.name,
 						avatar: c.avatar,
 						token: c.token,
