@@ -226,33 +226,33 @@ export default createEvent({
 
 		if (user.system.alterIds.length === 0) return;
 
-		if (!indexingMap.includes(message.author.id)) {
-			let indexingMessage: MessageStructure | null =
-				null as MessageStructure | null;
+		// if (!indexingMap.includes(message.author.id)) {
+		// 	let indexingMessage: MessageStructure | null =
+		// 		null as MessageStructure | null;
 
-			const indexingTimeout = setTimeout(async () => {
-				indexingMessage = await message.reply(
-					{
-						components: [
-							new Container()
-								.setComponents(
-									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
-											"{{ alterCount }}",
-											(user.system?.alterIds.length ?? 0).toString(),
-										)
-											.replace("{{ alters }}", "0")
-											.replace("{{ percentage }}", "0%")}`,
-									),
-								)
-								.setColor("#5450fe"),
-						],
-						flags: MessageFlags.IsComponentsV2,
-					},
-					true,
-				);
-			}, 2000);
-			indexingMap.push(message.author.id);
+		// 	const indexingTimeout = setTimeout(async () => {
+		// 		indexingMessage = await message.reply(
+		// 			{
+		// 				components: [
+		// 					new Container()
+		// 						.setComponents(
+		// 							new TextDisplay().setContent(
+		// 								`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+		// 									"{{ alterCount }}",
+		// 									(user.system?.alterIds.length ?? 0).toString(),
+		// 								)
+		// 									.replace("{{ alters }}", "0")
+		// 									.replace("{{ percentage }}", "0%")}`,
+		// 							),
+		// 						)
+		// 						.setColor("#5450fe"),
+		// 				],
+		// 				flags: MessageFlags.IsComponentsV2,
+		// 			},
+		// 			true,
+		// 		);
+		// 	}, 2000);
+		// 	indexingMap.push(message.author.id);
 
 			// Only find the alters that we need
 			for (let i = 0; i < user.system.alterIds.length; i++) {
@@ -260,28 +260,28 @@ export default createEvent({
 				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 
-				if (i % 20 === 0 && indexingMessage) {
-					await indexingMessage?.edit({
-						components: [
-							new Container()
-								.setComponents(
-									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
-											"{{ alterCount }}",
-											(user.system?.alterIds.length ?? 0).toString(),
-										)
-											.replace("{{ alters }}", i.toString())
-											.replace(
-												"{{ percentage }}",
-												`${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%`,
-											)}`,
-									),
-								)
-								.setColor("#5450fe"),
-						],
-						flags: MessageFlags.IsComponentsV2,
-					});
-				}
+				// if (i % 20 === 0 && indexingMessage) {
+				// 	await indexingMessage?.edit({
+				// 		components: [
+				// 			new Container()
+				// 				.setComponents(
+				// 					new TextDisplay().setContent(
+				// 						`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+				// 							"{{ alterCount }}",
+				// 							(user.system?.alterIds.length ?? 0).toString(),
+				// 						)
+				// 							.replace("{{ alters }}", i.toString())
+				// 							.replace(
+				// 								"{{ percentage }}",
+				// 								`${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%`,
+				// 							)}`,
+				// 					),
+				// 				)
+				// 				.setColor("#5450fe"),
+				// 		],
+				// 		flags: MessageFlags.IsComponentsV2,
+				// 	});
+				// }
 
 				// If cache miss or cache stale, fetch from DB and set cache
 				if (!proxyObject || !proxyObject.pt) {
@@ -360,8 +360,8 @@ export default createEvent({
 						if (!(await blacklistedRole(guild, message))) return;
 						if (!blacklistedChannel(guild, message)) return;
 
-						clearTimeout(indexingTimeout);
-						if (indexingMessage !== null) indexingMessage.delete();
+						// clearTimeout(indexingTimeout);
+						// if (indexingMessage !== null) indexingMessage.delete();
 
 						const authorIdIndex = indexingMap.indexOf(message.author.id);
 						if (authorIdIndex !== -1) {
@@ -388,9 +388,9 @@ export default createEvent({
 				indexingMap.splice(authorIdIndex, 1);
 			}
 
-			clearTimeout(indexingTimeout);
-			if (indexingMessage !== null) indexingMessage.delete();
-		}
+			// clearTimeout(indexingTimeout);
+			// if (indexingMessage !== null) indexingMessage.delete();
+		// }
 
 		if (
 			user.system.systemAutoproxy.some(
