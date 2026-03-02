@@ -5,9 +5,20 @@ import { createMiddleware, Message } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlacklist = createMiddleware<void>(async (middle) => {
-	const { blacklistedChannels, blacklistedRoles } =
+	const { blacklistedChannels, blacklistedRoles, blacklistedCategories } =
 		await middle.context.retrievePGuild();
 	const { context: ctx } = middle;
+	const channel = await middle.context.channel();
+
+	if ("parentId" in channel)
+		if (blacklistedCategories.includes(channel.parentId ?? "")) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"FEATURE_DISABLED_GUILD",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
 
 	if (blacklistedChannels.includes(middle.context.channelId)) {
 		return await ctx.write({

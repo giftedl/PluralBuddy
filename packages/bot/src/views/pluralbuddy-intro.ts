@@ -260,21 +260,6 @@ Please download the JSON file sent to you and use the button to upload the attac
 						.setLabel("Upload Contents")
 						.setStyle(ButtonStyle.Primary),
 				),
-			new Separator(),
-			new Section()
-				.setComponents(
-					new TextDisplay().setContent(
-						`-# If you are on mobile, you can upload the raw data below.`,
-					),
-				)
-				.setAccessory(
-					new Button()
-						.setCustomId(
-							InteractionIdentifier.Setup.PluralKitImport.RawText.create(),
-						)
-						.setLabel("Upload Raw Text")
-						.setStyle(ButtonStyle.Secondary),
-				),
 		);
 
 		paginationContainer.setComponents([

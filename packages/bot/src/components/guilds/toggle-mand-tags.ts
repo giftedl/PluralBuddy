@@ -38,7 +38,7 @@ export default class ToggleMandatoryTags extends ComponentCommand {
 					"general",
 					guildObj.guildId,
 				),
-				...new ServerConfigView(ctx.userTranslations()).generalSettings(
+				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
 					PGuildObject.parse(guildObj),
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

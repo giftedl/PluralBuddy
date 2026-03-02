@@ -2,7 +2,7 @@ import { BaseResource, type CacheFrom } from "seyfert";
 import type { MakeDeepPartial } from "seyfert/lib/common";
 
 type ProxyObject = {
-	pt: { p: string; s: string }[];
+	pt: string;
 	lastDrip: Date;
 };
 

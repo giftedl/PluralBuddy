@@ -42,7 +42,7 @@ export default class GuildPrefixesForm extends ModalCommand {
 					"general",
 					guildObj.guildId,
 				),
-				...new ServerConfigView(ctx.userTranslations()).generalSettings(
+				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
 					guildObj,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

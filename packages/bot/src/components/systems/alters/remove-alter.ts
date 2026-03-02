@@ -38,7 +38,7 @@ export default class RemoveAlterButton extends ComponentCommand {
         
         await userCollection.updateOne(
             { userId: ctx.author.id },
-            { $pull: { "system.alters": { alterId: Number(alterId) } } }
+            { $pull: { "system.alterIds": Number(alterId) } }
         )
 
         return await ctx.update({

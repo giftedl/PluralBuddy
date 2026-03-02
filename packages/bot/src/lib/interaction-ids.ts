@@ -120,6 +120,8 @@ export const InteractionIdentifier = {
 
 			AddBlacklistRole: createStatic("guilds/general/blacklist/add-role"),
 			AddBlacklistChannel: createStatic("guilds/general/blacklist/add-channel"),
+			AddBlacklistCategory: createStatic("guilds/general/blacklist/add-category"),
+			RemoveBlacklistCategory: createStatic("guilds/general/blacklist/remove-category"),
 			AddManagers: createStatic("guilds/general/add-manager"),
 			ToggleSystemTagRequirement: createStatic(
 				"guilds/general/toggle-system-tag",
@@ -168,6 +170,21 @@ export const InteractionIdentifier = {
 			AddBlacklistChannelSelection: createStatic(
 				"guilds/form/add-blacklist-channel",
 			),
+			
+			AddBlacklistCategoryForm: createStatic(
+				"guilds/form/add-blacklist-category-form",
+			),
+			AddBlacklistCategorySelection: createStatic(
+				"guilds/form/add-blacklist-category",
+			),
+			
+			RemoveBlacklistCategoryForm: createStatic(
+				"guilds/form/remove-blacklist-category-form",
+			),
+			RemoveBlacklistCategorySelection: createStatic(
+				"guilds/form/remove-blacklist-category",
+			),
+
 
 			AddManagersForm: createStatic("guilds/form/add-managers-form"),
 			AddManagersSelection: createStatic("guilds/form/add-managers-selection"),

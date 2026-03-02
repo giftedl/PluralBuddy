@@ -45,6 +45,7 @@ export const PGuildObject = z
 		/** users allowed to use, channels allowed to proxy */
 		blacklistedRoles: z.string().array().max(25).default([]),
 		blacklistedChannels: z.string().array().max(25).default([]),
+		blacklistedCategories: z.string().array().max(25).default([]).catch([]),
 
 		// whitelistedNicknameRoles: z.string().array().default([]),
 		// blacklistedNicknameRoles: z.string().array().default([]),

@@ -114,7 +114,6 @@ export async function replace(
 	for (const replacedAlter of newAlters
 		.map((c) => c.zodData)
 		.filter((v) => v.data !== undefined)) {
-		console.log("change!");
 		await alterCollection.replaceOne(
 			{ alterId: replacedAlter.data?.alterId },
 			replacedAlter.data,

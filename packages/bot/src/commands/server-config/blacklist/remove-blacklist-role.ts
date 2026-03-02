@@ -54,9 +54,18 @@ export default class AddPrefixCommand extends SubCommand {
 						...guildObj.blacklistedRoles.map((c) => {
 							return { id: c, type: "role" };
 						}),
+						...(await Promise.all(guildObj.blacklistedCategories.map(async (c) => {
+							const category = await ctx.client.channels.fetch(c).catch(() => null);
+
+							if (!category || !category.isCategory()) {
+								return null;
+							}
+
+							return { id: category.name, type: "category"}
+						}))).filter(v => v !== null)
 					]
-						.map((c) => `> - ${c.type === "channel" ? "<#" : "<@&"}${c.id}>`)
-						.join("\n"),
+					.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
+					.join("\n"),
 				)}`
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

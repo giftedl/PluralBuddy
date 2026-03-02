@@ -236,6 +236,9 @@ Systems can have **privacy values** which are values that describe who can see w
 	TAG_COLOR_pink: "pink",
 	TAG_COLOR_rose: "rose",
 
+	WAITING_INDEXING: "PluralBuddy is currently trying to index your system, and at most will need to index **{{ alterCount }} alter(s)**. This may take a while.\n-# **Current Status:** {{ alters }}/{{ alterCount }} indexed. ({{ percentage }})",
+	TOO_MANY_ALTERS: "There are too many alters in your PluralBuddy system. (2000 alters) Please contact PluralBuddy Support if you believe that is incorrect.",
+
 	SEARCH_FORM_TITLE: "Searching Resources",
 	SEARCH_QUERY: "Search Query",
 	SEARCH_QUERY_VALUE: "Search Query Value",
@@ -268,6 +271,7 @@ Systems can have **privacy values** which are values that describe who can see w
 
 	PFP_SUCCESS: "Successfully updated the profile picture for @%alter%.",
 	BANNER_SUCCESS: "Successfully updated the banner for @%alter%.",
+	NOT_A_CATEGORY: "This isn't a category.",
 	RENAME_SUCCESS: "Successfully updated the username for @%alter%.",
 	TAG_RENAME_SUCCESS: "Successfully updated the display name for %tag%.",
 	DN_SUCCESS:

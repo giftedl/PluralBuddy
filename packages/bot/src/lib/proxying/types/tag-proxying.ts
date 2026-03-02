@@ -218,7 +218,7 @@ export async function performTagProxy(
 							limit: 2,
 						});
 
-						if (messageLast[1]) {
+						if (messageLast[1] && (messageLast[1].timestamp ?? 0) > (Date.now() - 420000)) {
 							const message = await messagesCollection.findOne({
 								$and: [
 									{ messageId: messageLast[1].id },

@@ -42,7 +42,7 @@ export default class SetProxyDelayForm extends ModalCommand {
 					"general",
 					guild.guildId,
 				),
-				...new ServerConfigView(ctx.userTranslations()).generalSettings(
+				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
 					guild,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

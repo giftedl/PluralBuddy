@@ -14,16 +14,16 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
-	channel: createChannelOption({
-		description: "Channel to remove from blacklist.",
+	category: createStringOption({
+		description: "Category to remove from blacklist.",
 		required: true,
 	}),
 };
 
 @Declare({
-	name: "remove-channel",
-	description: "Remove a server blacklist channel.",
-	aliases: ["rc"],
+	name: "remove-category",
+	description: "Remove a server blacklist category.",
+	aliases: ["rct"],
 })
 @Middlewares(["ensureGuildPermissions"])
 @Group("blacklist")
@@ -31,18 +31,28 @@ const options = {
 export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		const guildObj = await ctx.retrievePGuild();
-		const { channel } = ctx.options;
+		const { category } = ctx.options;
+        const categoryObj = await (await ctx.guild())?.channels.fetch(category).catch(() => null);
 
-		guildObj.blacklistedChannels = guildObj.blacklistedChannels.filter((c) => c !== channel.id);
+        if (!categoryObj || !categoryObj.isCategory()) {
+            return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"NOT_A_CATEGORY",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			})
+        }
+
+		guildObj.blacklistedCategories = guildObj.blacklistedCategories.filter((c) => c !== category);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
-			{ $pull: { blacklistedChannels: channel.id } },
+			{ $pull: { blacklistedCategories: category } },
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).successViewCustom(`${ctx.userTranslations().SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", `<#${channel.id}>`)} ${ctx
+			components: new AlertView(ctx.userTranslations()).successViewCustom(`${ctx.userTranslations().SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${ctx
 				.userTranslations()
 				.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 					"%blacklist_items%",
@@ -63,8 +73,8 @@ export default class AddPrefixCommand extends SubCommand {
 							return { id: category.name, type: "category"}
 						}))).filter(v => v !== null)
 					]
-					.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
-					.join("\n"),
+						.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
+						.join("\n"),
 				)}`
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

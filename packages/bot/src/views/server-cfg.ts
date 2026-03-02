@@ -21,6 +21,7 @@ import { mentionCommand } from "@/lib/mention-command";
 import z from "zod";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { friendlyFeatureIndex } from "../../../plurography/src/pluralbuddy/guild";
+import { client } from "..";
 
 const roleDataObj = z.object({
 	roleId: z.string(),
@@ -106,7 +107,7 @@ export class ServerConfigView extends TranslatedView {
 		];
 	}
 
-	generalSettings(guild: PGuild, prefix: string, isApplication: boolean) {
+	async generalSettings(guild: PGuild, prefix: string, isApplication: boolean) {
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent("## Server Preferences"),
@@ -128,16 +129,26 @@ export class ServerConfigView extends TranslatedView {
 				new TextDisplay().setContent(`**Configure Blacklist**
 > Roles and channels can be blacklisted from proxying or using commands from PluralBuddy.`),
 				new TextDisplay().setContent(`
-> Currently, the guild's blacklist items are: \n${(guild.blacklistedChannels.length + guild.blacklistedRoles.length) === 0 ? "> - _There are no blacklist items._" : ""}${[
+> Currently, the guild's blacklist items are: \n${(guild.blacklistedChannels.length + guild.blacklistedRoles.length + guild.blacklistedCategories.length) === 0 ? "> - _There are no blacklist items._" : ""}${[
 					...guild.blacklistedChannels.map((c) => {
 						return { id: c, type: "channel" };
 					}),
 					...guild.blacklistedRoles.map((c) => {
 						return { id: c, type: "role" };
 					}),
+
+					...(await Promise.all(guild.blacklistedCategories.map(async (c) => {
+						const category = await client.channels.fetch(c).catch(() => null);
+
+						if (!category || !category.isCategory()) {
+							return null;
+						}
+
+						return { id: category.name, type: "category"}
+					}))).filter(v => v !== null)
 				]
 					.slice(0, 5)
-					.map((c) => `> - ${c.type === "channel" ? "<#" : "<@&"}${c.id}>`)
+					.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
 					.join(
 						"\n",
 					)}${(guild.blacklistedChannels.length + guild.blacklistedRoles.length) > 5 ? `\n> - ... and ${guild.blacklistedChannels.length + guild.blacklistedRoles.length - 5} extra item(s). Use ${mentionCommand(prefix, "server-config blacklist list", isApplication)} to see the rest of the blacklist items.` : ""}`),
@@ -151,10 +162,22 @@ export class ServerConfigView extends TranslatedView {
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
 						.setCustomId(
+							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistCategory.create(),
+						)
+						.setLabel("Add Category")
+						.setStyle(ButtonStyle.Secondary),
+					new Button()
+						.setCustomId(
 							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistRole.create(),
 						)
 						.setLabel("Add Roles")
 						.setStyle(ButtonStyle.Secondary),
+					new Button()
+						.setCustomId(
+							InteractionIdentifier.Guilds.GeneralTab.RemoveBlacklistCategory.create(),
+						)
+						.setLabel("Remove Category")
+						.setStyle(ButtonStyle.Danger),
 				),
 				new Section()
 					.setAccessory(
@@ -218,15 +241,18 @@ export class ServerConfigView extends TranslatedView {
 				new Section()
 					.setAccessory(
 						new Button()
-							.setCustomId(InteractionIdentifier.Guilds.GeneralTab.SetProxyDelay.create())
+							.setCustomId(
+								InteractionIdentifier.Guilds.GeneralTab.SetProxyDelay.create(),
+							)
 							.setLabel("Set Proxy Delay")
-							.setStyle(ButtonStyle.Primary)
-					).setComponents(
+							.setStyle(ButtonStyle.Primary),
+					)
+					.setComponents(
 						new TextDisplay().setContent(`**Proxy Delay**
 > After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`),
 						new TextDisplay().setContent(`> It is not recommended to go over a 1 second proxy delay.
-> This server's proxy delay currently is **${(guild.proxyDelay ?? 0) / 1000} seconds** (${guild.proxyDelay ?? 0}ms)`)
-					)
+> This server's proxy delay currently is **${(guild.proxyDelay ?? 0) / 1000} seconds** (${guild.proxyDelay ?? 0}ms)`),
+					),
 			),
 		];
 	}
@@ -440,7 +466,7 @@ export class ServerConfigView extends TranslatedView {
 		];
 	}
 
-	roleGeneralView(roleData: z.infer<typeof roleDataObj>) {	
+	roleGeneralView(roleData: z.infer<typeof roleDataObj>) {
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
@@ -530,7 +556,8 @@ There is an example below of what an example proxy with this role would look lik
 					]
 				: []),
 			new TextDisplay().setContent("Example proxy text. Hi!"),
-			...(roleData.containerContents !== undefined && roleData.containerLocation === "bottom"
+			...(roleData.containerContents !== undefined &&
+			roleData.containerLocation === "bottom"
 				? [
 						roleData.containerColor !== undefined
 							? new Container()

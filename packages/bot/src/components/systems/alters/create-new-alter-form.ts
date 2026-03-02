@@ -40,6 +40,15 @@ export default class CreateNewAlterForm extends ModalCommand {
 			});
 		}
 
+		if (user.system.alterIds.length >= 2000) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"TOO_MANY_ALTERS",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
 		const alter = PAlterObject.safeParse({
 			alterId: Number(DiscordSnowflake.generate()),
 			systemId: user.system.associatedUserId,

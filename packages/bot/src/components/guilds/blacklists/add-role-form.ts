@@ -34,7 +34,7 @@ export default class AddRoleForm extends ModalCommand {
 					"general",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView(ctx.userTranslations()).generalSettings(
+				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
 					pluralGuild,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

@@ -1,0 +1,35 @@
+---
+title: "User Concepts"
+description: "PluralBuddy concepts for anyone"
+icon: Lightbulb
+---
+
+PluralBuddy uses many terms which may be confusing in nature, which is what this page is supposed to explain.
+
+## Component User Interface
+
+PluralBuddy, uses a technique called a Component User Interface, essentially meaning instead of using commands, many actions can also be preformed using native Discord buttons, forms, and other related components.
+
+This can be done due to Components v2, a new Discord components UI API addition, which allows configuration menus to be very comprehensive
+
+Examples of this in action are the following commands:
+
+- `pb;system config` - Opens the visual configuration for your system.
+- `pb;server-config view` - View server configuration interface
+- `pb;nudge-preferences` - Configure settings about nudging
+
+## Nickname Proxy Mode
+
+The nickname proxy mode allows users to automatically change their nickname after proxying as a certain alter. This can make typing indicators and other native signals show the alter's name as opposed to the hosts name.
+
+### Nickname Format
+
+Nickname formats tells PluralBuddy how your nicknames should be formatted. By default, it is `@%username%`.
+
+- In a nickname format, the following placeholders are replaced:
+  - `%username%` is replaced with your alters username
+  - `%display%` is replaced with your alters display name.
+- Nickname formats can be at most 40 characters
+
+Nickname formats can be set using `pb;system nickname-format`:
+- `pb;system nickname-format <new format>` - Set the nickname format for alters, where `%username%` is the username and `%display%` is the alter display name in `new format`.

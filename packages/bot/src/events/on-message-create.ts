@@ -11,6 +11,7 @@ import {
 	StringSelectOption,
 	TextDisplay,
 	WebhookMessage,
+	type MessageStructure,
 	type WebhookMessageStructure,
 } from "seyfert";
 import {
@@ -47,6 +48,8 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
+
+const indexingMap: string[] = [];
 
 export type ApplicableWebhookWritePayload = {
 	body: Omit<
@@ -206,9 +209,9 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
-					if (!await blacklistedRole(guild, message)) return;
+					if (!(await blacklistedRole(guild, message))) return;
 					if (!blacklistedChannel(guild, message)) return;
-					
+
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,
@@ -223,73 +226,170 @@ export default createEvent({
 
 		if (user.system.alterIds.length === 0) return;
 
-		// Only find the alters that we need
-		for (let i = 0; i < user.system.alterIds.length; i++) {
-			const proxyTags = message.client.cache.alterProxy.get(
-				user.system.alterIds[i]?.toString() ?? "",
-			)?.pt;
-			const reformedProxyTags = proxyTags?.map((c) => {
-				return { prefix: c.p, suffix: c.s };
-			});
+		if (!indexingMap.includes(message.author.id)) {
+			let indexingMessage: MessageStructure | null =
+				null as MessageStructure | null;
 
-			let checkAlter = null;
+			const indexingTimeout = setTimeout(async () => {
+				indexingMessage = await message.reply(
+					{
+						components: [
+							new Container()
+								.setComponents(
+									new TextDisplay().setContent(
+										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+											"{{ alterCount }}",
+											(user.system?.alterIds.length ?? 0).toString(),
+										)
+											.replace("{{ alters }}", "0")
+											.replace("{{ percentage }}", "0%")}`,
+									),
+								)
+								.setColor("#5450fe"),
+						],
+						flags: MessageFlags.IsComponentsV2,
+					},
+					true,
+				);
+			}, 2000);
+			indexingMap.push(message.author.id);
 
-			if (!proxyTags || proxyTags.length === 0)
-				checkAlter = await alterCollection.findOne({
-					alterId: user.system.alterIds[i],
-				});
+			// Only find the alters that we need
+			for (let i = 0; i < user.system.alterIds.length; i++) {
+				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
+				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
+				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 
-			for (const proxyTag of reformedProxyTags ?? checkAlter?.proxyTags ?? []) {
-				if (checkAlter)
-					message.client.cache.alterProxy.set(
-						CacheFrom.Gateway,
-						checkAlter?.alterId.toString(),
-						{
-							pt: checkAlter?.proxyTags.map((c) => {
-								return { p: c.prefix, s: c.suffix };
+				if (i % 20 === 0 && indexingMessage) {
+					await indexingMessage?.edit({
+						components: [
+							new Container()
+								.setComponents(
+									new TextDisplay().setContent(
+										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+											"{{ alterCount }}",
+											(user.system?.alterIds.length ?? 0).toString(),
+										)
+											.replace("{{ alters }}", i.toString())
+											.replace(
+												"{{ percentage }}",
+												`${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%`,
+											)}`,
+									),
+								)
+								.setColor("#5450fe"),
+						],
+						flags: MessageFlags.IsComponentsV2,
+					});
+				}
+
+				// If cache miss or cache stale, fetch from DB and set cache
+				if (!proxyObject || !proxyObject.pt) {
+					const checkAlter = await alterCollection.findOne({
+						alterId: Number(user.system.alterIds[i]),
+					});
+
+					if (checkAlter && Array.isArray(checkAlter.proxyTags)) {
+						// Set in cache with correct structure
+						await message.client.cache.alterProxy.set(
+							CacheFrom.Rest,
+							alterIdStr,
+							{
+								pt: JSON.stringify(
+									checkAlter.proxyTags.map((c) => ({
+										p: c.prefix,
+										s: c.suffix,
+									})),
+								),
+							},
+						);
+						// Now also prepare the tags for usage
+						reformedProxyTags = checkAlter.proxyTags.map((c) => ({
+							prefix: c.prefix,
+							suffix: c.suffix,
+						}));
+					}
+				} else {
+					// tag data is in cache, parse
+					try {
+						reformedProxyTags = JSON.parse(proxyObject.pt ?? "[]").map(
+							(c: any) => ({
+								prefix: c.p,
+								suffix: c.s,
 							}),
-						},
-					);
+						);
+					} catch {
+						reformedProxyTags = [];
+					}
+				}
 
-				if (proxyTagValid(proxyTag, message)) {
-					// Check for system tag policy
-					if (
-						guild.getFeatures().requiresGuildTag &&
-						user.system.systemDisplayTag === null
-					) {
-						createProxyError(user, message, {
-							title: "Display Tag Enforcement Policy",
-							description:
-								'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
-							type: "EnforcedGuildTagRegulation",
-						});
+				for (const proxyTag of reformedProxyTags) {
+					// Ensure we have latest alter data for use deeper down the logic
+					let checkAlter =
+						proxyObject && proxyObject.pt
+							? null // Data came from cache so don't fetch here unless we need further fields
+							: await alterCollection.findOne({
+									alterId: Number(user.system.alterIds[i]),
+								});
+
+					if (proxyTagValid(proxyTag, message)) {
+						// Check for system tag policy
+						if (
+							guild.getFeatures().requiresGuildTag &&
+							user.system.systemDisplayTag === null
+						) {
+							createProxyError(user, message, {
+								title: "Display Tag Enforcement Policy",
+								description:
+									'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+								type: "EnforcedGuildTagRegulation",
+							});
+
+							return;
+						}
+
+						// Only get more data about the alter after confirmation of proxy tag
+						if (!checkAlter) {
+							checkAlter = await alterCollection.findOne({
+								alterId: user.system.alterIds[i],
+							});
+						}
+
+						console.timeEnd("proxy tag parse");
+
+						if (!(await blacklistedRole(guild, message))) return;
+						if (!blacklistedChannel(guild, message)) return;
+
+						clearTimeout(indexingTimeout);
+						if (indexingMessage !== null) indexingMessage.delete();
+
+						const authorIdIndex = indexingMap.indexOf(message.author.id);
+						if (authorIdIndex !== -1) {
+							indexingMap.splice(authorIdIndex, 1);
+						}
+
+						performTagProxy(
+							checkAlter as PAlter,
+							user,
+							similarWebhooks,
+							proxyTag,
+							message,
+							guild,
+							message.member,
+						);
 
 						return;
 					}
-
-					// Only get more data about the alter after confirmation of proxy tag
-					checkAlter = await alterCollection.findOne({
-						alterId: user.system.alterIds[i],
-					});
-
-					console.timeEnd("proxy tag parse");
-
-					if (!await blacklistedRole(guild, message)) return;
-					if (!blacklistedChannel(guild, message)) return;
-
-					performTagProxy(
-						checkAlter as PAlter,
-						user,
-						similarWebhooks,
-						proxyTag,
-						message,
-						guild,
-						message.member,
-					);
-
-					return;
 				}
 			}
+
+			const authorIdIndex = indexingMap.indexOf(message.author.id);
+			if (authorIdIndex !== -1) {
+				indexingMap.splice(authorIdIndex, 1);
+			}
+
+			clearTimeout(indexingTimeout);
+			if (indexingMessage !== null) indexingMessage.delete();
 		}
 
 		if (
@@ -329,8 +429,8 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
-					if (!await blacklistedRole(guild, message)) return;
-					if (!blacklistedChannel(guild, message)) return;
+					if (!(await blacklistedRole(guild, message, true))) return;
+					if (!blacklistedChannel(guild, message, true)) return;
 
 					performAlterAutoProxy(
 						message,

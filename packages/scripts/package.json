@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@sapphire/snowflake": "^3.5.5",
     "mongodb": "^7.0.0",
     "ora": "^9.1.0",
     "plurography": "../plurography"

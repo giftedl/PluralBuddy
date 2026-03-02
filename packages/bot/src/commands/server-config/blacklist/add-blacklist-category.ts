@@ -2,37 +2,49 @@ import { guildCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	CommandContext,
-	Container,
 	createChannelOption,
+	createStringOption,
 	Declare,
 	Group,
 	Middlewares,
 	Options,
 	SubCommand,
 } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import { ChannelType, MessageFlags } from "seyfert/lib/types";
 
 const options = {
-	channel: createChannelOption({
-		description: "Channel to add to blacklist.",
+	category: createStringOption({
+		description: "Category ID to add to blacklist.",
 		required: true,
 	}),
 };
 
 @Declare({
-	name: "add-channel",
-	description: "Add a new server blacklist channel.",
-	aliases: ["ac"],
+	name: "add-category",
+	description: "Add a new server blacklist category.",
+	aliases: ["act"],
 })
 @Middlewares(["ensureGuildPermissions"])
 @Group("blacklist")
 @Options(options)
-export default class AddPrefixCommand extends SubCommand {
+export default class AddBlacklistCategory extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		const guildObj = await ctx.retrievePGuild();
-		const { channel } = ctx.options;
+		const { category } = ctx.options;
+		const categoryObj = await (await ctx.guild())?.channels
+			.fetch(category)
+			.catch(() => null);
 
-		if (guildObj.blacklistedChannels.includes(channel.id)) {
+		if (!categoryObj || !categoryObj.isCategory()) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"NOT_A_CATEGORY",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
+
+		if (guildObj.blacklistedCategories.includes(category)) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"BLACKLIST_ALREADY_EXISTS",
@@ -41,7 +53,7 @@ export default class AddPrefixCommand extends SubCommand {
 			});
 		}
 
-		if (guildObj.blacklistedChannels.length >= 25) {
+		if (guildObj.blacklistedCategories.length >= 25) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"TOO_MANY_BLACKLIST_ITEMS",
@@ -50,17 +62,17 @@ export default class AddPrefixCommand extends SubCommand {
 			});
 		}
 
-		guildObj.blacklistedChannels.push(channel.id);
+		guildObj.blacklistedCategories.push(category);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
-			{ $push: { blacklistedChannels: channel.id } },
+			{ $push: { blacklistedCategories: category } },
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				`${ctx.userTranslations().SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", `<#${channel.id}>`)} ${ctx
+				`${ctx.userTranslations().SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${ctx
 					.userTranslations()
 					.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 						"%blacklist_items%",
