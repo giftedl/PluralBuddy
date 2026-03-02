@@ -1,7 +1,7 @@
 import { emojis } from "@/lib/emojis";
 import { getApplicableCase } from "@/lib/libby";
 import { AlertView } from "@/views/alert";
-import { createMiddleware, Message } from "seyfert";
+import { Command, createMiddleware, Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlacklist = createMiddleware<void>(async (middle) => {
@@ -9,8 +9,14 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		await middle.context.retrievePGuild();
 	const { context: ctx } = middle;
 	const channel = await middle.context.channel();
+	console.log((middle.context.command as SubCommand).parent);
+	const isServerConfig =
+		(middle.context.isComponent() &&
+			middle.context.customId.startsWith("guilds/config/")) ||
+		("parent" in middle.context.command &&
+			middle.context.command.parent?.name === "server-config");
 
-	if ("parentId" in channel)
+	if ("parentId" in channel && !isServerConfig)
 		if (blacklistedCategories.includes(channel.parentId ?? "")) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(

@@ -151,7 +151,7 @@ export class ServerConfigView extends TranslatedView {
 					.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
 					.join(
 						"\n",
-					)}${(guild.blacklistedChannels.length + guild.blacklistedRoles.length) > 5 ? `\n> - ... and ${guild.blacklistedChannels.length + guild.blacklistedRoles.length - 5} extra item(s). Use ${mentionCommand(prefix, "server-config blacklist list", isApplication)} to see the rest of the blacklist items.` : ""}`),
+					)}${(guild.blacklistedChannels.length + guild.blacklistedRoles.length + guild.blacklistedCategories.length) > 5 ? `\n> - ... and ${guild.blacklistedChannels.length + guild.blacklistedRoles.length + guild.blacklistedCategories.length - 5} extra item(s). Use ${mentionCommand(prefix, "server-config blacklist list", isApplication)} to see the rest of the blacklist items.` : ""}`),
 
 				new ActionRow().setComponents(
 					new Button()
