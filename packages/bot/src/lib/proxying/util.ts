@@ -45,7 +45,7 @@ export const notValidPermissions = async (message: Message) => {
 
 export const getSimilarWebhooks = async (channelId: string) => {
 	try {
-		const result = (await client.webhooks.listFromChannel(channelId)).filter(
+		const result = (await client.webhooks.listFromChannel(channelId).catch(() => [])).filter(
 			(val) =>
 				val.name === "PluralBuddy Proxy" &&
 				(val.user ?? { id: 0 }).id === client.botId,
