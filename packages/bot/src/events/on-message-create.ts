@@ -232,8 +232,8 @@ export default createEvent({
 
 			const indexingTimeout = setTimeout(async () => {
 				try {
-
-					indexingMessage = await message.reply(
+					indexingMessage = await message.client.messages.write(
+						message.channelId,
 						{
 							components: [
 								new Container()
@@ -251,7 +251,6 @@ export default createEvent({
 							],
 							flags: MessageFlags.IsComponentsV2,
 						},
-						true,
 					);
 				} catch (_) {}
 			}, 2000);
