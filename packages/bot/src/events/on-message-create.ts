@@ -362,8 +362,8 @@ export default createEvent({
 						if (!(await blacklistedRole(guild, message))) return;
 						if (!blacklistedChannel(guild, message)) return;
 
-						// clearTimeout(indexingTimeout);
-						// if (indexingMessage !== null) indexingMessage.delete();
+						clearTimeout(indexingTimeout);
+						if (indexingMessage !== null) indexingMessage.delete();
 
 						const authorIdIndex = indexingMap.indexOf(message.author.id);
 						if (authorIdIndex !== -1) {
