@@ -180,6 +180,7 @@ export async function proxy(
 						createdAt: new Date(),
 						guildId: message.guildId,
 						channelId: message.channelId,
+						referencedMessage: message.referencedMessage?.id
 					});
 					try {
 						(async () => {
