@@ -231,26 +231,29 @@ export default createEvent({
 				null as MessageStructure | null;
 
 			const indexingTimeout = setTimeout(async () => {
-				indexingMessage = await message.reply(
-					{
-						components: [
-							new Container()
-								.setComponents(
-									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
-											"{{ alterCount }}",
-											(user.system?.alterIds.length ?? 0).toString(),
-										)
-											.replace("{{ alters }}", "0")
-											.replace("{{ percentage }}", "0%")}`,
-									),
-								)
-								.setColor("#5450fe"),
-						],
-						flags: MessageFlags.IsComponentsV2,
-					},
-					true,
-				);
+				try {
+
+					indexingMessage = await message.reply(
+						{
+							components: [
+								new Container()
+									.setComponents(
+										new TextDisplay().setContent(
+											`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+												"{{ alterCount }}",
+												(user.system?.alterIds.length ?? 0).toString(),
+											)
+												.replace("{{ alters }}", "0")
+												.replace("{{ percentage }}", "0%")}`,
+										),
+									)
+									.setColor("#5450fe"),
+							],
+							flags: MessageFlags.IsComponentsV2,
+						},
+						true,
+					);
+				} catch (_) {}
 			}, 2000);
 			indexingMap.push(message.author.id);
 
