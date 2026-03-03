@@ -12,12 +12,12 @@ export async function getReferencedMessageString(
 		message.referencedMessage?.content === ""
 			? "Jump to message"
 			: message.referencedMessage?.content
-					.substring(0, 200)
+					.substring(0, 74)
 					.replace("https://", "")
 					.replace("http://", "")
 					.replace(/<@!?(\d+)>/g, "")
 					.replace("@everyone", ":myhonestreaction:")
-	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)`;
+	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${(message.referencedMessage?.content.length ?? 0) > 74 ? "…" : ""}`;
 
 	if (message.referencedMessage?.webhookId === proxyWHId) {
 		const messageDb = await messagesCollection.findOne({
@@ -57,12 +57,12 @@ export async function getReferencedMessageString(
 					contents === ""
 						? "Jump to message"
 						: contents
-								.substring(0, 200)
+								.substring(0, 74)
 								.replace("https://", "")
 								.replace("http://", "")
 								.replace(/<@!?(\d+)>/g, "")
 								.replace("@everyone", ":myhonestreaction:")
-				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)`;
+				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${(message.referencedMessage?.content.length ?? 0) > 74 ? "…" : ""}`;
 			}
 		}
 	}
