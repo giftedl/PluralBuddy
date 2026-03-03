@@ -4,7 +4,7 @@ import z, { date } from "zod";
 
 export const defaultPrefixes = {
 	canary: ["pbc;", "pbc!"],
-	production: ["pb;", "pb!"],
+	production: ["pb;", "pb!", "Pb;", "Pb!", "pB;", "pB!", "PB;", "PB!"],
 };
 
 export const GuildErrorTypes = z.enum([
@@ -25,7 +25,7 @@ export enum GuildFlags {
 	FORCED_WEBHOOK_MODE = 1 << 6,
 	FORCED_NICKNAME_MODE = 1 << 7,
 	LOGGING = 1 << 8,
-	DISABLE_PERMISSION_CHECK = 1 << 9
+	DISABLE_PERMISSION_CHECK = 1 << 9,
 }
 
 export const PGuildObject = z
@@ -60,8 +60,11 @@ export const PGuildObject = z
 			.object({
 				roleId: z.string(),
 				containerContents: z.string().optional().catch(undefined),
-				containerLocation: z.enum(["top", "bottom"]).optional().catch(undefined),
-				containerColor: z.string().optional().catch(undefined)
+				containerLocation: z
+					.enum(["top", "bottom"])
+					.optional()
+					.catch(undefined),
+				containerColor: z.string().optional().catch(undefined),
 			})
 			.array()
 			.default([]),
@@ -107,13 +110,13 @@ export const PGuildObject = z
 			disabledHelp: (data.flags & GuildFlags.DISABLE_HELP) !== 0,
 			disabledNudging: (data.flags & GuildFlags.DISABLE_NUDGING) !== 0,
 			disabledMessageInfo: (data.flags & GuildFlags.DISABLE_MESSAGE_INFO) !== 0,
-			disabledPermissionCheck: (data.flags & GuildFlags.DISABLE_PERMISSION_CHECK) !== 0,
+			disabledPermissionCheck:
+				(data.flags & GuildFlags.DISABLE_PERMISSION_CHECK) !== 0,
 			logging: (data.flags & GuildFlags.LOGGING) !== 0,
 
 			has: (flag: GuildFlags) => (data.flags & flag) !== 0,
 			disable: (flag: GuildFlags) =>
-				(data.flags & flag) ===
-				0 /* doesn't have flag */
+				(data.flags & flag) === 0 /* doesn't have flag */
 					? data.flags
 					: data.flags - flag,
 			enable: (flag: GuildFlags) =>
@@ -122,12 +125,10 @@ export const PGuildObject = z
 					: data.flags + flag,
 			bool: (flag: GuildFlags, bool?: boolean) =>
 				bool
-					? (data.flags & flag) !==
-						0 /* does have flag */
+					? (data.flags & flag) !== 0 /* does have flag */
 						? data.flags
 						: data.flags + flag
-					: (data.flags & flag) ===
-							0 /* doesn't have flag */
+					: (data.flags & flag) === 0 /* doesn't have flag */
 						? data.flags
 						: data.flags - flag,
 		}),
@@ -155,11 +156,13 @@ export const defaultGuildStructure = (guildId: string) => {
 };
 
 export const friendlyFeatureIndex: Record<
-	string, { title: string; description: string; }
+	string,
+	{ title: string; description: string }
 > = {
 	DISABLE_APP_EXPLAIN: {
 		title: "Disable \`[APP]\`/\`[BOT]\` explanation command",
-		description: "This command allows users to explain how users proxying with PluralBuddy are not applications/bots.",
+		description:
+			"This command allows users to explain how users proxying with PluralBuddy are not applications/bots.",
 	},
 	DISABLE_ABOUT: {
 		title: "Disable about command",
@@ -167,26 +170,32 @@ export const friendlyFeatureIndex: Record<
 	},
 	DISABLE_HELP: {
 		title: "Disable help command",
-		description: "This command shows information about the features & commands of PluralBuddy.",
+		description:
+			"This command shows information about the features & commands of PluralBuddy.",
 	},
 	DISABLE_NUDGING: {
 		title: "Disable Nudging",
-		description: 'This allows users to ping ("nudge") other proxied users main account. Users can block other users not allowing them to be nudged.',
+		description:
+			'This allows users to ping ("nudge") other proxied users main account. Users can block other users not allowing them to be nudged.',
 	},
 	DISABLE_MESSAGE_INFO: {
 		title: "Disable Message Info",
-		description: "This allows users to gain public information about another user based on a message they sent.",
+		description:
+			"This allows users to gain public information about another user based on a message they sent.",
 	},
 	FORCED_WEBHOOK_MODE: {
 		title: "Forced Webhook Mode",
-		description: "This forces all users to proxy with webhook mode only. **This will not work if you have Forced Nickname Mode also enabled.**",
+		description:
+			"This forces all users to proxy with webhook mode only. **This will not work if you have Forced Nickname Mode also enabled.**",
 	},
 	FORCED_NICKNAME_MODE: {
 		title: "Forced Nickname Mode",
-		description: "This forces all users to proxy with nickname mode only. **This will not work if you have Forced Webhook Mode also enabled.**",
+		description:
+			"This forces all users to proxy with nickname mode only. **This will not work if you have Forced Webhook Mode also enabled.**",
 	},
 	DISABLE_PERMISSION_CHECK: {
 		title: "Disable Permission Check Command",
-		description: "This command shows server administrators and members whether they have permissions to do certain things.",
+		description:
+			"This command shows server administrators and members whether they have permissions to do certain things.",
 	},
 };
