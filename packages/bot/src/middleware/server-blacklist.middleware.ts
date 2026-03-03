@@ -9,10 +9,9 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		await middle.context.retrievePGuild();
 	const { context: ctx } = middle;
 	const channel = await middle.context.channel();
-	console.log((middle.context.command as SubCommand).parent);
 	const isServerConfig =
-		(middle.context.isComponent() &&
-			middle.context.customId.startsWith("guilds/config/")) ||
+		("customId" in middle.context &&
+			middle.context.customId.startsWith("guilds/")) ||
 		("parent" in middle.context.command &&
 			middle.context.command.parent?.name === "server-config");
 
@@ -26,7 +25,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 			});
 		}
 
-	if (blacklistedChannels.includes(middle.context.channelId)) {
+	if (blacklistedChannels.includes(middle.context.channelId) && !isServerConfig) {
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).errorView(
 				"FEATURE_DISABLED_GUILD",
