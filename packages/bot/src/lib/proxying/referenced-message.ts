@@ -14,6 +14,7 @@ export async function getReferencedMessageString(
 			: message.referencedMessage?.content
 					.substring(0, 74)
 					.replace("https://", "")
+     .replace("\n", "")
 					.replace("http://", "")
 					.replace(/<@!?(\d+)>/g, "")
 					.replace("@everyone", ":myhonestreaction:")
@@ -60,6 +61,7 @@ export async function getReferencedMessageString(
 								.substring(0, 74)
 								.replace("https://", "")
 								.replace("http://", "")
+        .replace("\n", "")
 								.replace(/<@!?(\d+)>/g, "")
 								.replace("@everyone", ":myhonestreaction:")
 				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${(message.referencedMessage?.content.length ?? 0) > 74 ? "…" : ""}`;
