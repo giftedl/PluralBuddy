@@ -29,9 +29,9 @@ app.use("/api/*", async (ctx, next) => {
 app.use(trimTrailingSlash());
 
 export const clientRoutes = app
-	.get("/api/stats", ({ req, json }) => {
+	.get("/api/stats", async ({ req, json }) => {
 		return json(
-			(
+			await (
 				(client.cache as unknown as { statistic: BaseResource })
 					.statistic as unknown as StatisticResource
 			).get("latest"),

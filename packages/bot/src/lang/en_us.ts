@@ -237,7 +237,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	TAG_COLOR_rose: "rose",
 
 	WAITING_INDEXING: "PluralBuddy is currently trying to index your system, and at most will need to index **{{ alterCount }} alter(s)**. This may take a while.\n-# **Current Status:** {{ alters }}/{{ alterCount }} indexed. ({{ percentage }})",
-	TOO_MANY_ALTERS: "There are too many alters in your PluralBuddy system. (2000 alters) Please contact PluralBuddy Support if you believe that is incorrect.",
+	TOO_MANY_ALTERS: "There are too many alters in your PluralBuddy system (2000 alters). Please contact PluralBuddy Support if you believe that is incorrect.",
+	TOO_MANY_TAGS: "There are too many tags in your PluralBuddy system (500 tags).Please contact PluralBuddy Support if you believe that is incorrect. ",
 
 	SEARCH_FORM_TITLE: "Searching Resources",
 	SEARCH_QUERY: "Search Query",

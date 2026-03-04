@@ -31,6 +31,15 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 			});
 		}
 
+		if (user.system.alterIds.length >= 2000) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"TOO_MANY_ALTERS",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
 		return await ctx.modal(
 			new Modal()
 				.setCustomId(

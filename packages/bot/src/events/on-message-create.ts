@@ -177,11 +177,11 @@ export default createEvent({
 
 		console.time("proxy tag parse");
 		const similarWebhooks =
-			client.cache.similarWebhookResource.fetch(message.channelId)?.webhooks ??
+			(await client.cache.similarWebhookResource.fetch(message.channelId))?.webhooks ??
 			(await getSimilarWebhooks(message.channelId));
 		const user = await getUserById(message.author.id);
 		const guild = PGuildObject.parse(
-			client.cache.pguild.get(message.guildId ?? "")?.g ??
+			(await client.cache.pguild.get(message.guildId ?? ""))?.g ??
 				(await getGuildFromId(message.guildId ?? "")),
 		);
 

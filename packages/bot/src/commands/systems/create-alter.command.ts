@@ -54,6 +54,15 @@ export default class CreateAlterCommand extends SubCommand {
             })
         }
 
+		if (user.system.alterIds.length >= 2000) {
+			return await ctx.editResponse({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"TOO_MANY_ALTERS",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
         const alter = PAlterObject.safeParse({
             alterId: Number(DiscordSnowflake.generate()),
             systemId: user.system.associatedUserId,

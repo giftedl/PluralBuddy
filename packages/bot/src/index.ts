@@ -110,7 +110,7 @@ for (const unfetchedGuild of guilds.values()) {
 	}
 }
 
-client.cache.statistic.set(CacheFrom.Rest, "latest", { guildCount, userCount });
+await client.cache.statistic.set(CacheFrom.Gateway, "latest", { guildCount, userCount });
 
 export type { ClientType } from "./api-types";
 export default api;

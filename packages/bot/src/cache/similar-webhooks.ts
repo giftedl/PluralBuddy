@@ -45,8 +45,8 @@ export class SimilarWebhookResource extends BaseResource<SimilarWebhookObject> {
 		});
 	}
 
-	fetch(id: string) {
-		const result = super.get(id);
+	async fetch(id: string) {
+		const result = await super.get(id);
 
 		if (!result?.webhooks) return { webhooks: null, lastDrip: null };
 
