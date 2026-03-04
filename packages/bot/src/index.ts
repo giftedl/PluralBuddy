@@ -86,8 +86,6 @@ client.setServices({
 
 await setupMongoDB();
 await setupDatabases();
-await client.start();
-await client.uploadCommands({ cachePath: "./commands.json" });
 
 client.cache.statistic = new StatisticResource(client.cache, client);
 client.cache.alterProxy = new ProxyResource(client.cache, client);
@@ -96,6 +94,10 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 	client.cache,
 	client,
 );
+
+await client.start();
+await client.uploadCommands({ cachePath: "./commands.json" });
+
 
 const guildCount = (await client.guilds.list({}, true)).length;
 const guilds = (await client.guilds.list({}, true)) ?? [];
