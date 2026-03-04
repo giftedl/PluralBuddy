@@ -43,21 +43,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-
-		await ctx.author.write({
-			components: [
-				...new AlertView(ctx.userTranslations()).successViewCustom(
-					ctx
-						.userTranslations()
-						.SYSTEM_DELETION_DM.replace(
-							"%time%",
-							`<t:${Math.floor(Date.now() / 1000)}>`,
-						),
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-		await ctx.author.write({
+		await ctx.followup({
 			files: [
 				new AttachmentBuilder()
 					.setName("system.json")

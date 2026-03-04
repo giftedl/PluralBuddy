@@ -35,16 +35,8 @@ export default class ExportCommand extends SubCommand {
 			});
 		}
 
-		await ctx.author.write({
-			components: [
-				...new AlertView(ctx.userTranslations()).successView(
-					"SYSTEM_EXPORT_DM",
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
 
-		await ctx.author.write({
+		await ctx.followup({
 			files: [
 				new AttachmentBuilder()
 					.setName("system.json")
@@ -53,6 +45,7 @@ export default class ExportCommand extends SubCommand {
 						Buffer.from(await buildExportPayload(user.system)),
 					),
 			],
+			flags: MessageFlags.Ephemeral
 		});
 
 		return await ctx.editResponse({

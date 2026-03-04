@@ -25,7 +25,10 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 			});
 		}
 
-	if (blacklistedChannels.includes(middle.context.channelId) && !isServerConfig) {
+	if (
+		blacklistedChannels.includes(middle.context.channelId) &&
+		!isServerConfig
+	) {
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).errorView(
 				"FEATURE_DISABLED_GUILD",
@@ -49,41 +52,45 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 				const caseObj = await getApplicableCase(ctx.author.id);
 
 				if (caseObj) {
-					await (ctx.message as Message).author.write({
-						components: new AlertView(ctx.userTranslations()).errorViewCustom(
-							ctx
-								.userTranslations()
-								.BLACKLISTED_PC.replace(
-									"{{ libbyReasoning }}",
-									caseObj.reasoning,
-								)
-								.replace("{{ reply }}", emojis.lineRight)
-								.replace(
-									"{{ libbyExpirationDate }}",
-									caseObj.expires
-										? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
-										: "Never",
-								)
-								.replace("{{ libbyCaseId }}", caseObj.blacklistId),
-						),
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					});
+					try {
+						await (ctx.message as Message).author.write({
+							components: new AlertView(ctx.userTranslations()).errorViewCustom(
+								ctx
+									.userTranslations()
+									.BLACKLISTED_PC.replace(
+										"{{ libbyReasoning }}",
+										caseObj.reasoning,
+									)
+									.replace("{{ reply }}", emojis.lineRight)
+									.replace(
+										"{{ libbyExpirationDate }}",
+										caseObj.expires
+											? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
+											: "Never",
+									)
+									.replace("{{ libbyCaseId }}", caseObj.blacklistId),
+							),
+							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+						});
+					} catch (_) {}
 
 					return await middle.pass();
 				}
 			}
 
-			await (ctx.message as Message).author.write({
-				components: new AlertView(ctx.userTranslations()).errorViewCustom(
-					ctx
-						.userTranslations()
-						.BLACKLISTED.replace(
-							"{{ guild }}",
-							(await ctx.guild())?.name ?? "",
-						),
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
+			try {
+				await (ctx.message as Message).author.write({
+					components: new AlertView(ctx.userTranslations()).errorViewCustom(
+						ctx
+							.userTranslations()
+							.BLACKLISTED.replace(
+								"{{ guild }}",
+								(await ctx.guild())?.name ?? "",
+							),
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			} catch (_) {}
 			return await middle.pass();
 		}
 	}

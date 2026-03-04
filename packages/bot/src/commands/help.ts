@@ -50,12 +50,14 @@ export default class PluralBuddyHelpCommand extends Command {
 			if (ctx.isChat() && ctx.message) {
 				(ctx.message as Message).delete();
 
-				await (ctx.message as Message).author.write({
-					components: new AlertView(ctx.userTranslations()).errorView(
-						"FEATURE_DISABLED_GUILD",
-					),
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				});
+				try {
+					await (ctx.message as Message).author.write({
+						components: new AlertView(ctx.userTranslations()).errorView(
+							"FEATURE_DISABLED_GUILD",
+						),
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					});
+				} catch (_) {}
 				return;
 			}
 

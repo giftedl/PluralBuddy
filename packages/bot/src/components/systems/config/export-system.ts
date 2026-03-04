@@ -37,16 +37,7 @@ export default class ExportSystemButton extends ComponentCommand {
 			});
 		}
 
-		await ctx.author.write({
-			components: [
-				...new AlertView(ctx.userTranslations()).successView(
-					"SYSTEM_EXPORT_DM",
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-
-    await ctx.author.write({
+		await ctx.followup({
 			files: [
 				new AttachmentBuilder()
 					.setName("system.json")
@@ -55,7 +46,7 @@ export default class ExportSystemButton extends ComponentCommand {
 						Buffer.from(await buildExportPayload(user.system)),
 					),
 			],
-    })
+		});
 
 		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successView(

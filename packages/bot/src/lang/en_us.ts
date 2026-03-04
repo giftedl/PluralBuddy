@@ -151,7 +151,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	ALTER_SERVER_DN_FORM_LABEL: "Server Display Name",
 
 	SYSTEM_EXPORT_FINISHED:
-		"Successfully exported your system. \n-# **Pro tip:** Make sure PluralBuddy can direct message or else the export cannot be sent to you.",
+		"Successfully exported your system. It should be visible in the message below.",
 	SYSTEM_EXPORT_DM: "Here is your export data on request:",
 
 	PRIVACY_VISIBILITY: "Visibility",
