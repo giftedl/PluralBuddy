@@ -35,13 +35,15 @@ const options = {
 export default class SetupCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { "media-included": mi } = ctx.options;
-		const { system } = await ctx.retrievePUser()
+		const { system } = await ctx.retrievePUser();
 
 		if (!system) {
-            return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+			return await ctx.ephemeral({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"ERROR_SYSTEM_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 		}
 
 		return await ctx.ephemeral(
@@ -97,8 +99,60 @@ export default class SetupCommand extends SubCommand {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			},
 			false,
-			(message) => {
+			async (message) => {
+				message.editMessage({
+					components: [
+						new Container()
+							.setComponents(
+								new TextDisplay().setContent(
+									ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION,
+								),
+							)
+							.setColor("#FF1717"),
+						new Container().setSpoiler(true).setComponents(
+							new TextDisplay().setContent(
+								`You can delete your system <t:${Math.floor((Date.now() + 10000) / 1000)}:R>.`,
+							),
+							new ActionRow().setComponents(
+								new Button()
+									.setEmoji(emojis.settingsWhite)
+									.setStyle(ButtonStyle.Primary)
+									.setLabel(ctx.userTranslations().BACK_TO_SAFETY_BTN)
+									.setCustomId(
+										InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
+									),
+								new Button()
+									.setEmoji(emojis.circleQuestionWhite)
+									.setStyle(ButtonStyle.Danger)
+									.setDisabled(true)
+									.setLabel(
+										ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN,
+									)
+									.setCustomId(
+										mi
+											? InteractionIdentifier.Systems.DeleteSystemMedia.create()
+											: InteractionIdentifier.Systems.DeleteSystem.create(),
+									),
+							),
+							new TextDisplay().setContent(
+								ctx
+									.userTranslations()
+									.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
+										"%command%",
+										mentionCommand(
+											(await ctx.getDefaultPrefix()) ?? "pb;",
+											"system delete",
+											ctx.interaction?.message?.messageReference === undefined,
+											"-mi",
+										),
+									),
+							),
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
 				setTimeout(async () => {
+					console.log("ok go");
 					message.editMessage({
 						components: [
 							new Container()
@@ -137,7 +191,8 @@ export default class SetupCommand extends SubCommand {
 											mentionCommand(
 												(await ctx.getDefaultPrefix()) ?? "pb;",
 												"system delete",
-												ctx.interaction?.message?.messageReference === undefined,
+												ctx.interaction?.message?.messageReference ===
+													undefined,
 												"-mi",
 											),
 										),

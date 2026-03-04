@@ -84,10 +84,12 @@ export const extendedContext = extendContext((interaction) => {
 					message.delete();
 					const writtenMessage = await i.write(body, true);
 
+					console.log(i.editResponse)
 					if (afterSendTask)
 						afterSendTask({
 							reply: interaction.message?.reply,
-							editMessage: interaction.editResponse,
+							editMessage: (body: InteractionCreateBodyRequest) =>
+								i.editMessage("@original", body),
 						});
 
 					return writtenMessage;
