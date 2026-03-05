@@ -61,9 +61,9 @@ export default class SystemCommand extends Command {
 		} else {
 			// Otherwise, query for current user's alters
 			query = Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				? alterCollection.findOne({ $or: [{ username: { $regex: alterName} }], systemId })
 				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						$or: [{ username: { $regex: alterName} }, { alterId: Number(alterName) }],
 						systemId,
 					});
 		}
