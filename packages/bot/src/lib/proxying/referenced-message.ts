@@ -12,12 +12,13 @@ export async function getReferencedMessageString(
 		message.referencedMessage?.content === ""
 			? "Jump to message"
 			: message.referencedMessage?.content
+					.replaceAll(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
 					.substring(0, 74)
 					.replaceAll("https://", "")
      .replaceAll("\n", "")
 					.replaceAll("http://", "")
 					.replaceAll(/<@!?(\d+)>/g, "")
-					.replaceAll("@everyone", ":myhonestreaction:")
+					.replaceAll("@everyone", "--")
 	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${(message.referencedMessage?.content.length ?? 0) > 74 ? "…" : ""}`;
 
 	if (message.referencedMessage?.webhookId === proxyWHId) {
@@ -58,12 +59,13 @@ export async function getReferencedMessageString(
 					contents === ""
 						? "Jump to message"
 						: contents
+								.replaceAll(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
 								.substring(0, 74)
 								.replaceAll("https://", "")
 								.replaceAll("http://", "")
         .replaceAll("\n", "")
 								.replaceAll(/<@!?(\d+)>/g, "")
-								.replaceAll("@everyone", ":myhonestreaction:")
+								.replaceAll("@everyone", "--")
 				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${(message.referencedMessage?.content.length ?? 0) > 74 ? "…" : ""}`;
 			}
 		}
