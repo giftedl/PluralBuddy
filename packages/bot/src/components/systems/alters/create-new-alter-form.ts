@@ -95,7 +95,7 @@ ${z.prettifyError(alter.error)}
 			},
 		});
 
-		alterCollection.insertOne(alter.data);
+		await alterCollection.insertOne(alter.data);
 
 		await ctx.interaction.update({
 			components: await new SystemSettingsView(
