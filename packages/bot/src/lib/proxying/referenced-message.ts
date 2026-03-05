@@ -19,7 +19,7 @@ export async function getReferencedMessageString(
 					.replaceAll("http://", "")
 					.replaceAll(/<@!?(\d+)>/g, "")
 					.replaceAll("@everyone", "--")
-	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${(message.referencedMessage?.content.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
+	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 
 	if (message.referencedMessage?.webhookId === proxyWHId) {
 		const messageDb = await messagesCollection.findOne({
@@ -66,7 +66,7 @@ export async function getReferencedMessageString(
         .replaceAll("\n", "")
 								.replaceAll(/<@!?(\d+)>/g, "")
 								.replaceAll("@everyone", "--")
-				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${(message.referencedMessage?.content.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
+				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 			}
 		}
 	}
