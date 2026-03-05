@@ -33,6 +33,7 @@ import type { PTag } from "@/types/tag";
 import type { PSystem } from "@/types/system";
 import { getUserById } from "@/types/user";
 import type { PGuild } from "plurography";
+import { sanitizeEmojis } from "@/lib/sanitize-emojis";
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {
@@ -66,6 +67,9 @@ export class AlterView extends TranslatedView {
 			!external || has(AlterProtectionFlags.USERNAME, alter.public);
 		const tagsDisplayable =
 			!external || has(AlterProtectionFlags.TAGS, alter.public);
+		const sanitizedDescription = await sanitizeEmojis(alter.description ?? "");
+
+		setTimeout(( ) => sanitizedDescription.postHook(), 3000)
 
 		let tags: PTag[] = [];
 		let tagCount = 0;
@@ -79,7 +83,7 @@ export class AlterView extends TranslatedView {
 		const innerComponents =
 			new TextDisplay().setContent(`${displayNameDisplayable ? `## ${alter.displayName}` : ""}
 ${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : usernameDisplayable ? `-# Also known as @${alter.username}` : ""} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
-${descriptionDisplayable && alter.description !== null ? "\n" : ""}${descriptionDisplayable ? (alter.description ?? "") : ""}${descriptionDisplayable && alter.description !== null ? "\n" : ""}
+${descriptionDisplayable && alter.description !== null ? "\n" : ""}${descriptionDisplayable ? sanitizedDescription.result : ""}${descriptionDisplayable && alter.description !== null ? "\n" : ""}
 ${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}` : ""}
 **Associated to:** <@${alter.systemId}> (${alter.systemId})
 ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`).join(",  ")}${tags.length !== tagCount ? `, and ${tagCount - tags.length} more...` : ""}\n` : ""}
