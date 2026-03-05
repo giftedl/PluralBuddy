@@ -52,6 +52,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 						Buffer.from(await buildExportPayload(user.system)),
 					),
 			],
+			flags: MessageFlags.Ephemeral
 		});
 
 		// Add lifecycle rule to delete prefixed storage prefixes

@@ -46,6 +46,7 @@ export default class ExportSystemButton extends ComponentCommand {
 						Buffer.from(await buildExportPayload(user.system)),
 					),
 			],
+			flags: MessageFlags.Ephemeral
 		});
 
 		return await ctx.editResponse({

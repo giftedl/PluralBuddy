@@ -51,6 +51,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 						Buffer.from(await buildExportPayload(user.system)),
 					),
 			],
+			flags: MessageFlags.Ephemeral
 		});
 
 		await writeUserById(ctx.author.id, {
