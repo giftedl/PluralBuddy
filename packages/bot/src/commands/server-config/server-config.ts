@@ -1,5 +1,5 @@
 import { ServerConfigView } from "@/views/server-cfg";
-import { AutoLoad, Command, CommandContext, Declare, Groups } from "seyfert";
+import { AutoLoad, Command, CommandContext, Declare, Groups, Middlewares } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
@@ -26,6 +26,7 @@ import { MessageFlags } from "seyfert/lib/types";
 		aliases: ["containers", "roles", "rc"]
 	}
 })
+@Middlewares(["ensureGuildPermissions"])
 export default class ServerConfigCommand extends Command {
 	override async run(ctx: CommandContext) {
 		const pluralGuild = await ctx.retrievePGuild();
