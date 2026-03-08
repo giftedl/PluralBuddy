@@ -7,6 +7,7 @@ import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
 
 import { oauthProvider } from "@better-auth/oauth-provider";
 import { DiscordSnowflake } from "@sapphire/snowflake";
+import { dash } from "@better-auth/infra";
 
 const client = new MongoClient(process.env.MONGO ?? "");
 
@@ -60,6 +61,7 @@ export const auth = betterAuth({
 	},
 	plugins: [
 		jwt(),
+		dash(),
 		oauthProvider({
 			customAccessTokenClaims: ({user}) => {
 				console.log(user);

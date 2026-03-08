@@ -11,6 +11,7 @@
 		"format": "biome format --write"
 	},
 	"dependencies": {
+		"@better-auth/infra": "^0.1.8",
 		"@better-auth/oauth-provider": "^1.4.18",
 		"@fontsource-variable/atkinson-hyperlegible-mono": "^5.2.5",
 		"@fontsource/atkinson-hyperlegible": "^5.2.8",
