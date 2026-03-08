@@ -13,6 +13,7 @@ const client = new MongoClient(process.env.MONGO ?? "");
 
 export const auth = betterAuth({
 	database: mongodbAdapter(client.db(`${process.env.ENV}-pluralbuddy-app`)),
+	appName: "PluralBuddy",
 	socialProviders: {
 		discord: {
 			enabled: true,
