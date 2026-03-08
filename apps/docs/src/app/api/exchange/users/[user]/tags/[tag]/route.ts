@@ -20,8 +20,10 @@ export async function GET(
 
 	if ("response" in oauthResponse) return oauthResponse.response;
 
+	auth.api.oauth2Token()
+
 	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	const db = oauthResponse.mongo.db("pluralbuddy-canary");
+	const db = oauthResponse.mongo.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
 	const tagCollection = db.collection<PTag>("tags");
 	const isSelf = user === "@me" || user === oauthResponse.accountId;
 	const response = await tagCollection.findOne({

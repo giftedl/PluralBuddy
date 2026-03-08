@@ -32,6 +32,13 @@ export async function performAlterAutoProxy(
 	guild: PGuild,
 	author: GuildMember,
 ) {
+	(async () => {
+		const channel = await message.channel();
+
+		if (channel.isTextable()) {
+			channel.typing();
+		}
+	})();
 	alterCollection.updateOne(
 		{ alterId: alter?.alterId, systemId: alter?.systemId },
 		{
@@ -189,7 +196,8 @@ export async function performAlterAutoProxy(
 					let continueBool = true;
 
 					if (
-						lastMessageInChannel.isTextable() &&
+						(lastMessageInChannel.isTextable() ||
+							lastMessageInChannel.isVoice()) &&
 						lastMessageInChannel.lastMessageId
 					) {
 						const messageLast = await lastMessageInChannel.messages.list({

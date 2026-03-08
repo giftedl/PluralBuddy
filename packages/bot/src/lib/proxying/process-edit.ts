@@ -87,7 +87,7 @@ export async function processEditContents(
 				let continueBool = true;
 
 				if (
-					lastMessageInChannel.isTextable() &&
+					(lastMessageInChannel.isTextable() || lastMessageInChannel.isVoice()) &&
 					lastMessageInChannel.lastMessageId
 				) {
 					const messageLast = await lastMessageInChannel.messages.list({

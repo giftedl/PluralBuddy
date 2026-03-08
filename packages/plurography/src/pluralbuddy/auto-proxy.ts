@@ -7,7 +7,7 @@ export const PAutoProxyObj = z.object({
     autoproxyAlter: z.string().optional(),
     serverId: z.string(),
     
-    lastLatchTimestamp: z.date().optional()
+    lastLatchTimestamp: z.coerce.date().optional()
 })
 
 export type PAutoProxy = z.infer<typeof PAutoProxyObj>

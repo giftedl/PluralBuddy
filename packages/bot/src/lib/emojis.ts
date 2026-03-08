@@ -4,6 +4,7 @@ import type { tagColors } from "@/types/tag"
 
 export const emojiProfiles = {
     canary: {
+        web: "<:globe:1480039093420298371>",
         x: "<:x_:1435094265758875769>",
         xWhite: "<:xwhite:1435094264638996601>",
         wrenchWhite: "<:wrenchwhite:1435094263032451202>",
@@ -50,6 +51,7 @@ export const emojiProfiles = {
         search: "<:search:1446899346514641191>"
     },
     production: {
+        web: "<:globe:1480038892181651506>",
         x: "<:x_:1436973282304725083>",
         xWhite: "<:xwhite:1436973281084313681>",
         wrenchWhite: "<:wrenchwhite:1436973279700062240>",

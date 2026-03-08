@@ -185,6 +185,7 @@ export default createEvent({
 				(await getGuildFromId(message.guildId ?? "")),
 		);
 
+
 		if (user.system === undefined) return;
 		if (user.system.disabled) return;
 		if (

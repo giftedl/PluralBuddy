@@ -24,7 +24,7 @@ export const PSystemObject = z.object({
 	systemDescription: z.string().max(1000).optional().catch(""),
 	systemAvatar: z.string().optional().nullable().catch(""),
 	systemBanner: z.string().optional().nullable().catch(""),
-	systemPronouns: z.string().optional(),
+	systemPronouns: z.string().optional().nullable().catch(null),
 
 	nicknameFormat: z.string().optional().catch(undefined),
 

@@ -47,9 +47,9 @@ export default function ConsentPage() {
 					<header className="text-center">
 						<div className="flex items-center justify-center">
 							<div className="relative flex items-center">
-								<div className="relative z-10 flex items-center justify-center w-24 h-24 rounded-2xl bg-primary shadow-lg ring-4 ring-card">
-									<Avatar className="w-full h-full !rounded-2xl">
-										<AvatarImage src="/image/solar.png" alt="Solar" />
+								<div className="relative z-10 flex items-center justify-center w-24 h-24 rounded-full bg-primary shadow-lg ring-4 ring-card">
+									<Avatar className="w-full h-full">
+										<AvatarImage src="/image/solar-centered.png" alt="Solar" />
 										<AvatarFallback>PluralBuddy</AvatarFallback>
 									</Avatar>
 								</div>

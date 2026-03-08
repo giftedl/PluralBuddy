@@ -20,11 +20,10 @@ export async function createSystemOperation(
 	system: PSystem,
 	operation: Partial<PSystem>,
 	translations: TranslationString,
-	environment: "discord" | "api",
+	environment: "discord" | "api-exchange" | "api-web",
 ) {
 	let oldSystem: Partial<PSystem> = {};
 
-	// biome-ignore lint/complexity/noForEach: i'm too lazy to not foreach
 	(Object.keys(operation) as (keyof PSystem)[]).forEach((v) => {
 		oldSystem = { ...oldSystem, [v]: system[v] };
 	});
@@ -36,7 +35,7 @@ export async function createSystemOperation(
 		changedOperation: operation,
 		changedOperationStrings: Object.keys(operation) as (keyof PSystem)[],
 	} satisfies POperation;
-	const listItems = operationDb.changedOperationStrings.map((c) => {
+	const listItems = operationDb.changedOperationStrings.filter(v => operation[v]?.toString() !== system[v]?.toString()).map((c) => {
 		if (c === "systemName") {
 			return translations.OPERATION_CHANGE_NAME.replace(
 				"%name%",
@@ -111,17 +110,23 @@ export async function createSystemOperation(
 		);
 	});
 
+	if (listItems.length === 0 )
+		return;
+
 	await operationCollection.insertOne(operationDb);
 
-	await writeUserById(system.associatedUserId, {
-		...(await getUserById(system.associatedUserId)),
-		system: {
-			...system,
-			...operation,
-		},
-	});
+	if (environment === "discord")
+		await writeUserById(system.associatedUserId, {
+			...(await getUserById(system.associatedUserId)),
+			system: {
+				...system,
+				...operation,
+			},
+		});
 
-	client.users.write(system.associatedUserId, {
+	const dmChannel = await client.users.createDM(system.associatedUserId, true)
+
+	client.messages.write(dmChannel.id, {
 		components: [
 			new Container()
 				.setComponents(
@@ -151,7 +156,15 @@ export async function createSystemOperation(
 									"%clock%",
 									emojis.clock,
 								).replace("%discord%", emojis.discord)
-							: /** TODO: API stuff */ ""
+							: environment === "api-exchange"
+								? translations.OPERATION_WEB.replace(
+										"%clock%",
+										emojis.clock,
+									).replace("%web%", emojis.web)
+								: translations.OPERATION_WEB_NEXT.replace(
+										"%clock%",
+										emojis.clock,
+									).replace("%web%", emojis.web)
 					}
 -# ${translations.OPERATION_ID.replace("%id%", `\`${operationDb.id}\``)}`),
 				)

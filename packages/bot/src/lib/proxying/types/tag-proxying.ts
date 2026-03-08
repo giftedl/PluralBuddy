@@ -42,6 +42,12 @@ export async function performTagProxy(
 	guild: PGuild,
 	author: GuildMember,
 ) {
+	(async () => {
+		const channel = await message.channel();
+		
+		if (channel.isTextable())
+			channel.typing()
+	})()
 	console.time("pre-proxy");
 	alterCollection.updateOne(
 		{ alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
@@ -211,7 +217,7 @@ export async function performTagProxy(
 					let continueBool = true;
 
 					if (
-						lastMessageInChannel.isTextable() &&
+						(lastMessageInChannel.isTextable() || lastMessageInChannel.isVoice()) &&
 						lastMessageInChannel.lastMessageId
 					) {
 						const messageLast = await lastMessageInChannel.messages.list({

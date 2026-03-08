@@ -19,14 +19,14 @@ export async function GET(
 	if ("response" in oauthResponse) return oauthResponse.response;
 
 	const parsedUserId = user === "@me" ? oauthResponse.accountId : user;
-	console.log(parsedUserId)
-	const db = oauthResponse.mongo.db("pluralbuddy-canary");
+	const db = oauthResponse.mongo.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
 	const userCollection = db.collection<PUser>("users");
 
     if (parsedUserId !== oauthResponse.accountId) {
 		return Response.json({
-			error_description: "you cannot get data about users other than the current OAuth scope",
-			error: 20002,
+            errors: [ 
+                { type: "not-matching-oauth", friendly: "This endpoint requires the user currently logged in via OAuth." } 
+            ], 
 		}, { status: 400 });
     }
 

@@ -9,7 +9,7 @@ import {
 	tagCollection,
 	userCollection,
 } from "./mongodb";
-import type { ImportStage } from "plurography";
+import { PSystemObject, type ImportStage } from "plurography";
 import type { BaseResource } from "seyfert";
 import { AlertView } from "./views/alert";
 import { importControllers } from "./lib/importing/importControllers";
@@ -17,7 +17,15 @@ import { translations } from "./lang/en_us";
 import { LoadingView } from "./views/loading";
 import { MessageFlags } from "seyfert/lib/types";
 import type { StatisticResource } from "./cache/statistics";
+import { createSystemOperation } from "./lib/system-operation";
 
+const SystemEditInput = PSystemObject.omit({
+	alterIds: true,
+	tagIds: true,
+	systemAutoproxy: true,
+	createdAt: true,
+	associatedUserId: true,
+}).partial();
 const app = new Hono();
 
 app.use("/api/*", async (ctx, next) => {
@@ -113,6 +121,30 @@ export const clientRoutes = app
 				});
 
 			return json({ done: "Handed back off to the user." });
+		},
+	)
+	.post(
+		"/api/systems/operation",
+		zValidator(
+			"json",
+			z.object({
+				method: z.enum(["exchange", "next"]),
+				changedOperation: SystemEditInput,
+				oldSystem: PSystemObject,
+			}),
+		),
+		async ({ req, json }) => {
+			const { method, changedOperation, oldSystem } = req.valid("json");
+
+			console.log(method)
+			createSystemOperation(
+				oldSystem,
+				changedOperation,
+				translations,
+				method === "exchange" ? "api-exchange" : "api-web",
+			);
+
+			return json({ done: "User notified." });
 		},
 	)
 	.get("/api/health", (c) =>

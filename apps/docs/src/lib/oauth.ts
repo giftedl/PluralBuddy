@@ -19,9 +19,8 @@ export async function authenticateOAuth(
 	if (!accessToken) {
 		return {
 			response: NextResponse.json({
-				error_description: "no access token",
-				error: 10003,
-			}),
+				errors: [{ type: "no-access-token", friendly: "no access token" }],
+			}, { status: 401 }),
 		};
 	}
 
@@ -29,7 +28,7 @@ export async function authenticateOAuth(
 		.oauth2UserInfo({
 			request,
 		})
-		.catch(() => null);
+		.catch((e) => {console.log(e); return null});
 	const token = await verifyAccessToken(accessToken, {
 		verifyOptions: {
 			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
@@ -41,9 +40,8 @@ export async function authenticateOAuth(
 		if (e?.body?.code === "INVALID_SCOPE_SYSTEMREAD")
 			return {
 				response: NextResponse.json({
-					error_description: e?.body?.message,
-					error: 10004,
-				}),
+					errors: [{ type: "invalid-scopes", friendly:e?.body?.message }],
+				}, { status: 401 }),
 			};
 	});
 
@@ -52,14 +50,13 @@ export async function authenticateOAuth(
 
 	const client = new MongoClient(process.env.MONGO ?? "");
 
-	await client.connect()
+	await client.connect();
 
 	if (!userInfo) {
 		return {
 			response: NextResponse.json({
-				error_description: "unknown auth token",
-				error: 10002,
-			}),
+				errors: [{ type: "unknown-token", friendly: "unknown auth token" }],
+			}, { status: 401 }),
 		};
 	}
 

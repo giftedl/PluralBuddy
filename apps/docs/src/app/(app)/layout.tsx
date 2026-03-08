@@ -10,7 +10,7 @@ const queryClient = new QueryClient();
 export default function Layout({ children }: LayoutProps<"/">) {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<div className="p-2 h-14 w-full bg-card border px-4 fixed z-100">
+			<div className="p-2 h-14 w-full bg-card border px-4 fixed z-50">
 				<div className="flex flex-row items-center float-right">
 					<ThemeToggle />
 				</div>

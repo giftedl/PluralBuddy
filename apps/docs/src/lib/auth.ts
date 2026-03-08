@@ -89,7 +89,10 @@ export const auth = betterAuth({
 			defaultScope: "profile",
 			silenceWarnings: {
 				oauthAuthServerConfig: true
-			}
+			},
+			generateClientId() {
+				return DiscordSnowflake.generate().toString()
+			},
 		}),
 	],
 	disabledPaths: [

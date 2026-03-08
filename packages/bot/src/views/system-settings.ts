@@ -293,6 +293,128 @@ export class SystemSettingsView extends TranslatedView {
 				),
 		];
 	}
+	async otherAltersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
+		const altersPerPage = 5;
+
+		if (system.alterIds.length === 0) {
+			return [
+				...this.topView("alters", system.associatedUserId),
+				...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
+				new ActionRow().setComponents(
+					new Button()
+						.setLabel("Create new alter")
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
+						)
+						.setStyle(ButtonStyle.Primary),
+				),
+			];
+		}
+
+		const time = Date.now();
+		const altersCursor = alterCollection
+			.find({
+				systemId: system.associatedUserId,
+				...(pgObj?.queryType === "display-name"
+					? { displayName: { $regex: pgObj?.searchQuery ?? "" } }
+					: pgObj?.queryType === "username"
+						? { username: { $regex: pgObj?.searchQuery ?? "" } }
+						: {}),
+			})
+			.sort({ username: 1 })
+			.limit(altersPerPage)
+			.skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
+
+		const alters = await altersCursor.toArray();
+		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
+
+		if (pgObj === undefined) {
+			const documentCount = await alterCollection.countDocuments({
+				systemId: system.associatedUserId,
+			});
+
+			alterPagination.push({
+				id: String(pgId),
+				memoryPage: 1,
+				documentCount,
+			});
+
+			pgObj = {
+				id: String(pgId),
+				memoryPage: 1,
+				documentCount,
+			};
+		}
+
+		return [
+			...this.topView("alters", system.associatedUserId),
+			new Container().setComponents(
+				new TextDisplay().setContent(`## Alters - ${system.systemName}`),
+				new Separator().setSpacing(Spacing.Large),
+				...alters.map((alter) => {
+					return new Section()
+						.setAccessory(
+							new Button()
+								.setLabel("Edit Alter")
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(
+										alter.alterId,
+									),
+								)
+								.setStyle(ButtonStyle.Primary)
+								.setEmoji(emojis.wrenchWhite),
+						)
+						.setComponents(
+							new TextDisplay().setContent(
+								`[\`@${alter.username}\`] **${alter.displayName}${alter.pronouns !== null && alter.pronouns !== undefined ? ` | ${alter.pronouns}` : ""}** ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
+							),
+						);
+				}),
+				new Separator().setSpacing(Spacing.Large),
+				new TextDisplay().setContent(
+					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})` : ""}`,
+				),
+				new ActionRow().setComponents(
+					new Button()
+						.setEmoji(emojis.plus)
+						.setStyle(ButtonStyle.Primary)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
+						),
+					new Button()
+						.setLabel("Previous Page")
+						.setDisabled(pgObj?.memoryPage === 1)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(
+								pgObj.id,
+							),
+						)
+						.setStyle(ButtonStyle.Primary),
+					new Button()
+						.setLabel("Next Page")
+						.setDisabled(
+							pgObj?.memoryPage ===
+								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+						)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(
+								pgObj.id,
+							),
+						)
+						.setStyle(ButtonStyle.Primary),
+
+					new Button()
+						.setStyle(ButtonStyle.Primary)
+						.setEmoji(emojis.search)
+						.setCustomId(
+							InteractionIdentifier.Systems.Configuration.AlterPagination.Search.create(
+								pgObj.id,
+							),
+						),
+				),
+			),
+		];
+	}
 
 	async altersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
 		const altersPerPage = 5;
