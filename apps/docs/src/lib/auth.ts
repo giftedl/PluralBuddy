@@ -14,6 +14,11 @@ const client = new MongoClient(process.env.MONGO ?? "");
 export const auth = betterAuth({
 	database: mongodbAdapter(client.db(`${process.env.ENV}-pluralbuddy-app`)),
 	appName: "PluralBuddy",
+	advanced: {
+		ipAddress: {
+			ipAddressHeaders: ["x-vercel-forwarded-for", "x-forwarded-for"],
+		}
+	},
 	socialProviders: {
 		discord: {
 			enabled: true,
