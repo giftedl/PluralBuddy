@@ -18,11 +18,12 @@ import type { PSystem } from "../types/system";
 import { emojis, getEmojiFromTagColor } from "../lib/emojis";
 import {
 	friendlyProtectionSystem,
+	has,
 	listFromMaskSystems,
 } from "../lib/privacy-bitmask";
 import { alterCollection, tagCollection } from "@/mongodb";
 import type { FindCursor, WithId } from "mongodb";
-import type { PAlter } from "@/types/alter";
+import { AlterProtectionFlags, type PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlertView } from "./alert";
 import { mentionCommand } from "@/lib/mention-command";
@@ -33,6 +34,14 @@ export const alterPagination: {
 	documentCount: number;
 	searchQuery?: string | undefined;
 	queryType?: "username" | "display-name" | undefined;
+}[] = [];
+export const otherAlterPagination: {
+	id: string;
+	memoryPage: number;
+	documentCount: number;
+	searchQuery?: string | undefined;
+	queryType?: "username" | "display-name" | undefined;
+	userId: string;
 }[] = [];
 
 export const tagsPagination: {
@@ -293,22 +302,14 @@ export class SystemSettingsView extends TranslatedView {
 				),
 		];
 	}
-	async otherAltersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
+	async otherAltersSettings(
+		system: PSystem,
+		pgObj?: (typeof alterPagination)[0],
+	) {
 		const altersPerPage = 5;
 
 		if (system.alterIds.length === 0) {
-			return [
-				...this.topView("alters", system.associatedUserId),
-				...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
-				new ActionRow().setComponents(
-					new Button()
-						.setLabel("Create new alter")
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
-						)
-						.setStyle(ButtonStyle.Primary),
-				),
-			];
+			return [...new AlertView(this.translations).errorView("ERROR_NO_ALTERS")];
 		}
 
 		const time = Date.now();
@@ -333,10 +334,11 @@ export class SystemSettingsView extends TranslatedView {
 				systemId: system.associatedUserId,
 			});
 
-			alterPagination.push({
+			otherAlterPagination.push({
 				id: String(pgId),
 				memoryPage: 1,
 				documentCount,
+				userId: system.associatedUserId,
 			});
 
 			pgObj = {
@@ -347,45 +349,33 @@ export class SystemSettingsView extends TranslatedView {
 		}
 
 		return [
-			...this.topView("alters", system.associatedUserId),
 			new Container().setComponents(
-				new TextDisplay().setContent(`## Alters - ${system.systemName}`),
+				new TextDisplay().setContent(`## Alters`),
 				new Separator().setSpacing(Spacing.Large),
-				...alters.map((alter) => {
-					return new Section()
-						.setAccessory(
-							new Button()
-								.setLabel("Edit Alter")
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(
-										alter.alterId,
-									),
-								)
-								.setStyle(ButtonStyle.Primary)
-								.setEmoji(emojis.wrenchWhite),
+				new TextDisplay().setContent(
+					alters
+						.filter((v) => has(AlterProtectionFlags.VISIBILITY, v.public))
+						.map(
+							(alter) =>
+								`[\`@${has(AlterProtectionFlags.USERNAME, alter.public) ? alter.username : "••••••"}\`] **${has(AlterProtectionFlags.NAME, alter.public) ? alter.displayName : "••••••••"}${alter.pronouns !== null && alter.pronouns !== undefined && has(AlterProtectionFlags.PRONOUNS, alter.public) ? ` | ${alter.pronouns}` : ""}**`,
 						)
-						.setComponents(
-							new TextDisplay().setContent(
-								`[\`@${alter.username}\`] **${alter.displayName}${alter.pronouns !== null && alter.pronouns !== undefined ? ` | ${alter.pronouns}` : ""}** ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
-							),
-						);
-				}),
+						.join("\n") +
+						(alters.filter((v) =>
+							has(AlterProtectionFlags.VISIBILITY, v.public),
+						).length === 0
+							? "*There are no public-facing alters in this page.*"
+							: ""),
+				),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
 					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})` : ""}`,
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setEmoji(emojis.plus)
-						.setStyle(ButtonStyle.Primary)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
-						),
-					new Button()
 						.setLabel("Previous Page")
 						.setDisabled(pgObj?.memoryPage === 1)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(
+							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.PreviousPage.create(
 								pgObj.id,
 							),
 						)
@@ -397,7 +387,7 @@ export class SystemSettingsView extends TranslatedView {
 								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
 						)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(
+							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.NextPage.create(
 								pgObj.id,
 							),
 						)
@@ -407,7 +397,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setStyle(ButtonStyle.Primary)
 						.setEmoji(emojis.search)
 						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.Search.create(
+							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.Search.create(
 								pgObj.id,
 							),
 						),

@@ -1,8 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { has } from "@/lib/privacy-bitmask";
 import { userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
+import { SystemProtectionFlags } from "plurography";
 import {
 	type CommandContext,
 	createUserOption,
@@ -36,7 +38,7 @@ export default class AlterListCommand extends SubCommand {
 		if (otherUser) {
 			const user = await userCollection.findOne({ userId: otherUser.id });
 
-			if (user?.system?.public || !user?.system === undefined) {
+			if (user?.system === undefined || !has(SystemProtectionFlags.ALTERS, user?.system?.public)) {
 				return await ctx.ephemeral({
 					components: new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_SYSTEM_DOESNT_EXIST",
@@ -44,6 +46,15 @@ export default class AlterListCommand extends SubCommand {
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
 			}
+
+			return await ctx.ephemeral({
+				components: [
+					...(await new SystemSettingsView(ctx.userTranslations()).otherAltersSettings(
+						user.system,
+					)),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 		}
 
 		if (user.system === undefined) {

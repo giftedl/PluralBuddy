@@ -260,6 +260,11 @@ export const InteractionIdentifier = {
 				ExportSystem: createStatic("systems/config/general/export"),
 				ImportSystem: createStatic("systems/config/general/import"),
 			},
+			OtherAlterPagination: {
+				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),
+				NextPage: createFromAdditionalArg("systems/config/oapg/next"),
+				Search: createFromAdditionalArg("systems/config/oapg/search"),
+			},
 			AlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
 				NextPage: createFromAdditionalArg("systems/config/apg/next"),
@@ -438,6 +443,17 @@ export const InteractionIdentifier = {
 					),
 					SearchQueryForm: createFromAdditionalArg(
 						"systems/config/set-form/apg/search-query",
+					),
+				},
+				OtherAlterPagination: {
+					SearchQueryValueType: createStatic(
+						"systems/config/type-form/oapg/search-type",
+					),
+					SearchQueryType: createStatic(
+						"systems/config/type-form/oapg/search-query",
+					),
+					SearchQueryForm: createFromAdditionalArg(
+						"systems/config/set-form/oapg/search-query",
 					),
 				},
 
