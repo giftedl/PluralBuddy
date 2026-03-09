@@ -2,25 +2,26 @@ import { authenticateOAuth } from "@/lib/oauth";
 import { api } from "@/lib/rpc";
 import { waitUntil } from "@vercel/functions";
 import { NextRequest } from "next/server";
-import { PSystemObject, PUser } from "plurography";
+import { PAlter, PAlterObject, PSystemObject, PUser } from "plurography";
+import z from "zod";
 
-const SystemEditInput = PSystemObject.omit({
-	alterIds: true,
+const AlterEditInput = PAlterObject.omit({
 	tagIds: true,
-	systemAutoproxy: true,
-	createdAt: true,
-	associatedUserId: true,
-	systemOperationDM: true,
+	alterId: true,
+	systemId: true,
+	created: true,
+	lastMessageTimestamp: true,
+	messageCount: true
 }).partial().default({});
 
 export async function POST(
 	request: NextRequest,
-	{ params }: { params: Promise<{ user: string }> },
+	{ params }: { params: Promise<{ user: string; alter: string }> },
 ) {
-	const { user } = await params;
+	const { user, alter } = await params;
 
 	const oauthResponse = await authenticateOAuth(request, [
-		"system:write",
+		"alters:write",
 		"system:admin",
 	]);
 
@@ -37,11 +38,11 @@ export async function POST(
 					},
 				],
 			},
-			{ status: 404 },
+			{ status: 400 },
 		);
 	}
 
-	const input = SystemEditInput.safeParse(await request.json());
+	const input = AlterEditInput.safeParse(await request.json());
 
 	if (input.error) {
 		return Response.json({ errors: input.error }, { status: 400 });
@@ -51,50 +52,42 @@ export async function POST(
 	const db = oauthResponse.mongo.db(
 		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 	);
-	const userCollection = db.collection<PUser>("users");
-	const system = await userCollection.findOne({
-		userId: oauthResponse.accountId,
+	const alterCollection = db.collection<PAlter>("alters");
+	const alterObj = await alterCollection.findOne({
+		$and: [{ systemId: oauthResponse.accountId,}, { alterId: Number(alter) }]
 	});
 
-	if (!system || !system.system) {
+	if (!alterObj) {
 		return Response.json(
 			{
 				errors: [
-					{ type: "no-system", friendly: "This user does not have a system." },
+					{ type: "unknown-alter", friendly: "Couldn't find this alter." },
 				],
 			},
-			{ status: 400 },
+			{ status: 404 },
 		);
 	}
-
-	await userCollection.updateOne(
+	
+	await alterCollection.updateOne(
 		{
-			userId: oauthResponse.accountId,
+			$and: [{ systemId: oauthResponse.accountId,}, { alterId: Number(alter) }]
 		},
 		{
 			$set: Object.assign({}, ...Object.entries(data).map(([v, c]) => ({
 				// @ts-ignore
-				[`system.${v}`]: c ?? system.system?.[v],
-			}))),
+				[v]: c ?? alterObj?.[v],
+			})))
 		},
 	);
 
 	waitUntil(oauthResponse.mongo.close());
 
-	await api.systems.operation.$post({
-		json: {
-			method: "exchange",
-			changedOperation: input.data,
-			oldSystem: system.system,
-		},
-	});
-
 	return Response.json({
-		...system.system,
+		...alterObj,
 
 		...Object.assign({}, ...Object.entries(data).map(([v, c]) => ({
 			// @ts-ignore
-			[v]: c ?? system.system?.[v],
+			[v]: c ?? alterObj?.[v],
 		})))
 	});
 }

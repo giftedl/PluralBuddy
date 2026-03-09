@@ -1,7 +1,11 @@
 "use server";
 
+import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
+import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { api } from "@/lib/rpc";
 import { MongoClient } from "mongodb";
+import { headers } from "next/headers";
 import {
 	ImportNotation,
 	ImportStage,
@@ -66,11 +70,28 @@ export async function markImportStagingDone(
 	input: z.infer<typeof MarkImportStagingInput>,
 ) {
 	const data = MarkImportStagingInput.safeParse(input);
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
 
 	console.log(data.error);
 	if (data.error) throw new Error("validation error.");
 
+	if (!session)
+		throw new Error("Session error.");
+
 	const mongo = new MongoClient(process.env.MONGO ?? "");
+	const staging = await mongo
+		.db(`${process.env.ENV}-pluralbuddy-app`)
+		.collection<ImportStage>("import-staging")
+		.findOne(
+			// @ts-ignore
+			{ "webhook.id": input.importStagingId });
+
+	if (staging?.originatingSystemId !== await getDiscordIdBySessionId(session.user.id)) {
+		throw new Error("Session doesn't match staging.");
+	}
+	
 	await mongo
 		.db(`${process.env.ENV}-pluralbuddy-app`)
 		.collection<ImportStage>("import-staging")
