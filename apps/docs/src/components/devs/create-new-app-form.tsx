@@ -44,6 +44,7 @@ import {
 	DrawerTrigger,
 } from "../ui/drawer";
 import { authClient } from "@/lib/auth-client";
+import Spinner from "../ui/spinner";
 
 export const scopeList = [
 	{ title: "profile", description: "Access to your profile data – required." },
@@ -73,6 +74,7 @@ const formSchema = z.object({
 
 export function CreateNewAppForm({ children }: { children: ReactNode }) {
 	const router = useRouter();
+	const [loading, setLoading] = useState(false);
 	const form = useForm({
 		defaultValues: {
 			applicationName: "",
@@ -80,6 +82,7 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 			scopes: ["profile"] as string[],
 		},
 		onSubmit: async ({ value }) => {
+			setLoading(true);
 			// Do something with form data
 			console.log("creating new dev app ->", value);
 
@@ -198,7 +201,9 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 				<button
 					type="submit"
 					className={cn(buttonVariants({ variant: "primary" }), "w-full")}
+					disabled={loading}
 				>
+					{loading && <Spinner />}
 					Submit
 				</button>
 			</Field>
@@ -209,7 +214,7 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 		return (
 			<Dialog>
 				<DialogTrigger asChild>{children}</DialogTrigger>
-				<DialogContent>
+				<DialogContent className="max-h-[700px] overflow-auto">
 					<DialogHeader>
 						<DialogTitle>Create OAuth Application</DialogTitle>
 					</DialogHeader>

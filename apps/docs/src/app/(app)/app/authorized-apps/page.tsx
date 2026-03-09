@@ -1,4 +1,5 @@
 import { ImportDataForm } from "@/components/app/import-data-form";
+import { AuthorizedAppsCard } from "@/components/authorized-apps";
 import { DiscordLoginComponent } from "@/components/discord-login";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -26,10 +27,32 @@ export default async function AuthorizedAppsPage() {
 		return <DiscordLoginComponent />;
 	}
 
+	const data = await auth.api.getOAuthConsents({
+		// This endpoint requires session cookies.
+		headers: await headers(),
+	});
+
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
-				
+				<Card className="w-full mb-8">
+					<CardContent>
+						<strong>Applications</strong> <br />
+						<p>
+							PluralBuddy allows developers to interact with your system via the
+							PluralBuddy API, built on OAuth 2.1. If an application is doing
+							something it shouldn't be doing, you can remove any of them at any
+							time.
+						</p>
+					</CardContent>
+				</Card>
+				<Separator className="mb-8" />
+				<div className="grid grid-cols-1 gap-4">
+					{data.length === 0 && <Card className="w-full"><CardContent>There are no applications here!</CardContent></Card>}
+					{data.map((v) => (
+						<AuthorizedAppsCard app={v} key={v.clientId} />
+					))}
+				</div>
 			</div>
 		</main>
 	);
