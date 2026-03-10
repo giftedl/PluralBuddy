@@ -66,7 +66,7 @@ export const PluralKitSystem = z.object({
     config: PluralKitConfiguration,
 
     accounts: z.number().array(),
-    members: PluralKitMember.array().max(1000),
+    members: PluralKitMember.array().max(2000),
     groups: PluralKitGroup.array().max(250),
 
     switches: z.array(z.object({
