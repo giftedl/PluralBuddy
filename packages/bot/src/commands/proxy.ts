@@ -62,6 +62,17 @@ export default class SystemCommand extends Command {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 
+		if (((await ctx.guild())?.memberCount ?? 0) > 30) {
+			return await ctx.write({
+				components: [
+					...new AlertView(ctx.userTranslations()).errorView(
+						"SERVER_TOO_BIG",
+					),
+				],
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
+
 
 		const query = Number.isNaN(Number.parseInt(alterName))
 			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })

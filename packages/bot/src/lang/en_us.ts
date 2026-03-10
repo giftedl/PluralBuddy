@@ -293,6 +293,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
 	OPERATION_WEB: "%clock% Expires in 30 minutes • %web% Web (via Exchange)",
 	OPERATION_WEB_NEXT: "%clock% Expires in 30 minutes • %web% Web (via Next)",
+	SERVER_TOO_BIG: "This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
 	OPERATION_DISCORD_AP:
 		"Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
 	CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
