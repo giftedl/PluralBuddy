@@ -143,7 +143,7 @@ Systems can have **privacy values** which are values that describe who can see w
 		"Are you sure you'd like to delete @%alter%? **This action cannot be undone.**",
 
 	SYSTEM_DELETION_FINISHED:
-		"Successfully deleted your system. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
+		"Successfully deleted your system. \n-# Below there is also a followup copy of your system export.",
 	SYSTEM_DELETION_MEDIA_FINISHED:
 		"Successfully deleted your system **and your system's media**. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
 	SYSTEM_DELETION_DM: "Here is the export data due to the deletion on %time%:",
