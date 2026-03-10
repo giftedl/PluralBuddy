@@ -63,8 +63,16 @@ export default class EditCommand extends Command {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
+		
+		const fetchedMessage = await ctx.client.messages.fetch(
+			message.messageId,
+			message.channelId,
+			true,
+		);
+		const channel = await fetchedMessage.channel()
+		const parent = "parentId" in channel ? channel.parentId : null;
 
-		const similarWebhooks = await getSimilarWebhooks(message.channelId);
+		const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
 
 		if (similarWebhooks[0] === undefined) {
 			return await ctx.write({
@@ -76,11 +84,6 @@ export default class EditCommand extends Command {
 		}
 
 		const webhook = similarWebhooks[0];
-		const fetchedMessage = await ctx.client.messages.fetch(
-			message.messageId,
-			message.channelId,
-			true,
-		);
 		const guild = await ctx.retrievePGuild();
 		const member = ctx.member;
 

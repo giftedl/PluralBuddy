@@ -49,7 +49,11 @@ export default class EditContextForm extends ModalCommand {
 			});
 		}
 
-		const similarWebhooks = await getSimilarWebhooks(message.channelId);
+		const fetchedMessage = await ctx.client.messages.fetch(message.messageId, message.channelId, true);
+		const channel = await fetchedMessage.channel()
+		const parent = "parentId" in channel ? channel.parentId : null;
+
+		const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
 
 		if (similarWebhooks[0] === undefined) {
 			return await ctx.write({
@@ -61,7 +65,6 @@ export default class EditContextForm extends ModalCommand {
 		}
 
 		const webhook = similarWebhooks[0];
-		const fetchedMessage = await ctx.client.messages.fetch(message.messageId, message.channelId, true);
 
 		if (!ctx.member) throw new Error("No member object.")
 
