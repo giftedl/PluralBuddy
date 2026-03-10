@@ -15,8 +15,16 @@ import { authClient } from "@/lib/auth-client";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { getImportDataById } from "@/lib/get-import";
 import { ArrowUpRightIcon, CloudDownload } from "lucide-react";
+import { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+	title: 'Authorized Apps - PluralBuddy App',
+	description: 'View authorized applications on PluralBuddy.',
+	applicationName: 'PluralBuddy',
+  }
+
 
 export default async function AuthorizedAppsPage() {
 	const session = await auth.api.getSession({
