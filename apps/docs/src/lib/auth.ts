@@ -70,7 +70,6 @@ export const auth = betterAuth({
 		dash(),
 		oauthProvider({
 			customAccessTokenClaims: ({user}) => {
-				console.log(user);
 				return {
 					sub: user?.id
 				}
