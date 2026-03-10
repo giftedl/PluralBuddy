@@ -43,7 +43,7 @@ export default async function AuthorizedAppsPage() {
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
-				<Card className="w-full mb-8">
+				<Card className="w-full mb-4">
 					<CardContent>
 						<strong>Applications</strong> <br />
 						<p>
@@ -54,8 +54,8 @@ export default async function AuthorizedAppsPage() {
 						</p>
 					</CardContent>
 				</Card>
-				<Separator className="mb-8" />
-				<div className="grid grid-cols-1 gap-4">
+				<Separator className="mb-4" />
+				<div className="grid grid-cols-1 gap-2">
 					{data.length === 0 && <Card className="w-full"><CardContent>There are no applications here!</CardContent></Card>}
 					{data.map((v) => (
 						<AuthorizedAppsCard app={v} key={v.clientId} />
