@@ -6,7 +6,7 @@ export function baseOptions(): BaseLayoutProps {
 	return {
 		nav: {
 			title: (
-				<Link href="/">
+				<Link href="/" className="flex items-center gap-2">
 					<SolarPicture />
 					PluralBuddy
 				</Link>
