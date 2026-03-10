@@ -5,6 +5,7 @@ import { SolarPicture } from "./solar-picture";
 import { FlickeringGrid } from "./ui/flickering-grid";
 import { Separator } from "./ui/separator";
 import { JSX } from "react";
+import Link from "next/link";
 
 export function Footer() {
 	return (
@@ -13,10 +14,12 @@ export function Footer() {
 			<div className="absolute overflow-hidden">
 				<div className="w-full pb-0 z-10 absolute flex flex-col md:flex-row md:items-center md:justify-between p-10">
 					<div className="flex flex-col items-start justify-start gap-y-5 max-w-xs mx-0">
-						<span className="flex items-center gap-2">
-							<SolarPicture />
-							PluralBuddy
-						</span>
+						<Link href="/">
+							<span className="flex items-center gap-2">
+								<SolarPicture />
+								PluralBuddy
+							</span>
+						</Link>
 						<span className="tracking-tight text-muted-foreground text-left">
 							🏳️‍⚧️🏳️‍🌈 LGBTQIA+ lives matter. PluralBuddy and its team support all
 							individuals regardless of their identity.
