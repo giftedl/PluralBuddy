@@ -28,7 +28,7 @@ export async function authenticateOAuth(
 		.oauth2UserInfo({
 			request,
 		})
-		.catch((e) => {console.log(e); return null});
+		.catch((e) => {return null});
 	const token = await verifyAccessToken(accessToken, {
 		verifyOptions: {
 			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
@@ -43,6 +43,7 @@ export async function authenticateOAuth(
 					errors: [{ type: "invalid-scopes", friendly:e?.body?.message }],
 				}, { status: 401 }),
 			};
+		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]})}
 	});
 
 	if (token && "response" in token)
@@ -66,4 +67,44 @@ export async function authenticateOAuth(
 		.findOne({ userId: new ObjectId(userInfo.sub) });
 
 	return { mongo: client, accountId: discordAccountId?.accountId };
+}
+
+
+export async function userlessOAuth(
+	request: NextRequest,
+	requiredScopes: string[],
+): Promise<
+	{ response: NextResponse } | { success: true }
+> {
+	const authorization = request.headers.get("authorization");
+	const accessToken = authorization?.startsWith("Bearer ")
+		? authorization.replace("Bearer ", "")
+		: authorization;
+
+	if (!accessToken) {
+		return {
+			response: NextResponse.json({
+				errors: [{ type: "no-access-token", friendly: "no access token" }],
+			}, { status: 401 }),
+		};
+	}
+
+	const token = await verifyAccessToken(accessToken, {
+		verifyOptions: {
+			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
+			audience: process.env.BETTER_AUTH_URL ?? "",
+		},
+		scopes: requiredScopes,
+		jwksUrl: `${process.env.BETTER_AUTH_URL}/api/auth/jwks`,
+	}).catch((e) => {
+		if (e?.body?.code === "INVALID_SCOPE_SYSTEMREAD")
+			return {
+				response: NextResponse.json({
+					errors: [{ type: "invalid-scopes", friendly:e?.body?.message }],
+				}, { status: 401 }),
+			};
+		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]})}
+	});
+
+	return { success: true };
 }
