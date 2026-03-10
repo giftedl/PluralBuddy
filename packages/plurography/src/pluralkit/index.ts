@@ -12,7 +12,7 @@ import { PrivacyLevel } from "./privacy";
 export { PrivacyLevel } from "./privacy";
 
 export const PluralKitConfiguration = z.object({
-    timezone: z.enum(allShortenedTimezones()),
+    timezone: z.string(),
     "pings_enabled": z.boolean(),
     "latch_timeout": z.number().nullable(),
     "member_default_private": z.boolean(),
