@@ -180,7 +180,6 @@ export default createEvent({
 
 		const channel = (await message.channel())
 		const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
-		console.log(parent)
 		
 		console.time("proxy tag parse");
 		const similarWebhooks =
