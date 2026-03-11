@@ -135,7 +135,10 @@ export async function performTagProxy(
 		if (similarWebhooks.length >= 1) {
 			webhook = similarWebhooks[0];
 		} else {
-			webhook = await client.webhooks.create(message.channelId, {
+			const channel = await message.channel()
+			const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+
+			webhook = await client.webhooks.create(parent ?? message.channelId, {
 				name: "PluralBuddy Proxy",
 			});
 			client.cache.similarWebhookResource.set(
