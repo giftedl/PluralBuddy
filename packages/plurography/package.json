@@ -1,7 +1,7 @@
 {
   "name": "plurography",
   "module": "src/index.ts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "exports": {
     ".": {
@@ -16,6 +16,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "bumpp": "^10.4.1",
     "moment-timezone": "^0.6.0",
     "zod": "^4.1.12"
   }
