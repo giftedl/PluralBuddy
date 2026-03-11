@@ -45,7 +45,11 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 
         const webhook = similarWebhooks[0]
 
-        await webhook.messages.delete(messageId, `Removed after user request of @${ctx.author.username} (${ctx.author.id})`)
+		await webhook.messages.delete({
+			messageId,
+			query: parent ? { thread_id: channel.id } : {},
+			reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
+		});
 
         return ctx.write({
             components: new AlertView(ctx.userTranslations()).successView("SUCCESSFULLY_REMOVED_MESSAGE"),

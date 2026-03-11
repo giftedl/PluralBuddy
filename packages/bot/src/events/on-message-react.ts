@@ -107,10 +107,11 @@ export default createEvent({
 			const webhook = similarWebhooks[0];
 			const user = await client.users.fetch(reaction.userId, true);
 
-			await webhook.messages.delete(
+			await webhook.messages.delete({
 				messageId,
-				`Removed after user request of @${user.username} (${user.id})`,
-			);
+				query: parent ? { thread_id: channel.id } : {},
+				reason: `Removed after user request of @${user.username} (${user.id})`,
+			});
 			return;
 		}
 		if (reaction.emoji.name === "🔔") {
