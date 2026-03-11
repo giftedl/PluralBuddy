@@ -49,7 +49,10 @@ import Spinner from "../ui/spinner";
 export const scopeList = [
 	{ title: "profile", description: "Access to your profile data – required." },
 	{ title: "openid", description: "Access to your Discord user ID" },
-	{ title: "offline_access", description: "Access to refresh access to this service" },
+	{
+		title: "offline_access",
+		description: "Access to refresh access to this service",
+	},
 	{ title: "alter:read", description: "Access to read alter data" },
 	{ title: "alter:write", description: "Access to change alter settings" },
 	{ title: "tags:read", description: "Access to read tag data" },
@@ -93,7 +96,10 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 				client_name: value.applicationName,
 			});
 
-			if (result.error) return toast.error(result.error.message);
+			if (result.error) {
+				setLoading(false);
+				return toast.error(result.error.message);
+			}
 
 			router.push(`/developers/application/${result.data?.client_id}`);
 		},
