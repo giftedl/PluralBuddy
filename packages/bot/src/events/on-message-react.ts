@@ -109,7 +109,7 @@ export default createEvent({
 
 			await webhook.messages.delete({
 				messageId,
-				query: parent ? { thread_id: channel.id } : {},
+				query: parent !== null ? { thread_id: channel.id } : {},
 				reason: `Removed after user request of @${user.username} (${user.id})`,
 			});
 			return;

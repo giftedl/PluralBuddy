@@ -47,7 +47,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 
 		await webhook.messages.delete({
 			messageId,
-			query: parent ? { thread_id: channel.id } : {},
+			query: parent !== null ? { thread_id: channel.id } : {},
 			reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
 		});
 

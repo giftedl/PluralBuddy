@@ -36,6 +36,7 @@ export default createEvent({
                         // @ts-ignore
 						components: nativeMessage.components.slice(1),
 					},
+					query: parent !== null ? { thread_id: channel.id } : {}
 				});
 			} catch (_) {}
 		}
