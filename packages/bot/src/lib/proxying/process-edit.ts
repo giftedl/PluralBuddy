@@ -169,9 +169,6 @@ export async function processEditContents(
 				components.push(new File().setMedia(`attachment://${attachment.name}`));
 	}
 
-	const channel = await message.channel();
-	const parent = "parentId" in channel ? channel.parentId : null;
-
 	if (await message.fetch().catch(() => null)) {
 		webhook.messages
 			.edit({
@@ -182,11 +179,7 @@ export async function processEditContents(
 					files: fileAttachments.map((c) =>
 						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
 					),
-				
 				},
-				query: {
-					...(parent ? {thread_id: channel.id} : {})
-				}
 			})
 			.then((sentMessage) => {
 				if (sentMessage?.id) {

@@ -91,15 +91,12 @@ export default createEvent({
 			if (guild.getFeatures().disabledHelp) {
 				message.delete();
 
-				try {
-
-					await message.author.write({
-						components: new AlertView(translations).errorView(
-							"FEATURE_DISABLED_GUILD",
-						),
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					});
-				} catch(_) {}
+				await message.author.write({
+					components: new AlertView(translations).errorView(
+						"FEATURE_DISABLED_GUILD",
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
 				return;
 			}
 
@@ -178,13 +175,10 @@ export default createEvent({
 
 		if (await notValidPermissions(message)) return;
 
-		const channel = (await message.channel())
-		const parent = "parentId" in channel ? channel.parentId : null;
-		
 		console.time("proxy tag parse");
 		const similarWebhooks =
-			(await client.cache.similarWebhookResource.fetch(parent ?? message.channelId))?.webhooks ??
-			(await getSimilarWebhooks(parent ?? message.channelId));
+			(await client.cache.similarWebhookResource.fetch(message.channelId))?.webhooks ??
+			(await getSimilarWebhooks(message.channelId));
 		const user = await getUserById(message.author.id);
 		const guild = PGuildObject.parse(
 			(await client.cache.pguild.get(message.guildId ?? ""))?.g ??

@@ -113,9 +113,6 @@ export async function proxy(
 
 	await new Promise((d) => setTimeout(d, guild.proxyDelay));
 
-	const channel = await message.channel();
-	const parent = "parentId" in channel ? channel.parentId : null;
-
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
 		console.timeEnd("proxy");
@@ -142,8 +139,8 @@ export async function proxy(
 										parse: [],
 									}
 								: {
-										parse: ["users"],
-									},
+									parse: ["users"]
+								},
 						embeds:
 							components.length === 0
 								? [
@@ -173,7 +170,6 @@ export async function proxy(
 					},
 					query: {
 						wait: true,
-						...(parent !== null ? { thread_id: channel.id } : {}),
 					},
 				})
 				.then((sentMessage) => {
@@ -184,7 +180,7 @@ export async function proxy(
 						createdAt: new Date(),
 						guildId: message.guildId,
 						channelId: message.channelId,
-						referencedMessage: message.referencedMessage?.id,
+						referencedMessage: message.referencedMessage?.id
 					});
 					try {
 						(async () => {

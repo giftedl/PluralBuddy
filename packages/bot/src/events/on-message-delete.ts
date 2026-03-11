@@ -11,11 +11,7 @@ export default createEvent({
 				referencedMessage: message.id,
 			})
 			.toArray();
-
-		const channel = await client.channels.fetch(message.channelId)
-		const parent = "parentId" in channel ? channel.parentId : null;
-
-		const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
+		const similarWebhooks = await getSimilarWebhooks(message.channelId);
 
 		if (similarWebhooks[0] === undefined) {
 			return;

@@ -54,10 +54,8 @@ export default class DeleteCommand extends Command {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
-		const channel = await ctx.channel()
-		const parent = "parentId" in channel ? channel.parentId : null;
 
-		const similarWebhooks = await getSimilarWebhooks(parent ?? message.channelId);
+		const similarWebhooks = await getSimilarWebhooks(message.channelId);
 
 		if (similarWebhooks[0] === undefined) {
 			return await ctx.write({
