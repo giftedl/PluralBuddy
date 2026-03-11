@@ -15,6 +15,7 @@ export default createEvent({
 	data: { name: "messageReactionAdd", once: false },
 	run: async (reaction) => {
 		if (reaction.userId === client.applicationId) return;
+		
 		if (
 			reaction.emoji.name !== "❌" &&
 			reaction.emoji.name !== "redTick" &&
@@ -76,7 +77,10 @@ export default createEvent({
 				return;
 			}
 
-			const similarWebhooks = await getSimilarWebhooks(message.channelId);
+			const channel = await client.channels.fetch(reaction.channelId);
+			const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+	
+			const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
 
 			if (similarWebhooks[0] === undefined) {
 				await client.reactions.delete(
