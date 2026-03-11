@@ -1,15 +1,5 @@
-# pluralkit-types
+# Plurography
 
-To install dependencies:
+Plurography is a library with [Zod](https://zod.dev) mappings for PluralBuddy, PluralKit, and TupperBox import notations.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run src/index.ts
-```
-
-This project was created using `bun init` in bun v1.2.16. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+It was designed for [PluralBuddy](https://pb.giftedly.dev).
