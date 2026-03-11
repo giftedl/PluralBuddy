@@ -27,6 +27,7 @@ import Link from "next/link";
 import type { Metadata, Viewport } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { DiscordLoginComponent } from "@/components/discord-login";
 
 export const metadata: Metadata = {
 	title: 'Developer Applications',
@@ -35,6 +36,14 @@ export const metadata: Metadata = {
   }
 
 export default async function DeveloperApplications() {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
+	if (session === null) {
+		return <DiscordLoginComponent />;
+	}
+
 	const applications = await auth.api.getOAuthClients({
 		// This endpoint requires session cookies.
 		headers: await headers(),

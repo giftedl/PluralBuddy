@@ -36,6 +36,7 @@ import { RedirectURLs } from "@/components/devs/redirect-urls";
 import type { Metadata, Viewport } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { DiscordLoginComponent } from "@/components/discord-login";
 
 export const metadata: Metadata = {
 	title: "Application",
@@ -49,6 +50,14 @@ export default async function ApplicationPage({
 }: {
 	params: Promise<{ application: string }>;
 }) {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
+	if (session === null) {
+		return <DiscordLoginComponent />;
+	}
+	
 	const { application } = await params;
 	const apps = await auth.api.getOAuthClients({
 		// This endpoint requires session cookies.
