@@ -335,7 +335,7 @@ export const InteractionIdentifier = {
 				SetAlterColor: createFromAdditionalArg(
 					"systems/config/alters/set-alter-color",
 				),
-				DeleteAlter: createFromAdditionalArg("systems/config/alters/delete"),
+				DeleteAlter: createFromAdditionalArg("systems/config/alters/delete-alter"),
 
 				ProxyMode: {
 					GoBack: createFromAdditionalArg(
