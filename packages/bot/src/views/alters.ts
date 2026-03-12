@@ -160,11 +160,8 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 	async alterGeneralView(alter: PAlter, guildId: string | undefined) {
 		let system = null;
 
-		if (guildId !== undefined) {
-			const user = await getUserById(alter.systemId);
-
-			system = user.system;
-		}
+		const user = await getUserById(alter.systemId);
+		system = user.system;
 
 		return [
 			new Container()
