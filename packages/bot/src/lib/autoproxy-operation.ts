@@ -59,6 +59,22 @@ export async function sendAutoproxyOperationDM(
 								),
 							)
 							.setColor("#F9DC00"),
+							new Section()
+								.setComponents(
+									new TextDisplay().setContent(
+										"-# You were notified of this action due to your association with your PluralBuddy system's auto-proxy settings.",
+									),
+									new TextDisplay().setContent(
+										"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+									),
+								)
+								.setAccessory(
+									new Button()
+										.setCustomId(InteractionIdentifier.SnoozeDMs.create())
+										.setStyle(ButtonStyle.Danger)
+										.setLabel("Opt-out of DMs")
+										.setEmoji(emojis.xWhite),
+								),
 					],
 				})
 				.catch(() => null);
