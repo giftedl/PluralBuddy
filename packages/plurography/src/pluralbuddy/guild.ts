@@ -13,7 +13,8 @@ export const GuildErrorTypes = z.enum([
 	"BotPermissionsRequired",
 	"UserPermissionsRequired",
 	"FailedLogging",
-	"FailedMessageReaction"
+	"FailedMessageReaction",
+	"WebhookFailedCreation"
 ]);
 
 export enum GuildFlags {

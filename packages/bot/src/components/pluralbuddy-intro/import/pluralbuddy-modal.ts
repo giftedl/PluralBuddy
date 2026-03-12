@@ -146,8 +146,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		data.system.alterIds = newAlters.map((v) => v.alterId);
 		data.system.tagIds = newTags.map((v) => v.tagId);
 
-		await alterCollection.insertMany(patchedAlters);
-		await tagCollection.insertMany(newTags);
+		if (patchedAlters.length > 0)
+			await alterCollection.insertMany(patchedAlters);
+		if (newTags.length > 0) await tagCollection.insertMany(newTags);
 
 		await writeUserById(ctx.author.id, {
 			...(await getUserById(ctx.author.id)),

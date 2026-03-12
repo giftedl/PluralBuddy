@@ -1,8 +1,17 @@
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 import { SystemSettingsView } from "@/views/system-settings";
-import { CommandContext, Declare, SubCommand } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import {
+	ActionRow,
+	Button,
+	CommandContext,
+	Declare,
+	SubCommand,
+} from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 @Declare({
 	name: "import",
@@ -13,11 +22,9 @@ export default class ImportCommand extends SubCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			return ctx.ephemeral({
+				components: new PluralBuddyIntro(ctx.userTranslations()).pageTwo(await ctx.getDefaultPrefix() ?? "pb;"),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral ,
 			});
 		}
 

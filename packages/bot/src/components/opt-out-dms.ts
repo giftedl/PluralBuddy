@@ -12,11 +12,10 @@ export default class OptOutDMs extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-        
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),

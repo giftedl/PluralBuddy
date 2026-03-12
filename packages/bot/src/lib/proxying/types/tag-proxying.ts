@@ -19,6 +19,7 @@ import { setLastLatchAlter } from "../util";
 import { createProxyError } from "../error";
 import type { PGuild } from "plurography";
 import type { PWebhook } from "@/events/on-message-create";
+import { createError } from "@/lib/create-error";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -44,10 +45,9 @@ export async function performTagProxy(
 ) {
 	(async () => {
 		const channel = await message.channel();
-		
-		if (channel.isTextable())
-			channel.typing()
-	})()
+
+		if (channel.isTextable()) channel.typing();
+	})();
 	console.time("pre-proxy");
 	alterCollection.updateOne(
 		{ alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
@@ -135,12 +135,25 @@ export async function performTagProxy(
 		if (similarWebhooks.length >= 1) {
 			webhook = similarWebhooks[0];
 		} else {
-			const channel = await message.channel()
-			const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+			const channel = await message.channel();
+			const parent =
+				"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
-			webhook = await client.webhooks.create(parent ?? message.channelId, {
-				name: "PluralBuddy Proxy",
-			});
+			webhook = await client.webhooks
+				.create(parent ?? message.channelId, {
+					name: "PluralBuddy Proxy",
+				})
+				.catch(() => null);
+			if (webhook === null) {
+				createError(guild.guildId ?? "", {
+					title: `Error while creating webhook for <#${channel.id}>`,
+					description: `There was an error while creating the corresponding webhook for <#${channel.id}>. Check if PluralBuddy has the correct permissions in that channel.`,
+					type: "WebhookFailedCreation",
+					responsibleUserId: user.userId,
+					responsibleChannelId: channel.id,
+				});
+				return;
+			}
 			client.cache.similarWebhookResource.set(
 				CacheFrom.Gateway,
 				message.channelId,
@@ -220,14 +233,18 @@ export async function performTagProxy(
 					let continueBool = true;
 
 					if (
-						(lastMessageInChannel.isTextable() || lastMessageInChannel.isVoice()) &&
+						(lastMessageInChannel.isTextable() ||
+							lastMessageInChannel.isVoice()) &&
 						lastMessageInChannel.lastMessageId
 					) {
 						const messageLast = await lastMessageInChannel.messages.list({
 							limit: 2,
 						});
 
-						if (messageLast[1] && (messageLast[1].timestamp ?? 0) > (Date.now() - 420000)) {
+						if (
+							messageLast[1] &&
+							(messageLast[1].timestamp ?? 0) > Date.now() - 420000
+						) {
 							const message = await messagesCollection.findOne({
 								$and: [
 									{ messageId: messageLast[1].id },

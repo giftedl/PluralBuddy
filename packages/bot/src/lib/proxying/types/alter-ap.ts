@@ -23,6 +23,7 @@ import type {
 	PWebhook,
 } from "@/events/on-message-create";
 import { CacheFrom } from "seyfert";
+import { createError } from "@/lib/create-error";
 
 export async function performAlterAutoProxy(
 	message: Message,
@@ -122,12 +123,25 @@ export async function performAlterAutoProxy(
 		if (similarWebhooks.length >= 1) {
 			webhook = similarWebhooks[0];
 		} else {
-			const channel = await message.channel()
-			const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+			const channel = await message.channel();
+			const parent =
+				"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
-			webhook = await client.webhooks.create(parent ?? message.channelId, {
-				name: "PluralBuddy Proxy",
-			});
+			webhook = await client.webhooks
+				.create(parent ?? message.channelId, {
+					name: "PluralBuddy Proxy",
+				})
+				.catch(() => null);
+			if (webhook === null) {
+				createError(guild.guildId ?? "", {
+					title: `Error while creating webhook for <#${channel.id}>`,
+					description: `There was an error while creating the corresponding webhook for <#${channel.id}>. Check if PluralBuddy has the correct permissions in that channel.`,
+					type: "WebhookFailedCreation",
+					responsibleUserId: user.userId,
+					responsibleChannelId: channel.id,
+				});
+				return;
+			}
 			client.cache.similarWebhookResource.set(
 				CacheFrom.Gateway,
 				message.channelId,
