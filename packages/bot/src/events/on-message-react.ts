@@ -10,12 +10,13 @@ import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { translations } from "@/lang/en_us";
 import { AlertView } from "@/views/alert";
 import { MessageInfo } from "@/views/message-info";
+import { createError } from "@/lib/create-error";
 
 export default createEvent({
 	data: { name: "messageReactionAdd", once: false },
 	run: async (reaction) => {
 		if (reaction.userId === client.applicationId) return;
-		
+
 		if (
 			reaction.emoji.name !== "❌" &&
 			reaction.emoji.name !== "redTick" &&
@@ -42,9 +43,30 @@ export default createEvent({
 				reaction.channelId,
 				reaction.emoji.id === null ? reaction.emoji.name : reaction.emoji,
 				reaction.userId,
-			);
+			).catch(() => {
 
-		await nativeMessage.react(emojis.loading);
+				createError(reaction.guildId ?? "", {
+					title: "Unable to remove user reaction",
+					description:
+						"PluralBuddy was unable to remove a user reaction while attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+					type: "FailedMessageReaction",
+					responsibleChannelId: reaction.channelId,
+					responsibleUserId: reaction.userId,
+				});
+			});
+
+		const react = await nativeMessage.react(emojis.loading).catch(() => null);
+
+		if (react === null) {
+			createError(reaction.guildId ?? "", {
+				title: "Unable to react with loading emoji after request",
+				description:
+					"PluralBuddy was unable to react with a loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+				type: "FailedMessageReaction",
+				responsibleChannelId: reaction.channelId,
+				responsibleUserId: reaction.userId,
+			});
+		}
 
 		if (
 			reaction.emoji.name === "❌" ||
@@ -60,7 +82,16 @@ export default createEvent({
 					reaction.channelId,
 					emojis.loading,
 					client.applicationId,
-				);
+				).catch(() => {
+					createError(reaction.guildId ?? "", {
+						title: "Unable to remove self-reaction",
+						description:
+							"PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+						type: "FailedMessageReaction",
+						responsibleChannelId: reaction.channelId,
+						responsibleUserId: reaction.userId,
+					});
+				});
 				await nativeMessage.react(emojis.x);
 
 				setTimeout(
@@ -78,8 +109,9 @@ export default createEvent({
 			}
 
 			const channel = await client.channels.fetch(reaction.channelId);
-			const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
-	
+			const parent =
+				"parentId" in channel && channel.isThread() ? channel.parentId : null;
+
 			const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
 
 			if (similarWebhooks[0] === undefined) {
@@ -120,8 +152,8 @@ export default createEvent({
 
 			if (user && user?.nudging)
 				if (
-					(!(user?.nudging.currentlyEnabled ?? true)) ||
-					(user?.nudging.blockedUsers.includes(reaction.userId))
+					!(user?.nudging.currentlyEnabled ?? true) ||
+					user?.nudging.blockedUsers.includes(reaction.userId)
 				) {
 					client.reactions.delete(
 						reaction.messageId,
@@ -190,7 +222,12 @@ export default createEvent({
 			const user = await userCollection.findOne({ userId: message.systemId });
 			const alter = await alterCollection.findOne({ alterId: message.alterId });
 
-			if (user === null || user.system === undefined || alter === null || reaction.guildId === undefined) {
+			if (
+				user === null ||
+				user.system === undefined ||
+				alter === null ||
+				reaction.guildId === undefined
+			) {
 				client.reactions.delete(
 					reaction.messageId,
 					reaction.channelId,
@@ -208,14 +245,14 @@ export default createEvent({
 				});
 			}
 
-            const nativeGuild = await client.guilds.fetch(reaction.guildId, true);
+			const nativeGuild = await client.guilds.fetch(reaction.guildId, true);
 
-            client.reactions.delete(
-                reaction.messageId,
-                reaction.channelId,
-                emojis.loading,
-                client.applicationId,
-            );
+			client.reactions.delete(
+				reaction.messageId,
+				reaction.channelId,
+				emojis.loading,
+				client.applicationId,
+			);
 
 			return await nativeUser.write({
 				components: await new MessageInfo(translations).messageInfo(
