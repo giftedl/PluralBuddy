@@ -602,4 +602,5 @@ export const InteractionIdentifier = {
 			PluralBuddy: createStatic("setup/import-select/pluralbuddy"),
 		},
 	},
+	SnoozeDMs: createStatic("snooze-dms")
 };

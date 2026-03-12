@@ -13,7 +13,8 @@ Additionally, you can also import data from another bot like PluralKit.
 -# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
 	PAGINATION_NEXT_PAGE: "Next Page",
 	PAGINATION_FINISH: "Finish",
-	BLACKLISTED: "You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
+	BLACKLISTED:
+		"You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
 	BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
@@ -144,6 +145,9 @@ Systems can have **privacy values** which are values that describe who can see w
 
 	SYSTEM_DELETION_FINISHED:
 		"Successfully deleted your system. \n-# Below there is also a followup copy of your system export.",
+	OPTED_OUT_OF_DMS:
+		"You have successfully been opted out of DMs. You will no longer recieve DMs for system related operations.\n\n> **Why this isn't recommended:** Disabling operation DMs is a safe-guard against potentially dangerous OAuth applications making small, yet significant changes to your system. Disabling system DMs will completely remove this safe-guard, which may not be intended. PluralBuddy Support may not be able to recover data destroyed by OAuth applications.",
+	OPTED_IN_OF_DMS: "You have successfully opted back into DMs.",
 	SYSTEM_DELETION_MEDIA_FINISHED:
 		"Successfully deleted your system **and your system's media**. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
 	SYSTEM_DELETION_DM: "Here is the export data due to the deletion on %time%:",
@@ -236,9 +240,12 @@ Systems can have **privacy values** which are values that describe who can see w
 	TAG_COLOR_pink: "pink",
 	TAG_COLOR_rose: "rose",
 
-	WAITING_INDEXING: "PluralBuddy is currently trying to index your system, and at most will need to index **{{ alterCount }} alter(s)**. This may take a while.\n-# **Current Status:** {{ alters }}/{{ alterCount }} indexed. ({{ percentage }})",
-	TOO_MANY_ALTERS: "There are too many alters in your PluralBuddy system (2000 alters). Please contact PluralBuddy Support if you believe that is incorrect.",
-	TOO_MANY_TAGS: "There are too many tags in your PluralBuddy system (500 tags).Please contact PluralBuddy Support if you believe that is incorrect. ",
+	WAITING_INDEXING:
+		"PluralBuddy is currently trying to index your system, and at most will need to index **{{ alterCount }} alter(s)**. This may take a while.\n-# **Current Status:** {{ alters }}/{{ alterCount }} indexed. ({{ percentage }})",
+	TOO_MANY_ALTERS:
+		"There are too many alters in your PluralBuddy system (2000 alters). Please contact PluralBuddy Support if you believe that is incorrect.",
+	TOO_MANY_TAGS:
+		"There are too many tags in your PluralBuddy system (500 tags).Please contact PluralBuddy Support if you believe that is incorrect. ",
 
 	SEARCH_FORM_TITLE: "Searching Resources",
 	SEARCH_QUERY: "Search Query",
@@ -293,7 +300,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
 	OPERATION_WEB: "%clock% Expires in 30 minutes • %web% Web (via Exchange)",
 	OPERATION_WEB_NEXT: "%clock% Expires in 30 minutes • %web% Web (via Next)",
-	SERVER_TOO_BIG: "This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
+	SERVER_TOO_BIG:
+		"This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
 	OPERATION_DISCORD_AP:
 		"Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
 	CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",

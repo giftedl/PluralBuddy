@@ -35,83 +35,84 @@ export async function createSystemOperation(
 		changedOperation: operation,
 		changedOperationStrings: Object.keys(operation) as (keyof PSystem)[],
 	} satisfies POperation;
-	const listItems = operationDb.changedOperationStrings.filter(v => operation[v]?.toString() !== system[v]?.toString()).map((c) => {
-		if (c === "systemName") {
-			return translations.OPERATION_CHANGE_NAME.replace(
-				"%name%",
-				operation.systemName as string,
-			);
-		}
-		if (c === "public") {
-			return translations.OPERATION_CHANGE_PRIVACY.replace(
-				"%privacy%",
-				(operation.public ?? 0) > 0
-					? `\`${friendlyProtectionSystem(translations, listFromMaskSystems(operation.public ?? 0)).join("`, `")}\``
-					: "",
-			);
-		}
-		if (c === "nicknameFormat") {
-			return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace(
-				"%format%",
-				(operation.nicknameFormat as string) ?? "_Unset_",
-			);
-		}
-		if (c === "disabled") {
-			return operation.disabled
-				? translations.OPERATION_CHANGE_DISABLED
-				: translations.OPERATION_CHANGE_ENABLED;
-		}
-		if (c === "systemDisplayTag") {
-			return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace(
-				"%tag%",
-				(operation.systemDisplayTag as string) ?? "_Unset_",
-			);
-		}
-		if (c === "systemAvatar") {
-			return translations[
-				operation.systemAvatar === null
-					? "OPERATION_AVATAR_UNDEFINED"
-					: "OPERATION_AVATAR"
-			].replace("%link%", operation.systemAvatar as string);
-		}
-		if (c === "systemBanner") {
-			return translations[
-				operation.systemBanner === null
-					? "OPERATION_BANNER_UNDEFINED"
-					: "OPERATION_BANNER"
-			].replace("%link%", operation.systemBanner as string);
-		}
-		if (c === "systemDescription") {
-			return translations.OPERATION_DESCRIPTION.replace(
-				"%description%",
-				((operation.systemDescription as string) ?? "_Unset_")
-					.split("\n")
-					.join("\n > "),
-			);
-		}
-		if (c === "systemPronouns") {
-			return translations.OPERATION_PRONOUNS.replace(
-				"%pronouns%",
-				(operation.systemPronouns as string) ?? "_Unset_",
-			);
-		}
-		if (c === "latchExpiration") {
-			return translations.OPERATION_LATCH_DELAY.replace(
-				"%delay%",
-				operation.latchExpiration
-					? convert(Math.floor(operation.latchExpiration / 1000))
-					: "_Unset_",
-			);
-		}
+	const listItems = operationDb.changedOperationStrings
+		.filter((v) => operation[v]?.toString() !== system[v]?.toString())
+		.map((c) => {
+			if (c === "systemName") {
+				return translations.OPERATION_CHANGE_NAME.replace(
+					"%name%",
+					operation.systemName as string,
+				);
+			}
+			if (c === "public") {
+				return translations.OPERATION_CHANGE_PRIVACY.replace(
+					"%privacy%",
+					(operation.public ?? 0) > 0
+						? `\`${friendlyProtectionSystem(translations, listFromMaskSystems(operation.public ?? 0)).join("`, `")}\``
+						: "",
+				);
+			}
+			if (c === "nicknameFormat") {
+				return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace(
+					"%format%",
+					(operation.nicknameFormat as string) ?? "_Unset_",
+				);
+			}
+			if (c === "disabled") {
+				return operation.disabled
+					? translations.OPERATION_CHANGE_DISABLED
+					: translations.OPERATION_CHANGE_ENABLED;
+			}
+			if (c === "systemDisplayTag") {
+				return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace(
+					"%tag%",
+					(operation.systemDisplayTag as string) ?? "_Unset_",
+				);
+			}
+			if (c === "systemAvatar") {
+				return translations[
+					operation.systemAvatar === null
+						? "OPERATION_AVATAR_UNDEFINED"
+						: "OPERATION_AVATAR"
+				].replace("%link%", operation.systemAvatar as string);
+			}
+			if (c === "systemBanner") {
+				return translations[
+					operation.systemBanner === null
+						? "OPERATION_BANNER_UNDEFINED"
+						: "OPERATION_BANNER"
+				].replace("%link%", operation.systemBanner as string);
+			}
+			if (c === "systemDescription") {
+				return translations.OPERATION_DESCRIPTION.replace(
+					"%description%",
+					((operation.systemDescription as string) ?? "_Unset_")
+						.split("\n")
+						.join("\n > "),
+				);
+			}
+			if (c === "systemPronouns") {
+				return translations.OPERATION_PRONOUNS.replace(
+					"%pronouns%",
+					(operation.systemPronouns as string) ?? "_Unset_",
+				);
+			}
+			if (c === "latchExpiration") {
+				return translations.OPERATION_LATCH_DELAY.replace(
+					"%delay%",
+					operation.latchExpiration
+						? convert(Math.floor(operation.latchExpiration / 1000))
+						: "_Unset_",
+				);
+			}
 
-		return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
-			"%value%",
-			operation[c]?.toString() ?? "?",
-		);
-	});
+			return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
+				"%value%",
+				operation[c]?.toString() ?? "?",
+			);
+		});
 
-	if (listItems.length === 0 )
-		return;
+	if (listItems.length === 0) return;
 
 	await operationCollection.insertOne(operationDb);
 
@@ -124,54 +125,78 @@ export async function createSystemOperation(
 			},
 		});
 
-	const dmChannel = await client.users.createDM(system.associatedUserId, true)
+	if (!system.systemOperationDM)
+		try {
+			const dmChannel = await client.users
+				.createDM(system.associatedUserId, true)
+				.catch(() => null);
 
-	client.messages.write(dmChannel.id, {
-		components: [
-			new Container()
-				.setComponents(
-					new TextDisplay().setContent(
-						`## ${emojis.clockCheck} ${translations.OPERATION_HEADER}`,
-					),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setCustomId(
-									InteractionIdentifier.Systems.UndoOperation.create(
-										operationDb.id,
+			if (dmChannel)
+				client.messages
+					.write(dmChannel.id, {
+						components: [
+							new Container()
+								.setComponents(
+									new TextDisplay().setContent(
+										`## ${emojis.clockCheck} ${translations.OPERATION_HEADER}`,
+									),
+									new Section()
+										.setAccessory(
+											new Button()
+												.setCustomId(
+													InteractionIdentifier.Systems.UndoOperation.create(
+														operationDb.id,
+													),
+												)
+												.setLabel("Undo Operation")
+												.setEmoji(emojis.undo)
+												.setStyle(ButtonStyle.Primary),
+										)
+										.setComponents(
+											new TextDisplay().setContent(
+												listItems.map((c) => `- ${c}`).join("\n"),
+											),
+										),
+									new TextDisplay().setContent(`-# ${
+										environment === "discord"
+											? translations.OPERATION_DISCORD.replace(
+													"%clock%",
+													emojis.clock,
+												).replace("%discord%", emojis.discord)
+											: environment === "api-exchange"
+												? translations.OPERATION_WEB.replace(
+														"%clock%",
+														emojis.clock,
+													).replace("%web%", emojis.web)
+												: translations.OPERATION_WEB_NEXT.replace(
+														"%clock%",
+														emojis.clock,
+													).replace("%web%", emojis.web)
+									}
+-# ${translations.OPERATION_ID.replace("%id%", `\`${operationDb.id}\``)}`),
+								)
+								.setColor("#F9DC00"),
+							new Section()
+								.setComponents(
+									new TextDisplay().setContent(
+										"-# You were notified of this action due to your association with your PluralBuddy system.",
+									),
+									new TextDisplay().setContent(
+										"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
 									),
 								)
-								.setLabel("Undo Operation")
-								.setEmoji(emojis.undo)
-								.setStyle(ButtonStyle.Primary),
-						)
-						.setComponents(
-							new TextDisplay().setContent(
-								listItems.map((c) => `- ${c}`).join("\n"),
-							),
-						),
-					new TextDisplay().setContent(`-# ${
-						environment === "discord"
-							? translations.OPERATION_DISCORD.replace(
-									"%clock%",
-									emojis.clock,
-								).replace("%discord%", emojis.discord)
-							: environment === "api-exchange"
-								? translations.OPERATION_WEB.replace(
-										"%clock%",
-										emojis.clock,
-									).replace("%web%", emojis.web)
-								: translations.OPERATION_WEB_NEXT.replace(
-										"%clock%",
-										emojis.clock,
-									).replace("%web%", emojis.web)
-					}
--# ${translations.OPERATION_ID.replace("%id%", `\`${operationDb.id}\``)}`),
-				)
-				.setColor("#F9DC00"),
-		],
-		flags: MessageFlags.IsComponentsV2,
-	});
+								.setAccessory(
+									new Button()
+										.setCustomId(InteractionIdentifier.SnoozeDMs.create())
+										.setStyle(ButtonStyle.Danger)
+										.setLabel("Opt-out of DMs")
+										.setEmoji(emojis.xWhite),
+								),
+						],
+						flags: MessageFlags.IsComponentsV2,
+					})
+					.catch(() => null);
+		} catch (_) {}
 
 	return {
 		...system,
