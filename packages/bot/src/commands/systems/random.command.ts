@@ -128,7 +128,7 @@ export default class RandomSystemCommand extends SubCommand {
 						...new AlterView(ctx.userTranslations()).alterConfigureButton(
 							alterQuery,
 						),
-						...new AlterView(ctx.userTranslations()).alterProxyModes(alterQuery),
+						...new AlterView(ctx.userTranslations()).alterProxyModes(alterQuery, ctx.guildId),
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					allowed_mentions: { parse: [] },
@@ -168,7 +168,7 @@ export default class RandomSystemCommand extends SubCommand {
 				...new AlterView(ctx.userTranslations()).alterConfigureButton(
 					alterQuery,
 				),
-				...new AlterView(ctx.userTranslations()).alterProxyModes(alterQuery),
+				...new AlterView(ctx.userTranslations()).alterProxyModes(alterQuery, ctx.guildId),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			allowed_mentions: { parse: [] },

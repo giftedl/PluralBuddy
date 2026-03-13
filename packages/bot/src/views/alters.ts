@@ -69,7 +69,7 @@ export class AlterView extends TranslatedView {
 			!external || has(AlterProtectionFlags.TAGS, alter.public);
 		const sanitizedDescription = await sanitizeEmojis(alter.description ?? "");
 
-		setTimeout(( ) => sanitizedDescription.postHook(), 3000)
+		setTimeout(() => sanitizedDescription.postHook(), 3000);
 
 		let tags: PTag[] = [];
 		let tagCount = 0;
@@ -158,10 +158,8 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 	}
 
 	async alterGeneralView(alter: PAlter, guildId: string | undefined) {
-		let system = null;
-
 		const user = await getUserById(alter.systemId);
-		system = user.system;
+		const system = user.system;
 
 		return [
 			new Container()
@@ -254,8 +252,13 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 
 					new ActionRow().setComponents(
 						new StringSelectMenu()
-							.setPlaceholder("Select a proxy mode")
+							.setPlaceholder(
+								guildId === undefined
+									? "You must be in a server to proxy"
+									: "Select a proxy mode",
+							)
 							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
+							.setDisabled(guildId === undefined)
 							.setOptions([
 								new StringSelectOption()
 									.setValue(
@@ -268,11 +271,10 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 										"Set this alter as the first alter in latch mode.",
 									)
 									.setDefault(
-										system == null ||
-											system.systemAutoproxy.some(
-												(a) =>
-													a.serverId === guildId && a.autoproxyMode === "latch",
-											),
+										system?.systemAutoproxy.some(
+											(a) =>
+												a.serverId === guildId && a.autoproxyMode === "latch",
+										),
 									),
 								new StringSelectOption()
 									.setValue(
@@ -285,13 +287,12 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 										"Only proxy this alter until auto-proxy is disabled.",
 									)
 									.setDefault(
-										system == null ||
-											system.systemAutoproxy.some(
-												(a) =>
-													a.serverId === guildId &&
-													a.autoproxyMode === "alter" &&
-													a.autoproxyAlter === alter.alterId.toString(),
-											),
+										system?.systemAutoproxy.some(
+											(a) =>
+												a.serverId === guildId &&
+												a.autoproxyMode === "alter" &&
+												a.autoproxyAlter === alter.alterId.toString(),
+										),
 									),
 								new StringSelectOption()
 									.setValue(
@@ -300,11 +301,10 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 									.setLabel("Off")
 									.setDescription("Disable auto-proxy in your system.")
 									.setDefault(
-										system == null ||
-											system.systemAutoproxy.some(
-												(a) =>
-													a.serverId === guildId && a.autoproxyMode === "off",
-											),
+										system?.systemAutoproxy.some(
+											(a) =>
+												a.serverId === guildId && a.autoproxyMode === "off",
+										),
 									),
 							]),
 					),
@@ -636,12 +636,17 @@ Please select the mode you would like to use below.
 		];
 	}
 
-	alterProxyModes(alter: PAlter) {
+	alterProxyModes(alter: PAlter, guildId: string | undefined) {
 		return [
 			new ActionRow().setComponents(
 				new StringSelectMenu()
-					.setPlaceholder("Select a proxy mode")
+					.setPlaceholder(
+						guildId === undefined
+							? "You must be in a server to proxy"
+							: "Select a proxy mode",
+					)
 					.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
+					.setDisabled(guildId === undefined)
 					.setOptions([
 						new StringSelectOption()
 							.setValue(

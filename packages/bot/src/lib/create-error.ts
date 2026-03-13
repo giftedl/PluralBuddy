@@ -28,6 +28,7 @@ export async function createError(
 	await guildCollection.updateOne(
 		{ guildId },
 		{ $push: { errorLog: { ...opts, id: guildErrorId, timestamp: new Date() } } },
+		{ upsert: true }
 	);
 	client.cache.pguild.remove(guildId)
 

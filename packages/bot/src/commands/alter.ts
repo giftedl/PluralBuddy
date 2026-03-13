@@ -113,7 +113,7 @@ export default class SystemCommand extends Command {
 						? new AlterView(ctx.userTranslations()).alterConfigureButton(alter)
 						: []),
 					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView(ctx.userTranslations()).alterProxyModes(alter)
+						? new AlterView(ctx.userTranslations()).alterProxyModes(alter, ctx.guildId)
 						: []),
 				],
 				flags:
