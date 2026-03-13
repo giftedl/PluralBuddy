@@ -12,6 +12,7 @@ export async function GET(
 
 	const oauthResponse = await userlessOAuth(request, []);
 
+	if ("response" in oauthResponse) return oauthResponse.response;
 	const client = new MongoClient(process.env.MONGO ?? "");
 	await client.connect();
 
