@@ -203,7 +203,7 @@ export async function proxy(
 								.write(guild.logChannel, {
 									components: [
 										new TextDisplay().setContent(
-											`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`,
+											`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${sentMessage?.id}`,
 										),
 										new Container()
 											.setComponents(
