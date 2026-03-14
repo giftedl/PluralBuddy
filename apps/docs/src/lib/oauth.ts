@@ -69,7 +69,6 @@ export async function authenticateOAuth(
 	return { mongo: client, accountId: discordAccountId?.accountId };
 }
 
-
 export async function userlessOAuth(
 	request: NextRequest,
 	requiredScopes: string[],
@@ -105,6 +104,9 @@ export async function userlessOAuth(
 			};
 		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]})}
 	});
+	
+	if (token && "response" in token)
+		return { response: token.response as NextResponse };
 
 	return { success: true };
 }
