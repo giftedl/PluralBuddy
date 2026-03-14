@@ -12,6 +12,8 @@
       "commands",
       "---For Server Administrators---",
       "server-concepts",
-      "server-commands"
+      "server-commands",
+      "---For Developers---",
+      "api"
     ]
   }

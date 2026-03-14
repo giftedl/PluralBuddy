@@ -9,6 +9,8 @@ import { oauthProvider } from "@better-auth/oauth-provider";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { dash } from "@better-auth/infra";
 
+import { openAPI } from "better-auth/plugins"
+
 const client = new MongoClient(process.env.MONGO ?? "");
 
 export const auth = betterAuth({

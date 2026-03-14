@@ -9,6 +9,7 @@ import { CheckPermsCardExample } from "./components/cards/check-perms-card";
 import { onSendFeedback } from "./app/actions";
 import { BlacklistedChannelExample } from "./components/cards/blacklisted-channel";
 import { RoleContainerExample } from "./components/cards/role-container-card";
+import { APIPage } from "./components/api-page";
 
 export const MDXFeedbackBlock = (props: any) => (
 	<FeedbackBlock
@@ -31,6 +32,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
 		BlacklistedRoleExample,
 		BlacklistedChannelExample,
 		RoleContainerExample,
+		APIPage,
 
 		FeedbackBlock: (props) => (
 			<MDXFeedbackBlock {...props} />

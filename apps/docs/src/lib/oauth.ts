@@ -101,7 +101,7 @@ export async function userlessOAuth(
 			return {
 				response: NextResponse.json({
 					errors: [{ type: "invalid-scopes", friendly:e?.body?.message }],
-				}, { status: 401 }),
+				}, { status: 403 }),
 			};
 		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]})}
 	});

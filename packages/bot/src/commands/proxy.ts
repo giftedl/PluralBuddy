@@ -24,6 +24,7 @@ import { client } from "..";
 import { getUserById } from "@/types/user";
 import { processEmojis } from "@/lib/proxying/process-emojis";
 import { processUrlIntegrations } from "@/lib/proxying/process-url-attachments";
+import { createError } from "@/lib/create-error";
 
 const options = {
 	"alter-name": createStringOption({
@@ -51,7 +52,7 @@ export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { "alter-name": alterName, message, attachment } = ctx.options;
 		const systemId = ctx.author.id;
-		
+
 		if (message === undefined && attachment === undefined)
 			return await ctx.write({
 				components: [
@@ -65,14 +66,11 @@ export default class SystemCommand extends Command {
 		if (((await ctx.guild())?.memberCount ?? 0) > 30) {
 			return await ctx.write({
 				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
-						"SERVER_TOO_BIG",
-					),
+					...new AlertView(ctx.userTranslations()).errorView("SERVER_TOO_BIG"),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
-
 
 		const query = Number.isNaN(Number.parseInt(alterName))
 			? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
@@ -143,9 +141,29 @@ export default class SystemCommand extends Command {
 		if (similarWebhooks.length >= 1) {
 			webhook = similarWebhooks[0];
 		} else {
-			webhook = await client.webhooks.create(ctx.channelId, {
-				name: "PluralBuddy Proxy",
-			});
+			webhook = await client.webhooks
+				.create(ctx.channelId, {
+					name: "PluralBuddy Proxy",
+				})
+				.catch(() => null);
+			if (webhook === null) {
+				createError(ctx.guildId ?? "", {
+					title: `Error while creating webhook for <#${ctx.channelId}>`,
+					description: `There was an error while creating the corresponding webhook for <#${ctx.channelId}>. Check if PluralBuddy has the correct permissions in that channel.`,
+					type: "WebhookFailedCreation",
+					responsibleUserId: ctx.author.id,
+					responsibleChannelId: ctx.channelId,
+				});
+
+				return await ctx.editResponse({
+					components: [
+						...new AlertView(ctx.userTranslations()).errorView(
+							"ERROR_MANUAL_PROXY",
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			}
 		}
 
 		if (webhook === undefined)
@@ -221,7 +239,7 @@ export default class SystemCommand extends Command {
 					systemId,
 					createdAt: new Date(),
 					channelId: sentMessage?.channelId ?? "0",
-					guildId: sentMessage?.guildId
+					guildId: sentMessage?.guildId,
 				});
 
 				if (sentMessage?.id) {
