@@ -3,9 +3,9 @@
   "pages": [
     "exchange/messages/id/get",
     "auth/oauth2/introspect/post",
-    "auth/oauth2/revoke/post",
     "auth/oauth2/authorize/post",
     "auth/oauth2/authorize/get",
+    "auth/oauth2/revoke/post",
     "exchange/users/user/system/get"
   ]
 }
