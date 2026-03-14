@@ -16,7 +16,8 @@ registry.registerPath({
 	method: "get",
 	path: "/exchange/users/{user}/system",
 	summary: "Get PluralBuddy system",
-	description: "Get data of a PluralBuddy system. `{user}` can be `@me` to target the current OAuth user.",
+	description:
+		"Get data of a PluralBuddy system. `{user}` can be `@me` to target the current OAuth user.",
 	security: [{ oAuth2: ["system:read"] }],
 	responses: {
 		"200": {
@@ -24,10 +25,10 @@ registry.registerPath({
 			content: {
 				"application/json": {
 					schema: z.object({
-						data: PSystemObject.meta({ id: "system" })
-					})
-				}
-			}
+						data: PSystemObject.meta({ id: "system" }),
+					}),
+				},
+			},
 		},
 		"400": {
 			description: "@me is the only allowed user for this endpoint.",
@@ -35,35 +36,37 @@ registry.registerPath({
 				"application/json": {
 					schema: z.object({
 						type: z.literal("not-matching-oauth"),
-						friendly: z.literal("This endpoint requires the user currently logged in via OAuth.")
-					})
-				}
-			}
+						friendly: z.literal(
+							"This endpoint requires the user currently logged in via OAuth.",
+						),
+					}),
+				},
+			},
 		},
-        "401": {
-            description: "No access token when authenticating.",
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        type: z.literal("no-access-token"),
-                        friendly: z.literal("no access token")
-                    })
-                }
-            }
-        },
-        "403": {
-            description: "Invalid scopes while running endpoint.",
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        type: z.literal("invalid-scopes"),
-                        friendly: z.string()
-                    })
-                }
-            }
-        }
+		"401": {
+			description: "No access token when authenticating.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						type: z.literal("no-access-token"),
+						friendly: z.literal("no access token"),
+					}),
+				},
+			},
+		},
+		"403": {
+			description: "Invalid scopes while running endpoint.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						type: z.literal("invalid-scopes"),
+						friendly: z.string(),
+					}),
+				},
+			},
+		},
 	},
-})
+});
 registry.registerPath({
 	method: "get",
 	path: "/exchange/messages/{id}",
@@ -75,45 +78,39 @@ registry.registerPath({
 			content: {
 				"application/json": {
 					schema: z.object({
-						message: PMessageObject.extend(
-							{
-								endpoints: z.object({
-									system: z
-										.string()
-										.meta({
-											examples: [
-												"api/exchange/users/1481859816656736257/system",
-											],
-										}),
+						message: PMessageObject.extend({
+							endpoints: z.object({
+								system: z.string().meta({
+									examples: ["api/exchange/users/1481859816656736257/system"],
 								}),
-							},
-						),
+							}),
+						}),
 					}),
 				},
 			},
 		},
-        "401": {
-            description: "No access token when authenticating.",
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        type: z.literal("no-access-token"),
-                        friendly: z.literal("no access token")
-                    })
-                }
-            }
-        },
-        "403": {
-            description: "Invalid scopes while running endpoint.",
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        type: z.literal("invalid-scopes"),
-                        friendly: z.string()
-                    })
-                }
-            }
-        }
+		"401": {
+			description: "No access token when authenticating.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						type: z.literal("no-access-token"),
+						friendly: z.literal("no access token"),
+					}),
+				},
+			},
+		},
+		"403": {
+			description: "Invalid scopes while running endpoint.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						type: z.literal("invalid-scopes"),
+						friendly: z.string(),
+					}),
+				},
+			},
+		},
 	},
 });
 registry.registerPath({
@@ -275,7 +272,7 @@ registry.registerPath({
 });
 registry.registerPath({
 	method: "post",
-	path: "/auth/oauth2/authorize",
+	path: "/auth/oauth2/token",
 	summary: "Obtain an OAuth2.1 access token",
 	security: [{ bearerAuth: [] }],
 	parameters: [],
@@ -321,6 +318,7 @@ registry.registerPath({
 							type: "string",
 							description:
 								"Requested token resource (ie audience) to obtain a JWT formatted access token",
+							enum: ["https://pb.giftedly.dev"],
 						},
 						scope: {
 							type: "string",
