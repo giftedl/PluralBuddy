@@ -26,6 +26,7 @@ import type {
 	ApplicableWebhookWritePayload,
 	PWebhook,
 } from "@/events/on-message-create";
+import { createError } from "../create-error";
 
 export const imageOrVideoExtensions = [
 	".png",
@@ -114,7 +115,8 @@ export async function proxy(
 	await new Promise((d) => setTimeout(d, guild.proxyDelay));
 
 	const channel = await message.channel();
-	const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+	const parent =
+		"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
@@ -197,46 +199,64 @@ export async function proxy(
 
 							if (!guild.logChannel) return;
 
-							await client.messages.write(guild.logChannel, {
-								components: [
-									new TextDisplay().setContent(
-										`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`,
-									),
-									new Container()
-										.setComponents(
-											new Section()
-												.setComponents(
-													new TextDisplay().setContent(
-														stringContents === ""
-															? "Cannot render message as string - use link above."
-															: stringContents,
+							await client.messages
+								.write(guild.logChannel, {
+									components: [
+										new TextDisplay().setContent(
+											`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.id}`,
+										),
+										new Container()
+											.setComponents(
+												new Section()
+													.setComponents(
+														new TextDisplay().setContent(
+															stringContents === ""
+																? "Cannot render message as string - use link above."
+																: stringContents,
+														),
+													)
+													.setAccessory(
+														new Thumbnail().setMedia(
+															alter?.avatarUrl ??
+																"https://cdn.discordapp.com/embed/avatars/0.png",
+														),
 													),
-												)
-												.setAccessory(
-													new Thumbnail().setMedia(
-														alter?.avatarUrl ??
-															"https://cdn.discordapp.com/embed/avatars/0.png",
-													),
-												),
-											new Separator().setSpacing(Spacing.Large),
-											new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
+												new Separator().setSpacing(Spacing.Large),
+												new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alterId}\`
 -# Mention: @${user.username} (<@${systemId}>)
 -# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})${
-												message.messageReference !== undefined
-													? `
+													message.messageReference !== undefined
+														? `
 -# Reply: https://discord.com/channels/${message.messageReference.guildId ?? "@me"}/${message.messageReference.channelId}/${message.messageReference.messageId}`
-													: ""
-											}
+														: ""
+												}
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
-										)
-										.setColor("Green"),
-								],
-								flags: MessageFlags.IsComponentsV2,
-								allowed_mentions: { parse: [] },
-							});
+											)
+											.setColor("Green"),
+									],
+									flags: MessageFlags.IsComponentsV2,
+									allowed_mentions: { parse: [] },
+								})
+								.catch(() =>
+									createError(guild.guildId, {
+										title: "Failed to send proxy log in log channel.",
+										description:
+											"PluralBuddy attempted to send a proxied log message, but failed, maybe due to a lack of permission.",
+										responsibleChannelId: guild.logChannel ?? undefined,
+										type: "FailedLogging",
+									}),
+								);
 						})();
-					} catch (_: unknown) {}
+					} catch (_: unknown) {
+						createError(guild.guildId, {
+							title: "Failed to send proxy log in log channel.",
+							description:
+								"PluralBuddy attempted to send a proxied log message, but failed, maybe due to a lack of permission.",
+							responsibleChannelId: guild.logChannel ?? undefined,
+							type: "FailedLogging",
+						})
+					}
 
 					if (sentMessage?.id) {
 						processUrlIntegrations(
