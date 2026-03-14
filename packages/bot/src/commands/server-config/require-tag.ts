@@ -31,7 +31,7 @@ const options = {
 @Options(options)
 export default class RequireSystemTags extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
-		const pluralGuild = await ctx.retrievePGuild();
+		let pluralGuild = await ctx.retrievePGuild();
 		const { option } = ctx.options;
 
 		await guildCollection.updateOne(
@@ -45,6 +45,8 @@ export default class RequireSystemTags extends SubCommand {
 			},
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
+		
+		pluralGuild = await ctx.retrievePGuild();
 
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successView(
