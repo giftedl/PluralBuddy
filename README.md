@@ -1,15 +1,7 @@
-# pluralbuddy
+# PluralBuddy
 
-To install dependencies:
+[![MIT License](https://img.shields.io/github/license/giftedl/PluralBuddy)](LICENSE)
 
-```bash
-bun install
-```
+The plurality bot finally built correctly.
 
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.16. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+[Docs](https://pb.giftedly.dev) • [Invite](https://gftl.fyi/invite) • [Support Server](https://gftl.fyi/discord)
