@@ -4,6 +4,8 @@ import {
 	ActionRow,
 	Button,
 	Container,
+	MediaGallery,
+	MediaGalleryItem,
 	Section,
 	SelectMenu,
 	Separator,
@@ -53,7 +55,9 @@ export class PluralBuddyIntro extends TranslatedView {
 	pageTwo(prefix: string) {
 		const textContainer = new Container();
 		textContainer.setComponents(
-			new TextDisplay().setContent(this.translations.IMPORT_MESSAGE.replaceAll("{{ prefix }}", prefix)),
+			new TextDisplay().setContent(
+				this.translations.IMPORT_MESSAGE.replaceAll("{{ prefix }}", prefix),
+			),
 		);
 
 		const paginationContainer = new Container();
@@ -93,6 +97,12 @@ export class PluralBuddyIntro extends TranslatedView {
 							.setValue(
 								InteractionIdentifier.Setup.ImportSelection.PluralBuddy.create(),
 							),
+						new StringSelectOption()
+							.setLabel("SimplyPlural")
+							.setDescription(this.translations.IMPORT_SIMPLYPLURAL_DESCRIPTION)
+							.setValue(
+								InteractionIdentifier.Setup.ImportSelection.SimplyPlural.create(),
+							),
 					]),
 			),
 		]);
@@ -116,7 +126,7 @@ export class PluralBuddyIntro extends TranslatedView {
 
 				systemAutoproxy: [],
 				public: 0,
-				disabled: false
+				disabled: false,
 			};
 		}
 
@@ -236,6 +246,77 @@ export class PluralBuddyIntro extends TranslatedView {
 		return [textContainer, paginationContainer];
 	}
 
+	simplyPluralImportPage() {
+		const textContainer = new Container();
+		const paginationContainer = new Container();
+
+		textContainer.setComponents(
+			new TextDisplay().setContent(this.translations.PK_IMPORT_START),
+			new Separator().setSpacing(Spacing.Large),
+			new TextDisplay().setContent(`### Step 1: Get a Simply Plural token
+PluralBuddy requires you create a Simply Plural token to import data into PluralBuddy.
+> PluralBuddy only sees your token once. After PluralBuddy gains the data from the Simply Plural data, it is destroyed.
+
+To create a token:
+1. Open navigation menu -> hit the gear
+2. Account -> Tokens
+3. Hit add token and select the "Read" scope
+4. Add token -> Copy the created token.`),
+			new MediaGallery().setItems(
+				new MediaGalleryItem()
+					.setMedia("attachment://sp-1.png")
+					.setDescription("Navigation Menu"),
+				new MediaGalleryItem()
+					.setMedia("attachment://sp-2.png")
+					.setDescription("Gear"),
+				new MediaGalleryItem()
+					.setMedia("attachment://sp-3.png")
+					.setDescription("Accounts"),
+				new MediaGalleryItem()
+					.setMedia("attachment://sp-4.png")
+					.setDescription("Tokens"),
+				new MediaGalleryItem()
+					.setMedia("attachment://sp-5.png")
+					.setDescription("Add new token"),
+				new MediaGalleryItem()
+					.setMedia("attachment://sp-6.png")
+					.setDescription("Read scope"),
+				new MediaGalleryItem()
+					.setMedia("attachment://sp-7.png")
+					.setDescription("Copy token"),
+			),
+			new Separator(),
+			new Section()
+				.setComponents(
+					new TextDisplay().setContent(`### Step 2: Import system contents
+Please paste the system token from SimplyPlural into PluralBuddy.`),
+				)
+				.setAccessory(
+					new Button()
+						.setCustomId(
+							InteractionIdentifier.Setup.SimplyPluralUploadToken.create(),
+						)
+						.setEmoji(emojis.plus)
+						.setLabel("Upload Token")
+						.setStyle(ButtonStyle.Primary),
+				),
+		);
+
+		paginationContainer.setComponents([
+			new TextDisplay().setContent(
+				`-# ${this.translations.PAGINATION_TITLE} 3/3`,
+			),
+			new ActionRow().setComponents([
+				new Button()
+					.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
+					.setStyle(ButtonStyle.Secondary)
+					.setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create()),
+			]),
+		]);
+
+		return [textContainer, paginationContainer];
+	}
+
 	pluralKitImportPage(rootInteractionId: string) {
 		const textContainer = new Container();
 		const paginationContainer = new Container();
@@ -254,10 +335,10 @@ Please download the JSON file sent to you and use the button to upload the attac
 				.setAccessory(
 					new Button()
 						.setCustomId(
-							InteractionIdentifier.Setup.PluralKitImport.UploadAttachment.create(),
+							InteractionIdentifier.Setup.SimplyPluralUploadToken.create(),
 						)
 						.setEmoji(emojis.plus)
-						.setLabel("Upload Contents")
+						.setLabel("Upload Token")
 						.setStyle(ButtonStyle.Primary),
 				),
 		);

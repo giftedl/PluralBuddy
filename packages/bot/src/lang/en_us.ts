@@ -70,7 +70,9 @@ Systems can have **privacy values** which are values that describe who can see w
 	IMPORT_PLURALKIT_DESCRIPTION: "Import from PluralKit",
 	IMPORT_TUPPERBOX_DESCRIPTION: "Import from TupperBox",
 	IMPORT_PLURALBUDDY_DESCRIPTION: "Import from PluralBuddy",
+	IMPORT_SIMPLYPLURAL_DESCRIPTION: "Import from SimplyPlural",
 	IMPORT_SOURCE_DESCRIPTION: "Import Source",
+	IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
 	CREATE_NEW_SYS_DESCRIPTION: "Create New System",
 	PLURALBUDDY_IMPORT_ERROR_TOO_LARGE:
 		"2j – Importing files cannot be larger than 2mb. Please contact support if you are genuinely trying to import a system larger than 2mb.",
@@ -206,6 +208,8 @@ Systems can have **privacy values** which are values that describe who can see w
 		"2s – The attachment you uploaded is not an image.",
 	ERROR_INVALID_COLOR: "2t – The color you entered is not a valid hex color.",
 	ERROR_INVALID_NUMBER: "2t – The number you entered is not a valid decimal.",
+
+	SP_ERROR: "There was an error while grabbing data about your Simply Plural system. Was this the right token? Did you grant the token the correct scopes?",
 
 	TAG_GENERAL:
 		"## %general% General Settings - %tag%\nTag's are specific groups your alter can be apart of. Certain values of your tag can be configured here.",

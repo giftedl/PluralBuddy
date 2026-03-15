@@ -6,6 +6,9 @@ import { PluralKitMember } from "./pluralkit/member";
 import { TupperBoxSystem } from "./tupperbox";
 import { TupperBoxGroup } from "./tupperbox/group";
 import { Tupper } from "./tupperbox/tupper";
+import { SimplyPluralMember } from "./simplyplural/alter";
+import { SimplyPluralSystem } from "./simplyplural";
+import { SimplyPluralGroup } from "./simplyplural/group";
 
 export {
 	PluralKitConfiguration,
@@ -14,6 +17,7 @@ export {
 	PluralKitSystem,
 };
 export { Tupper, TupperBoxGroup, TupperBoxSystem };
+export { SimplyPluralSystem, SimplyPluralMember, SimplyPluralGroup }
 
 export * from "./pluralbuddy/alter";
 export * from "./pluralbuddy/auto-proxy";

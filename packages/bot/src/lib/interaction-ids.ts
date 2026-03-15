@@ -590,16 +590,20 @@ export const InteractionIdentifier = {
 			PkRawTextType: createStatic(
 				"setup/create-new-system/type-form/pk-raw-text",
 			),
+			SpToken: createStatic("setup/create-new-system/set-form/sp-token"),
+			SpTokenForm: createStatic("setup/create-new-system/type-form/sp-token")
 		},
 		PluralKitImport: {
 			UploadAttachment: createStatic("setup/pk-import/upload"),
 			RawText: createStatic("setup/pk-import/text"),
 		},
+		SimplyPluralUploadToken: createStatic("setup/simply-plural-upload"),
 		ImportSelection: {
 			Index: createStatic("setup/import-select"),
 			PluralKit: createStatic("setup/import-select/pluralkit"),
 			Tupperbox: createStatic("setup/import-select/tupperbox"),
 			PluralBuddy: createStatic("setup/import-select/pluralbuddy"),
+			SimplyPlural: createStatic("setup/import-select/simplyplural")
 		},
 	},
 	SnoozeDMs: createStatic("snooze-dms")

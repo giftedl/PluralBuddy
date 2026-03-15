@@ -10,11 +10,11 @@ import {
 	Container,
 	TextDisplay,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { LoadingView } from "../../../views/loading";
+import { InteractionIdentifier } from "../../../../lib/interaction-ids";
+import { LoadingView } from "../../../../views/loading";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PSystemObject, type PSystem } from "../../../types/system";
-import { AlertView } from "../../../views/alert";
+import { PSystemObject, type PSystem } from "../../../../types/system";
+import { AlertView } from "../../../../views/alert";
 import { PluralKitSystem } from "plurography";
 import { AlterProtectionFlags, PAlterObject, type PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
@@ -274,6 +274,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				}
 			}
 		});
+
 
 		systemData.alterIds = parsedSafe
 			.map((v) => v.zodData)
