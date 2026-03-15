@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SimplyPluralGroup } from "./group";
 
 export const SimplyPluralMember = z.object({
     exists: z.boolean(),
@@ -7,26 +8,26 @@ export const SimplyPluralMember = z.object({
         name: z.string(),
         desc: z.string(),
         pronouns: z.string(),
-        pkId: z.string(),
+        pkId: z.string().optional(),
         color: z.string(),
 
 
-        avatarUrl: z.string(),
-        avatarUuid: z.string(),
-        preventsFrontNotifs: z.boolean(),
+        avatarUrl: z.string().optional(),
+        avatarUuid: z.string().optional(),
+        preventsFrontNotifs: z.boolean().default(false),
 
-        private: z.boolean(),
-        preventTrusted: z.boolean(),
+        private: z.boolean().optional(),
+        preventTrusted: z.boolean().optional(),
         supportDescMarkdown: z.boolean(),
-        archived: z.boolean(),
-        receiveMessageBoardNotifs: z.boolean(),
-        archivedReason: z.string(),
-        frame: z.object({
-            bgShape: z.string().regex(/^[A-Za-z0-9]{0,50}$/).nullable(),
-            bgClip: z.string().regex(/^[A-Za-z0-9]{0,50}$/).nullable(),
-            bgStartColor: z.string().nullable(),
-            bgEndColor: z.string().nullable()
-        }),
+        archived: z.boolean().default(false),
+        receiveMessageBoardNotifs: z.boolean().optional(),
+        archivedReason: z.string().optional(),
+        frame: z.looseObject({
+            bgShape: z.string().regex(/^[A-Za-z0-9]{0,50}$/).nullable().default(null),
+            bgClip: z.string().regex(/^[A-Za-z0-9]{0,50}$/).nullable().default(null),
+            bgStartColor: z.string().nullable().default(null),
+            bgEndColor: z.string().nullable().default(null)
+        }).optional(),
         info: z.record(z.string(), z.string()).optional(),
 
         uid: z.string(),
