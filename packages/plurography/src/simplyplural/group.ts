@@ -11,6 +11,7 @@ export const SimplyPluralGroup = z.object({
         emoji: z.string(),
         supportDescMarkdown: z.boolean(),
         members: z.string().array(),
+        private: z.boolean().optional(),
         uid: z.string(),
         lastOperationTime: z.coerce.date(),
         buckets: z.string().array(),
