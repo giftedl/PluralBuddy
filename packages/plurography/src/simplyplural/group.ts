@@ -13,6 +13,6 @@ export const SimplyPluralGroup = z.object({
         members: z.string().array(),
         uid: z.string(),
         lastOperationTime: z.coerce.date(),
-        buckets: z.string().array()
+        buckets: z.string().array(),
     })
 })
