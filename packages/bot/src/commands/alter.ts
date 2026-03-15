@@ -11,7 +11,7 @@ import {
 	ActionRow,
 	Button,
 	TextDisplay,
-    Message,
+	Message,
 } from "seyfert";
 import { alterCollection } from "../mongodb";
 import { AlterView } from "../views/alters";
@@ -20,15 +20,15 @@ import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 
 const options = {
-	"alter": createStringOption({
+	alter: createStringOption({
 		description:
 			"Name of the alter to query. You can use `<user-id>/<alter>` for alters from other systems.",
 		required: true,
 	}),
 	public: createBooleanOption({
 		description: "Do you want to expose this publicly? (non-ephemeral)",
-        aliases: ["p"],
-		flag: true
+		aliases: ["p"],
+		flag: true,
 	}),
 };
 
@@ -41,10 +41,14 @@ const options = {
 @Options(options)
 export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
-		const { "alter": alterName, public: publicMode } = ctx.options;
+		const { alter: alterName, public: publicMode } = ctx.options;
 		const systemId = ctx.author.id;
-        
-        const publicMessage = publicMode ? publicMode : (ctx.message as unknown instanceof Message ? (ctx.message as unknown as Message).content.endsWith("-p") : publicMode)
+
+		const publicMessage = publicMode
+			? publicMode
+			: (ctx.message as unknown) instanceof Message
+				? (ctx.message as unknown as Message).content.endsWith("-p")
+				: publicMode;
 
 		let query = null;
 		const userAlterMatch = /^(\d+)\/(.+)$/.exec(alterName);
@@ -61,9 +65,24 @@ export default class SystemCommand extends Command {
 		} else {
 			// Otherwise, query for current user's alters
 			query = Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: { $regex: alterName} }], systemId })
+				? alterCollection.findOne({
+						$or: [
+							{ username: { $eq: alterName } },
+							{ username: { $regex: alterName } },
+						],
+
+						systemId,
+					})
 				: alterCollection.findOne({
-						$or: [{ username: { $regex: alterName} }, { alterId: Number(alterName) }],
+						$or: [
+							{
+								$or: [
+									{ username: { $eq: alterName } },
+									{ username: { $regex: alterName } },
+								],
+							},
+							{ alterId: Number(alterName) },
+						],
 						systemId,
 					});
 		}
@@ -102,7 +121,7 @@ export default class SystemCommand extends Command {
 						alter,
 						alter.systemId !== ctx.author.id,
 					)),
-					...((publicMessage && alter.systemId === ctx.author.id)
+					...(publicMessage && alter.systemId === ctx.author.id
 						? [
 								new TextDisplay().setContent(
 									`-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
@@ -113,7 +132,10 @@ export default class SystemCommand extends Command {
 						? new AlterView(ctx.userTranslations()).alterConfigureButton(alter)
 						: []),
 					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView(ctx.userTranslations()).alterProxyModes(alter, ctx.guildId)
+						? new AlterView(ctx.userTranslations()).alterProxyModes(
+								alter,
+								ctx.guildId,
+							)
 						: []),
 				],
 				flags:
