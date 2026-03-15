@@ -22,10 +22,10 @@ export const SimplyPluralMember = z.object({
         receiveMessageBoardNotifs: z.boolean(),
         archivedReason: z.string(),
         frame: z.object({
-            bgShape: z.string(),
-            bgClip: z.string(),
-            bgStartColor: z.string(),
-            bgEndColor: z.string()
+            bgShape: z.string().regex(/^[A-Za-z0-9]{0,50}$/).nullable(),
+            bgClip: z.string().regex(/^[A-Za-z0-9]{0,50}$/).nullable(),
+            bgStartColor: z.string().nullable(),
+            bgEndColor: z.string().nullable()
         }),
         info: z.record(z.string(), z.string()).optional(),
 
