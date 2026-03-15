@@ -3,7 +3,7 @@ import z from "zod";
 export const SimplyPluralGroup = z.object({
     exists: z.boolean(),
     id: z.string(),
-    content: z.object({
+    content: z.looseObject({
         parent: z.string(),
         color: z.string(),
         private: z.boolean().optional(),

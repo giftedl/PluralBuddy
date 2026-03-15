@@ -3,7 +3,7 @@ import { z } from "zod";
 export const SimplyPluralMember = z.object({
     exists: z.boolean(),
     id: z.string(),
-    content: z.object({
+    content: z.looseObject({
         name: z.string(),
         desc: z.string(),
         pronouns: z.string(),

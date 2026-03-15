@@ -3,7 +3,7 @@ import z from "zod";
 export const SimplyPluralSystem = z.object({
     exists: z.boolean(),
     id: z.string(),
-    content: z.object({
+    content: z.looseObject({
         uid: z.string(),
         isAsystem: z.boolean(),
         lastOperationTime: z.coerce.date(),
