@@ -31,7 +31,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
-		const system = await getSPSystem(token).catch(() => null);
+		const system = await getSPSystem(token).catch((e) => {console.log(e); return null});
 
 		if (!system)
 			return await ctx.editResponse({
