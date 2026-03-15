@@ -5,15 +5,16 @@ export const SimplyPluralGroup = z.object({
     id: z.string(),
     content: z.object({
         parent: z.string(),
-        name: z.string(),
         color: z.string(),
+        private: z.boolean().optional(),
+        preventTrusted: z.boolean().optional(),
+        name: z.string(),
         desc: z.string(),
         emoji: z.string(),
-        supportDescMarkdown: z.boolean(),
         members: z.string().array(),
-        private: z.boolean().optional(),
         uid: z.string(),
         lastOperationTime: z.coerce.date(),
         buckets: z.string().array(),
+        supportDescMarkdown: z.boolean(),
     })
 })

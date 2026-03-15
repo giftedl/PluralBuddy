@@ -8,19 +8,19 @@ export const SimplyPluralMember = z.object({
         desc: z.string(),
         pronouns: z.string(),
         pkId: z.string(),
+        color: z.string(),
+
+
         avatarUrl: z.string(),
+        avatarUuid: z.string(),
+        preventsFrontNotifs: z.boolean(),
+
         private: z.boolean(),
         preventTrusted: z.boolean(),
-        preventsFrontNotifs: z.boolean(),
         supportDescMarkdown: z.boolean(),
         archived: z.boolean(),
         receiveMessageBoardNotifs: z.boolean(),
         archivedReason: z.string(),
-        color: z.string(),
-        uid: z.string(),
-        lastOperationTime: z.coerce.date(),
-        buckets: z.string().array(),
-        avatarUuid: z.string(),
         frame: z.object({
             bgShape: z.string(),
             bgClip: z.string(),
@@ -28,6 +28,10 @@ export const SimplyPluralMember = z.object({
             bgEndColor: z.string(),
             avatarUuid: z.string().optional(),
         }),
-        info: z.record(z.string(), z.string()).optional()
+        info: z.record(z.string(), z.string()).optional(),
+
+        uid: z.string(),
+        lastOperationTime: z.coerce.date(),
+        buckets: z.string().array(),
     })
 })
