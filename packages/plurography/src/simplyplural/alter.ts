@@ -25,8 +25,7 @@ export const SimplyPluralMember = z.object({
             bgShape: z.string(),
             bgClip: z.string(),
             bgStartColor: z.string(),
-            bgEndColor: z.string(),
-            avatarUuid: z.string().optional(),
+            bgEndColor: z.string()
         }),
         info: z.record(z.string(), z.string()).optional(),
 
