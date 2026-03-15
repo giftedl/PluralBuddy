@@ -238,9 +238,11 @@ export default createEvent({
 				null as MessageStructure | null;
 
 			const indexingTimeout = setTimeout(async () => {
+				const channel = message.channelId;
+
 				try {
 					indexingMessage = await message.client.messages.write(
-						message.channelId,
+						channel,
 						{
 							components: [
 								new Container()
