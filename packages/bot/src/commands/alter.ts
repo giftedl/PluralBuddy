@@ -65,26 +65,26 @@ export default class SystemCommand extends Command {
 		} else {
 			// Otherwise, query for current user's alters
 			query = Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({
-						$or: [
-							{ username: { $eq: alterName } },
-							{ username: { $regex: alterName } },
-						],
+				? ((await alterCollection.findOne({
+						username: alterName,
 
 						systemId,
-					})
-				: alterCollection.findOne({
+					})) ??
+					(await alterCollection.findOne({
+						username: { $regex: alterName },
+						systemId,
+					})))
+				: ((await alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})) ??
+					(await alterCollection.findOne({
 						$or: [
-							{
-								$or: [
-									{ username: { $eq: alterName } },
-									{ username: { $regex: alterName } },
-								],
-							},
+							{ username: { $regex: alterName } },
 							{ alterId: Number(alterName) },
 						],
 						systemId,
-					});
+					})));
 		}
 		const alter = await query;
 
