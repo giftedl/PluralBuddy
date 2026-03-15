@@ -8,7 +8,7 @@ import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { PAlterObject, PSystemObject, PTagObject, type PSystem } from "plurography";
-import { ActionRow, Button, ModalCommand, type ModalContext } from "seyfert";
+import { ActionRow, Button, ModalCommand, TextDisplay, type ModalContext } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { sys } from "typescript";
 import z from "zod";
@@ -43,8 +43,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 							.setCustomId(
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
-							.setStyle(ButtonStyle.Secondary),
+							.setStyle(ButtonStyle.Secondary)
 					),
+                    new TextDisplay().setContent("`system`")
 				],
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
@@ -64,6 +65,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 							)
 							.setStyle(ButtonStyle.Secondary),
 					),
+                    new TextDisplay().setContent(`\`${!alters ? "alters" : "tags"}\``)
 				],
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
