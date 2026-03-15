@@ -9,6 +9,7 @@ export const SimplyPluralSystem = z.object({
         lastOperationTime: z.coerce.date(),
         username: z.string(),
         avatarUrl: z.string(),
+        avatarUuid: z.string().optional(),
         color: z.string(),
         desc: z.string(),
         frame: z.any(),
