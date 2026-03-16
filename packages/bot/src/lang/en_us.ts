@@ -202,8 +202,11 @@ Systems can have **privacy values** which are values that describe who can see w
 	ALTER_SET_PRONOUNS: "Set Pronouns",
 	ALTER_SET_DESCRIPTION: "Set Description",
 	ALTER_SET_PFP: "Set Profile Picture",
+	ALTER_SET_PFP_SE: "Is server-specific",
+	ALTER_SET_PFP_SE_DESC: "This profile picture will only be specific to this server.",
 	ALTER_SET_TAG: "Set System Tag",
 	ALTER_SET_BANNER: "Set Banner",
+	INVALID_URL: "This is not a valid URL. Make sure you aren't enclosing your URL in `<` or `>`",
 	ALTER_SET_PRIVACY: "Set Privacy",
 	ERROR_INVALID_ATTACHMENT_TYPE:
 		"2s – The attachment you uploaded is not an image.",

@@ -121,9 +121,19 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
+		if (attachmentText && !attachmentText.startsWith("https://")) {
+			return await ctx.editResponse({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"INVALID_URL",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				
+			})
+		}
+
 		if (attachmentText === undefined && se) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).successView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"NO_GCP_SE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
