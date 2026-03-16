@@ -358,6 +358,9 @@ export default createEvent({
 									'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
 								type: "EnforcedGuildTagRegulation",
 							});
+							
+							clearTimeout(indexingTimeout);
+							if (indexingMessage !== null) indexingMessage.delete();
 
 							return;
 						}
