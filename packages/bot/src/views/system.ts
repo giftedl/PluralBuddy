@@ -55,7 +55,7 @@ ${tagsDisplayable ? `**Tags:** ${(system.tagIds as string[]).length}` : ""}
 					? new Section()
 							.setAccessory(
 								new Thumbnail()
-									.setMedia(system.systemAvatar as string)
+								.setMedia(system.systemAvatar === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : system.systemAvatar)
 									.setDescription(`${system.systemName}'s avatar`),
 							)
 							.setComponents(innerComponents)

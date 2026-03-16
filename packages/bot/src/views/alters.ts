@@ -95,7 +95,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 				: new Section()
 						.setAccessory(
 							new Thumbnail()
-								.setMedia(alter.avatarUrl as string)
+								.setMedia(alter.avatarUrl === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : alter.avatarUrl)
 								.setDescription(`${alter.avatarUrl}'s avatar`),
 						)
 						.setComponents(innerComponents),
@@ -103,7 +103,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 				? [
 						new MediaGallery().setItems(
 							new MediaGalleryItem()
-								.setMedia(alter.banner)
+								.setMedia(alter.banner === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : alter.banner)
 								.setDescription(`${alter.avatarUrl}'s banner`),
 						),
 					]
