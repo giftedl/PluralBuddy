@@ -82,6 +82,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
     context: CommandContext | MenuCommandContext<any, never>,
     error: unknown
   ) {
+    context.client.logger.fatal(context.command.name, context.command.description)
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {
@@ -216,7 +217,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
     error: unknown | undefined
   ) {
     if (error) {
-      context.client.logger.fatal(context.command.customId)
+      context.client.logger.fatal(context.customId)
       context.client.logger.fatal(error);
 
       const interactionId = capturePostHogException(error, {
@@ -244,7 +245,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
   }
 
   override async onRunError(context: ComponentContext, error: unknown) {
-    context.client.logger.fatal(context.command.customId)
+    context.client.logger.fatal(context.customId)
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {
@@ -268,7 +269,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
     if (error.startsWith("2") || error.startsWith("1"))
       return;
     
-    context.client.logger.fatal(context.command.customId)
+    context.client.logger.fatal(context.customId)
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {
@@ -293,7 +294,7 @@ export class PluralBuddyComponentErrorCommand extends PluralBuddyErrorComponentC
 export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandImpl {
   override async onAfterRun(context: ModalContext, error: unknown | undefined) {
     if (error) {
-      context.client.logger.fatal(context.command.customId)
+      context.client.logger.fatal(context.customId)
       context.client.logger.fatal(error);
 
       const interactionId = capturePostHogException(error, {
@@ -324,7 +325,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
     if (error.startsWith("2") || error.startsWith("1"))
       return;
     
-    context.client.logger.fatal(context.command.customId)
+    context.client.logger.fatal(context.customId)
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {
@@ -346,7 +347,7 @@ export class PluralBuddyModalErrorCommand extends PluralBuddyErrorModalCommandIm
   }
   override async onRunError(context: ModalContext, error: unknown) {
 	
-    context.client.logger.fatal(context.command.customId)
+    context.client.logger.fatal(context.customId)
     context.client.logger.fatal(error);
 
     const interactionId = capturePostHogException(error, {
