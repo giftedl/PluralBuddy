@@ -246,7 +246,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	TAG_COLOR_rose: "rose",
 
 	WAITING_INDEXING:
-		"PluralBuddy is currently trying to processing your system.**. This may take a while.\n-# **Current Status:** {{ percentage }} indexed.",
+		"PluralBuddy is currently trying to processing your system. **This may take a while.**\n-# **Current Status:** {{ percentage }} indexed.",
 	TOO_MANY_ALTERS:
 		"There are too many alters in your PluralBuddy system (2000 alters). Please contact PluralBuddy Support if you believe that is incorrect.",
 	TOO_MANY_TAGS:
