@@ -141,6 +141,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			nicknameFormat: undefined,
 			systemOperationDM: true,
 			public: 0,
+			displayTagMap: {},
 			subAccounts: [],
 			disabled: false,
 		} satisfies PSystem);

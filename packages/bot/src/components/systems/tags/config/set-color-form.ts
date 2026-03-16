@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -8,60 +8,70 @@ import { tagCollection } from "@/mongodb";
 import { TagView } from "@/views/tags";
 
 export default class SetUsernameButton extends ModalCommand {
-   
-   override filter(context: ModalContext) {
-	   return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorForm.startsWith(context.customId)
-   }
-
-   override async run(ctx: ModalContext) {
-	const tagId = InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorForm.substring(
-		ctx.customId,
-	)[0];
-
-	const systemId = ctx.author.id;
-	const query = tagCollection.findOne({
-		tagId,
-		systemId,
-	});
-	let tag = await query;
-
-	if (tag === null) {
-		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-		})
+	override filter(context: ModalContext) {
+		return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorForm.startsWith(
+			context.customId,
+		);
 	}
 
-	const newTagColor = ctx.interaction.getInputValue(
-		InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(),
-		true,
-	)[0]?.substring("selection/tag-color/".length);
+	override async run(ctx: ModalContext) {
+		const tagId =
+			InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorForm.substring(
+				ctx.customId,
+			)[0];
 
-	await tagCollection.updateOne(
-		{ tagId, systemId },
-		{
-			$set: {
-				tagColor: newTagColor as string
+		const systemId = ctx.author.id;
+		const query = tagCollection.findOne({
+			tagId,
+			systemId,
+		});
+		let tag = await query;
+
+		if (tag === null) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"ERROR_TAG_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		const newTagColor = ctx.interaction
+			.getInputValue(
+				InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(),
+				true,
+			)[0]
+			?.substring("selection/tag-color/".length);
+
+		await tagCollection.updateOne(
+			{ tagId, systemId },
+			{
+				$set: {
+					tagColor: newTagColor as string,
+				},
 			},
-		},
-	);
+		);
 
-	tag = await tagCollection.findOne({
-		tagId,
-		systemId,
-	}) ?? tag;
-	
-	return await ctx.interaction.update({
-		components: [
-			...new TagView(ctx.userTranslations()).tagTopView(
-				"general",
-				tag.tagId.toString(),
-				tag.tagFriendlyName,
-			),
-			...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;", 
-			ctx.interaction?.message?.messageReference === undefined,),
-		],
-		flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-	});
-   }
+		tag =
+			(await tagCollection.findOne({
+				tagId,
+				systemId,
+			})) ?? tag;
+
+		return await ctx.interaction.update({
+			components: [
+				...new TagView(ctx.userTranslations()).tagTopView(
+					"general",
+					tag.tagId.toString(),
+					tag.tagFriendlyName,
+				),
+				...new TagView(ctx.userTranslations()).tagGeneral(
+					tag,
+					(await ctx.getDefaultPrefix()) ?? "pb;",
+					ctx.interaction?.message?.messageReference === undefined,
+				),
+			],
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+	}
 }

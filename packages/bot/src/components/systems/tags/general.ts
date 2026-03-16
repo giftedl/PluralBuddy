@@ -15,6 +15,7 @@ export default class GeneralTagSettings extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		await ctx.deferUpdate();
 		const tagId =
 			InteractionIdentifier.Systems.Configuration.Tags.GeneralSettings.substring(
 				ctx.customId,
@@ -27,7 +28,7 @@ export default class GeneralTagSettings extends ComponentCommand {
 		const tag = await query;
 
 		if (tag === null) {
-			return await ctx.write({
+			return await ctx.followup({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
@@ -35,7 +36,7 @@ export default class GeneralTagSettings extends ComponentCommand {
 			});
 		}
 
-		return await ctx.update({
+		return await ctx.editResponse({
 			components: [
 				...new TagView(ctx.userTranslations()).tagTopView(
 					"general",

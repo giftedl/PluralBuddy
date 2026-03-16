@@ -12,6 +12,7 @@ export default class NextPageTagPagination extends ComponentCommand {
     }
 
     override async run(ctx: ComponentContext<typeof this.componentType>) {
+        await ctx.deferUpdate();
         const paginationToken =
             InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.substring(
                 ctx.customId,
@@ -20,14 +21,14 @@ export default class NextPageTagPagination extends ComponentCommand {
         const user = await ctx.retrievePUser();
 
         if (user.system === undefined) {
-            return await ctx.ephemeral({
+            return await ctx.followup({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
         if (corresponding === undefined) {
-            return await ctx.write({
+            return await ctx.followup({
                 components: [
                     ...new AlertView(ctx.userTranslations()).errorView(
                         "ERROR_TAG_PAGINATION_TOO_OLD",
@@ -49,7 +50,7 @@ export default class NextPageTagPagination extends ComponentCommand {
         // Re-add it to the array
         tagsPagination.push(corresponding);
 
-        return await ctx.update({
+        return await ctx.editResponse({
             components: [
                 ...await new SystemSettingsView(ctx.userTranslations()).tagsSettings(user.system, corresponding)
             ]

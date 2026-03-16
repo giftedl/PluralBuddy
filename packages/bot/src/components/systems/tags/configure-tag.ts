@@ -25,6 +25,7 @@ export default class ConfigureTag extends ComponentCommand {
 	}
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
+		await ctx.deferReply(true);
 		let referencedMessage: Message | null = null;
 		if (
 			ctx.interaction.message.messageReference !== undefined &&
@@ -42,7 +43,7 @@ export default class ConfigureTag extends ComponentCommand {
 				referencedMessage?.author.id ??
 				ctx.interaction.message.interactionMetadata?.user.id;
 			if (ctx.author.id !== originalUserId) {
-				return ctx.write({
+				return ctx.editResponse({
 					components: [
 						new Container().setComponents(
 							new TextDisplay().setContent(
@@ -68,7 +69,7 @@ export default class ConfigureTag extends ComponentCommand {
 		const tag = await query;
 
 		if (tag === null) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
@@ -76,7 +77,7 @@ export default class ConfigureTag extends ComponentCommand {
 			});
 		}
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...new TagView(ctx.userTranslations()).tagTopView(
 					"general",

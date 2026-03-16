@@ -14,10 +14,11 @@ export default class ConfigureSystem extends ComponentCommand {
       }
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
+        await ctx.deferReply(true);
         const originalUserId = InteractionIdentifier.Systems.ConfigurePublicProfile.substring(ctx.customId)[0]
         
         if (ctx.author.id !== originalUserId) {
-            return ctx.write({
+            return ctx.editResponse({
                 components: [
                     new Container()
                         .setComponents(
@@ -32,13 +33,13 @@ export default class ConfigureSystem extends ComponentCommand {
         const user = await ctx.retrievePUser();
 
         if (user.system === undefined) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
-        return await ctx.write({
+        return await ctx.editResponse({
             components: [
                 ...new SystemSettingsView(ctx.userTranslations()).topView("general", user.system.associatedUserId),
                 ...new SystemSettingsView(ctx.userTranslations()).generalSettings(user.system, ctx.guildId)

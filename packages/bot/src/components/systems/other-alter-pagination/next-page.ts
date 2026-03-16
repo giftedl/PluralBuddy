@@ -18,6 +18,7 @@ export default class NextPageAP extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
+        await ctx.deferUpdate();
 		const paginationToken =
 			InteractionIdentifier.Systems.Configuration.OtherAlterPagination.NextPage.substring(
 				ctx.customId,
@@ -25,7 +26,7 @@ export default class NextPageAP extends ComponentCommand {
 		const corresponding = otherAlterPagination.find((v) => v.id === paginationToken);
 
 		if (corresponding === undefined) {
-			return await ctx.write({
+			return await ctx.followup({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_PAGINATION_TOO_OLD",
@@ -38,7 +39,7 @@ export default class NextPageAP extends ComponentCommand {
 		const user = await userCollection.findOne({ userId: corresponding.userId });
 
 		if (user?.system === undefined || !has(SystemProtectionFlags.ALTERS, user?.system?.public)) {
-			return await ctx.ephemeral({
+			return await ctx.followup({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -58,7 +59,7 @@ export default class NextPageAP extends ComponentCommand {
 		// Re-add it to the array
 		otherAlterPagination.push(corresponding);
 
-        return await ctx.update({
+        return await ctx.editResponse({
             components: [
                 ...await new SystemSettingsView(ctx.userTranslations()).otherAltersSettings(user.system, corresponding)
             ]

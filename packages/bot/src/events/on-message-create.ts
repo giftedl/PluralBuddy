@@ -92,14 +92,13 @@ export default createEvent({
 				message.delete();
 
 				try {
-
 					await message.author.write({
 						components: new AlertView(translations).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});
-				} catch(_) {}
+				} catch (_) {}
 				return;
 			}
 
@@ -178,19 +177,22 @@ export default createEvent({
 
 		if (await notValidPermissions(message)) return;
 
-		const channel = (await message.channel())
-		const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
-		
+		const channel = await message.channel();
+		const parent =
+			"parentId" in channel && channel.isThread() ? channel.parentId : null;
+
 		console.time("proxy tag parse");
 		const similarWebhooks =
-			(await client.cache.similarWebhookResource.fetch(parent ?? message.channelId))?.webhooks ??
-			(await getSimilarWebhooks(parent ?? message.channelId));
+			(
+				await client.cache.similarWebhookResource.fetch(
+					parent ?? message.channelId,
+				)
+			)?.webhooks ?? (await getSimilarWebhooks(parent ?? message.channelId));
 		const user = await getUserById(message.author.id);
 		const guild = PGuildObject.parse(
 			(await client.cache.pguild.get(message.guildId ?? ""))?.g ??
 				(await getGuildFromId(message.guildId ?? "")),
 		);
-
 
 		if (user.system === undefined) return;
 		if (user.system.disabled) return;
@@ -241,26 +243,23 @@ export default createEvent({
 				const channel = message.channelId;
 
 				try {
-					indexingMessage = await message.client.messages.write(
-						channel,
-						{
-							components: [
-								new Container()
-									.setComponents(
-										new TextDisplay().setContent(
-											`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
-												"{{ alterCount }}",
-												(user.system?.alterIds.length ?? 0).toString(),
-											)
-												.replace("{{ alters }}", "0")
-												.replace("{{ percentage }}", "0%")}`,
-										),
-									)
-									.setColor("#5450fe"),
-							],
-							flags: MessageFlags.IsComponentsV2,
-						},
-					);
+					indexingMessage = await message.client.messages.write(channel, {
+						components: [
+							new Container()
+								.setComponents(
+									new TextDisplay().setContent(
+										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+											"{{ alterCount }}",
+											(user.system?.alterIds.length ?? 0).toString(),
+										)
+											.replace("{{ alters }}", "0")
+											.replace("{{ percentage }}", "0%")}`,
+									),
+								)
+								.setColor("#5450fe"),
+						],
+						flags: MessageFlags.IsComponentsV2,
+					});
 				} catch (_) {}
 			}, 2000);
 			indexingMap.push(message.author.id);
@@ -346,8 +345,12 @@ export default createEvent({
 					if (proxyTagValid(proxyTag, message)) {
 						// Check for system tag policy
 						if (
+							message.guildId &&
 							guild.getFeatures().requiresGuildTag &&
-							user.system.systemDisplayTag === null
+							(((user.system?.displayTagMap ?? {})[message.guildId] ??
+								user.system.systemDisplayTag) === undefined ||
+								((user.system?.displayTagMap ?? {})[message.guildId] ??
+									user.system.systemDisplayTag) === null)
 						) {
 							createProxyError(user, message, {
 								title: "Display Tag Enforcement Policy",

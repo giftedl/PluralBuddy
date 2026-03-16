@@ -316,6 +316,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	OPERATION_ID: "Operation ID: %id%",
 	OPERATION_CHANGE_NAME: "Set system name to `%name%`.",
 	OPERATION_CHANGE_NICKNAME_FORMAT: "Set nickname format to `%format%`.",
+	OPERATION_CHANGE_SE_TAG: "Changed server-specific tag in %server% to `%tag%`.",
 	OPERATION_CHANGE_DISABLED: "Disabled system",
 	OPERATION_CHANGE_ENABLED: "Enabled system",
 	OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",

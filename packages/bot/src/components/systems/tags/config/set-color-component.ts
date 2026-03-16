@@ -12,14 +12,15 @@ export default class SetColorComponent extends ComponentCommand {
 	componentType = "StringSelect" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.startsWith(
+		return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorComponent.startsWith(
 			context.customId,
 		);
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		await ctx.deferUpdate();
 		const tagId =
-            InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.substring(
+            InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorComponent.substring(
                     ctx.customId,
                 )[0];
 
@@ -31,7 +32,7 @@ export default class SetColorComponent extends ComponentCommand {
 		let tag = await query;
 
 		if (tag === null) {
-			return await ctx.write({
+			return await ctx.followup({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
@@ -56,7 +57,7 @@ export default class SetColorComponent extends ComponentCommand {
 				systemId,
 			})) ?? tag;
 
-		return await ctx.interaction.update({
+		return await ctx.interaction.editResponse({
 			components: [
 				new Container()
 					.setComponents(
@@ -65,7 +66,7 @@ The current tag color for ${tag.tagFriendlyName} is   ${getEmojiFromTagColor(tag
 						new ActionRow().setComponents(
 							new StringSelectMenu()
 								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(tag.tagId),
+									InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorComponent.create(tag.tagId),
 								)
 								.setOptions(
 									tagColorSelection(ctx.userTranslations(), tag.tagColor),

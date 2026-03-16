@@ -64,7 +64,7 @@ The current tag color for ${tag.tagFriendlyName} is   ${getEmojiFromTagColor(tag
 						new ActionRow().setComponents(
 							new StringSelectMenu()
 								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(tag.tagId),
+									InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorComponent.create(tag.tagId),
 								)
 								.setOptions(
 									tagColorSelection(ctx.userTranslations(), tag.tagColor),

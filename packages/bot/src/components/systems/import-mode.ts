@@ -20,11 +20,13 @@ export default class ImportMode extends ComponentCommand {
 	}
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
+		await ctx.deferUpdate();
+
 		const mode = ctx.interaction.values[0] as "replace" | "add" | "full-mode";
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.update({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -47,7 +49,7 @@ export default class ImportMode extends ComponentCommand {
 			importMode: mode,
 		});
 
-		return await ctx.update({
+		return await ctx.editResponse({
 			components: [
 				new Container().setComponents(
 					new Section()

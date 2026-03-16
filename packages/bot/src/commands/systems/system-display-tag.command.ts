@@ -2,25 +2,36 @@
 
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
-import { CommandContext, createStringOption, Declare, Options, SubCommand } from "seyfert";
+import {
+	CommandContext,
+	createBooleanOption,
+	createStringOption,
+	Declare,
+	Options,
+	SubCommand,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
-    "new-display-tag": createStringOption({
-        description: "New system tag to set to",
-        max_length: 90,
-    })
-}
+	"new-display-tag": createStringOption({
+		description: "New system tag to set to",
+		max_length: 90,
+	}),
+	se: createBooleanOption({
+		description: "Whether the system tag is server-specific or not",
+		flag: true,
+	}),
+};
 
 @Declare({
-    name: "display-tag",
-    description: "Set the display tag of a system",
-    aliases: ["tag", "t", "dt"]
+	name: "display-tag",
+	description: "Set the display tag of a system",
+	aliases: ["tag", "t", "dt"],
 })
 @Options(options)
 export default class SystemDisplayTagCommand extends SubCommand {
-    override async run(ctx: CommandContext<typeof options>) {
-        const { "new-display-tag": systemTag } = ctx.options;
+	override async run(ctx: CommandContext<typeof options>) {
+		const { "new-display-tag": systemTag, se } = ctx.options;
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
@@ -32,11 +43,27 @@ export default class SystemDisplayTagCommand extends SubCommand {
 			});
 		}
 
+		if (se && ctx.guildId === undefined) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"DN_ERROR_SE",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
 		const updatedSystem = await createSystemOperation(
 			user.system,
-			{
-				systemDisplayTag: systemTag as string ?? null,
-			},
+			se && ctx.guildId
+				? {
+						displayTagMap: {
+							...user.system.displayTagMap,
+							[ctx.guildId]: (systemTag as string) ?? null,
+						},
+					}
+				: {
+						systemDisplayTag: (systemTag as string) ?? null,
+					},
 			ctx.userTranslations(),
 			"discord",
 		);
@@ -52,9 +79,11 @@ export default class SystemDisplayTagCommand extends SubCommand {
 
 		await ctx.write({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				ctx.userTranslations().SYSTEM_SET_SYSTEM_TAG.replace("%tag%", systemTag ?? "_Unset_"),
+				ctx
+					.userTranslations()
+					.SYSTEM_SET_SYSTEM_TAG.replace("%tag%", systemTag ?? "_Unset_"),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
-    }
+	}
 }

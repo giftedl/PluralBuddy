@@ -35,82 +35,115 @@ export async function createSystemOperation(
 		changedOperation: operation,
 		changedOperationStrings: Object.keys(operation) as (keyof PSystem)[],
 	} satisfies POperation;
-	const listItems = operationDb.changedOperationStrings
-		.filter((v) => operation[v]?.toString() !== system[v]?.toString())
-		.map((c) => {
-			if (c === "systemName") {
-				return translations.OPERATION_CHANGE_NAME.replace(
-					"%name%",
-					operation.systemName as string,
-				);
-			}
-			if (c === "public") {
-				return translations.OPERATION_CHANGE_PRIVACY.replace(
-					"%privacy%",
-					(operation.public ?? 0) > 0
-						? `\`${friendlyProtectionSystem(translations, listFromMaskSystems(operation.public ?? 0)).join("`, `")}\``
-						: "",
-				);
-			}
-			if (c === "nicknameFormat") {
-				return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace(
-					"%format%",
-					(operation.nicknameFormat as string) ?? "_Unset_",
-				);
-			}
-			if (c === "disabled") {
-				return operation.disabled
-					? translations.OPERATION_CHANGE_DISABLED
-					: translations.OPERATION_CHANGE_ENABLED;
-			}
-			if (c === "systemDisplayTag") {
-				return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace(
-					"%tag%",
-					(operation.systemDisplayTag as string) ?? "_Unset_",
-				);
-			}
-			if (c === "systemAvatar") {
-				return translations[
-					operation.systemAvatar === null
-						? "OPERATION_AVATAR_UNDEFINED"
-						: "OPERATION_AVATAR"
-				].replace("%link%", operation.systemAvatar as string);
-			}
-			if (c === "systemBanner") {
-				return translations[
-					operation.systemBanner === null
-						? "OPERATION_BANNER_UNDEFINED"
-						: "OPERATION_BANNER"
-				].replace("%link%", operation.systemBanner as string);
-			}
-			if (c === "systemDescription") {
-				return translations.OPERATION_DESCRIPTION.replace(
-					"%description%",
-					((operation.systemDescription as string) ?? "_Unset_")
-						.split("\n")
-						.join("\n > "),
-				);
-			}
-			if (c === "systemPronouns") {
-				return translations.OPERATION_PRONOUNS.replace(
-					"%pronouns%",
-					(operation.systemPronouns as string) ?? "_Unset_",
-				);
-			}
-			if (c === "latchExpiration") {
-				return translations.OPERATION_LATCH_DELAY.replace(
-					"%delay%",
-					operation.latchExpiration
-						? convert(Math.floor(operation.latchExpiration / 1000))
-						: "_Unset_",
-				);
-			}
+	const listItems = await Promise.all(
+		operationDb.changedOperationStrings
+			.filter((v) => JSON.stringify(operation[v]) !== JSON.stringify(system[v]))
+			.map(async (c) => {
+				if (c === "systemName") {
+					return translations.OPERATION_CHANGE_NAME.replace(
+						"%name%",
+						operation.systemName as string,
+					);
+				}
+				if (c === "public") {
+					return translations.OPERATION_CHANGE_PRIVACY.replace(
+						"%privacy%",
+						(operation.public ?? 0) > 0
+							? `\`${friendlyProtectionSystem(translations, listFromMaskSystems(operation.public ?? 0)).join("`, `")}\``
+							: "",
+					);
+				}
+				if (c === "nicknameFormat") {
+					return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace(
+						"%format%",
+						(operation.nicknameFormat as string) ?? "_Unset_",
+					);
+				}
+				if (c === "disabled") {
+					return operation.disabled
+						? translations.OPERATION_CHANGE_DISABLED
+						: translations.OPERATION_CHANGE_ENABLED;
+				}
+				if (c === "systemDisplayTag") {
+					return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace(
+						"%tag%",
+						(operation.systemDisplayTag as string) ?? "_Unset_",
+					);
+				}
+				if (c === "systemAvatar") {
+					return translations[
+						operation.systemAvatar === null
+							? "OPERATION_AVATAR_UNDEFINED"
+							: "OPERATION_AVATAR"
+					].replace("%link%", operation.systemAvatar as string);
+				}
+				if (c === "systemBanner") {
+					return translations[
+						operation.systemBanner === null
+							? "OPERATION_BANNER_UNDEFINED"
+							: "OPERATION_BANNER"
+					].replace("%link%", operation.systemBanner as string);
+				}
+				if (c === "systemDescription") {
+					return translations.OPERATION_DESCRIPTION.replace(
+						"%description%",
+						((operation.systemDescription as string) ?? "_Unset_")
+							.split("\n")
+							.join("\n > "),
+					);
+				}
+				if (c === "systemPronouns") {
+					return translations.OPERATION_PRONOUNS.replace(
+						"%pronouns%",
+						(operation.systemPronouns as string) ?? "_Unset_",
+					);
+				}
+				if (c === "latchExpiration") {
+					return translations.OPERATION_LATCH_DELAY.replace(
+						"%delay%",
+						operation.latchExpiration
+							? convert(Math.floor(operation.latchExpiration / 1000))
+							: "_Unset_",
+					);
+				}
+				if (c === "displayTagMap") {
+					// Get the added display tag in the map
+					// Find the key in displayTagMap present in operation but not in system, or whose value changed.
+					const prevMap = system.displayTagMap ?? {};
+					const newMap = operation.displayTagMap ?? {};
 
-			return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
-				"%value%",
-				operation[c]?.toString() ?? "?",
-			);
-		});
+					const changes: { server: string; tag: string }[] = [];
+
+					for (const [server, tag] of Object.entries(newMap)) {
+						if (!(server in prevMap) || prevMap[server] !== tag) {
+							changes.push({ server, tag });
+						}
+					}
+
+					if (changes[0]) {
+						const { server, tag } = changes[0];
+						let formalServerName = `\`${server}\``
+						if (environment === "discord")
+							formalServerName = `**${(await client.guilds.fetch(server)).name}**`;
+
+						return translations.OPERATION_CHANGE_SE_TAG.replace(
+							"%server%",
+							formalServerName,
+						).replace("%tag%", tag ?? "_Unset_");
+					}
+					// If somehow no difference, fallback
+					return translations.OPERATION_FALLBACK.replace(
+						"%property%",
+						c,
+					).replace("%value%", "?");
+				}
+
+				return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
+					"%value%",
+					operation[c]?.toString() ?? "?",
+				);
+			}),
+	);
 
 	if (listItems.length === 0) return;
 

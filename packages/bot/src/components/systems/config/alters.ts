@@ -13,16 +13,17 @@ export default class AlterTab extends ComponentCommand {
     }
 
     override async run(ctx: ComponentContext<typeof this.componentType>) {
+        await ctx.deferUpdate();
         const user = await ctx.retrievePUser();
 
         if (user.system === undefined) {
-            return await ctx.ephemeral({
+            return await ctx.followup({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
-        return await ctx.update({
+        return await ctx.editResponse({
             components: [
                 ...await new SystemSettingsView(ctx.userTranslations()).altersSettings(user.system)
 

@@ -3,9 +3,6 @@
 import {
 	AttachmentBuilder,
 	ComponentCommand,
-	Label,
-	Modal,
-	TextInput,
 	type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "../../../../lib/interaction-ids";

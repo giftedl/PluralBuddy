@@ -295,20 +295,21 @@ export async function performTagProxy(
 					];
 
 		console.timeEnd("pre-proxy");
-		proxy(
-			webhook,
-			client,
-			message,
-			processedContents,
-			`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""} ${user.system?.systemDisplayTag ?? ""}`,
-			checkAlter?.alterId as number,
-			checkAlter?.systemId as string,
-			[...referencedMessage],
-			messageComponents,
-			uploadedEmojis,
-			guild,
-			checkAlter?.avatarUrl ?? undefined,
-		);
+		if (message.guildId)
+			proxy(
+				webhook,
+				client,
+				message,
+				processedContents,
+				`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				checkAlter?.alterId as number,
+				checkAlter?.systemId as string,
+				[...referencedMessage],
+				messageComponents,
+				uploadedEmojis,
+				guild,
+				checkAlter?.avatarUrl ?? undefined,
+			);
 
 		if (message.guildId && user.system)
 			setLastLatchAlter(message.guildId, user.system, checkAlter);

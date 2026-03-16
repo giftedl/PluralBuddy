@@ -271,19 +271,20 @@ export async function performAlterAutoProxy(
 						...roleAfterComponents,
 					];
 
-		proxy(
-			webhook,
-			client,
-			message,
-			processedContents,
-			`${alter.nameMap.find((c) => c.server === message.guildId)?.name ?? alter?.displayName ?? ""} ${user.system?.systemDisplayTag ?? ""}`,
-			alter?.alterId as number,
-			alter?.systemId as string,
-			[...referencedMessage],
-			messageComponents,
-			uploadedEmojis,
-			guild,
-			alter?.avatarUrl ?? undefined,
-		);
+		if (message.guildId)
+			proxy(
+				webhook,
+				client,
+				message,
+				processedContents,
+				`${alter.nameMap.find((c) => c.server === message.guildId)?.name ?? alter?.displayName ?? ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				alter?.alterId as number,
+				alter?.systemId as string,
+				[...referencedMessage],
+				messageComponents,
+				uploadedEmojis,
+				guild,
+				alter?.avatarUrl ?? undefined,
+			);
 	}
 }

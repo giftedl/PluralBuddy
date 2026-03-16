@@ -469,13 +469,15 @@ export const InteractionIdentifier = {
 				Tags: {
 					CreateNewTagForm: createStatic("systems/config/form/tag"),
 
+					TagColorComponent: createFromAdditionalArg("systems/config/color"),
+
 					TagDisplayNameType: createStatic(
 						"systems/config/type-form/tag/set-display-name",
 					),
 					TagDisplayNameForm: createFromAdditionalArg(
 						"systems/config/set-form/tag/set-display-name",
 					),
-					TagColorType: createFromAdditionalArg(
+					TagColorType: createStatic(
 						"systems/config/type-form/tag/set-color",
 					),
 					TagColorForm: createFromAdditionalArg(

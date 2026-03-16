@@ -21,6 +21,7 @@ export const PSystemObject = z.object({
 
 	systemName: z.string().max(100).min(1),
 	systemDisplayTag: z.string().optional(),
+	displayTagMap: z.record(z.string(), z.string()).default({}),
 	systemDescription: z.string().max(1000).optional().catch(""),
 	systemAvatar: z.string().optional().nullable().catch(""),
 	systemBanner: z.string().optional().nullable().catch(""),

@@ -74,6 +74,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			systemName: system.content.username ?? "Untitled System",
 			systemAvatar: system.content.avatarUrl ?? undefined,
 			systemBanner: undefined,
+            displayTagMap: {},
 			systemDescription: system.content.desc ?? undefined,
 			systemDisplayTag: undefined,
 			systemPronouns: undefined,

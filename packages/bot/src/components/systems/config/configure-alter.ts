@@ -16,6 +16,8 @@ export default class ConfigureAlter extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		await ctx.deferUpdate();
+
 		const alterId =
 			InteractionIdentifier.Systems.Configuration.ConfigureAlter.substring(
 				ctx.customId,
@@ -27,7 +29,7 @@ export default class ConfigureAlter extends ComponentCommand {
 		const alter = await query;
 
 		if (alter === null) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
@@ -35,7 +37,7 @@ export default class ConfigureAlter extends ComponentCommand {
 			});
 		}
 
-		return await ctx.update({
+		return await ctx.editResponse({
 			components: [
 				...new AlterView(ctx.userTranslations()).alterTopView(
 					"general",

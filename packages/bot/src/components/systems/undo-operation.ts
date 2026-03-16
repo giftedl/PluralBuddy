@@ -18,11 +18,12 @@ export default class UndoOperationButton extends ComponentCommand {
       }
     
     async run(ctx: ComponentContext<typeof this.componentType>) {
+        await ctx.deferUpdate();
         const operationId = InteractionIdentifier.Systems.UndoOperation.substring(ctx.customId)[0];
         const operation = await getOperationById(operationId as string);
 
         if (operation === null) {
-            return await ctx.update({
+            return await ctx.editResponse({
                 components: [
                     new Container(ctx.interaction.message.components[0]?.toJSON() as APIContainerComponent),
                     new ActionRow().setComponents(
@@ -37,7 +38,7 @@ export default class UndoOperationButton extends ComponentCommand {
             })
         }
 
-        await ctx.write({
+        const followup = await ctx.followup({
             components: new LoadingView(ctx.userTranslations()).loadingView(),
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
         })
@@ -45,9 +46,8 @@ export default class UndoOperationButton extends ComponentCommand {
         const user = await ctx.retrievePUser();
 
         if (user.system === undefined) {
-            return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+            return await followup.edit({
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST")
             })
         }
 
@@ -59,11 +59,10 @@ export default class UndoOperationButton extends ComponentCommand {
             }
         })
 
-        await ctx.editResponse({
+        await followup.edit({
             components: new AlertView(ctx.userTranslations())
                 .successViewCustom(ctx.userTranslations().OPERATION_UNDO_SUCCESS
-                    .replace("%value-count%", operation.changedOperationStrings.length.toString())),
-            flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+                    .replace("%value-count%", operation.changedOperationStrings.length.toString()))
         })
         
         await ctx.interaction.message.delete();
