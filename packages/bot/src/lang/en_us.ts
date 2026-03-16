@@ -252,7 +252,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	NO_GCP_SE:
 		"You cannot upload attachments directly with server specific assets. You must use a direct URL due to technical issues for server-specific assets.",
 	WAITING_INDEXING:
-		"PluralBuddy is currently trying to processing your system. **This may take a while.**\n-# **Current Status:** {{ percentage }} indexed.",
+		"PluralBuddy is currently trying to process your system. **This may take a while.**\n-# **Current Status:** {{ percentage }} indexed.",
 	TOO_MANY_ALTERS:
 		"There are too many alters in your PluralBuddy system (2000 alters). Please contact PluralBuddy Support if you believe that is incorrect.",
 	TOO_MANY_TAGS:
