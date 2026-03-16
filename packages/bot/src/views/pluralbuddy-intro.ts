@@ -251,7 +251,7 @@ export class PluralBuddyIntro extends TranslatedView {
 		const paginationContainer = new Container();
 
 		textContainer.setComponents(
-			new TextDisplay().setContent(this.translations.PK_IMPORT_START),
+			new TextDisplay().setContent(this.translations.SP_IMPORT_START),
 			new Separator().setSpacing(Spacing.Large),
 			new TextDisplay().setContent(`### Step 1: Get a Simply Plural token
 PluralBuddy requires you create a Simply Plural token to import data into PluralBuddy.

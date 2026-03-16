@@ -37,11 +37,10 @@ export class SystemView extends TranslatedView {
 		const tagsDisplayable =
 			!external || has(SystemProtectionFlags.TAGS, system.public);
 
-
 		const innerComponents = new TextDisplay().setContent(
 			`${displayNameDisplayable ? `## ${system.systemName}` : ""}
-${(pronounsDisplayable && system.systemPronouns) || (displayTagDisplayable && system.systemDisplayTag) ? `-# ${(displayTagDisplayable && system.systemDisplayTag) ? system.systemDisplayTag : ""}${(displayTagDisplayable && system.systemDisplayTag) && (pronounsDisplayable && system.systemPronouns) ? " · " : ""}${(pronounsDisplayable && system.systemPronouns) ? system.systemPronouns : ""}` : ""}
-${(descriptionDisplayable && system.systemDescription) ? `\n${system.systemDescription}\n` : "\n"}
+${(pronounsDisplayable && system.systemPronouns) || (displayTagDisplayable && system.systemDisplayTag) ? `-# ${displayTagDisplayable && system.systemDisplayTag ? system.systemDisplayTag : ""}${(displayTagDisplayable && system.systemDisplayTag) && (pronounsDisplayable && system.systemPronouns) ? " · " : ""}${pronounsDisplayable && system.systemPronouns ? system.systemPronouns : ""}` : ""}
+${descriptionDisplayable && system.systemDescription ? `\n${system.systemDescription}\n` : "\n"}
 ${altersDisplayable ? `**Alters**: ${(system.alterIds as number[]).length}` : ""}
 ${tagsDisplayable ? `**Tags:** ${(system.tagIds as string[]).length}` : ""}
 **Associated to:** <@${system.associatedUserId}> (${system.associatedUserId})`,
@@ -55,7 +54,11 @@ ${tagsDisplayable ? `**Tags:** ${(system.tagIds as string[]).length}` : ""}
 					? new Section()
 							.setAccessory(
 								new Thumbnail()
-								.setMedia(system.systemAvatar === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : system.systemAvatar)
+									.setMedia(
+										system.systemAvatar === ""
+											? "https://pb.giftedly.dev/image/solar-centered.png"
+											: system.systemAvatar,
+									)
 									.setDescription(`${system.systemName}'s avatar`),
 							)
 							.setComponents(innerComponents)

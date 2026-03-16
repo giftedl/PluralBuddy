@@ -63,6 +63,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
 	ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
 	PK_IMPORT_START: "## PluralKit Importing",
+	SP_IMPORT_START: "## Simply Plural Importing",
 
 	PAGE_NEW_SYS_TEXT:
 		"-# Page 3/3 · Some fields haven't been filled out. · * Required",
