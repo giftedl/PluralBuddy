@@ -1,5 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { ComponentCommand, FileUpload, Label, Modal, type ComponentContext } from "seyfert";
+import { Checkbox, ComponentCommand, FileUpload, Label, Modal, type ComponentContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";

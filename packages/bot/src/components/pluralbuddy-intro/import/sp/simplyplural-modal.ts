@@ -1,6 +1,7 @@
 import { emojis } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { mentionCommand } from "@/lib/mention-command";
+import { createRandomId } from "@/lib/random-id";
 import { getSPAlters, getSPSystem, getSPTags } from "@/lib/simplyplural";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { getUserById, writeUserById } from "@/types/user";
@@ -148,7 +149,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		const parsedGroupsSafe = tags.map((group, i) => {
 			return PTagObject.safeParse({
-				tagId: DiscordSnowflake.generate({ processId: BigInt(i) }).toString(),
+				tagId: createRandomId(i).toString(),
 				systemId: ctx.author.id,
 
 				tagFriendlyName: group.content.name,

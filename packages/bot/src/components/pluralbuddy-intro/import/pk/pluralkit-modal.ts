@@ -25,6 +25,7 @@ import z from "zod";
 import { PTagObject, TagProtectionFlags, type PTag } from "@/types/tag";
 import { mentionCommand } from "@/lib/mention-command";
 import { emojis } from "@/lib/emojis";
+import { createRandomId } from "@/lib/random-id";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -174,7 +175,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const parsedSafe = data.members.map((member, i) => {
 			return {
 				zodData: PAlterObject.safeParse({
-					alterId: Number(DiscordSnowflake.generate({ processId: BigInt(i) })),
+					alterId: Number(createRandomId(i)),
 					systemId: ctx.author.id,
 					username: member.name.replaceAll(" ", "").replaceAll("/", "").replaceAll("\\", "").replaceAll("@", ""),
 					displayName: member.display_name ?? member.name,
@@ -225,6 +226,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 								: []),
 						],
 					),
+					avatarUrlMap: {},
 				} satisfies PAlter),
 				originalPkId: member.id,
 			};
@@ -232,7 +234,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		const parsedGroupsSafe = data.groups.map((group, i) => {
 			return PTagObject.safeParse({
-				tagId: DiscordSnowflake.generate({ processId: BigInt(i) }).toString(),
+				tagId: createRandomId(i).toString(),
 				systemId: ctx.author.id,
 
 				tagFriendlyName: group.display_name ?? group.name,

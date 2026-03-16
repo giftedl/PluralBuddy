@@ -18,6 +18,7 @@ import { z } from "zod";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { alterCollection, tagCollection } from "../../../mongodb";
 import { getUserById, writeUserById } from "../../../types/user";
+import { createRandomId } from "@/lib/random-id";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -99,7 +100,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				systemId: ctx.author.id,
 				lastMessageTimestamp: null,
 				messageCount: 0,
-				alterId: Number(DiscordSnowflake.generate({ processId: BigInt(i) })),
+				alterId: Number(createRandomId(i)),
 				created: new Date(),
 			};
 		});

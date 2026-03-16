@@ -12,6 +12,7 @@ import z from "zod";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { combine } from "../privacy-bitmask";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { createRandomId } from "../random-id";
 
 const TupperBoxImportEntry = z.object({
 	existing: ImportEntry,
@@ -79,15 +80,16 @@ export async function replace(
 						banner: member.banner,
 						lastMessageTimestamp: null,
 						messageCount: 0,
-						proxyTags: combinedBrackets.map(([prefix, suffix]) => {
+						proxyTags: combinedBrackets.map(([prefix, suffix], i) => {
 							return {
 								prefix: prefix?.replaceAll('"', "") ?? "",
 								suffix: suffix?.replaceAll('"', "") ?? "",
-								id: Number(DiscordSnowflake.generate()).toString(),
+								id: Number(createRandomId(i)).toString(),
 							};
 						}),
 						tagIds: pluralbuddy.tagIds,
 						public: pluralbuddy.public,
+						avatarUrlMap: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -181,7 +183,7 @@ export async function add(
 			return (
 				member !== undefined && {
 					zodData: PAlterObject.safeParse({
-						alterId: Number(DiscordSnowflake.generate({ workerId: BigInt(i) })),
+						alterId: Number(createRandomId(i)),
 						systemId: existing.userId,
 						username: member.name
 							.replaceAll(" ", "")
@@ -200,16 +202,17 @@ export async function add(
 						banner: member.banner,
 						lastMessageTimestamp: null,
 						messageCount: 0,
-						proxyTags: combinedBrackets.map(([prefix, suffix]) => {
+						proxyTags: combinedBrackets.map(([prefix, suffix], i) => {
 							return {
 								prefix: prefix?.replaceAll('"', "") ?? "",
 								suffix: suffix?.replaceAll('"', "") ?? "",
-								id: Number(DiscordSnowflake.generate()).toString(),
+								id: Number(createRandomId(i)).toString(),
 							};
 						}),
 						tagIds: [],
 						// TupperBox has no permission values... lol
 						public: 0,
+						avatarUrlMap: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -230,7 +233,7 @@ export async function add(
 		)
 		.map((group, i) =>
 			PTagObject.safeParse({
-				tagId: String(DiscordSnowflake.generate({ workerId: BigInt(i) })),
+				tagId: String(createRandomId(i)),
 				systemId: existing.userId,
 
 				tagFriendlyName: group.name,

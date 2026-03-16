@@ -533,6 +533,7 @@ export const InteractionIdentifier = {
 						"systems/config/set-form/alters/set-pfp",
 					),
 					AlterPFPType: createStatic("systems/config/type-form/alters/set-pfp"),
+					AlterServerSpecificType: createStatic("systems/config/type-form/alters/set-se"),
 					AlterBannerForm: createFromAdditionalArg(
 						"systems/config/set-form/alters/set-banner",
 					),

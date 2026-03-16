@@ -12,6 +12,7 @@ import {
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { combine } from "../privacy-bitmask";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { createRandomId } from "../random-id";
 
 const PluralKitImportEntry = z.object({
 	existing: ImportEntry,
@@ -69,11 +70,11 @@ export async function replace(
 						banner: member.banner,
 						lastMessageTimestamp: null,
 						messageCount: 0,
-						proxyTags: member.proxy_tags.map((tag) => {
+						proxyTags: member.proxy_tags.map((tag, i) => {
 							return {
 								prefix: tag.prefix?.replaceAll('"', "") ?? "",
 								suffix: tag.suffix?.replaceAll('"', "") ?? "",
-								id: Number(DiscordSnowflake.generate()).toString(),
+								id: createRandomId(i).toString(),
 							};
 						}),
 						tagIds: pluralbuddy.tagIds,
@@ -105,6 +106,7 @@ export async function replace(
 									: []),
 							],
 						),
+						avatarUrlMap: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},
@@ -203,7 +205,7 @@ export async function add(
 			(member, i) =>
 				member !== undefined && {
 					zodData: PAlterObject.safeParse({
-						alterId: Number(DiscordSnowflake.generate({ workerId: BigInt(i) })),
+						alterId: Number(createRandomId(i)),
 						systemId: existing.userId,
 						username: member.name
 							.replaceAll(" ", "")
@@ -226,7 +228,7 @@ export async function add(
 							return {
 								prefix: tag.prefix?.replaceAll('"', "") ?? "",
 								suffix: tag.suffix?.replaceAll('"', "") ?? "",
-								id: Number(DiscordSnowflake.generate()).toString(),
+								id: Number(createRandomId(i)).toString(),
 							};
 						}),
 						tagIds: [],
@@ -258,6 +260,7 @@ export async function add(
 									: []),
 							],
 						),
+						avatarUrlMap: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},
@@ -279,7 +282,7 @@ export async function add(
 		)
 		.map((group, i) =>
 			PTagObject.safeParse({
-				tagId: String(DiscordSnowflake.generate({ workerId: BigInt(i) })),
+				tagId: String(createRandomId(i)),
 				systemId: existing.userId,
 
 				tagFriendlyName: group.display_name ?? group.name,

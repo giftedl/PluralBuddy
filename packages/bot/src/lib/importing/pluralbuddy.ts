@@ -3,6 +3,7 @@ import { ImportEntry, ImportOutput } from ".";
 import { ImportNotation, type PAlter, type PTag } from "plurography";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { createRandomId } from "../random-id";
 
 const PluralBuddyImportEntry = z.object({
 	existing: ImportEntry,
@@ -94,7 +95,7 @@ export async function add(
 					tagIds: [],
 					created: new Date(),
 
-					alterId: Number(DiscordSnowflake.generate({ workerId: BigInt(i) })),
+					alterId: Number(createRandomId(i)),
 				}) satisfies PAlter,
 		);
 
