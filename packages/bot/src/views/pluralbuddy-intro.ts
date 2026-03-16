@@ -335,10 +335,10 @@ Please download the JSON file sent to you and use the button to upload the attac
 				.setAccessory(
 					new Button()
 						.setCustomId(
-							InteractionIdentifier.Setup.SimplyPluralUploadToken.create(),
+							InteractionIdentifier.Setup.PluralKitImport.UploadAttachment.create(),
 						)
 						.setEmoji(emojis.plus)
-						.setLabel("Upload Token")
+						.setLabel("Upload JSON")
 						.setStyle(ButtonStyle.Primary),
 				),
 		);
