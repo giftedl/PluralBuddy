@@ -4,7 +4,7 @@ import { ActionRow, Button, Container, Section, TextDisplay } from "seyfert";
 import { client } from "..";
 import { operationCollection } from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
-import type { PSystem } from "../types/system";
+import type { PTag } from "../types/system";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "./interaction-ids";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
@@ -17,14 +17,14 @@ import {
 import convert from "./delay-converter";
 
 export async function createSystemOperation(
-	system: PSystem,
-	operation: Partial<PSystem>,
+	system: PTag,
+	operation: Partial<PTag>,
 	translations: TranslationString,
 	environment: "discord" | "api-exchange" | "api-web",
 ) {
-	let oldSystem: Partial<PSystem> = {};
+	let oldSystem: Partial<PTag> = {};
 
-	(Object.keys(operation) as (keyof PSystem)[]).forEach((v) => {
+	(Object.keys(operation) as (keyof PTag)[]).forEach((v) => {
 		oldSystem = { ...oldSystem, [v]: system[v] };
 	});
 
@@ -33,7 +33,7 @@ export async function createSystemOperation(
 		createdAt: new Date(),
 		oldSystem,
 		changedOperation: operation,
-		changedOperationStrings: Object.keys(operation) as (keyof PSystem)[],
+		changedOperationStrings: Object.keys(operation) as (keyof PTag)[],
 	} satisfies POperation;
 	const listItems = await Promise.all(
 		operationDb.changedOperationStrings
