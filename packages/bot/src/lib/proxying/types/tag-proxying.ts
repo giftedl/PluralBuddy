@@ -308,7 +308,7 @@ export async function performTagProxy(
 				messageComponents,
 				uploadedEmojis,
 				guild,
-				checkAlter?.avatarUrl ?? undefined,
+				(checkAlter?.avatarUrlMap ?? {})[message.guildId] ?? checkAlter?.avatarUrl ?? undefined,
 			);
 
 		if (message.guildId && user.system)

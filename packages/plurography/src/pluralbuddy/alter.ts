@@ -27,6 +27,7 @@ export const PAlterObject = z.object({
     pronouns: z.string().max(100).nullable(),
 
     avatarUrl: z.string().nullable(),
+    avatarUrlMap: z.record(z.string(), z.string().or(z.undefined())).default({}),
     webhookAvatarUrl: z.string().nullable(),
     banner: z.string().nullable(),
 

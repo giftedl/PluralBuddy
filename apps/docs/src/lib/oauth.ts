@@ -105,6 +105,8 @@ export async function userlessOAuth(
 		return { response: NextResponse.json({ errors: [{ type: "invalid-auth", friendly: "invalid auth token." } ]}, { status: 401 })}
 	});
 
+	
+
 	if (token && "response" in token)
 		return { response: token.response as NextResponse };
 

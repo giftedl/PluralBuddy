@@ -284,7 +284,7 @@ export async function performAlterAutoProxy(
 				messageComponents,
 				uploadedEmojis,
 				guild,
-				alter?.avatarUrl ?? undefined,
+				(alter.avatarUrlMap ?? {})[message.guildId] ?? alter?.avatarUrl ?? undefined,
 			);
 	}
 }

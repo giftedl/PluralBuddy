@@ -5,6 +5,7 @@ import {
 	type CommandContext,
 	Container,
 	createAttachmentOption,
+	createBooleanOption,
 	createStringOption,
 	Declare,
 	MediaGallery,
@@ -29,9 +30,9 @@ const options = {
 		required: true,
 		autocomplete: autocompleteAlters,
 	}),
-    "alter-avatar-text": createStringOption({
-        description: "The URL for an avatar to use for the alter.",
-    }),
+	"alter-avatar-text": createStringOption({
+		description: "The URL for an avatar to use for the alter.",
+	}),
 	"alter-avatar": createAttachmentOption({
 		description: "The picture to use for the alter. (leave blank to clear)",
 		value(data, ok, fail) {
@@ -41,6 +42,11 @@ const options = {
 				fail("This attachment is too big. Attachments at most can be 1mb.");
 			ok(data);
 		},
+	}),
+
+	se: createBooleanOption({
+		description: "Whether the new avatar is server specific.",
+		flag: true,
 	}),
 };
 
@@ -58,13 +64,32 @@ export default class EditAlterPictureCommand extends SubCommand {
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
-		const user = await ctx.retrievePUser()
-		const { "alter-name": alterName, "alter-avatar": attachment, "alter-avatar-text": attachmentText } = ctx.options;
+		const user = await ctx.retrievePUser();
+		const {
+			"alter-name": alterName,
+			"alter-avatar": attachment,
+			"alter-avatar-text": attachmentText,
+			se,
+		} = ctx.options;
 		const systemId = ctx.author.id;
 
-        const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
+		if (se && ctx.guildId === undefined) {
+			return await ctx.write({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"DN_ERROR_SE",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		const alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
 
 		if (alter === null) {
 			return await ctx.editResponse({
@@ -78,7 +103,12 @@ export default class EditAlterPictureCommand extends SubCommand {
 		if (attachmentText === undefined && attachment === undefined) {
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
-				{ $set: { avatarUrl: null } },
+				{
+					$set:
+						se && ctx.guildId
+							? { [`avatarUrlMap.${ctx.guildId}`]: undefined }
+							: { avatarUrl: null },
+				},
 			);
 
 			return await ctx.editResponse({
@@ -91,11 +121,20 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
+		if (attachmentText === undefined && se) {
+			return await ctx.editResponse({
+				components: new AlertView(ctx.userTranslations()).successView(
+					"NO_GCP_SE",
+				),
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			});
+		}
+
 		let objectName: string | undefined;
 		if (attachmentText === undefined) {
 			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
 			const bucketName = process.env.GCP_BUCKET ?? "";
-	
+
 			try {
 				const accessToken = await getGcpAccessToken();
 				let { newObject } = await uploadDiscordAttachmentToGcp(
@@ -103,13 +142,16 @@ export default class EditAlterPictureCommand extends SubCommand {
 					accessToken,
 					bucketName,
 					objectName,
-					{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "profile-picture" },
+					{
+						authorId: ctx.author.id,
+						alterId: String(alter.alterId),
+						type: "profile-picture",
+					},
 				);
 
-				objectName = newObject
+				objectName = newObject;
 			} catch (error) {
-
-                ctx.client.logger.fatal(error);
+				ctx.client.logger.fatal(error);
 				return await ctx.editResponse({
 					components: new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
@@ -119,10 +161,18 @@ export default class EditAlterPictureCommand extends SubCommand {
 			}
 		}
 
-		const publicUrl = objectName !== undefined ? `https://pluralbuddy.giftedly.dev/${objectName}` : attachmentText;
+		const publicUrl =
+			objectName !== undefined
+				? `https://pluralbuddy.giftedly.dev/${objectName}`
+				: attachmentText;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
-			{ $set: { avatarUrl: publicUrl } },
+			{
+				$set:
+					se && ctx.guildId
+						? { [`avatarUrlMap.${ctx.guildId}`]: publicUrl }
+						: { avatarUrl: publicUrl },
+			},
 		);
 
 		return await ctx.editResponse({

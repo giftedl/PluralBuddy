@@ -210,7 +210,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	ERROR_INVALID_COLOR: "2t – The color you entered is not a valid hex color.",
 	ERROR_INVALID_NUMBER: "2t – The number you entered is not a valid decimal.",
 
-	SP_ERROR: "There was an error while grabbing data about your Simply Plural system. Was this the right token? Did you grant the token the correct scopes?",
+	SP_ERROR:
+		"There was an error while grabbing data about your Simply Plural system. Was this the right token? Did you grant the token the correct scopes?",
 
 	TAG_GENERAL:
 		"## %general% General Settings - %tag%\nTag's are specific groups your alter can be apart of. Certain values of your tag can be configured here.",
@@ -245,6 +246,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	TAG_COLOR_pink: "pink",
 	TAG_COLOR_rose: "rose",
 
+	NO_GCP_SE:
+		"You cannot upload attachments directly with server specific assets. You must use a direct URL due to technical issues for server-specific assets.",
 	WAITING_INDEXING:
 		"PluralBuddy is currently trying to processing your system. **This may take a while.**\n-# **Current Status:** {{ percentage }} indexed.",
 	TOO_MANY_ALTERS:
@@ -317,7 +320,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	OPERATION_ID: "Operation ID: %id%",
 	OPERATION_CHANGE_NAME: "Set system name to `%name%`.",
 	OPERATION_CHANGE_NICKNAME_FORMAT: "Set nickname format to `%format%`.",
-	OPERATION_CHANGE_SE_TAG: "Changed server-specific tag in %server% to `%tag%`.",
+	OPERATION_CHANGE_SE_TAG:
+		"Changed server-specific tag in %server% to `%tag%`.",
 	OPERATION_CHANGE_DISABLED: "Disabled system",
 	OPERATION_CHANGE_ENABLED: "Enabled system",
 	OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",
