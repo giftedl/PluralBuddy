@@ -4,52 +4,52 @@ import { ActionRow, Button, Container, Section, TextDisplay } from "seyfert";
 import { client } from "..";
 import { operationCollection } from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
-import type { PSystem } from "../types/system";
+import type { PAlter } from "../types/PartialAlter";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "./interaction-ids";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { getUserById, writeUserById } from "../types/user";
 import { emojis } from "./emojis";
 import {
-	friendlyProtectionSystem,
-	listFromMaskSystems,
+	friendlyProtectionPartialAlter,
+	listFromMaskPartialAlters,
 } from "./privacy-bitmask";
 import convert from "./delay-converter";
 
-export async function createSystemOperation(
-	system: PSystem,
-	operation: Partial<PSystem>,
+export async function createPartialAlterOperation(
+	PartialAlter: PAlter,
+	operation: Partial<PAlter>,
 	translations: TranslationString,
 	environment: "discord" | "api-exchange" | "api-web",
 ) {
-	let oldSystem: Partial<PSystem> = {};
+	let oldPartialAlter: PartialAlter<PAlter> = {};
 
-	(Object.keys(operation) as (keyof PSystem)[]).forEach((v) => {
-		oldSystem = { ...oldSystem, [v]: system[v] };
+	(Object.keys(operation) as (keyof PAlter)[]).forEach((v) => {
+		oldPartialAlter = { ...oldPartialAlter, [v]: PartialAlter[v] };
 	});
 
 	const operationDb = {
 		id: operationStringGeneration(40),
 		createdAt: new Date(),
-		oldSystem,
+		oldPartialAlter,
 		changedOperation: operation,
-		changedOperationStrings: Object.keys(operation) as (keyof PSystem)[],
+		changedOperationStrings: Object.keys(operation) as (keyof PAlter)[],
 	} satisfies POperation;
 	const listItems = await Promise.all(
 		operationDb.changedOperationStrings
-			.filter((v) => JSON.stringify(operation[v]) !== JSON.stringify(system[v]))
+			.filter((v) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]))
 			.map(async (c) => {
-				if (c === "systemName") {
+				if (c === "PartialAlterName") {
 					return translations.OPERATION_CHANGE_NAME.replace(
 						"%name%",
-						operation.systemName as string,
+						operation.PartialAlterName as string,
 					);
 				}
 				if (c === "public") {
 					return translations.OPERATION_CHANGE_PRIVACY.replace(
 						"%privacy%",
 						(operation.public ?? 0) > 0
-							? `\`${friendlyProtectionSystem(translations, listFromMaskSystems(operation.public ?? 0)).join("`, `")}\``
+							? `\`${friendlyProtectionPartialAlter(translations, listFromMaskPartialAlters(operation.public ?? 0)).join("`, `")}\``
 							: "",
 					);
 				}
@@ -64,38 +64,38 @@ export async function createSystemOperation(
 						? translations.OPERATION_CHANGE_DISABLED
 						: translations.OPERATION_CHANGE_ENABLED;
 				}
-				if (c === "systemDisplayTag") {
-					return translations.OPERATION_SYSTEM_SET_SYSTEM_TAG.replace(
+				if (c === "PartialAlterDisplayTag") {
+					return translations.OPERATION_PartialAlter_SET_PartialAlter_TAG.replace(
 						"%tag%",
-						(operation.systemDisplayTag as string) ?? "_Unset_",
+						(operation.PartialAlterDisplayTag as string) ?? "_Unset_",
 					);
 				}
-				if (c === "systemAvatar") {
+				if (c === "PartialAlterAvatar") {
 					return translations[
-						operation.systemAvatar === null
+						operation.PartialAlterAvatar === null
 							? "OPERATION_AVATAR_UNDEFINED"
 							: "OPERATION_AVATAR"
-					].replace("%link%", operation.systemAvatar as string);
+					].replace("%link%", operation.PartialAlterAvatar as string);
 				}
-				if (c === "systemBanner") {
+				if (c === "PartialAlterBanner") {
 					return translations[
-						operation.systemBanner === null
+						operation.PartialAlterBanner === null
 							? "OPERATION_BANNER_UNDEFINED"
 							: "OPERATION_BANNER"
-					].replace("%link%", operation.systemBanner as string);
+					].replace("%link%", operation.PartialAlterBanner as string);
 				}
-				if (c === "systemDescription") {
+				if (c === "PartialAlterDescription") {
 					return translations.OPERATION_DESCRIPTION.replace(
 						"%description%",
-						((operation.systemDescription as string) ?? "_Unset_")
+						((operation.PartialAlterDescription as string) ?? "_Unset_")
 							.split("\n")
 							.join("\n > "),
 					);
 				}
-				if (c === "systemPronouns") {
+				if (c === "PartialAlterPronouns") {
 					return translations.OPERATION_PRONOUNS.replace(
 						"%pronouns%",
-						(operation.systemPronouns as string) ?? "_Unset_",
+						(operation.PartialAlterPronouns as string) ?? "_Unset_",
 					);
 				}
 				if (c === "latchExpiration") {
@@ -108,8 +108,8 @@ export async function createSystemOperation(
 				}
 				if (c === "displayTagMap") {
 					// Get the added display tag in the map
-					// Find the key in displayTagMap present in operation but not in system, or whose value changed.
-					const prevMap = system.displayTagMap ?? {};
+					// Find the key in displayTagMap present in operation but not in PartialAlter, or whose value changed.
+					const prevMap = PartialAlter.displayTagMap ?? {};
 					const newMap = operation.displayTagMap ?? {};
 
 					const changes: { server: string; tag: string }[] = [];
@@ -150,18 +150,18 @@ export async function createSystemOperation(
 	await operationCollection.insertOne(operationDb);
 
 	if (environment === "discord")
-		await writeUserById(system.associatedUserId, {
-			...(await getUserById(system.associatedUserId)),
-			system: {
-				...system,
+		await writeUserById(PartialAlter.associatedUserId, {
+			...(await getUserById(PartialAlter.associatedUserId)),
+			PartialAlter: {
+				...PartialAlter,
 				...operation,
 			},
 		});
 
-	if (!system.systemOperationDM)
+	if (!PartialAlter.PartialAlterOperationDM)
 		try {
 			const dmChannel = await client.users
-				.createDM(system.associatedUserId, true)
+				.createDM(PartialAlter.associatedUserId, true)
 				.catch(() => null);
 
 			if (dmChannel)
@@ -177,7 +177,7 @@ export async function createSystemOperation(
 										.setAccessory(
 											new Button()
 												.setCustomId(
-													InteractionIdentifier.Systems.UndoOperation.create(
+													InteractionIdentifier.PartialAlters.UndoOperation.create(
 														operationDb.id,
 													),
 												)
@@ -212,7 +212,7 @@ export async function createSystemOperation(
 							new Section()
 								.setComponents(
 									new TextDisplay().setContent(
-										"-# You were notified of this action due to your association with your PluralBuddy system.",
+										"-# You were notified of this action due to your association with your PluralBuddy PartialAlter.",
 									),
 									new TextDisplay().setContent(
 										"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
@@ -232,7 +232,7 @@ export async function createSystemOperation(
 		} catch (_) {}
 
 	return {
-		...system,
+		...PartialAlter,
 		...operation,
 	};
 }
