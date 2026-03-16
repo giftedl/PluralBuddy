@@ -46,10 +46,12 @@ export async function processEmojis(
                 data: emoji.link,
                 type: "url",
             },
-        });
+        }).catch(() => null);
 
+        if (createdEmoji)
         uploadedEmojis.push(createdEmoji);
 
+        if (createdEmoji)
         processedContents = processedContents.replaceAll(
             emoji.string,
             `<${createdEmoji.animated ? "a" : ""}:${createdEmoji.name}:${createdEmoji.id}>`
