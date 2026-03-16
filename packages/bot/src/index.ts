@@ -24,7 +24,7 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import api from "./api";
 
-export const buildNumber = 2303;
+export const buildNumber = 2533;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
@@ -98,7 +98,6 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
 
-
 const guildCount = (await client.guilds.list({}, true)).length;
 const guilds = (await client.guilds.list({}, true)) ?? [];
 let userCount = 0;
@@ -110,7 +109,31 @@ for (const unfetchedGuild of guilds.values()) {
 	}
 }
 
-await client.cache.statistic.set(CacheFrom.Gateway, "latest", { guildCount, userCount });
+setInterval(
+	async () => {
+		const guildCount = (await client.guilds.list({}, true)).length;
+		const guilds = (await client.guilds.list({}, true)) ?? [];
+		let userCount = 0;
+		for (const unfetchedGuild of guilds.values()) {
+			const guild = await unfetchedGuild.fetch();
+
+			if (guild.members) {
+				userCount += guild.memberCount ?? 0;
+			}
+		}
+
+		await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
+			guildCount,
+			userCount,
+		});
+	},
+	1000 * 60 * 10,
+);
+
+await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
+	guildCount,
+	userCount,
+});
 
 export type { ClientType } from "./api-types";
 export default api;
