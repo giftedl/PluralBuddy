@@ -13,6 +13,7 @@
 	"dependencies": {
 		"@better-auth/infra": "^0.1.11",
 		"@better-auth/oauth-provider": "^1.5.5",
+		"@discordjs/builders": "^1.13.1",
 		"@fontsource-variable/atkinson-hyperlegible-mono": "^5.2.5",
 		"@fontsource/atkinson-hyperlegible": "^5.2.8",
 		"@paper-design/shaders-react": "^0.0.66",
@@ -40,6 +41,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"discord-api-types": "^0.38.42",
+		"discord-interactions": "^4.4.0",
 		"fumadocs-core": "^16.6.16",
 		"fumadocs-mdx": "14.0.3",
 		"fumadocs-openapi": "^10.3.18",
