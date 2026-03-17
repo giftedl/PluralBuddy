@@ -21,9 +21,10 @@ import { Shortcut } from "yunaforseyfert";
 @Group("blacklist")
 export default class ListPrefixesCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				new Container().setComponents(
 					new TextDisplay().setContent("\`                                                           \`\n" +

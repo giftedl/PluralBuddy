@@ -39,6 +39,7 @@ export default class EditAlterNameCommand extends SubCommand {
 
 	override async run(ctx: CommandContext<typeof options>) {
 
+        await ctx.deferReply(true);
         const { "alter-name": alterName, "alter-new-name": alterNewName } = ctx.options;
         const systemId = ctx.author.id;
         const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
@@ -49,12 +50,12 @@ export default class EditAlterNameCommand extends SubCommand {
             return await ctx.ephemeral({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+            },undefined,undefined,ctx)
         }
 
         await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { username: alterNewName }})
 
-        return await ctx.write({
+        return await ctx.editResponse({
             components: [
                 ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().RENAME_SUCCESS
                     .replace("%alter%", alter.username))
