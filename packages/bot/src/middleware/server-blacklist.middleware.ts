@@ -1,12 +1,17 @@
 import { emojis } from "@/lib/emojis";
 import { getApplicableCase } from "@/lib/libby";
+import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
+import { PGuildObject } from "plurography";
 import { Command, createMiddleware, Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlacklist = createMiddleware<void>(async (middle) => {
 	const { blacklistedChannels, blacklistedRoles, blacklistedCategories } =
-		await middle.context.retrievePGuild();
+	PGuildObject.parse(
+		(await middle.context.client.cache.pguild.get(middle.context.guildId ?? ""))?.g ??
+			(await getGuildFromId(middle.context.guildId ?? "")),
+	);
 	const { context: ctx } = middle;
 	const channel = await middle.context.channel();
 	const isServerConfig =
