@@ -26,6 +26,7 @@ const options = {
 @Options(options)
 export default class SystemInfoCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
@@ -34,7 +35,7 @@ export default class SystemInfoCommand extends SubCommand {
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		return ctx.ephemeral(
@@ -56,6 +57,7 @@ export default class SystemInfoCommand extends SubCommand {
 				allowed_mentions: { parse: [] },
 			},
 			true,
+			undefined,ctx
 		);
 	}
 }

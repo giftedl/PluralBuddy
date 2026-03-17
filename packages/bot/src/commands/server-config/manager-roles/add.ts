@@ -20,17 +20,18 @@ const options = {
 @Options(options)
 export default class AddManagerRole extends SubCommand {
     override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
         const pluralGuild = await ctx.retrievePGuild();
 
         if (pluralGuild.managerRoles.includes(ctx.options.role.id)) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("MANAGER_ALREADY_EXISTS"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
 
         if (pluralGuild.blacklistedRoles.length >= 25) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("TOO_MANY_MANAGER_ITEMS"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
             })
@@ -41,7 +42,7 @@ export default class AddManagerRole extends SubCommand {
         await guildCollection.updateOne({ guildId: pluralGuild.guildId }, { $push: { managerRoles: ctx.options.role.id }});
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
-        return await ctx.write({
+        return await ctx.editResponse({
             
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				`${ctx.userTranslations().SUCCESS_ADD_MANAGER_ROLE.replace("%item%", `<@&${ctx.options.role.id}>`)} ${ctx

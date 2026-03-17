@@ -34,6 +34,7 @@ const options = {
 @Options(options)
 export default class SetupCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "media-included": mi } = ctx.options;
 		const { system } = await ctx.retrievePUser();
 
@@ -43,7 +44,7 @@ export default class SetupCommand extends SubCommand {
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		return await ctx.ephemeral(
@@ -202,6 +203,7 @@ export default class SetupCommand extends SubCommand {
 					});
 				}, 10000);
 			},
+			ctx
 		);
 	}
 }

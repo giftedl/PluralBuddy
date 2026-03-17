@@ -29,6 +29,7 @@ const options = {
 @Options(options)
 export default class AddBlacklistCategory extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
 		const { category } = ctx.options;
 		const categoryObj = await (await ctx.guild())?.channels
@@ -36,7 +37,7 @@ export default class AddBlacklistCategory extends SubCommand {
 			.catch(() => null);
 
 		if (!categoryObj || !categoryObj.isCategory()) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"NOT_A_CATEGORY",
 				),
@@ -45,7 +46,7 @@ export default class AddBlacklistCategory extends SubCommand {
 		}
 
 		if (guildObj.blacklistedCategories.includes(category)) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"BLACKLIST_ALREADY_EXISTS",
 				),
@@ -54,7 +55,7 @@ export default class AddBlacklistCategory extends SubCommand {
 		}
 
 		if (guildObj.blacklistedCategories.length >= 25) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"TOO_MANY_BLACKLIST_ITEMS",
 				),
@@ -70,7 +71,7 @@ export default class AddBlacklistCategory extends SubCommand {
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId);
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				`${ctx.userTranslations().SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${ctx
 					.userTranslations()

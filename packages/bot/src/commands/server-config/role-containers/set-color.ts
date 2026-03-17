@@ -40,6 +40,7 @@ const options = {
 @Middlewares(["ensureGuildPermissions"])
 export default class ViewRoleContainer extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guild = await ctx.retrievePGuild();
 		let { role, color } = ctx.options;
 		const roleData = guild.rolePreferences.find(
@@ -52,7 +53,7 @@ export default class ViewRoleContainer extends SubCommand {
 		if (color === "role")
 			color = `#${role.color.toString(16)}`;
 		else if (color && !/^#?[0-9a-fA-F]{6}$/.test(color ?? "")) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView("ERROR_INVALID_COLOR"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 			})
@@ -80,7 +81,7 @@ export default class ViewRoleContainer extends SubCommand {
 		];
 		roleData.containerColor = color;
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...(roleData.containerContents === undefined
 					? [

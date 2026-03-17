@@ -13,11 +13,12 @@ import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 })
 export default class DeleteMessageContextMenuCommand extends ContextMenuCommand {
     override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
+        await ctx.deferReply(true);
         const messageId = ctx.target.id;
         const message = await messagesCollection.findOneAndDelete({ messageId });
 
         if (message === null) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_OWN_MESSAGE"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
@@ -25,7 +26,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
         }
 
         if (message?.systemId !== ctx.author.id || message.guildId !== ctx.guildId) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_OWN_MESSAGE"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
@@ -37,7 +38,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 		const similarWebhooks = await getSimilarWebhooks(parent ?? message.channelId);
 
         if (similarWebhooks[0] === undefined) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_MANUAL_PROXY"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
@@ -51,7 +52,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 			reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
 		});
 
-        return ctx.write({
+        return ctx.editResponse({
             components: new AlertView(ctx.userTranslations()).successView("SUCCESSFULLY_REMOVED_MESSAGE"),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })

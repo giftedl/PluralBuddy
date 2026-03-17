@@ -47,7 +47,7 @@ export default class SetUsernameButton extends ComponentCommand {
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsType.create(),
 									)
-									.setLength({ min: 3, max: 100 })
+									.setLength({ max: 100 })
 									.setPlaceholder("express your inner identity 🎀")
 									.setRequired(true)
 							: new TextInput()
@@ -55,10 +55,10 @@ export default class SetUsernameButton extends ComponentCommand {
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsType.create(),
 									)
-									.setLength({ min: 3, max: 100 })
+									.setLength({ max: 100 })
 									.setRequired(true)
 									.setPlaceholder("express your inner identity 🎀")
-									.setValue(system.systemPronouns),
+									.setValue(system.systemPronouns ?? ""),
 					),
 			]);
 

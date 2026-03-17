@@ -44,6 +44,7 @@ const options = {
 @Options(options)
 export default class SetLogChannel extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const featureFlag = ctx.options.feature;
 
 		if (!featureFlag) throw new Error("No feature flag.");
@@ -66,7 +67,7 @@ export default class SetLogChannel extends SubCommand {
 		);
 		ctx.client.cache.pguild.remove(nativeGuild.id)
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx
 					.userTranslations()

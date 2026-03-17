@@ -31,11 +31,12 @@ const options = {
 @Options(options)
 export default class SystemDisplayTagCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "new-display-tag": systemTag, se } = ctx.options;
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -44,7 +45,7 @@ export default class SystemDisplayTagCommand extends SubCommand {
 		}
 
 		if (se && ctx.guildId === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
@@ -69,7 +70,7 @@ export default class SystemDisplayTagCommand extends SubCommand {
 		);
 
 		if (updatedSystem === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -77,7 +78,7 @@ export default class SystemDisplayTagCommand extends SubCommand {
 			});
 		}
 
-		await ctx.write({
+		await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx
 					.userTranslations()

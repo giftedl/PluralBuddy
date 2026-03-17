@@ -20,11 +20,12 @@ const options = {
 @Options(options)
 export default class AddPrefixCommand extends SubCommand {
     override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
         const guildObj = await ctx.retrievePGuild();
         const { "new-prefix": newPrefix } = ctx.options;
 
         if (guildObj.prefixes.includes(newPrefix)) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("PREFIX_ALREADY_EXISTS"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
@@ -35,7 +36,7 @@ export default class AddPrefixCommand extends SubCommand {
         await guildCollection.updateOne({ guildId: guildObj.guildId }, { $push: { prefixes: newPrefix } });
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
-        return await ctx.write({
+        return await ctx.editResponse({
             components: new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().SUCCESS_CHANGED_SERVER_PREFIXES.replace("%prefixes%", guildObj.prefixes.map((c) => `> - ${c}`).join("\n"))),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })

@@ -31,6 +31,7 @@ const options = {
 @Options(options)
 export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
 		const { role } = ctx.options;
 
@@ -42,7 +43,7 @@ export default class AddPrefixCommand extends SubCommand {
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(`${ctx.userTranslations().SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${ctx
 				.userTranslations()
 				.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(

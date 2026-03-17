@@ -33,6 +33,7 @@ const options = {
 export default class EditAlterColorCommand extends SubCommand {
 
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
         const { "alter-name": alterName, "alter-color": color } = ctx.options;
         const systemId = ctx.author.id;
 
@@ -44,13 +45,13 @@ export default class EditAlterColorCommand extends SubCommand {
             return await ctx.ephemeral({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+            }, undefined, undefined, ctx)
         }
 
         if (color === undefined) {
             await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { color: null }})
 
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: [
                     ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().COLOR_SUCCESS
                         .replace("%alter%", alter.username))
@@ -62,7 +63,7 @@ export default class EditAlterColorCommand extends SubCommand {
 
         await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { color }})
 
-        return await ctx.write({
+        return await ctx.editResponse({
             components: [
                 ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().COLOR_SUCCESS
                     .replace("%alter%", alter.username))

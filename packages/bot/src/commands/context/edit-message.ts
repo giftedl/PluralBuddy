@@ -45,7 +45,12 @@ export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 							.setCustomId(
 								InteractionIdentifier.EditMenu.EditContextType.create(),
 							)
-							.setValue((contents?.data as APITextDisplayComponent).content)
+							.setValue(
+								(
+									(contents ?? { data: { content: "" } })
+										.data as APITextDisplayComponent
+								).content,
+							)
 							.setStyle(TextInputStyle.Paragraph)
 							.setRequired(true),
 					),

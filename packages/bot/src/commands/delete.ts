@@ -23,6 +23,7 @@ import { client } from "..";
 })
 export default class DeleteCommand extends Command {
 	override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
 		const referencedMessageId = (ctx.message as Message | undefined)
 			?.referencedMessage?.id;
 		const message = await messagesCollection.findOneAndDelete(
@@ -35,7 +36,7 @@ export default class DeleteCommand extends Command {
 		);
 
 		if (message === null) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"NOT_RECENT_ENOUGH",
 				),
@@ -49,7 +50,7 @@ export default class DeleteCommand extends Command {
 			message?.systemId !== ctx.author.id ||
 			message.guildId !== ctx.guildId
 		) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
@@ -65,7 +66,7 @@ export default class DeleteCommand extends Command {
 		);
 
 		if (similarWebhooks[0] === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_MANUAL_PROXY",
 				),
@@ -82,7 +83,7 @@ export default class DeleteCommand extends Command {
 		});
 
 		return ctx
-			.write({
+			.editResponse({
 				components: new AlertView(ctx.userTranslations()).successView(
 					"SUCCESSFULLY_REMOVED_MESSAGE",
 				),

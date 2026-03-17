@@ -41,6 +41,7 @@ const options = {
 @Options(options)
 export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { alter: alterName, public: publicMode } = ctx.options;
 		const systemId = ctx.author.id;
 
@@ -102,6 +103,8 @@ export default class SystemCommand extends Command {
 					allowed_mentions: { parse: [] },
 				},
 				true,
+				undefined,
+				ctx
 			);
 		}
 
@@ -111,7 +114,7 @@ export default class SystemCommand extends Command {
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		return await ctx.ephemeral(
@@ -144,6 +147,8 @@ export default class SystemCommand extends Command {
 				allowed_mentions: { parse: [] },
 			},
 			true,
+			undefined,
+			ctx
 		);
 	}
 }

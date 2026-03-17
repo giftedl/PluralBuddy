@@ -14,13 +14,14 @@ import { AlertView } from "../../views/alert";
 @AutoLoad()
 export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
         const user = await ctx.retrievePUser();
 
         if (user.system === undefined) {
             return await ctx.ephemeral({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+            }, undefined, undefined, ctx)
         }
 
         return ctx.ephemeral({
@@ -31,6 +32,6 @@ export default class SystemCommand extends Command {
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
             allowed_mentions: { parse: [] },
-        }, true)
+        }, true, undefined, ctx)
     }
 }

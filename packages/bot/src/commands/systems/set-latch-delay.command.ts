@@ -28,12 +28,13 @@ const options = {
 @Options(options)
 export default class SetLatchDelayCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "latch-delay": newDelay } = ctx.options;
 		const user = await ctx.retrievePUser();
 		const parsedDelay = parse(newDelay);
 
 		if (user.system === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -42,7 +43,7 @@ export default class SetLatchDelayCommand extends SubCommand {
 		}
 
 		if (parsedDelay === null || parsedDelay >= 36000000) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"LATCH_DELAY_INVALID",
 				),
@@ -60,7 +61,7 @@ export default class SetLatchDelayCommand extends SubCommand {
 		);
 
 		if (updatedSystem === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -68,7 +69,7 @@ export default class SetLatchDelayCommand extends SubCommand {
 			});
 		}
 
-		await ctx.write({
+		await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx
 					.userTranslations()

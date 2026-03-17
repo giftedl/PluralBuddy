@@ -30,11 +30,12 @@ const options = {
 @Options(options)
 export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
 		const { role } = ctx.options;
 
 		if (guildObj.blacklistedRoles.includes(role.id)) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"BLACKLIST_ALREADY_EXISTS",
 				),
@@ -43,7 +44,7 @@ export default class AddPrefixCommand extends SubCommand {
 		}
 
         if (guildObj.blacklistedRoles.length >= 25) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("TOO_MANY_BLACKLIST_ITEMS"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
             })
@@ -57,7 +58,7 @@ export default class AddPrefixCommand extends SubCommand {
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				`${ctx.userTranslations().SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${ctx
 					.userTranslations()

@@ -14,6 +14,7 @@ import { MessageFlags } from "seyfert/lib/types";
 })
 export default class NudgePreferencesCommand extends Command {
     override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
 		let user = await ctx.retrievePUser();
 
 		// Database migration (12/04/25)
@@ -31,6 +32,6 @@ export default class NudgePreferencesCommand extends Command {
 		return await ctx.ephemeral({
 			components: new NudgePreferences(ctx.userTranslations()).nudgePreferences(user),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
+		}, undefined, undefined, ctx);
     }
 }

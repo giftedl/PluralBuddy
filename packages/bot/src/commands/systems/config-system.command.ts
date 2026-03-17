@@ -6,30 +6,47 @@ import { MessageFlags } from "seyfert/lib/types";
 import { SystemSettingsView } from "../../views/system-settings";
 
 @Declare({
-    name: 'config',
-    description: "Configure the system",
-    aliases: ["configure", "c", "s", "settings"],
-    contexts: ["BotDM", "Guild"]
+	name: "config",
+	description: "Configure the system",
+	aliases: ["configure", "c", "s", "settings"],
+	contexts: ["BotDM", "Guild"],
 })
 export default class SystemConfigCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
+		const user = await ctx.retrievePUser();
 
-        const user = await ctx.retrievePUser();
+		if (user.system === undefined) {
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(ctx.userTranslations()).errorView(
+						"ERROR_SYSTEM_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
+		}
 
-        if (user.system === undefined) {
-            return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
-        }
-
-        return await ctx.ephemeral({
-            components: [
-                ...new SystemSettingsView(ctx.userTranslations()).topView("general", user.system.associatedUserId),
-                ...new SystemSettingsView(ctx.userTranslations()).generalSettings(user.system, ctx.guildId)
-
-            ],
-            flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-        })
-    }
+		return await ctx.ephemeral(
+			{
+				components: [
+					...new SystemSettingsView(ctx.userTranslations()).topView(
+						"general",
+						user.system.associatedUserId,
+					),
+					...new SystemSettingsView(ctx.userTranslations()).generalSettings(
+						user.system,
+						ctx.guildId,
+					),
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
+	}
 }

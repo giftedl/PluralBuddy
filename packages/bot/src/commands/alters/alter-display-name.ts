@@ -40,6 +40,7 @@ const options = {
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const {
 			"alter-name": alterName,
 			"alter-new-name": alterNewName,
@@ -57,11 +58,11 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		if (se && ctx.guildId === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
@@ -80,7 +81,7 @@ ${alter.nameMap.find(c => c.server === (ctx.guildId ?? ""))?.name ?? alter.displ
 					),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true);
+			}, true, undefined, ctx);
         }
 
 		if (alterNewName === undefined) {
@@ -93,7 +94,7 @@ ${alter.displayName}
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
-			}, true);
+			}, true, undefined, ctx);
 		}
 
 		if (se) {
@@ -137,7 +138,7 @@ ${alter.displayName}
 			);
 		}
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx

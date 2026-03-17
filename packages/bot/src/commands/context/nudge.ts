@@ -61,19 +61,6 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 
 		const alter = await alterCollection.findOne({ alterId: message.alterId });
 
-		if (
-			(
-				alter?.nameMap.find((c) => c.server === ctx.guildId)?.name ??
-				alter?.displayName
-			)?.includes("@everyone")
-		) {
-			return await ctx.write({
-				content:
-					"The alter name has @everyone in it, so this user cannot be nudged.",
-				flags: MessageFlags.Ephemeral,
-			});
-		}
-
 		return await ctx.write({
 			content: `-# || \`${ctx.author.id} → ${alter?.systemId}/${alter?.alterId}\` ||\n${emojis.reply} Hey, <@${message.systemId}> (${alter?.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName})! Wake up!\n> ${emojis.lineRight} Nudged by @${ctx.author.name}`,
 			components: [
@@ -91,6 +78,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 						.setStyle(ButtonStyle.Secondary),
 				),
 			],
+			allowed_mentions: { parse: ["users" ]}
 		});
 	}
 }

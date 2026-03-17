@@ -36,6 +36,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
 
 	override async run(ctx: CommandContext<typeof options>) {
 
+        await ctx.deferReply(true);
         const { "alter-name": alterName, "alter-proxy": alterProxy } = ctx.options;
         const systemId = ctx.author.id;
         const guild = await ctx.retrievePGuild();
@@ -47,7 +48,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
             return await ctx.ephemeral({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+            }, undefined, undefined, ctx)
         }
 
         if (alterProxy === undefined) {
@@ -56,7 +57,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
                     ...new AlterView(ctx.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
                 ],
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
+            }, undefined, undefined, ctx)
         }
 
 
@@ -84,6 +85,6 @@ export default class EditAlterProxyModeCommand extends SubCommand {
                 ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId),
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-        });
+        }, undefined, undefined, ctx);
     }
 }

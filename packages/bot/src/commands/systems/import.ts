@@ -19,16 +19,17 @@ import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 })
 export default class ImportCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
 			return ctx.ephemeral({
 				components: new PluralBuddyIntro(ctx.userTranslations()).pageTwo(await ctx.getDefaultPrefix() ?? "pb;"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral ,
-			});
+			}, undefined, undefined, ctx);
 		}
 
-		return await ctx.ephemeral({
+		return await ctx.editResponse({
 			components: new SystemSettingsView(ctx.userTranslations()).importSettings(
 				user.system,
 			),

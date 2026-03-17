@@ -30,6 +30,7 @@ const options = {
 @Options(options)
 export default class EditCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const message =
 			(ctx.message as Message | undefined) === undefined ||
 			(ctx.message as unknown as Message).referencedMessage === undefined
@@ -44,7 +45,7 @@ export default class EditCommand extends Command {
 		const { contents } = ctx.options;
 
 		if (message === null) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"NOT_RECENT_ENOUGH",
 				),
@@ -56,7 +57,7 @@ export default class EditCommand extends Command {
 			message?.systemId !== ctx.author.id ||
 			message.guildId !== ctx.guildId
 		) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
@@ -75,7 +76,7 @@ export default class EditCommand extends Command {
 		const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
 
 		if (similarWebhooks[0] === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_MANUAL_PROXY",
 				),
@@ -92,7 +93,7 @@ export default class EditCommand extends Command {
 		await processEditContents(message, fetchedMessage, webhook, contents, guild, member);
 
 		return ctx
-			.write({
+			.editResponse({
 				components: new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx
 						.userTranslations()

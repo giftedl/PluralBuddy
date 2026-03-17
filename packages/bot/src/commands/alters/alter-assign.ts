@@ -3,7 +3,7 @@
 import { translations } from "@/lang/en_us";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
-import { getEmojiFromTagColor } from "@/lib/emojis";
+import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
@@ -12,8 +12,11 @@ import {
 	SubCommand,
 	Options,
 	CommandContext,
+	TextDisplay,
+	Button,
+	ActionRow,
 } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	"alter-name": createStringOption({
@@ -37,6 +40,7 @@ const options = {
 @Options(options)
 export default class AssignTag extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "alter-name": alterName, "tag-name": tagName } = ctx.options;
 
 		const systemId = ctx.author.id;
@@ -45,13 +49,14 @@ export default class AssignTag extends SubCommand {
             ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
             : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
 
+
 		if (alter === null) {
 			return await ctx.ephemeral({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		const tagQuery = Number.isNaN(Number.parseInt(tagName))
@@ -68,7 +73,7 @@ export default class AssignTag extends SubCommand {
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		if (
@@ -86,7 +91,7 @@ export default class AssignTag extends SubCommand {
 						.replaceAll("%alter%", alter.username),
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		await alterCollection.updateOne(
@@ -109,6 +114,6 @@ export default class AssignTag extends SubCommand {
 					.replaceAll("%alter%", alter.username),
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+		}, undefined, undefined, ctx);
 	}
 }

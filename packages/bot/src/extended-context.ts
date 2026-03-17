@@ -3,6 +3,7 @@
 import {
 	ActionRow,
 	Button,
+	CommandContext,
 	Container,
 	extendContext,
 	Interaction,
@@ -10,7 +11,7 @@ import {
 	TextDisplay,
 	WebhookMessage,
 } from "seyfert";
-import type { InteractionCreateBodyRequest } from "seyfert/lib/common";
+import type { InteractionCreateBodyRequest, InteractionMessageUpdateBodyRequest } from "seyfert/lib/common";
 import { emojis } from "./lib/emojis";
 import {
 	ButtonStyle,
@@ -34,6 +35,7 @@ export const extendedContext = extendContext((interaction) => {
 			editMessage: (body: InteractionCreateBodyRequest) => void;
 			reply?: (body: InteractionCreateBodyRequest) => void;
 		}) => void,
+		ctx?: CommandContext
 	) => {
 		if (interaction instanceof Message) {
 			if (
@@ -50,20 +52,18 @@ export const extendedContext = extendContext((interaction) => {
 					});
 				return writtenMessage;
 			}
+			const message = await ctx?.editResponse({
+				components: [
+					new ActionRow().setComponents(
+						new Button()
+							.setEmoji(emojis.folderKeyWhite)
+							.setStyle(ButtonStyle.Primary)
+							.setCustomId(`ephemeral-${interaction.id}`),
+					),
+				],
+			});
 
-			const message = await interaction.reply(
-				{
-					components: [
-						new ActionRow().setComponents(
-							new Button()
-								.setEmoji(emojis.folderKeyWhite)
-								.setStyle(ButtonStyle.Primary)
-								.setCustomId(`ephemeral-${interaction.id}`),
-						),
-					],
-				},
-				true,
-			);
+			if (!message) return;
 
 			const collector = message.createComponentCollector();
 
@@ -84,7 +84,7 @@ export const extendedContext = extendContext((interaction) => {
 					message.delete();
 					const writtenMessage = await i.write(body, true);
 
-					console.log(i.editResponse)
+					console.log(i.editResponse);
 					if (afterSendTask)
 						afterSendTask({
 							reply: interaction.message?.reply,
@@ -99,7 +99,7 @@ export const extendedContext = extendContext((interaction) => {
 			return message;
 		}
 
-		const writtenMessage = await interaction.write(body, true);
+		const writtenMessage = await interaction.editOrReply(body, true);
 
 		if (afterSendTask)
 			afterSendTask({
@@ -110,11 +110,13 @@ export const extendedContext = extendContext((interaction) => {
 		return writtenMessage;
 	};
 
-	
 	return {
 		ephemeral,
 		retrievePUser: async () => getUserById(interaction.user.id),
-		retrievePGuild: async () => PGuildObject.parseAsync(await getGuildFromId(interaction.guildId ?? "??")),
+		retrievePGuild: async () =>
+			PGuildObject.parseAsync(
+				await getGuildFromId(interaction.guildId ?? "??"),
+			),
 		userTranslations: () => translations,
 		setContextAlter: (alter: PAlter) => {
 			contextAlter = alter;

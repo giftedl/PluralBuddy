@@ -30,12 +30,13 @@ const options = {
 @Options(options)
 export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
 		const { category } = ctx.options;
         const categoryObj = await (await ctx.guild())?.channels.fetch(category).catch(() => null);
 
         if (!categoryObj || !categoryObj.isCategory()) {
-            return await ctx.write({
+            return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"NOT_A_CATEGORY",
 				),
@@ -51,7 +52,7 @@ export default class AddPrefixCommand extends SubCommand {
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(`${ctx.userTranslations().SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${ctx
 				.userTranslations()
 				.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
