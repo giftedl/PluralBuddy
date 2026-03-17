@@ -3,10 +3,10 @@
  *  - is licensed under MIT License.
  */
 
-import { CacheFrom, Client, MemoryAdapter } from "seyfert";
+import { CacheFrom, Client, Container, MemoryAdapter } from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import { MessageFlags } from "seyfert/lib/types";
+import { ComponentType, MessageFlags } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
 import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
@@ -23,6 +23,9 @@ import { ProxyResource } from "./cache/system-proxy-tags";
 import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import api from "./api";
+import { indexingMessageMap } from "./events/on-message-create";
+import type { ContainerComponent } from "seyfert/lib/components/Container";
+import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 
 export const buildNumber = 2533;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
@@ -108,6 +111,40 @@ for (const unfetchedGuild of guilds.values()) {
 		userCount += guild.memberCount ?? 0;
 	}
 }
+setInterval(() => {
+	for (const [user, message] of Object.entries(indexingMessageMap)) {
+		if (
+			message.components[0] &&
+			message.components[0].type === ComponentType.Container
+		) {
+			const container = message.components[0] as ContainerComponent;
+
+			if (
+				container.components[0] &&
+				container.components[0].type === ComponentType.TextDisplay &&
+				(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
+			) {
+				setTimeout(async () => {
+					const newMessage = await message.fetch();
+					if (
+						newMessage.components[0] &&
+						newMessage.components[0].type === ComponentType.Container
+					) {
+						const container = newMessage.components[0] as ContainerComponent;
+
+						if (
+							container.components[0] &&
+							container.components[0].type === ComponentType.TextDisplay &&
+							(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
+						) {
+							await message.delete();
+						}
+					}
+				}, 4000);
+			}
+		}
+	}
+}, 4000);
 
 setInterval(
 	async () => {
