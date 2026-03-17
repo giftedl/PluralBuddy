@@ -49,8 +49,8 @@ import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
 
-const indexingMap: Record<string, NodeJS.Timeout> = {};
-const indexingMessageMap: Record<string, Message> = {};
+export const indexingMap: Record<string, NodeJS.Timeout> = {};
+export const indexingMessageMap: Record<string, Message> = {};
 
 export type ApplicableWebhookWritePayload = {
 	body: Omit<
