@@ -22,16 +22,16 @@ export async function createSystemOperation(
 	translations: TranslationString,
 	environment: "discord" | "api-exchange" | "api-web",
 ) {
-	let oldSystem: Partial<PTag> = {};
+	let oldTag: Partial<PTag> = {};
 
 	(Object.keys(operation) as (keyof PTag)[]).forEach((v) => {
-		oldSystem = { ...oldSystem, [v]: system[v] };
+		oldTag = { ...oldTag, [v]: system[v] };
 	});
 
 	const operationDb = {
 		id: operationStringGeneration(40),
 		createdAt: new Date(),
-		oldSystem,
+		oldTag,
 		changedOperation: operation,
 		changedOperationStrings: Object.keys(operation) as (keyof PTag)[],
 	} satisfies POperation;
