@@ -9,6 +9,8 @@ import { waitUntil } from "@vercel/functions";
 import {
 	APIApplicationCommand,
 	APIApplicationCommandInteraction,
+	APIApplicationCommandInteractionDataBasicOption,
+	APIApplicationCommandInteractionDataStringOption,
 	APIApplicationCommandPermissionsConstant,
 	APIChatInputApplicationCommandInteractionData,
 	APIInteraction,
@@ -16,7 +18,9 @@ import {
 	APIInteractionResponsePong,
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
+	ApplicationIntegrationType,
 	ApplicationWebhookType,
+	InteractionContextType,
 	InteractionResponseType,
 	InteractionType,
 	MessageFlags,
@@ -57,6 +61,12 @@ export async function POST(
 		);
 	}
 
+	const alters = db.collection<PAlter>("alters");
+	const alterObject = await alters.findOne({
+		systemId: applicationObj.owner,
+		alterId: new Double(applicationObj.alterId),
+	});
+
 	if (interaction.type === InteractionType.Ping) {
 		return NextResponse.json({
 			type: InteractionResponseType.Pong,
@@ -64,22 +74,43 @@ export async function POST(
 	}
 
 	if (interaction.type === InteractionType.ApplicationCommand) {
+		if (
+			alterObject?.systemId !==
+			(interaction.user ?? interaction.member?.user)?.id
+		) {
+			return NextResponse.json({
+				type: InteractionResponseType.ChannelMessageWithSource,
+				data: {
+					components: [
+						new ContainerBuilder()
+							.setAccentColor(11993088)
+							.addTextDisplayComponents(
+								new TextDisplayBuilder().setContent(
+									`You are not the owner of this alter or this alter doesn't exist anymore.\n-# PluralBuddy Express • Alter: \`${applicationObj.alterId}\` • [PluralBuddy](<https://pb.giftedly.dev>)`,
+								),
+							)
+							.toJSON(),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+			});
+		}
+
 		const options =
 			(interaction.data as APIChatInputApplicationCommandInteractionData)
 				.options ?? [];
-        const textOption = options.find(v => v.name === "text" && v.type === ApplicationCommandOptionType.String);
+		const textOption = options.find(
+			(v) =>
+				v.name === "text" && v.type === ApplicationCommandOptionType.String,
+		) as APIApplicationCommandInteractionDataStringOption;
 
 		return NextResponse.json({
 			type: InteractionResponseType.ChannelMessageWithSource,
 			data: {
 				components: [
-					new ContainerBuilder()
-						.addTextDisplayComponents(
-							new TextDisplayBuilder().setContent(`Hi ${textOption?.value}`),
-						)
-						.toJSON(),
+					new TextDisplayBuilder().setContent(textOption?.value ?? "").toJSON(),
 				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				flags: MessageFlags.IsComponentsV2,
 			},
 		});
 	}
@@ -154,6 +185,15 @@ export async function PUT(
 					.setDescription(
 						`Proxy as ${alterObject.displayName.substring(0, 30)}`,
 					)
+					.setIntegrationTypes(
+						ApplicationIntegrationType.UserInstall,
+						ApplicationIntegrationType.GuildInstall,
+					)
+					.setContexts(
+						InteractionContextType.BotDM,
+						InteractionContextType.Guild,
+						InteractionContextType.PrivateChannel,
+					)
 					.addStringOption((option) =>
 						option
 							.setName("text")
@@ -164,6 +204,11 @@ export async function PUT(
 			] as Array<APIApplicationCommand>),
 		},
 	);
+
+	await fetch("https://discord.com/api/v10/users/@me", {
+		method: "PATCH",
+		body: JSON.stringify()
+	})
 
 	waitUntil(client.close());
 	return Response.json({ error: "Reloaded Discord commands" }, { status: 200 });
