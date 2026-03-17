@@ -30,6 +30,7 @@ const options = {
 @Options(options)
 export default class SetLogChannel extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const pluralGuild = await ctx.retrievePGuild();
 		const { channel } = ctx.options;
 
@@ -44,7 +45,7 @@ export default class SetLogChannel extends SubCommand {
 
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successView(
 				"LOGGING_CHANNEL_SET",
 			),

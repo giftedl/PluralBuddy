@@ -31,6 +31,7 @@ const options = {
 @Options(options)
 export default class RequireSystemTags extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		let pluralGuild = await ctx.retrievePGuild();
 		const { option } = ctx.options;
 
@@ -48,7 +49,7 @@ export default class RequireSystemTags extends SubCommand {
 		
 		pluralGuild = await ctx.retrievePGuild();
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successView(
 				pluralGuild.getFeatures().requiresGuildTag
 					? "REQUIRE_TAG_ENABLED"

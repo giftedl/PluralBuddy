@@ -34,11 +34,12 @@ const options = {
 @Middlewares(["ensureGuildPermissions"])
 export default class ViewRoleContainer extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guild = await ctx.retrievePGuild();
 		const { role } = ctx.options;
 
 		if (!guild.rolePreferences.some((c) => c.roleId === role.id)) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ROLE_NO_SPECIAL_CONFIG",
 				),
@@ -50,7 +51,7 @@ export default class ViewRoleContainer extends SubCommand {
 
 		if (!roleData) throw new Error("no roleData?.");
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...(roleData.containerContents === undefined
 					? [

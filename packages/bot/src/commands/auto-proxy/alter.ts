@@ -32,6 +32,7 @@ const options = {
 @Options(options)
 export default class AlterProxyMode extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { alter: alterName } = ctx.options;
 
 		const systemId = ctx.author.id;
@@ -45,7 +46,7 @@ export default class AlterProxyMode extends SubCommand {
 		const { system } = await ctx.retrievePUser();
 
 		if (alter === null || system === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
@@ -56,7 +57,7 @@ export default class AlterProxyMode extends SubCommand {
 		const guild = await ctx.guild();
 
 		if (guild === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
@@ -106,7 +107,7 @@ export default class AlterProxyMode extends SubCommand {
 			"alter",
 		);
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx
 					.userTranslations()

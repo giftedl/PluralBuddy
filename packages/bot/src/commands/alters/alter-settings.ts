@@ -26,6 +26,7 @@ const options = {
 export default class AlterConfigCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 
+        await ctx.deferReply(true);
         const { "alter-name": alterName } = ctx.options;
         const systemId = ctx.author.id;
         const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
@@ -36,7 +37,7 @@ export default class AlterConfigCommand extends SubCommand {
             return await ctx.ephemeral({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+            },undefined,undefined,ctx)
         }
 
         return await ctx.ephemeral({
@@ -49,6 +50,6 @@ export default class AlterConfigCommand extends SubCommand {
                 ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId),
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-        });
+        },undefined,undefined,ctx);
     }
 }

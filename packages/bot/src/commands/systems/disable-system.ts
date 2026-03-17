@@ -13,6 +13,7 @@ import { MessageFlags } from "seyfert/lib/types";
 })
 export default class DisableSystemCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
@@ -21,7 +22,7 @@ export default class DisableSystemCommand extends SubCommand {
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		await createSystemOperation(
@@ -31,7 +32,7 @@ export default class DisableSystemCommand extends SubCommand {
 			"discord",
 		);
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			components: new AlertView(ctx.userTranslations()).successView(
 				user.system.disabled ? "ENABLED_SYSTEM" : "DISABLED_SYSTEM",

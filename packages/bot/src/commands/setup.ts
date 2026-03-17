@@ -16,6 +16,7 @@ import { emojis } from "../lib/emojis";
 export default class SetupCommand extends Command {
 
     override async run(ctx: CommandContext) {
+        await ctx.deferReply(true);
         const user = await ctx.retrievePUser();
 
         if (user.system !== undefined) {
@@ -32,12 +33,12 @@ export default class SetupCommand extends Command {
                         )
                 ],
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
+            }, undefined, undefined, ctx)
         }
         
-        ctx.ephemeral({
+        await ctx.ephemeral({
             components: new PluralBuddyIntro(ctx.userTranslations()).pageOne(),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-        })
+        }, undefined, undefined, ctx)
     }
 }

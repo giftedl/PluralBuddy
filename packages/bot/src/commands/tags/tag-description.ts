@@ -37,6 +37,7 @@ const options = {
 @Options(options)
 export default class EditTagDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "tag-name": tagName, "tag-description": tagDescription } =
 			ctx.options;
 
@@ -55,7 +56,7 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		if (tagDescription === undefined) {
@@ -71,6 +72,8 @@ ${tag.tagDescription ?? "⛔ Your tag has no description."}
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				},
 				true,
+				undefined,
+				ctx
 			);
 		}
 
@@ -79,7 +82,7 @@ ${tag.tagDescription ?? "⛔ Your tag has no description."}
 			{ $set: { tagDescription } },
 		);
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx

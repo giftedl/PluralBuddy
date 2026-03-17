@@ -36,6 +36,7 @@ const options = {
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "alter-name": alterName, "alter-description": alterDescription } =
 			ctx.options;
 
@@ -56,7 +57,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		if (alterDescription === undefined) {
@@ -71,7 +72,7 @@ ${alter.description ?? "⛔ Your alter has no description."}
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				},
-				true,
+				true, undefined, ctx
 			);
 		}
 
@@ -80,7 +81,7 @@ ${alter.description ?? "⛔ Your alter has no description."}
 			{ $set: { description: alterDescription } },
 		);
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx

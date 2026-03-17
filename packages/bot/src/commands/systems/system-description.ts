@@ -32,6 +32,7 @@ const options = {
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const {
 			"system-description": systemDescription,
 		} = ctx.options;
@@ -44,7 +45,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		if (systemDescription === undefined) {
@@ -57,12 +58,12 @@ ${user.system.systemDescription ?? "⛔ Your system has no description."}
 					),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true);
+			}, true, undefined, ctx);
 		}
 		
 		await createSystemOperation(user.system, { systemDescription }, ctx.userTranslations(), "discord")
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx

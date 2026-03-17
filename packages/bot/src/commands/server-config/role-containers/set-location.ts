@@ -44,6 +44,7 @@ const options = {
 @Middlewares(["ensureGuildPermissions"])
 export default class ViewRoleContainer extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guild = await ctx.retrievePGuild();
 		let { role, location } = ctx.options;
 		const roleData = guild.rolePreferences.find(
@@ -78,7 +79,7 @@ export default class ViewRoleContainer extends SubCommand {
 		];
 		roleData.containerLocation = location;
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...(roleData.containerContents === undefined
 					? [

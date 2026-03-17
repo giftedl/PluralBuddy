@@ -15,19 +15,20 @@ import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 })
 export default class GetMessageInfoCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
+		await ctx.deferReply(true);
 		const messageId = ctx.target.id;
 		const message = await messagesCollection.findOne({ messageId });
 		const guild = await ctx.retrievePGuild()
 
         if (guild.getFeatures().disabledMessageInfo) {
-            return await ctx.write({
+            return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
 
 		if (message === null) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"MESSAGE_NOT_MINE",
 				),
@@ -39,7 +40,7 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 		const alter = await alterCollection.findOne({ alterId: message.alterId });
 
 		if (user === null || user.system === undefined || alter === null) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"DATA_DOESNT_EXIST",
 				),
@@ -47,7 +48,7 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 			});
 		}
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: await new MessageInfo(ctx.userTranslations()).messageInfo(
 				message,
 				alter,

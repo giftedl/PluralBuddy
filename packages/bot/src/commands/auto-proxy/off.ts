@@ -14,11 +14,12 @@ import { MessageFlags } from "seyfert/lib/types";
 })
 export default class OffAutoProxy extends SubCommand {
     override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
         
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -29,7 +30,7 @@ export default class OffAutoProxy extends SubCommand {
 		const guild = await ctx.guild();
 
 		if (guild === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
@@ -76,7 +77,7 @@ export default class OffAutoProxy extends SubCommand {
 			"off",
 		);
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx
 					.userTranslations()

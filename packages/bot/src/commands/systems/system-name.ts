@@ -27,11 +27,12 @@ const options = {
 @Options(options)
 export default class NameSetSystemCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "new-name": newSystemName } = ctx.options;
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -49,7 +50,7 @@ export default class NameSetSystemCommand extends SubCommand {
 		);
 
 		if (updatedSystem === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -57,7 +58,7 @@ export default class NameSetSystemCommand extends SubCommand {
 			});
 		}
 
-		await ctx.write({
+		await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx.userTranslations().SYSTEM_SET_NAME.replace("%name%", newSystemName),
 			),

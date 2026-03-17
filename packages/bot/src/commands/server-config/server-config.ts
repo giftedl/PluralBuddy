@@ -29,6 +29,7 @@ import { MessageFlags } from "seyfert/lib/types";
 @Middlewares(["ensureGuildPermissions"])
 export default class ServerConfigCommand extends Command {
 	override async run(ctx: CommandContext) {
+		await ctx.deferReply(true);
 		const pluralGuild = await ctx.retrievePGuild();
 
 		return await ctx.ephemeral({
@@ -45,6 +46,6 @@ export default class ServerConfigCommand extends Command {
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },
-		});
+		}, undefined, undefined, ctx);
 	}
 }

@@ -74,7 +74,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 		const systemId = ctx.author.id;
 
 		if (se && ctx.guildId === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),

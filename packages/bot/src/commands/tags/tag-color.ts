@@ -35,6 +35,7 @@ const options = {
 @Options(options)
 export default class TagColorCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "tag-name": tagName } = ctx.options;
 
 		const systemId = ctx.author.id;
@@ -52,7 +53,7 @@ export default class TagColorCommand extends SubCommand {
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		return await ctx.ephemeral({
@@ -74,6 +75,6 @@ The current tag color for ${tag.tagFriendlyName} is   ${getEmojiFromTagColor(tag
 					.setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
+		}, undefined, undefined, ctx);
 	}
 }

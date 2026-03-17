@@ -28,6 +28,7 @@ const options = {
 @Middlewares(["ensureGuildPermissions"])
 export default class SetProxyDelay extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "proxy-delay": proxyDelay } = ctx.options;
 		const guild = await ctx.retrievePGuild();
 
@@ -39,7 +40,7 @@ export default class SetProxyDelay extends SubCommand {
 		);
 		ctx.client.cache.pguild.remove(guild.guildId)
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx
 					.userTranslations()

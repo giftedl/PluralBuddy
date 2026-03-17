@@ -30,11 +30,12 @@ const options = {
 @Options(options)
 export default class RandomSystemCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const user = await ctx.retrievePUser();
 		const { "query-tags": queryTags } = ctx.options;
 
 		if (user.system === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -86,7 +87,7 @@ export default class RandomSystemCommand extends SubCommand {
 				});
 
 				if (tagQuery === null) {
-					return await ctx.write({
+					return await ctx.editResponse({
 						components: new AlertView(ctx.userTranslations()).errorView(
 							"INSUFFICIENT_DATA_SIZE",
 						),
@@ -101,7 +102,7 @@ export default class RandomSystemCommand extends SubCommand {
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					allowed_mentions: { parse: [] }
-				}, true)
+				}, true, undefined, ctx)
 			}
 
 			if (finalQuery[0].type === "alter") {
@@ -111,7 +112,7 @@ export default class RandomSystemCommand extends SubCommand {
 				});
 		
 				if (alterQuery === null) {
-					return await ctx.write({
+					return await ctx.editResponse({
 						components: new AlertView(ctx.userTranslations()).errorView(
 							"INSUFFICIENT_DATA_SIZE",
 						),
@@ -132,12 +133,12 @@ export default class RandomSystemCommand extends SubCommand {
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					allowed_mentions: { parse: [] },
-				});
+				}, undefined, undefined, ctx);
 			}
 		}
 
 		if (randomQuery[0] === undefined) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"INSUFFICIENT_DATA_SIZE",
 				),
@@ -151,7 +152,7 @@ export default class RandomSystemCommand extends SubCommand {
 		});
 
 		if (alterQuery === null) {
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"INSUFFICIENT_DATA_SIZE",
 				),
@@ -172,6 +173,6 @@ export default class RandomSystemCommand extends SubCommand {
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			allowed_mentions: { parse: [] },
-		});
+		}, undefined, undefined, ctx);
 	}
 }

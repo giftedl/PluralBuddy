@@ -78,6 +78,7 @@ const options = {
 @Options(options)
 export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
 		const { prefix: prefix } = ctx.options;
 
@@ -89,7 +90,7 @@ export default class AddPrefixCommand extends SubCommand {
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: new AlertView(ctx.userTranslations()).successViewCustom(
 				ctx
 					.userTranslations()

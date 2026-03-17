@@ -7,6 +7,7 @@ import {
 	AttachmentBuilder,
 	Command,
 	type CommandContext,
+	Container,
 	createAttachmentOption,
 	createStringOption,
 	Declare,
@@ -16,15 +17,19 @@ import {
 	MediaGalleryItem,
 	Message,
 	Options,
+	Section,
+	Separator,
 	TextDisplay,
+	Thumbnail,
 	type TopLevelBuilders,
 } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import { MessageFlags, Spacing } from "seyfert/lib/types";
 import { client } from "..";
 import { getUserById } from "@/types/user";
 import { processEmojis } from "@/lib/proxying/process-emojis";
 import { processUrlIntegrations } from "@/lib/proxying/process-url-attachments";
 import { createError } from "@/lib/create-error";
+import { getGuildFromId } from "@/types/guild";
 
 const options = {
 	"alter-name": createStringOption({
@@ -50,11 +55,12 @@ const options = {
 @Options(options)
 export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const { "alter-name": alterName, message, attachment } = ctx.options;
 		const systemId = ctx.author.id;
 
 		if (message === undefined && attachment === undefined)
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
 						"CONTENT_ERROR_PROXY",
@@ -64,10 +70,11 @@ export default class SystemCommand extends Command {
 			});
 
 		if (((await ctx.guild())?.memberCount ?? 0) > 30) {
-			return await ctx.write({
-				components: [
-					...new AlertView(ctx.userTranslations()).errorView("SERVER_TOO_BIG"),
-				],
+			return await ctx.editResponse({
+				components: new AlertView(ctx.userTranslations()).errorView(
+					"SERVER_TOO_BIG",
+				),
+
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
@@ -81,7 +88,7 @@ export default class SystemCommand extends Command {
 		const alter = await query;
 
 		if (alter === null) {
-			return await ctx.ephemeral({
+			return await ctx.editResponse({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
@@ -98,7 +105,7 @@ export default class SystemCommand extends Command {
 		const system = (await ctx.retrievePUser()).system;
 
 		if (!userPerms.has(["ManageWebhooks", "ManageMessages"]))
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
 						"NO_PERMISSIONS_PROXY",
@@ -108,7 +115,7 @@ export default class SystemCommand extends Command {
 			});
 
 		if (alter.alterMode === "nickname")
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
 						"NICKNAME_MANUAL_PROXY",
@@ -118,7 +125,7 @@ export default class SystemCommand extends Command {
 			});
 
 		if (system?.disabled)
-			return await ctx.write({
+			return await ctx.editResponse({
 				components: [
 					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_DISABLED_SYSTEM",
@@ -126,8 +133,6 @@ export default class SystemCommand extends Command {
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
-
-		ctx.deferReply(true);
 
 		const similarWebhooks = (
 			await client.webhooks.listFromChannel(ctx.channelId)
@@ -176,7 +181,7 @@ export default class SystemCommand extends Command {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 
-		const username = `${alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter.displayName ?? ""} ${system?.systemDisplayTag ?? ""}`;
+		const username = `${alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName ?? ""} ${(system?.displayTagMap ?? {})[ctx.guildId ?? ""] ?? system?.systemDisplayTag ?? ""}`;
 		const { emojis: uploadedEmojis, newMessage: processedContents } =
 			await processEmojis(message ?? "");
 
@@ -218,7 +223,10 @@ export default class SystemCommand extends Command {
 					flags: MessageFlags.IsComponentsV2,
 					username: username.substring(0, 80),
 					allowed_mentions: { parse: [] },
-					avatar_url: alter.avatarUrl ?? undefined,
+					avatar_url:
+						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
+						alter?.avatarUrl ??
+						undefined,
 					files:
 						attachment !== undefined
 							? [
@@ -242,6 +250,57 @@ export default class SystemCommand extends Command {
 					guildId: sentMessage?.guildId,
 				});
 
+				(async () => {
+					const guild = await getGuildFromId(ctx.guildId ?? "");
+					const user = await client.users.fetch(ctx.author.id);
+
+					if (!guild.logChannel) return;
+
+					await client.messages
+						.write(guild.logChannel, {
+							components: [
+								new TextDisplay().setContent(
+									`https://discord.com/channels/${ctx.guildId ?? "@me"}/${ctx.channelId}/${sentMessage?.id}`,
+								),
+								new Container()
+									.setComponents(
+										new Section()
+											.setComponents(
+												new TextDisplay().setContent(
+													message === "" || message === undefined
+														? "Cannot render message as string - use link above."
+														: message,
+												),
+											)
+											.setAccessory(
+												new Thumbnail().setMedia(
+													alter?.avatarUrl ??
+														"https://cdn.discordapp.com/embed/avatars/0.png",
+												),
+											),
+										new Separator().setSpacing(Spacing.Large),
+										new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alter.alterId}\`
+-# Mention: @${user.username} (<@${systemId}>)
+-# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})
+-# Proxied message as: \`N/A\` → \`${sentMessage?.id ?? "Unknown"}\`
+-# Proxied via: /proxy
+-# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
+									)
+									.setColor("Green"),
+							],
+							flags: MessageFlags.IsComponentsV2,
+							allowed_mentions: { parse: [] },
+						})
+						.catch(() =>
+							createError(guild.guildId, {
+								title: "Failed to send proxy log in log channel.",
+								description:
+									"PluralBuddy attempted to send a proxied log message, but failed, maybe due to a lack of permission.",
+								responsibleChannelId: guild.logChannel ?? undefined,
+								type: "FailedLogging",
+							}),
+						);
+				})();
 				if (sentMessage?.id) {
 					processUrlIntegrations(
 						webhook,

@@ -33,7 +33,7 @@ const options = {
 @Options(options)
 export default class EditAlterPrivacyCommand extends SubCommand {
     override async run(ctx: CommandContext<typeof options>) {
-        
+        await ctx.deferReply(true);
 		const {
 			"alter-name": alterName,
 			"alter-subject": alterPrivacySubject,
@@ -51,7 +51,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined,undefined,ctx);
 		}
 
         if (alterPrivacySubject === undefined || alterPrivacySubjectChoice === undefined) {
@@ -63,7 +63,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 
 -# If you were trying to _set_ the privacy values, you may not have finished the command.`))],
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+            }, undefined,undefined,ctx)
         }
 
         let newPublic = alter.public ?? 0;
@@ -82,7 +82,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
         );
     
 
-		return await ctx.write({
+		return await ctx.editResponse({
 			components: [
 				...new AlertView(ctx.userTranslations()).successViewCustom(
 					ctx

@@ -32,6 +32,7 @@ const options = {
 @Options(options)
 export default class AlterListCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
 		const user = await ctx.retrievePUser();
 		const { "other-user": otherUser } = ctx.options;
 
@@ -44,7 +45,7 @@ export default class AlterListCommand extends SubCommand {
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				});
+				}, undefined, undefined, ctx);
 			}
 
 			return await ctx.ephemeral({
@@ -54,7 +55,7 @@ export default class AlterListCommand extends SubCommand {
 					)),
 				],
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		if (user.system === undefined) {
@@ -63,7 +64,7 @@ export default class AlterListCommand extends SubCommand {
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
+			}, undefined, undefined, ctx);
 		}
 
 		return await ctx.ephemeral({
@@ -73,6 +74,6 @@ export default class AlterListCommand extends SubCommand {
 				)),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+		}, undefined, undefined, ctx);
 	}
 }

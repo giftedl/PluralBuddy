@@ -28,6 +28,7 @@ const options = {
 @Options(options)
 export default class TagCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
+        await ctx.deferReply(true);
         const { "tag-name": tagFriendlyName } = ctx.options;
         const systemId = ctx.author.id;
 
@@ -58,14 +59,14 @@ export default class TagCommand extends Command {
                 ],
                 flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
                 allowed_mentions: { parse: [] }
-            }, true)
+            }, true, undefined, ctx)
         }
 
         if (tag === null) {
             return await ctx.ephemeral({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            })
+            }, undefined, undefined, ctx)
         }
 
         return await ctx.ephemeral({
@@ -75,7 +76,7 @@ export default class TagCommand extends Command {
             ],
             flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
             allowed_mentions: { parse: [] }
-        }, true)
+        }, true, undefined, ctx)
 
     }
 
