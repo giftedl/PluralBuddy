@@ -46,7 +46,7 @@ export default class SetUsernameButton extends ComponentCommand {
 						new TextInput()
 							.setStyle(TextInputStyle.Short)
 							.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterServerDisplayNameType.create())
-							.setLength({ min: 3, max: 100 })
+							.setLength({  max: 100 })
 							.setRequired(true)
 							.setValue(existingName?.name ?? alter.displayName)
 					)
