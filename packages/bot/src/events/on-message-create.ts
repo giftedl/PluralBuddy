@@ -49,7 +49,8 @@ import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
 
-const indexingMap: string[] = [];
+const indexingMap: Record<string, NodeJS.Timeout> = {};
+const indexingMessageMap: Record<string, Message> = {};
 
 export type ApplicableWebhookWritePayload = {
 	body: Omit<
@@ -235,7 +236,7 @@ export default createEvent({
 
 		if (user.system.alterIds.length === 0) return;
 
-		if (!indexingMap.includes(message.author.id)) {
+		if (!indexingMap[message.author.id]) {
 			let indexingMessage: MessageStructure | null =
 				null as MessageStructure | null;
 
@@ -260,9 +261,19 @@ export default createEvent({
 						],
 						flags: MessageFlags.IsComponentsV2,
 					});
+
+					indexingMessageMap[message.author.id] = indexingMessage;
 				} catch (_) {}
 			}, 2000);
-			indexingMap.push(message.author.id);
+			indexingMap[message.author.id] = indexingTimeout;
+
+			const removeFromMap = () => {
+				delete indexingMap[message.author.id];
+				delete indexingMessageMap[message.author.id];
+	
+				clearTimeout(indexingTimeout);
+				if (indexingMessage !== null) indexingMessage.delete();
+			}
 
 			// Only find the alters that we need
 			for (let i = 0; i < user.system.alterIds.length; i++) {
@@ -292,6 +303,7 @@ export default createEvent({
 						flags: MessageFlags.IsComponentsV2,
 					});
 				}
+				
 
 				// If cache miss or cache stale, fetch from DB and set cache
 				if (!proxyObject || !proxyObject.pt) {
@@ -358,10 +370,8 @@ export default createEvent({
 									'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
 								type: "EnforcedGuildTagRegulation",
 							});
-							
-							clearTimeout(indexingTimeout);
-							if (indexingMessage !== null) indexingMessage.delete();
 
+							removeFromMap();
 							return;
 						}
 
@@ -374,17 +384,16 @@ export default createEvent({
 
 						console.timeEnd("proxy tag parse");
 
-						if (!(await blacklistedRole(guild, message))) return;
-						if (!blacklistedChannel(guild, message)) return;
-
-						clearTimeout(indexingTimeout);
-						if (indexingMessage !== null) indexingMessage.delete();
-
-						const authorIdIndex = indexingMap.indexOf(message.author.id);
-						if (authorIdIndex !== -1) {
-							indexingMap.splice(authorIdIndex, 1);
+						if (!(await blacklistedRole(guild, message))) {
+							removeFromMap();
+							return;
+						}
+						if (!blacklistedChannel(guild, message)) {
+							removeFromMap();
+							return;
 						}
 
+						removeFromMap();
 						performTagProxy(
 							checkAlter as PAlter,
 							user,
@@ -400,13 +409,7 @@ export default createEvent({
 				}
 			}
 
-			const authorIdIndex = indexingMap.indexOf(message.author.id);
-			if (authorIdIndex !== -1) {
-				indexingMap.splice(authorIdIndex, 1);
-			}
-
-			clearTimeout(indexingTimeout);
-			if (indexingMessage !== null) indexingMessage.delete();
+			removeFromMap();
 		}
 
 		if (
@@ -414,6 +417,7 @@ export default createEvent({
 				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
 			)
 		) {
+			
 			if (message.content.startsWith("\\")) {
 				setLastLatchAlter(guild.guildId, user.system);
 				return;
