@@ -190,11 +190,11 @@ export default class PluralBuddyImportModal extends ModalCommand {
 					banner: member.banner,
 					lastMessageTimestamp: null,
 					messageCount: 0,
-					proxyTags: member.proxy_tags.map((tag) => {
+					proxyTags: member.proxy_tags.map((tag, i) => {
 						return {
 							prefix: tag.prefix?.replaceAll('"', "") ?? "",
 							suffix: tag.suffix?.replaceAll('"', "") ?? "",
-							id: Number(DiscordSnowflake.generate()).toString(),
+							id: Number(createRandomId(i)).toString(),
 						};
 					}),
 					tagIds: [],
