@@ -24,6 +24,7 @@ import {
 	InteractionResponseType,
 	InteractionType,
 	MessageFlags,
+	RESTPatchAPICurrentUserJSONBody,
 } from "discord-api-types/v10";
 import {
 	ContainerBuilder,
@@ -205,10 +206,38 @@ export async function PUT(
 		},
 	);
 
+	let avatarData = alterObject.avatarUrl
+		? await fetch(`https://wsrv.nl/?url=${alterObject.avatarUrl}`)
+		: null;
+	let bannerData = alterObject.banner
+		? await fetch(`https://wsrv.nl/?url=${alterObject.banner}`)
+		: null;
+
+	let finalAvatarData: string | ArrayBuffer | null = null;
+	let finalBannerData: string | ArrayBuffer | null = null;
+
+	if (avatarData?.ok) {
+		finalAvatarData = `data:${avatarData.headers.get("content-type")};base64,${Buffer.from(await avatarData.arrayBuffer()).toString("base64")}`;
+	}
+
+	if (bannerData?.ok) {
+		finalBannerData = `data:${bannerData.headers.get("content-type")};base64,${Buffer.from(await bannerData.arrayBuffer()).toString("base64")}`;
+	}
+
+	console.log(finalAvatarData)
+
 	await fetch("https://discord.com/api/v10/users/@me", {
 		method: "PATCH",
-		body: JSON.stringify()
-	})
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bot ${applicationObj.token}`,
+		},
+		body: JSON.stringify({
+			username: alterObject.displayName,
+			avatar: finalAvatarData,
+			banner: finalBannerData,
+		} as RESTPatchAPICurrentUserJSONBody),
+	});
 
 	waitUntil(client.close());
 	return Response.json({ error: "Reloaded Discord commands" }, { status: 200 });
