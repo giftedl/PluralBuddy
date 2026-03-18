@@ -6,6 +6,7 @@ import { getSimilarWebhooks } from "@/lib/proxying/util";
 export default createEvent({
 	data: { name: "messageDelete", once: false },
 	run: async (message) => {
+		await messagesCollection.findOneAndDelete({ messageId: message.id});
 		const referencedMessages = await messagesCollection
 			.find({
 				referencedMessage: message.id,
