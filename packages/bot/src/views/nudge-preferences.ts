@@ -23,7 +23,7 @@ export class NudgePreferences extends TranslatedView {
 					.setAccessory(
 						new Button()
 							.setLabel(
-								user.nudging.currentlyEnabled
+								(user.nudging ?? {currentlyEnabled: true}).currentlyEnabled
 									? "Disable Nudging"
 									: "Enable Nudging",
 							)
@@ -37,11 +37,11 @@ export class NudgePreferences extends TranslatedView {
 					),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`You can block users from nudging you specifically. Currently, you have ${user.nudging.blockedUsers.length} user(s) blocked.`,
+					`You can block users from nudging you specifically. Currently, you have ${(user.nudging ?? {blockedUsers: []}).blockedUsers.length} user(s) blocked.`,
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel(`${user.nudging.blockedUsers.length >= 100 ? "Export" : "View"} Nudge Blocklist`)
+						.setLabel(`${(user.nudging ?? {blockedUsers: []}).blockedUsers.length >= 100 ? "Export" : "View"} Nudge Blocklist`)
 						.setCustomId(InteractionIdentifier.Nudge.ExportBlockList.create())
 						.setStyle(ButtonStyle.Primary),
 					new Button()
