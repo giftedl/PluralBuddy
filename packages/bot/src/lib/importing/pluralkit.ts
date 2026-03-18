@@ -226,8 +226,8 @@ export async function add(
 						messageCount: 0,
 						proxyTags: member.proxy_tags.map((tag) => {
 							return {
-								prefix: tag.prefix?.replaceAll('"', "") ?? "",
-								suffix: tag.suffix?.replaceAll('"', "") ?? "",
+								prefix: (tag.prefix ?? "").replaceAll('"', "") ?? "",
+								suffix: (tag.suffix ?? "").replaceAll('"', "") ?? "",
 								id: Number(createRandomId(i)).toString(),
 							};
 						}),
@@ -269,6 +269,7 @@ export async function add(
 		.map((v) => v.zodData)
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
+	console.log(newAlters)
 
 	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
 

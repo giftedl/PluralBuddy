@@ -34,7 +34,7 @@ export const PAlterObject = z.object({
     lastMessageTimestamp: z.coerce.date().nullable(),
     messageCount: z.number(),
     alterMode: z.enum([ "nickname", "webhook", "both" ]).default("webhook"),
-    proxyTags: z.object({ prefix: z.string().max(20), suffix: z.string().max(20), id: z.string() }).array().default([]),
+    proxyTags: z.object({ prefix: z.string().max(100), suffix: z.string().max(100), id: z.string() }).array().default([]),
 
     tagIds: z.string().array().catch([]).default([]),
     public: z.number().catch(0)
