@@ -1,6 +1,6 @@
 import { Double, MongoClient } from "mongodb";
-import { NextRequest, NextResponse } from "next/server";
-import { PAlter, PExpressApplication } from "plurography";
+import { after, NextRequest, NextResponse } from "next/server";
+import { PAlter, PExpressApplication, PMessage } from "plurography";
 import { verifyKey } from "discord-interactions";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
@@ -24,6 +24,7 @@ import {
 	InteractionResponseType,
 	InteractionType,
 	MessageFlags,
+	RESTGetAPIInteractionOriginalResponseResult,
 	RESTPatchAPICurrentUserJSONBody,
 } from "discord-api-types/v10";
 import {
@@ -63,6 +64,7 @@ export async function POST(
 	}
 
 	const alters = db.collection<PAlter>("alters");
+	const messages = db.collection<PMessage>("messages");
 	const alterObject = await alters.findOne({
 		systemId: applicationObj.owner,
 		alterId: new Double(applicationObj.alterId),
@@ -104,6 +106,28 @@ export async function POST(
 			(v) =>
 				v.name === "text" && v.type === ApplicationCommandOptionType.String,
 		) as APIApplicationCommandInteractionDataStringOption;
+
+		after(async () => {
+			const response = await fetch(`https://discord.com/api/v10/webhooks/${application}/${interaction.token}/messages/@original`, {
+				headers: {
+					Authorization: `Bot ${applicationObj.token}`,
+				}
+			})
+			const interactionMessage = await response.json() as RESTGetAPIInteractionOriginalResponseResult;
+			
+			await messages.insertOne({
+				alterId: alterObject?.alterId ?? 0,
+				systemId: alterObject?.systemId ?? "",
+				channelId: interaction.channel.id,
+				guildId: interaction.guild_id,
+				expressUserId: application,
+				createdAt: new Date(),
+				messageId: interactionMessage.id,
+
+			})
+
+			await client.close();
+		})
 
 		return NextResponse.json({
 			type: InteractionResponseType.ChannelMessageWithSource,
@@ -182,7 +206,7 @@ export async function PUT(
 			method: "PUT",
 			body: JSON.stringify([
 				new SlashCommandBuilder()
-					.setName(alterObject.username)
+					.setName(alterObject.username.toLocaleLowerCase().substring(0, 30))
 					.setDescription(
 						`Proxy as ${alterObject.displayName.substring(0, 30)}`,
 					)
@@ -223,8 +247,6 @@ export async function PUT(
 	if (bannerData?.ok) {
 		finalBannerData = `data:${bannerData.headers.get("content-type")};base64,${Buffer.from(await bannerData.arrayBuffer()).toString("base64")}`;
 	}
-
-	console.log(finalAvatarData)
 
 	await fetch("https://discord.com/api/v10/users/@me", {
 		method: "PATCH",

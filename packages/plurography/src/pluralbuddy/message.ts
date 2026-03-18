@@ -10,6 +10,7 @@ export const PMessageObject = z.object({
 	guildId: z.string().optional().meta({ examples: ["1481859908541353987"] }),
 	channelId: z.string().meta({ examples: ["1481859951688159236"] }),
 	referencedMessage: z.string().optional(),
+	expressUserId: z.string().optional(),
 });
 
 export type PMessage = z.infer<typeof PMessageObject>;

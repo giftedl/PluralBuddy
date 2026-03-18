@@ -7,7 +7,7 @@ import type { PAlter } from "./types/alter";
 import type { POperation } from "./types/operation";
 import type { PMessage } from "./types/message";
 import type { PTag } from "./types/tag";
-import type { PGuildError } from "plurography";
+import type { PExpressApplication, PGuildError } from "plurography";
 import { connectMongo } from "./lib/libby";
 
 export let mongoClient: MongoClient;
@@ -19,6 +19,7 @@ export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let errorCollection: Collection<PGuildError>;
 export let messagesCollection: Collection<PMessage>;
+export let applicationsCollection: Collection<PExpressApplication>;
 
 export async function setupMongoDB() {
     mongoClient = new MongoClient(process.env.MONGO ?? "")
@@ -44,6 +45,7 @@ export async function setupDatabases() {
     messagesCollection = mainDb.collection("messages")
     tagCollection = mainDb.collection("tags")
     errorCollection = mainDb.collection("errors")
+    applicationsCollection = mainDb.collection("applications")
 
     await createPeriodicExpirationDates()
 }
