@@ -1,6 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { alterCollection, messagesCollection, userCollection } from "@/mongodb";
+import {
+	alterCollection,
+	applicationsCollection,
+	messagesCollection,
+	userCollection,
+} from "@/mongodb";
 import { ActionRow, Button, createEvent, TextDisplay } from "seyfert";
 import { client } from "..";
 import { emojis } from "@/lib/emojis";
@@ -11,6 +16,7 @@ import { translations } from "@/lang/en_us";
 import { AlertView } from "@/views/alert";
 import { MessageInfo } from "@/views/message-info";
 import { createError } from "@/lib/create-error";
+import { decryptExpressToken } from "@/lib/express-token-encryption";
 
 export default createEvent({
 	data: { name: "messageReactionAdd", once: false },
@@ -38,22 +44,23 @@ export default createEvent({
 			reaction.channelId,
 		);
 		if (reaction.emoji.name !== null)
-			await client.reactions.delete(
-				reaction.messageId,
-				reaction.channelId,
-				reaction.emoji.id === null ? reaction.emoji.name : reaction.emoji,
-				reaction.userId,
-			).catch(() => {
-
-				createError(reaction.guildId ?? "", {
-					title: "Unable to remove user reaction",
-					description:
-						"PluralBuddy was unable to remove a user reaction while attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
-					type: "FailedMessageReaction",
-					responsibleChannelId: reaction.channelId,
-					responsibleUserId: reaction.userId,
+			await client.reactions
+				.delete(
+					reaction.messageId,
+					reaction.channelId,
+					reaction.emoji.id === null ? reaction.emoji.name : reaction.emoji,
+					reaction.userId,
+				)
+				.catch(() => {
+					createError(reaction.guildId ?? "", {
+						title: "Unable to remove user reaction",
+						description:
+							"PluralBuddy was unable to remove a user reaction while attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+						type: "FailedMessageReaction",
+						responsibleChannelId: reaction.channelId,
+						responsibleUserId: reaction.userId,
+					});
 				});
-			});
 
 		const react = await nativeMessage.react(emojis.loading).catch(() => null);
 
@@ -77,73 +84,99 @@ export default createEvent({
 				message?.systemId !== reaction.userId ||
 				message.guildId !== reaction.guildId
 			) {
-				await client.reactions.delete(
-					reaction.messageId,
-					reaction.channelId,
-					emojis.loading,
-					client.applicationId,
-				).catch(() => {
-					createError(reaction.guildId ?? "", {
-						title: "Unable to remove self-reaction",
-						description:
-							"PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
-						type: "FailedMessageReaction",
-						responsibleChannelId: reaction.channelId,
-						responsibleUserId: reaction.userId,
+				await client.reactions
+					.delete(
+						reaction.messageId,
+						reaction.channelId,
+						emojis.loading,
+						client.applicationId,
+					)
+					.catch(() => {
+						createError(reaction.guildId ?? "", {
+							title: "Unable to remove self-reaction",
+							description:
+								"PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+							type: "FailedMessageReaction",
+							responsibleChannelId: reaction.channelId,
+							responsibleUserId: reaction.userId,
+						});
 					});
+				await nativeMessage.react(emojis.x);
+
+				setTimeout(
+					() =>
+						client.reactions.delete(
+							reaction.messageId,
+							reaction.channelId,
+							emojis.x,
+							client.applicationId,
+						),
+					3000,
+				);
+
+				return;
+			}
+
+			if (!message.expressUserId) {
+				const channel = await client.channels.fetch(reaction.channelId);
+				const parent =
+					"parentId" in channel && channel.isThread() ? channel.parentId : null;
+
+				const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
+
+				if (similarWebhooks[0] === undefined) {
+					await client.reactions.delete(
+						reaction.messageId,
+						reaction.channelId,
+						emojis.loading,
+						client.applicationId,
+					);
+					await nativeMessage.react(emojis.x);
+
+					setTimeout(
+						() =>
+							client.reactions.delete(
+								reaction.messageId,
+								reaction.channelId,
+								emojis.x,
+								client.applicationId,
+							),
+						3000,
+					);
+					return;
+				}
+
+				const webhook = similarWebhooks[0];
+				const user = await client.users.fetch(reaction.userId, true);
+
+				await webhook.messages.delete({
+					messageId,
+					query: parent !== null ? { thread_id: channel.id } : {},
+					reason: `Removed after user request of @${user.username} (${user.id})`,
 				});
-				await nativeMessage.react(emojis.x);
+			} else {
+				const application = await applicationsCollection.findOne({
+					application: message.expressUserId,
+				});
 
-				setTimeout(
-					() =>
-						client.reactions.delete(
-							reaction.messageId,
-							reaction.channelId,
-							emojis.x,
-							client.applicationId,
-						),
-					3000,
-				);
+				if (!application)
+					return;
 
-				return;
+				const unencryptedToken = await decryptExpressToken(application?.token.iv, application?.token.value)
+
+				if (application) {
+					await fetch(
+						`https://discord.com/api/v10/channels/${reaction.channelId}/messages/${message.messageId}`,
+						{
+							method: "DELETE",
+							headers: {
+								Authorization: `Bot ${unencryptedToken}`,
+								"X-Audit-Log-Reason": `Removed after user request of @${reaction.member?.user.username} (${reaction.member?.user.id})`,
+							},
+						},
+					);
+				}
 			}
-
-			const channel = await client.channels.fetch(reaction.channelId);
-			const parent =
-				"parentId" in channel && channel.isThread() ? channel.parentId : null;
-
-			const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
-
-			if (similarWebhooks[0] === undefined) {
-				await client.reactions.delete(
-					reaction.messageId,
-					reaction.channelId,
-					emojis.loading,
-					client.applicationId,
-				);
-				await nativeMessage.react(emojis.x);
-
-				setTimeout(
-					() =>
-						client.reactions.delete(
-							reaction.messageId,
-							reaction.channelId,
-							emojis.x,
-							client.applicationId,
-						),
-					3000,
-				);
-				return;
-			}
-
-			const webhook = similarWebhooks[0];
-			const user = await client.users.fetch(reaction.userId, true);
-
-			await webhook.messages.delete({
-				messageId,
-				query: parent !== null ? { thread_id: channel.id } : {},
-				reason: `Removed after user request of @${user.username} (${user.id})`,
-			});
 			return;
 		}
 		if (reaction.emoji.name === "🔔") {

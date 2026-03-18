@@ -1,5 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { decryptExpressToken } from "@/lib/express-token-encryption";
 import { getSimilarWebhooks } from "@/lib/proxying/util";
 import { applicationsCollection, messagesCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -9,8 +10,7 @@ import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 @Declare({
     type: ApplicationCommandType.Message,
     name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Delete Message`,
-    contexts: ["BotDM", "Guild", "PrivateChannel"],
-    integrationTypes: ["GuildInstall", "UserInstall"]
+    contexts: ["BotDM", "Guild"],
 })
 export default class DeleteMessageContextMenuCommand extends ContextMenuCommand {
     override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
@@ -25,16 +25,15 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
             })
 
         }
-
-        if (message?.systemId !== ctx.author.id || message.guildId !== ctx.guildId) {
+        if (message?.systemId !== ctx.author.id || (message.guildId ?? undefined) !==( ctx.guildId ?? undefined)) {
             return await ctx.editResponse({
                 components: new AlertView(ctx.userTranslations()).errorView("ERROR_OWN_MESSAGE"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
 
-		const channel = await ctx.channel()
         if (!message.expressUserId) {
+            const channel = await ctx.channel()
             const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
         
             const similarWebhooks = await getSimilarWebhooks(parent ?? message.channelId);
@@ -57,13 +56,16 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
             const application = await applicationsCollection.findOne({ application: message.expressUserId });
 
             if (application) {
-                await fetch(`https://discord.com/api/v10/channels/${ctx.channelId}/messages/${message.messageId}`, {
+                const decryptedToken = await decryptExpressToken(application.token.iv, application.token.value)
+
+                console.log(
+                await (await fetch(`https://discord.com/api/v10/channels/${ctx.channelId}/messages/${message.messageId}`, {
                     method: "DELETE",
                     headers: {
-                        Authorization: `Bot ${application.token}`,
+                        Authorization: `Bot ${decryptedToken}`,
                         "X-Audit-Log-Reason": `Removed after user request of @${ctx.author.username} (${ctx.author.id})`
                     }
-                })
+                })).json())
             }
         }
 

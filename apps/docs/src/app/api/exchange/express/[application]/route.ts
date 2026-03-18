@@ -32,6 +32,7 @@ import {
 	SlashCommandBuilder,
 	TextDisplayBuilder,
 } from "@discordjs/builders";
+import { decryptExpressToken } from "@/lib/express-token-encryption";
 
 export async function POST(
 	request: NextRequest,
@@ -76,6 +77,11 @@ export async function POST(
 		});
 	}
 
+	const botToken = await decryptExpressToken(
+		applicationObj.token.iv,
+		applicationObj.token.value,
+	);
+
 	if (interaction.type === InteractionType.ApplicationCommand) {
 		if (
 			alterObject?.systemId !==
@@ -108,13 +114,17 @@ export async function POST(
 		) as APIApplicationCommandInteractionDataStringOption;
 
 		after(async () => {
-			const response = await fetch(`https://discord.com/api/v10/webhooks/${application}/${interaction.token}/messages/@original`, {
-				headers: {
-					Authorization: `Bot ${applicationObj.token}`,
-				}
-			})
-			const interactionMessage = await response.json() as RESTGetAPIInteractionOriginalResponseResult;
-			
+			const response = await fetch(
+				`https://discord.com/api/v10/webhooks/${application}/${interaction.token}/messages/@original`,
+				{
+					headers: {
+						Authorization: `Bot ${botToken}`,
+					},
+				},
+			);
+			const interactionMessage =
+				(await response.json()) as RESTGetAPIInteractionOriginalResponseResult;
+
 			await messages.insertOne({
 				alterId: alterObject?.alterId ?? 0,
 				systemId: alterObject?.systemId ?? "",
@@ -123,11 +133,10 @@ export async function POST(
 				expressUserId: application,
 				createdAt: new Date(),
 				messageId: interactionMessage.id,
-
-			})
+			});
 
 			await client.close();
-		})
+		});
 
 		return NextResponse.json({
 			type: InteractionResponseType.ChannelMessageWithSource,
@@ -169,6 +178,7 @@ export async function PUT(
 	const applications = db.collection<PExpressApplication>("applications");
 	const applicationObj = await applications.findOne({ application });
 
+
 	if (!applicationObj)
 		return Response.json(
 			{ error: "Must be owner of application" },
@@ -183,6 +193,11 @@ export async function PUT(
 			{ status: 405 },
 		);
 	}
+
+	const botToken = await decryptExpressToken(
+		applicationObj.token.iv,
+		applicationObj.token.value,
+	);
 
 	const alters = db.collection<PAlter>("alters");
 	const alterObject = await alters.findOne({
@@ -201,7 +216,7 @@ export async function PUT(
 		{
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bot ${applicationObj.token}`,
+				Authorization: `Bot ${botToken}`,
 			},
 			method: "PUT",
 			body: JSON.stringify([
@@ -252,7 +267,7 @@ export async function PUT(
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bot ${applicationObj.token}`,
+			Authorization: `Bot ${botToken}`,
 		},
 		body: JSON.stringify({
 			username: alterObject.displayName,

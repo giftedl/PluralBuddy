@@ -13,6 +13,7 @@ Additionally, you can also import data from another bot like PluralKit.
 -# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
 	PAGINATION_NEXT_PAGE: "Next Page",
 	PAGINATION_FINISH: "Finish",
+	NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
 	BLACKLISTED:
 		"You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
 	BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.

@@ -7,21 +7,35 @@ import { Command, createMiddleware, Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlacklist = createMiddleware<void>(async (middle) => {
-	const { blacklistedChannels, blacklistedRoles, blacklistedCategories } =
-	PGuildObject.parse(
-		(await middle.context.client.cache.pguild.get(middle.context.guildId ?? ""))?.g ??
-			(await getGuildFromId(middle.context.guildId ?? "")),
-	);
-	const { context: ctx } = middle;
-	const channel = await middle.context.channel();
-	const isServerConfig =
-		("customId" in middle.context &&
-			middle.context.customId.startsWith("guilds/")) ||
-		("parent" in middle.context.command &&
-			middle.context.command.parent?.name === "server-config");
+	if (middle.context.guildId) {
 
-	if ("parentId" in channel && !isServerConfig)
-		if (blacklistedCategories.includes(channel.parentId ?? "")) {
+		const { blacklistedChannels, blacklistedRoles, blacklistedCategories } =
+		PGuildObject.parse(
+			(await middle.context.client.cache.pguild.get(middle.context.guildId ?? ""))?.g ??
+				(await getGuildFromId(middle.context.guildId ?? "")),
+		);
+		const { context: ctx } = middle;
+		const channel = await middle.context.channel();
+		const isServerConfig =
+			("customId" in middle.context &&
+				middle.context.customId.startsWith("guilds/")) ||
+			("parent" in middle.context.command &&
+				middle.context.command.parent?.name === "server-config");
+	
+		if ("parentId" in channel && !isServerConfig)
+			if (blacklistedCategories.includes(channel.parentId ?? "")) {
+				return await ctx.write({
+					components: new AlertView(ctx.userTranslations()).errorView(
+						"FEATURE_DISABLED_GUILD",
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			}
+	
+		if (
+			blacklistedChannels.includes(middle.context.channelId) &&
+			!isServerConfig
+		) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
 					"FEATURE_DISABLED_GUILD",
@@ -29,75 +43,65 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
-
-	if (
-		blacklistedChannels.includes(middle.context.channelId) &&
-		!isServerConfig
-	) {
-		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView(
-				"FEATURE_DISABLED_GUILD",
-			),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
-
-	if (
-		((await ctx.member?.roles.list()) ?? []).some((c) =>
-			blacklistedRoles.includes(c.id),
-		)
-	) {
-		if (ctx.isChat() && ctx.message) {
-			(ctx.message as Message).delete();
-
-			if (
-				process.env.LIBBY_DEBUG === "true" ||
-				ctx.guildId === process.env.LIBBY_SERVER_ID
-			) {
-				const caseObj = await getApplicableCase(ctx.author.id);
-
-				if (caseObj) {
-					try {
-						await (ctx.message as Message).author.write({
-							components: new AlertView(ctx.userTranslations()).errorViewCustom(
-								ctx
-									.userTranslations()
-									.BLACKLISTED_PC.replace(
-										"{{ libbyReasoning }}",
-										caseObj.reasoning,
-									)
-									.replace("{{ reply }}", emojis.lineRight)
-									.replace(
-										"{{ libbyExpirationDate }}",
-										caseObj.expires
-											? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
-											: "Never",
-									)
-									.replace("{{ libbyCaseId }}", caseObj.blacklistId),
-							),
-							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-						});
-					} catch (_) {}
-
-					return await middle.pass();
+	
+		if (
+			((await ctx.member?.roles.list()) ?? []).some((c) =>
+				blacklistedRoles.includes(c.id),
+			)
+		) {
+			if (ctx.isChat() && ctx.message) {
+				(ctx.message as Message).delete();
+	
+				if (
+					process.env.LIBBY_DEBUG === "true" ||
+					ctx.guildId === process.env.LIBBY_SERVER_ID
+				) {
+					const caseObj = await getApplicableCase(ctx.author.id);
+	
+					if (caseObj) {
+						try {
+							await (ctx.message as Message).author.write({
+								components: new AlertView(ctx.userTranslations()).errorViewCustom(
+									ctx
+										.userTranslations()
+										.BLACKLISTED_PC.replace(
+											"{{ libbyReasoning }}",
+											caseObj.reasoning,
+										)
+										.replace("{{ reply }}", emojis.lineRight)
+										.replace(
+											"{{ libbyExpirationDate }}",
+											caseObj.expires
+												? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
+												: "Never",
+										)
+										.replace("{{ libbyCaseId }}", caseObj.blacklistId),
+								),
+								flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+							});
+						} catch (_) {}
+	
+						return await middle.pass();
+					}
 				}
+	
+				try {
+					await (ctx.message as Message).author.write({
+						components: new AlertView(ctx.userTranslations()).errorViewCustom(
+							ctx
+								.userTranslations()
+								.BLACKLISTED.replace(
+									"{{ guild }}",
+									(await ctx.guild())?.name ?? "",
+								),
+						),
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					});
+				} catch (_) {}
+				return await middle.pass();
 			}
-
-			try {
-				await (ctx.message as Message).author.write({
-					components: new AlertView(ctx.userTranslations()).errorViewCustom(
-						ctx
-							.userTranslations()
-							.BLACKLISTED.replace(
-								"{{ guild }}",
-								(await ctx.guild())?.name ?? "",
-							),
-					),
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				});
-			} catch (_) {}
-			return await middle.pass();
 		}
+	
 	}
 
 	return middle.next();

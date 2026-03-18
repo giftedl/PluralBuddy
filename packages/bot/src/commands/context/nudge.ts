@@ -21,7 +21,8 @@ import {
 @Declare({
 	type: ApplicationCommandType.Message,
 	name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Nudge Author`,
-	contexts: ["BotDM", "Guild"],
+    contexts: ["BotDM", "Guild", "PrivateChannel"],
+    integrationTypes: ["GuildInstall", "UserInstall"]
 })
 export default class DeleteMessageContextMenuCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
