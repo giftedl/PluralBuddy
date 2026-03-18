@@ -239,10 +239,12 @@ export default createEvent({
 		if (!indexingMap[message.author.id]) {
 			let indexingMessage: MessageStructure | null =
 				null as MessageStructure | null;
+			let eligibleToProcess = false;
 
 			const indexingTimeout = setTimeout(async () => {
 				const channel = message.channelId;
 
+				if (eligibleToProcess)
 				try {
 					indexingMessage = await message.client.messages.write(channel, {
 						components: [
@@ -331,6 +333,7 @@ export default createEvent({
 							suffix: c.suffix,
 						}));
 					}
+					eligibleToProcess = true;
 				} else {
 					// tag data is in cache, parse
 					try {
