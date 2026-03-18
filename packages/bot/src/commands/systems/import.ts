@@ -29,11 +29,11 @@ export default class ImportCommand extends SubCommand {
 			}, undefined, undefined, ctx);
 		}
 
-		return await ctx.editResponse({
+		return await ctx.ephemeral({
 			components: new SystemSettingsView(ctx.userTranslations()).importSettings(
 				user.system,
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+		}, undefined, undefined, ctx);
 	}
 }
