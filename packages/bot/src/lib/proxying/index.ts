@@ -27,6 +27,7 @@ import type {
 	PWebhook,
 } from "@/events/on-message-create";
 import { createError } from "../create-error";
+import { getColor } from "colorthief";
 
 export const imageOrVideoExtensions = [
 	".png",
@@ -196,8 +197,20 @@ export async function proxy(
 								alterId,
 								systemId,
 							});
+							let color = "Green";
 
 							if (!guild.logChannel) return;
+
+							try {
+								const image = await (
+									await fetch(
+										`https://wsrv.nl?url=${alter?.avatarUrlMap[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png"}`,
+										{ signal: AbortSignal.timeout(3000) },
+									)
+								).arrayBuffer();
+
+								color = (await getColor(image))?.hex() ?? "Green"
+							} catch (_) {}
 
 							await client.messages
 								.write(guild.logChannel, {
@@ -217,7 +230,7 @@ export async function proxy(
 													)
 													.setAccessory(
 														new Thumbnail().setMedia(
-															alter?.avatarUrl ??
+															alter?.avatarUrlMap[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ??
 																"https://cdn.discordapp.com/embed/avatars/0.png",
 														),
 													),
@@ -233,7 +246,7 @@ export async function proxy(
 -# Proxied message as: \`${message.id}\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 											)
-											.setColor("Green"),
+											.setColor(color as `#${string}` | "Green"),
 									],
 									flags: MessageFlags.IsComponentsV2,
 									allowed_mentions: { parse: [] },
@@ -255,7 +268,7 @@ export async function proxy(
 								"PluralBuddy attempted to send a proxied log message, but failed, maybe due to a lack of permission.",
 							responsibleChannelId: guild.logChannel ?? undefined,
 							type: "FailedLogging",
-						})
+						});
 					}
 
 					if (sentMessage?.id) {

@@ -30,6 +30,7 @@ import { processEmojis } from "@/lib/proxying/process-emojis";
 import { processUrlIntegrations } from "@/lib/proxying/process-url-attachments";
 import { createError } from "@/lib/create-error";
 import { getGuildFromId } from "@/types/guild";
+import { getColor } from "colorthief";
 
 const options = {
 	"alter-name": createStringOption({
@@ -254,6 +255,21 @@ export default class SystemCommand extends Command {
 					const guild = await getGuildFromId(ctx.guildId ?? "");
 					const user = await client.users.fetch(ctx.author.id);
 
+					let color = "Green";
+
+					if (!guild.logChannel) return;
+
+					try {
+						const image = await (
+							await fetch(
+								`https://wsrv.nl?url=${alter?.avatarUrlMap[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png"}`,
+								{ signal: AbortSignal.timeout(3000) },
+							)
+						).arrayBuffer();
+
+						color = (await getColor(image))?.hex() ?? "Green"
+					} catch (_) {}
+
 					if (!guild.logChannel) return;
 
 					await client.messages
@@ -286,7 +302,7 @@ export default class SystemCommand extends Command {
 -# Proxied via: /proxy
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 									)
-									.setColor("Green"),
+									.setColor(color as `#${string}` | "Green" ?? "Green"),
 							],
 							flags: MessageFlags.IsComponentsV2,
 							allowed_mentions: { parse: [] },
