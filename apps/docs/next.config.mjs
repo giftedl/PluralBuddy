@@ -13,6 +13,11 @@ const config = {
 		// TypeScript is strictly for IDE support for the frontend.
 		ignoreBuildErrors: true,
 	},
+	experimental: {
+		serverActions: {
+			bodySizeLimit: "5mb"
+		}
+	}
 };
 
 export default withMDX(config);

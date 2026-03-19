@@ -76,9 +76,11 @@ export default class EditAlterPrivacyCommand extends SubCommand {
             newPublic = newPublic & ~flagValue;
         }
 
-        await alterCollection.updateOne(
-            { alterId: alter.alterId },
-            { $set: { public: newPublic } },
+               await createPartialAlterOperation(
+            { public: newPublic },
+            alter,
+            ctx.userTranslations(),
+            "discord",
         );
     
 

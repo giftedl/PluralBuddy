@@ -66,7 +66,7 @@ export default class ImportMode extends ComponentCommand {
 								.setStyle(ButtonStyle.Link)
 								.setLabel("View on Dashboard"),
 						),
-					new TextDisplay().setContent("-# Waiting for response..."),
+					new TextDisplay().setContent("-# Waiting for response...\n-# This expires in 15 minutes."),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

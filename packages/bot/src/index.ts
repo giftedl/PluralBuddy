@@ -138,6 +138,7 @@ setInterval(() => {
 							(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
 						) {
 							await message.delete();
+							delete indexingMessageMap[user]
 						}
 					}
 				}, 4000);
