@@ -262,7 +262,7 @@ export default class SystemCommand extends Command {
 					try {
 						const image = await (
 							await fetch(
-								`https://wsrv.nl?url=${alter?.avatarUrlMap[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png"}`,
+								`https://wsrv.nl?url=${(alter?.avatarUrlMap ?? {})[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png"}`,
 								{ signal: AbortSignal.timeout(3000) },
 							)
 						).arrayBuffer();
