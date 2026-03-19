@@ -27,8 +27,7 @@ export const auth = betterAuth({
 			clientId: process.env.CLIENT_ID as string,
 			clientSecret: process.env.CLIENT_SECRET as string,
 			
-			// @ts-ignore
-			prompt: "none&integration_type=1",
+			prompt: "none&integration_type=1" as 'none',
 			overrideUserInfoOnSignIn: true,
 			disableDefaultScope: true,
 			scope: ["identify", "applications.commands"],
