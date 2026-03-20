@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { ParseGlobalMiddlewares, ParseMiddlewares } from "seyfert";
+import type { ParseGlobalMiddlewares, ParseMiddlewares, ParseClient, Client } from "seyfert";
 import type { extendedContext } from "./extended-context";
 import type { middlewares } from "./middleware";
 import type { StatisticResource } from "./cache/statistics";
@@ -16,6 +16,8 @@ declare module "seyfert" {
 		similarWebhookResource: SimilarWebhookResource;
 		pguild: PGuildCache;
 	}
+
+	interface UsingClient extends ParseClient<Client<true>> {}
 
 	// Register the middlewares on seyfert types
 	interface RegisteredMiddlewares

@@ -26,9 +26,12 @@ import api from "./api";
 import { indexingMessageMap } from "./events/on-message-create";
 import type { ContainerComponent } from "seyfert/lib/components/Container";
 import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
+import { startStatisticalTimer } from "./analytics";
+import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 
-export const buildNumber = 2533;
+export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
+	"latency",
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
 	"serverBlacklist",
@@ -101,77 +104,9 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
 
-const guildCount = (await client.guilds.list({}, true)).length;
-const guilds = (await client.guilds.list({}, true)) ?? [];
-let userCount = 0;
-for (const unfetchedGuild of guilds.values()) {
-	const guild = await unfetchedGuild.fetch();
+startIndexingCleanupTimer();
+startStatisticalTimer();
 
-	if (guild.members) {
-		userCount += guild.memberCount ?? 0;
-	}
-}
-setInterval(() => {
-	for (const [user, message] of Object.entries(indexingMessageMap)) {
-		if (
-			message.components[0] &&
-			message.components[0].type === ComponentType.Container
-		) {
-			const container = message.components[0] as ContainerComponent;
-
-			if (
-				container.components[0] &&
-				container.components[0].type === ComponentType.TextDisplay &&
-				(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
-			) {
-				setTimeout(async () => {
-					const newMessage = await message.fetch();
-					if (
-						newMessage.components[0] &&
-						newMessage.components[0].type === ComponentType.Container
-					) {
-						const container = newMessage.components[0] as ContainerComponent;
-
-						if (
-							container.components[0] &&
-							container.components[0].type === ComponentType.TextDisplay &&
-							(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
-						) {
-							await message.delete();
-							delete indexingMessageMap[user]
-						}
-					}
-				}, 4000);
-			}
-		}
-	}
-}, 4000);
-
-setInterval(
-	async () => {
-		const guildCount = (await client.guilds.list({}, true)).length;
-		const guilds = (await client.guilds.list({}, true)) ?? [];
-		let userCount = 0;
-		for (const unfetchedGuild of guilds.values()) {
-			const guild = await unfetchedGuild.fetch();
-
-			if (guild.members) {
-				userCount += guild.memberCount ?? 0;
-			}
-		}
-
-		await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
-			guildCount,
-			userCount,
-		});
-	},
-	1000 * 60 * 10,
-);
-
-await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
-	guildCount,
-	userCount,
-});
-
+// API
 export type { ClientType } from "./api-types";
 export default api;

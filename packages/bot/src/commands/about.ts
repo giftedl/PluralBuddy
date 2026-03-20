@@ -11,7 +11,7 @@ import { AlertView } from "@/views/alert";
     name: "about",
     description: "PluralBuddy!",
     contexts: ["BotDM", "Guild"],
-    aliases: ["info", "ping"]
+    aliases: ["info"]
 })
 export default class SystemCommand extends Command {
     override async run(ctx: CommandContext) {
