@@ -18,9 +18,26 @@ import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut } from "@/components/auth/signed-in";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 
 export function AuthComponents({ style }: { style: "main" | "docs" }) {
 	const session = authClient.useSession();
+
+	if (session.isPending)
+		return (
+			<button
+				aria-label="Sign In"
+				className={cn(
+					buttonVariants({ size: "icon-sm", color: "ghost" }),
+					"cursor-pointer",
+					style === "main" ? "border size-[36px]" : "",
+				)}
+				type="button"
+				disabled
+			>
+				<Spinner />
+			</button>
+		);
 
 	return (
 		<>
