@@ -64,6 +64,8 @@ export default class SystemCommand extends Command {
 				systemId: otherSystemId,
 			});
 		} else {
+			try {
+
 			// Otherwise, query for current user's alters
 			query = Number.isNaN(Number.parseInt(alterName))
 				? ((await alterCollection.findOne({
@@ -86,7 +88,14 @@ export default class SystemCommand extends Command {
 						],
 						systemId,
 					})));
+			} catch(_) {
+				return await ctx.ephemeral({
+					components: new AlertView(ctx.userTranslations()).errorView("MONGO_REGEX_ERROR"),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
+				}, undefined, undefined, ctx)
+			}
 		}
+		
 		const alter = await query;
 
 		if (alter === null && userAlterMatch) {

@@ -288,6 +288,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	ALTER_DELETE_DESC:
 		"Deleting an alter will completely remove the alter from the system without the option to undo.",
 
+	MONGO_REGEX_ERROR: "This is not a valid regular expression. If you are using ( or ) or *, you should try adding a backslash infront.",
 	PFP_SUCCESS: "Successfully updated the profile picture for @%alter%.",
 	BANNER_SUCCESS: "Successfully updated the banner for @%alter%.",
 	NOT_A_CATEGORY: "This isn't a category.",
