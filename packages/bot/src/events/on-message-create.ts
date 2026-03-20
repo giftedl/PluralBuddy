@@ -196,6 +196,7 @@ export default createEvent({
 		);
 
 		if (user.system === undefined) return;
+		if (user.blacklisted) return;
 		if (user.system.disabled) return;
 		if (
 			user.system.systemAutoproxy.some(
