@@ -55,15 +55,15 @@ Alters have two different ways of expressing "proxying" on PluralBuddy:
 You can set the current proxying mode on an alter by using corresponding alter commands.
 
 ```
-pbc;edit-alter proxy-mode solar webhook
-pbc;edit-alter proxy-mode solar nickname
-pbc;edit-alter proxy-mode solar both
+pb;edit-alter proxy-mode solar webhook
+pb;edit-alter proxy-mode solar nickname
+pb;edit-alter proxy-mode solar both
 ```
 
 You can also set proxy tags, which are ways to specify based on a messages content when a certain alter is supposed to be proxying. For example, you can use a proxy tag like `text -solar`, which means any text with `-solar` at the end will be proxying under that alter. This also works the same way for suffixes.
 
 ```
-pbc;edit-alter add-proxy-tags solar
+pb;edit-alter add-proxy-tags solar
 ```
 
 ## Set a banner and avatar
@@ -71,8 +71,8 @@ pbc;edit-alter add-proxy-tags solar
 When proxying as an alter, you can also have an avatar that appears in the webhook when a message is sent. You can also have a banner that appears in the profile of your alter.
 
 ```
-pbc;edit-alter avatar solar https://pb.giftedly.dev/image/solar.png
-pbc;edit-alter banner solar https://link.to.website/
+pb;edit-alter avatar solar https://pb.giftedly.dev/image/solar.png
+pb;edit-alter banner solar https://link.to.website/
 ```
 
 <Callout type="warning" title="Storage Limitations">
