@@ -18,7 +18,7 @@ export async function GET(
 	const { user } = await params;
 
 	const oauthResponse = await authenticateOAuth(request, [
-		"alters:read",
+		"tags:read",
 		"system:admin",
 	]);
 
