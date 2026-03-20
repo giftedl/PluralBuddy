@@ -48,6 +48,9 @@ export function Footer() {
 								<li className="inline-flex mb-2 text-sm font-semibold text-primary">
 									Documentation
 								</li>
+								<FooterItem link="/">
+									Home
+								</FooterItem>
 								<FooterItem link="/docs/pluralbuddy/get-started">
 									Getting Started
 								</FooterItem>

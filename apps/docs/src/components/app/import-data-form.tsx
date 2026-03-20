@@ -52,7 +52,7 @@ import { Label } from "../ui/label";
 import { Callout } from "../callout";
 import { markImportStagingDone } from "@/app/(app)/app/import-staging/actions";
 import { useRouter } from "next/navigation";
-import Spinner from "../ui/spinner";
+import {Spinner} from "../ui/spinner";
 
 const formSchema = z.object({
 	from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {

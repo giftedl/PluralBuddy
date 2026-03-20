@@ -3,9 +3,9 @@
 
 import { scopeList } from "@/components/devs/create-new-app-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { buttonVariants } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/shadcn-button";
 import {
 	Tooltip,
 	TooltipContent,
@@ -108,10 +108,9 @@ export default function ConsentPage() {
 					</div>
 
 					<div className="flex items-center w-full gap-2">
-						<button
+						<Button
 							type="button"
 							className={cn(
-								buttonVariants({ variant: "outline" }),
 								"gap-1 w-full",
 							)}
 							onClick={async () => {
@@ -123,16 +122,15 @@ export default function ConsentPage() {
 								if (res.error) toast.error("Error while denying consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect) router.push(res.data.uri);
+									if (res.data.redirect) router.push(res.data.url);
 								}
 							}}
 						>
 							Deny
-						</button>
-						<button
+						</Button>
+						<Button
 							type="button"
 							className={cn(
-								buttonVariants({ variant: "primary" }),
 								"gap-1 w-full",
 							)}
 							onClick={async () => {
@@ -145,12 +143,12 @@ export default function ConsentPage() {
 									toast.error("Error while accepting consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect) router.push(res.data.uri);
+									if (res.data.redirect) router.push(res.data.url);
 								}
 							}}
 						>
 							Accept
-						</button>
+						</Button>
 					</div>
 				</Card>
 			)}

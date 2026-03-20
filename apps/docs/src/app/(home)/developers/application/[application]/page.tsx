@@ -6,9 +6,8 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/animate-ui/components/radix/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
 import { EllipsisIcon, Pencil, Trash, X } from "lucide-react";
 import Link from "next/link";
 import { DeleteAppForm } from "@/components/devs/delete-app-form";
@@ -33,7 +32,7 @@ import {
 import { Button } from "@/components/ui/shadcn-button";
 import { Badge } from "@/components/ui/badge";
 import { RedirectURLs } from "@/components/devs/redirect-urls";
-import type { Metadata, Viewport } from "next";
+import type { Metadata, ResolvingMetadata, Viewport } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { DiscordLoginComponent } from "@/components/discord-login";
@@ -57,7 +56,7 @@ export default async function ApplicationPage({
 	if (session === null) {
 		return <DiscordLoginComponent />;
 	}
-	
+
 	const { application } = await params;
 	const apps = await auth.api.getOAuthClients({
 		// This endpoint requires session cookies.
@@ -84,15 +83,13 @@ export default async function ApplicationPage({
 				</div>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<button
+						<Button
 							type="button"
-							className={cn(
-								buttonVariants({ variant: "outline" }),
-								"inline-flex items-center gap-1",
-							)}
+							variant="outline"
+							className={cn("inline-flex items-center gap-1")}
 						>
 							<EllipsisIcon size={16} />
-						</button>
+						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
 						<DeleteAppForm application={app}>
