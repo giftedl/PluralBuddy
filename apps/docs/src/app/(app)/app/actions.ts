@@ -37,5 +37,5 @@ export async function getAvailableAlters({
 		.limit(max)
 		.toArray();
 
-	return applicationsList;
+	return applicationsList.map(v => { let {_id, ...c} = v; return c;});
 }
