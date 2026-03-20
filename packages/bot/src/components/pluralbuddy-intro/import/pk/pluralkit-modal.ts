@@ -305,6 +305,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			system: systemData,
 		});
 
+		console.log(parsedSafe
+			.filter((v) => v.zodData.error !== undefined).map(v => v.zodData.error))
+
 		return await ctx.editResponse({
 			components: [
 				...new AlertView(
