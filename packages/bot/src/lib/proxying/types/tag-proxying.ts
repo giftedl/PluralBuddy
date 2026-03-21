@@ -221,9 +221,18 @@ export async function performTagProxy(
 				(a, b) => a.position - b.position,
 			)[0];
 			if (topPositionRole) {
-				const guildPositionRole = guild.rolePreferences.find(
-					(c) => topPositionRole.id === c.roleId,
-				);
+				const sortedRolePreferences = guild.rolePreferences
+					.slice()
+					.sort((a, b) => {
+						const aRole = client.cache.roles?.get(a.roleId);
+						const bRole = client.cache.roles?.get(b.roleId);
+
+						return (bRole?.position ?? -1) - (aRole?.position ?? -1);
+					});
+
+					console.log(sortedRolePreferences)
+				const guildPositionRole =
+					sortedRolePreferences.find((c) => c.roleId === topPositionRole.id);
 
 				if (
 					guildPositionRole &&

@@ -251,7 +251,7 @@ export default createEvent({
 			const indexingTimeout = setTimeout(async () => {
 				const channel = message.channelId;
 
-				if (eligibleToProcess)
+				if (eligibleToProcess && process.env.REDIS)
 				try {
 					indexingMessage = await message.client.messages.write(channel, {
 						components: [
