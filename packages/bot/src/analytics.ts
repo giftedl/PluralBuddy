@@ -4,6 +4,7 @@ import {
 	alterCollection,
 	analyticsCollection,
 	guildCollection,
+	messagesCollection,
 	tagCollection,
 	userCollection,
 } from "./mongodb";
@@ -16,6 +17,7 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 	const tags = await tagCollection.countDocuments();
 	const systems = await userCollection.countDocuments();
 	const configuredGuilds = await guildCollection.countDocuments();
+	const messages = await messagesCollection.countDocuments();
 
 	const guilds = (await client.guilds.list({with_counts: true}, true)) ?? [];
 
@@ -49,9 +51,11 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 		0,
 	) / latencyDataPoints.length;
 	latencyDataPoints = [];
+
 	return {
 		alterCount: alters,
 		guildCount: guilds.length,
+		messageCount: messages,
 		configuredGuildCount: configuredGuilds,
 		systemCount: systems,
 		totalMemberCount: userCount,

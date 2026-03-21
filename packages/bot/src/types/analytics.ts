@@ -2,6 +2,7 @@ import z from "zod";
 
 export const PAnalytics = z.object({
     alterCount: z.number(),
+    messageCount: z.number(),
     guildCount: z.number(),
     configuredGuildCount: z.number(),
     totalMemberCount: z.number(),
