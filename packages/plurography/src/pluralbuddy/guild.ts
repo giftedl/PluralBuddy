@@ -4,7 +4,7 @@ import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import z, { date } from "zod";
 
 export const defaultPrefixes = {
-	canary: ["pb;", "pbc!"],
+	canary: ["pbc;", "pbc!"],
 	production: ["pb;", "pb!", "Pb;", "Pb!", "pB;", "pB!", "PB;", "PB!"],
 };
 
