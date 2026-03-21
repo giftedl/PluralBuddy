@@ -44,17 +44,18 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 
 	console.log("2")
 
+	const latency = latencyDataPoints.reduce(
+		(accumulator, currentValue) => accumulator + currentValue,
+		0,
+	) / latencyDataPoints.length;
+	latencyDataPoints = [];
 	return {
 		alterCount: alters,
 		guildCount: guilds.length,
 		configuredGuildCount: configuredGuilds,
 		systemCount: systems,
 		totalMemberCount: userCount,
-		discordApiLatency:
-			latencyDataPoints.reduce(
-				(accumulator, currentValue) => accumulator + currentValue,
-				0,
-			) / latencyDataPoints.length,
+		discordApiLatency: latency,
 		date: new Date(),
 		shardCount: client.gateway.totalShards,
 		channelCount,
