@@ -12,12 +12,12 @@ import { MessageFlags } from "seyfert/lib/types";
 @Declare({
 	name: "who-asked",
 	description: "Like genuinely, who asked",
-	guildId: process.env.BRANCH === "canary" ? [] : ["1077258761443483708", "1444187699924963350"],
+	guildId: process.env.BRANCH === "canary" ? [] : ["1077258761443483708", "1444187699924963350", "1424933876723224640"],
 })
 export default class WhoAskedCommand extends Command {
 	override async run(ctx: CommandContext) {
         await ctx.deferReply();
-		return ctx.write({
+		return ctx.editResponse({
 			components: [
 				new Container().setComponents(
 					new MediaGallery().setItems(
