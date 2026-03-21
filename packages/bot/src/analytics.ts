@@ -17,8 +17,7 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 	const systems = await userCollection.countDocuments();
 	const configuredGuilds = await guildCollection.countDocuments();
 
-	const guildCount = (await client.guilds.list({}, true)).length;
-	const guilds = (await client.guilds.list({}, true)) ?? [];
+	const guilds = (await client.guilds.list({with_counts: true}, true)) ?? [];
 
 	if (latencyDataPoints.length === 0)
 		// No applicable data
@@ -29,18 +28,17 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 
 	console.log("1")
 
-	for (const unfetchedGuild of guilds.values()) {
-		const guild = await unfetchedGuild.fetch();
+	for (const guild of guilds) {
 		const channels = await client.cache.channels?.values(guild.id);
 
-		if (guild.members) {
-			userCount += guild.memberCount ?? 0;
+		if (((guild as unknown as { approximateMemberCount: number }).approximateMemberCount)) {
+			userCount += ((guild as unknown as { approximateMemberCount: number }).approximateMemberCount) ?? 0;
 		}
 		if (channels) channelCount += channels.length;
 	}
 
 	await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
-		guildCount,
+		guildCount: guilds.length,
 		userCount,
 	});
 
@@ -48,7 +46,7 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 
 	return {
 		alterCount: alters,
-		guildCount,
+		guildCount: guilds.length,
 		configuredGuildCount: configuredGuilds,
 		systemCount: systems,
 		totalMemberCount: userCount,
