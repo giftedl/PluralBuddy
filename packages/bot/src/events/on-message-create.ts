@@ -48,6 +48,7 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
+import { latencyDataPoints } from "@/analytics";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -84,6 +85,11 @@ export type PWebhook = {
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message: Message) => {
+		latencyDataPoints.push(
+			Date.now() -
+				// @ts-ignore
+				message.createdTimestamp,
+		);
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
 		if (message.content === `<@${message.client.applicationId}>`) {
