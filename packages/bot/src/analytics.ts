@@ -69,9 +69,9 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 
 export function startStatisticalTimer() {
 	// Run first as a test run
-	(async () => {
-		await analyticsCollection.insertOne(await gatherStatisticalData());
-	})();
+	// (async () => {
+	// 	await analyticsCollection.insertOne(await gatherStatisticalData());
+	// })();
 
 	setInterval(
 		async () => {
