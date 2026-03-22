@@ -12,10 +12,12 @@ export const PUserObject = z.object({
     blacklisted: z.boolean().default(false),
     nudging: z.object({
         blockedUsers: z.string().array(),
-        currentlyEnabled: z.boolean()
+        currentlyEnabled: z.boolean(),
+        dmReply: z.boolean().default(false),
     }).default({
         blockedUsers: [],
-        currentlyEnabled: true
+        currentlyEnabled: true,
+        dmReply: false,
     })
 })
 
@@ -28,7 +30,8 @@ export const defaultUserStructure = (userId: string) => {
         storagePrefix: assetStringGeneration(8),
         nudging: {
             blockedUsers: [],
-            currentlyEnabled: true
+            currentlyEnabled: true,
+            dmReply: false
         }
     } satisfies PUser
 }

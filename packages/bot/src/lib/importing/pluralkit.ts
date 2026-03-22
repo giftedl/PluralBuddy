@@ -269,7 +269,6 @@ export async function add(
 		.map((v) => v.zodData)
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
-	console.log(newAlters)
 
 	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
 

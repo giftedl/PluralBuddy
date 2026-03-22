@@ -23,7 +23,7 @@ export class NudgePreferences extends TranslatedView {
 					.setAccessory(
 						new Button()
 							.setLabel(
-								(user.nudging ?? {currentlyEnabled: true}).currentlyEnabled
+								(user.nudging ?? { currentlyEnabled: true }).currentlyEnabled
 									? "Disable Nudging"
 									: "Enable Nudging",
 							)
@@ -36,12 +36,31 @@ export class NudgePreferences extends TranslatedView {
 						),
 					),
 				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.setComponents(
+						new TextDisplay().setContent(
+							"DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
+						),
+					)
+					.setAccessory(
+						new Button()
+							.setCustomId(InteractionIdentifier.Nudge.ToggleDMReplies.create("false"))
+							.setStyle(ButtonStyle.Primary)
+							.setLabel(
+								user.nudging.dmReply
+									? `Disable DM Replies`
+									: "Enable DM Replies",
+							),
+					),
+				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`You can block users from nudging you specifically. Currently, you have ${(user.nudging ?? {blockedUsers: []}).blockedUsers.length} user(s) blocked.`,
+					`You can block users from nudging you specifically. Currently, you have ${((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? []).length} user(s) blocked.`,
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel(`${(user.nudging ?? {blockedUsers: []}).blockedUsers.length >= 100 ? "Export" : "View"} Nudge Blocklist`)
+						.setLabel(
+							`${((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? []).length >= 100 ? "Export" : "View"} Nudge Blocklist`,
+						)
 						.setCustomId(InteractionIdentifier.Nudge.ExportBlockList.create())
 						.setStyle(ButtonStyle.Primary),
 					new Button()

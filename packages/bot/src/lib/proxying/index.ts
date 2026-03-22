@@ -278,7 +278,7 @@ export async function proxy(
 							message,
 							sentMessage.id,
 							stringContents,
-							reply,
+							[...reply],
 							mainContents,
 							fileAttachments,
 							uploadedEmojis,

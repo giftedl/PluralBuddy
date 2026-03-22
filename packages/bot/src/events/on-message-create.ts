@@ -49,6 +49,7 @@ import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
 import { latencyDataPoints } from "@/analytics";
+import { handleDMReply } from "@/lib/proxying/dm-replying";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -90,6 +91,7 @@ export default createEvent({
 				// @ts-ignore
 				message.createdTimestamp,
 		);
+		handleDMReply(message);
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
 		if (message.content === `<@${message.client.applicationId}>`) {

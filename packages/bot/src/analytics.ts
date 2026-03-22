@@ -28,8 +28,6 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 	let userCount = 0;
 	let channelCount = 0;
 
-	console.log("1")
-
 	for (const guild of guilds) {
 		const channels = await client.cache.channels?.values(guild.id);
 
@@ -43,8 +41,6 @@ export async function gatherStatisticalData(): Promise<PAnalytics> {
 		guildCount: guilds.length,
 		userCount,
 	});
-
-	console.log("2")
 
 	const latency = latencyDataPoints.reduce(
 		(accumulator, currentValue) => accumulator + currentValue,

@@ -100,11 +100,12 @@ export const InteractionIdentifier = {
 	},
 	Nudge: {
 		Snooze: createStatic("nudge/snooze"),
-		ToggleNudge: createStatic("nudge/toggle"),
+		ToggleNudge: createStatic("nudge/toggle-nudge"),
 		BlockUser: createFromAdditionalArg("nudge/block"),
 		ExportBlockList: createStatic("nudge/export-block-list"),
 		RemoveBlock: createStatic("nudge/remove"),
 		AddBlock: createStatic("nudge/add"),
+		ToggleDMReplies: createFromAdditionalArg("nudge/toggle-dm-replies"),
 
 		RemoveNudgeForm: createStatic("nudge/set-form/remove"),
 		RemoveNudgeType: createStatic("nudge/type-form/remove"),

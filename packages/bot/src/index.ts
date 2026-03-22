@@ -3,10 +3,17 @@
  *  - is licensed under MIT License.
  */
 
-import { CacheFrom, Client, Container, MemoryAdapter } from "seyfert";
+import {
+	ActionRow,
+	Button,
+	CacheFrom,
+	Client,
+	Container,
+	MemoryAdapter,
+} from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import { ComponentType, MessageFlags } from "seyfert/lib/types";
+import { ButtonStyle, ComponentType, MessageFlags } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
 import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
@@ -28,6 +35,7 @@ import type { ContainerComponent } from "seyfert/lib/components/Container";
 import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import { startStatisticalTimer } from "./analytics";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
+import { emojis } from "./lib/emojis";
 
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
@@ -59,7 +67,14 @@ export const client = new Client({
 		},
 		reply: (ctx) => true,
 		deferReplyResponse: (ctx) => ({
-			components: new LoadingView(ctx.userTranslations()).loadingView(),
+			components: [
+				new ActionRow().setComponents(
+					new Button()
+						.setCustomId("loading")
+						.setEmoji(emojis.loading)
+						.setStyle(ButtonStyle.Secondary),
+				),
+			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		}),
 		defaults: new PluralBuddyErrorCommand(),

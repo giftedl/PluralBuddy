@@ -136,7 +136,6 @@ export const clientRoutes = app
 		async ({ req, json }) => {
 			const { method, changedOperation, oldSystem } = req.valid("json");
 
-			console.log(method)
 			createSystemOperation(
 				oldSystem,
 				changedOperation,

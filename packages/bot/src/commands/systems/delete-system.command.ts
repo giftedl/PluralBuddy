@@ -153,7 +153,6 @@ export default class SetupCommand extends SubCommand {
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				});
 				setTimeout(async () => {
-					console.log("ok go");
 					message.editMessage({
 						components: [
 							new Container()

@@ -230,7 +230,6 @@ export async function performTagProxy(
 						return (bRole?.position ?? -1) - (aRole?.position ?? -1);
 					});
 
-					console.log(sortedRolePreferences)
 				const guildPositionRole =
 					sortedRolePreferences.find((c) => c.roleId === topPositionRole.id);
 
