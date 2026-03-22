@@ -150,7 +150,7 @@ ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"]
 			body: {
 				components: [
 					...reply,
-					...(hasTextContent ? mainContents : []),
+					...(hasTextContent ? mainContents : mainContents[0]?.data.type === ComponentType.Container ? [mainContents[0]] : []),
 					...(urlAttachments.length > 0
 						? [
 								new MediaGallery().addItems(
