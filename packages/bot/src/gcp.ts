@@ -7,7 +7,7 @@ export async function getGcpAccessToken() {
 
 	// 1. Gather credentials
 	const clientEmail = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
-	let privateKey = process.env.GCP_SERVICE_ACCOUNT_PRIVATE_KEY ?? "";
+	let privateKey = (process.env.GCP_SERVICE_ACCOUNT_PRIVATE_KEY?.replace("\\n", "\n")) ?? "";
 
 	// a. Fix escaped newlines for multiline key
 	privateKey = privateKey.replace(/\\n/g, "\n");
