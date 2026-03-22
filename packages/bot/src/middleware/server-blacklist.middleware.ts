@@ -24,7 +24,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		if (blacklistedCategories.includes(channel.parentId ?? "")) {
 			return await ctx.write({
 				components: new AlertView(ctx.userTranslations()).errorView(
-					"FEATURE_DISABLED_GUILD",
+					"FEATURE_DISABLED_CHANNEL",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
@@ -36,7 +36,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 	) {
 		return await ctx.write({
 			components: new AlertView(ctx.userTranslations()).errorView(
-				"FEATURE_DISABLED_GUILD",
+				"FEATURE_DISABLED_CHANNEL",
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

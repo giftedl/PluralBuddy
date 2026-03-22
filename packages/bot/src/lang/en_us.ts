@@ -436,6 +436,7 @@ Systems can have **privacy values** which are values that describe who can see w
 		"All systems will no longer be required to enable system tags to proxy.",
 	ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
 	FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
+	FEATURE_DISABLED_CHANNEL: "This channel is disabled from using PluralBuddy.",
 	LOGGING_CHANNEL_SET:
 		"Successfuly set that channel as a logging channel for this guild.",
 	ROLE_PREFERENCE_ALREADY_EXISTS: "That role preference already exists.",
