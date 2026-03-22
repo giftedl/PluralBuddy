@@ -333,6 +333,7 @@ Systems can have **privacy values** which are values that describe who can see w
 		"Successfully updated %value-count% value(s) as result of an undo action.",
 	NEW_ROLE_PREF: "Creating Role Preference...",
 	ROLE_USAGE: "Role",
+	UNABLE_TO_BE_FUNNY: "You are not permitted to use the funny commands.",
 
 	ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
 %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
