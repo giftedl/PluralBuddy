@@ -42,6 +42,7 @@ export default class WhoAskedCommand extends Command {
 					.setFile("path", "content/easter-eggs/who_asked.mov"),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			allowed_mentions: { parse: [] }
 		});
 	}
 }

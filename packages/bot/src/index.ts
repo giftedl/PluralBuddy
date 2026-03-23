@@ -77,6 +77,7 @@ export const client = new Client({
 				),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			allowed_mentions: { parse: [] }
 		}),
 		defaults: new PluralBuddyErrorCommand(),
 	},
