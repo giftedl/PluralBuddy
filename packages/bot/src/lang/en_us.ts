@@ -393,7 +393,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	ERROR_OWN_MESSAGE:
 		"2c – You do not own this message or this wasn't sent by PluralBuddy.",
 	NOT_RECENT_ENOUGH:
-		"2z – You do not have a message in this channel recent enough in this channel.",
+		"2z – You do not have a message in this channel recent enough in this channel __**or**__ the message you replied to isn't valid anymore.",
 	DISABLE_NUDGING_DONE: "Successfully disabled nudging for yourself.",
 	USER_CANNOT_BE_NUDGED: "2aa – This user cannot be nudged.",
 	USER_ALREADY_BLOCKED: "2ab – This user has already been blocked.",
@@ -442,6 +442,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	ROLE_PREFERENCE_ALREADY_EXISTS: "That role preference already exists.",
 	ROLE_PREFERENCE_DOESNT_EXIST: "That role preference doesn't exist.",
 	ROLE_PREFERENCE_SEARCH: "Searching Roles",
+	REPROXIED_MESSAGE: "Successfully reproxied the message.",
 	ERRORS_SEARCH: "Searching Errors",
 	ROLE_CONTENTS: "Role Container Contents",
 	ROLE_COLOR: "Role Container Color",

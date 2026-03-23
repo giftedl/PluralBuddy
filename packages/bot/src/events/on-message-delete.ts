@@ -3,10 +3,14 @@ import { createEvent, Message } from "seyfert";
 import { client } from "..";
 import { getSimilarWebhooks } from "@/lib/proxying/util";
 
+export const pendingIgnoreDeletion = [] as string[];
+
 export default createEvent({
 	data: { name: "messageDelete", once: false },
 	run: async (message) => {
-		await messagesCollection.findOneAndDelete({ messageId: message.id});
+		if (!pendingIgnoreDeletion.includes(message.id))
+			await messagesCollection.findOneAndDelete({ messageId: message.id});
+
 		const referencedMessages = await messagesCollection
 			.find({
 				referencedMessage: message.id,

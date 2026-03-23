@@ -31,6 +31,7 @@ import { processUrlIntegrations } from "@/lib/proxying/process-url-attachments";
 import { createError } from "@/lib/create-error";
 import { getGuildFromId } from "@/types/guild";
 import { getColor } from "colorthief";
+import { getSimilarWebhooks } from "@/lib/proxying/util";
 
 const options = {
 	"alter-name": createStringOption({
@@ -103,6 +104,10 @@ export default class SystemCommand extends Command {
 			true,
 		);
 
+		const channel = await ctx.channel();
+		const parent =
+			"parentId" in channel && channel.isThread() ? channel.parentId : null;
+
 		const system = (await ctx.retrievePUser()).system;
 
 		if (!userPerms.has(["ManageWebhooks", "ManageMessages"]))
@@ -135,13 +140,7 @@ export default class SystemCommand extends Command {
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 
-		const similarWebhooks = (
-			await client.webhooks.listFromChannel(ctx.channelId)
-		).filter(
-			(val) =>
-				val.name === "PluralBuddy Proxy" &&
-				(val.user ?? { id: 0 }).id === client.botId,
-		);
+		const similarWebhooks = await getSimilarWebhooks(parent ?? ctx.channelId);
 		let webhook = null;
 
 		if (similarWebhooks.length >= 1) {
@@ -239,6 +238,7 @@ export default class SystemCommand extends Command {
 				},
 				query: {
 					wait: true,
+					...(parent === null ? {} : {thread_id: ctx.channelId} ),
 				},
 			})
 			.then((sentMessage) => {
@@ -267,7 +267,7 @@ export default class SystemCommand extends Command {
 							)
 						).arrayBuffer();
 
-						color = (await getColor(image))?.hex() ?? "Green"
+						color = (await getColor(image))?.hex() ?? "Green";
 					} catch (_) {}
 
 					if (!guild.logChannel) return;
@@ -302,7 +302,7 @@ export default class SystemCommand extends Command {
 -# Proxied via: /proxy
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 									)
-									.setColor(color as `#${string}` | "Green" ?? "Green"),
+									.setColor((color as `#${string}` | "Green") ?? "Green"),
 							],
 							flags: MessageFlags.IsComponentsV2,
 							allowed_mentions: { parse: [] },

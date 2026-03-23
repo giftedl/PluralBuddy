@@ -37,6 +37,7 @@ import { startStatisticalTimer } from "./analytics";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
 
+
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
