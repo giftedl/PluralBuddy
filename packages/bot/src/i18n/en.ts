@@ -532,5 +532,44 @@ Systems can have **privacy values** which are values that describe who can see w
     PUBLIC_PROFILE_LABEL: "Public Profile",
 
     CONFIGURE_PROFILE_BTN: "Configure Profile",
-	MESSAGE_INFO_CONTENTS: `**Message ID:** {{ messageId }}\n**Sent by:** <@{{ userId }}> ({{ userId }})\n\n**Account Roles ({{ roleCount }})**\n{{ roleList }}`
+	MESSAGE_INFO_CONTENTS: `**Message ID:** {{ messageId }}\n**Sent by:** <@{{ userId }}> ({{ userId }})\n\n**Account Roles ({{ roleCount }})**\n{{ roleList }}`,
+
+	NUDGE_PREF_TITLE: "## Nudge Preferences",
+	ENABLE_NUDGING: "Enable Nudging",
+	DISABLE_NUDGING: "Disable Nudging",
+	NUDGING_DESC: "Nudging allows other users to ping or nudge you based on your alter. You can toggle this setting at any time. Disabling this setting does not take away your ability to nudge others, it only disables the ability for others to nudge you.",
+	DM_REPLIES_DESC: "DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
+	DISABLE_DM: "Disable DM Replies",
+	ENABLE_DM: "Enable DM Replies",
+	BLOCK_USERS_DESC: `You can block users from nudging you specifically. Currently, you have {{ userCount }} user(s) blocked.`,
+	EXPORT_NUDGE_BLOCKLIST: "Export Nudge Blocklist",
+	VIEW_NUDGE_BLOCKLIST: "View Nudge Blocklist",
+	REMOVE_NUDGE_BLOCKED_USER: "Remove User",
+	ADD_NUDGE_BLOCKED_USER: "Add User",
+
+	SP_IMPORT_DESC: `### Step 1: Get a Simply Plural token
+PluralBuddy requires you create a Simply Plural token to import data into PluralBuddy.
+> PluralBuddy only sees your token once. After PluralBuddy gains the data from the Simply Plural data, it is destroyed.
+
+To create a token:
+1. Open navigation menu -> hit the gear
+2. Account -> Tokens
+3. Hit add token and select the "Read" scope
+4. Add token -> Copy the created token.`,
+	ALT_NAV_MENU: "Navigation Menu",
+	ALT_GEAR: "Gear",
+	ALT_ACCOUNTS: "Accounts",
+	ALT_TOKENS: "Tokens",
+	ALT_NEW_TOKEN: "Add new token",
+	ALT_READ_SCOPE: "Read scope",
+	ALT_COPY_TOKEN: "Copy token",
+	SP_STEPTWO_DESC: `### Step 2: Import system contents
+Please paste the system token from SimplyPlural into PluralBuddy.`,
+	SP_UPLOAD: "Upload Token",
+
+	PK_DESC: `### Step 1: Export PluralKit system contents
+You must export your system JSON file from PluralKit to import into PluralBuddy. To do this, either send \`pk;export\` in a server with PluralKit apart of it or just direct message <@466378653216014359> and send \`pk;export\` as a message.`,
+	PK_STEPTWO_DESC: `### Step 2: Import system contents
+Please download the JSON file sent to you and use the button to upload the attachment to PluralBuddy.`,
+	PK_UPLOAD: "Upload JSON"
 }
