@@ -104,6 +104,7 @@ client.setServices({
 				? new MemoryAdapter()
 				: new RedisAdapter({ redisOptions: { url: process.env.REDIS } }),
 	},
+	langs: { default: "en-US" }
 });
 
 await setupMongoDB();
