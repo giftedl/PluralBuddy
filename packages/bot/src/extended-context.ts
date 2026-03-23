@@ -61,6 +61,7 @@ export const extendedContext = extendContext((interaction) => {
 							.setCustomId(`ephemeral-${interaction.id}`),
 					),
 				],
+				allowed_mentions: { replied_user: false }
 			});
 
 			if (!message) return;
