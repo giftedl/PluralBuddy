@@ -7,7 +7,7 @@ import type { PAlter } from "./types/alter";
 import type { POperation } from "./types/operation";
 import type { PMessage } from "./types/message";
 import type { PTag } from "./types/tag";
-import type { PGuildError } from "plurography";
+import type { PAlterOperation, PGuildError } from "plurography";
 import { connectMongo } from "./lib/libby";
 import type { PAnalytics } from "./types/analytics";
 
@@ -18,6 +18,7 @@ export let userCollection: Collection<PUser>;
 export let alterCollection: Collection<PAlter>;
 export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
+export let alterOperationCollection: Collection<PAlterOperation>;
 export let errorCollection: Collection<PGuildError>;
 export let messagesCollection: Collection<PMessage>;
 export let analyticsCollection: Collection<PAnalytics>;
@@ -32,7 +33,9 @@ export async function setupMongoDB() {
 export async function createPeriodicExpirationDates() {
 
     await operationCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 1800 });
+    await alterOperationCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 1800 });
     await errorCollection.createIndex({ createdAt: 1 }, { expireAfterSeconds: 21600 });
+
 
 }
 
@@ -47,6 +50,7 @@ export async function setupDatabases() {
     tagCollection = mainDb.collection("tags")
     errorCollection = mainDb.collection("errors")
     analyticsCollection = mainDb.collection("analytics")
+    alterOperationCollection = mainDb.collection("alter-operations");
 
     await createPeriodicExpirationDates()
 }

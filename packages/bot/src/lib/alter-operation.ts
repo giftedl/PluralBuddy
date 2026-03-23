@@ -2,9 +2,9 @@
 
 import { ActionRow, Button, Container, Section, TextDisplay } from "seyfert";
 import { client } from "..";
-import { operationCollection } from "../mongodb";
+import { alterCollection, alterOperationCollection, operationCollection } from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
-import type { PAlter } from "../types/PartialAlter";
+import type { PAlter } from "../types/alter";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "./interaction-ids";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
@@ -15,8 +15,10 @@ import {
 	listFromMaskAlters,
 } from "./privacy-bitmask";
 import convert from "./delay-converter";
+import type { PAlterOperation } from "plurography";
 
 export async function createPartialAlterOperation(
+	changedAlterId: number,
 	PartialAlter: PAlter,
 	operation: Partial<PAlter>,
 	translations: TranslationString,
@@ -31,111 +33,28 @@ export async function createPartialAlterOperation(
 	const operationDb = {
 		id: operationStringGeneration(40),
 		createdAt: new Date(),
-		oldPartialAlter,
+		oldAlter: oldPartialAlter,
 		changedOperation: operation,
 		changedOperationStrings: Object.keys(operation) as (keyof PAlter)[],
-	} satisfies POperation;
+		changedAlterId: changedAlterId,
+	} satisfies PAlterOperation;
 	const listItems = await Promise.all(
 		operationDb.changedOperationStrings
 			.filter((v) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]))
 			.map(async (c) => {
-				if (c === "PartialAlterName") {
+				if (c === "username") {
 					return translations.OPERATION_CHANGE_NAME.replace(
 						"%name%",
-						operation.PartialAlterName as string,
+						operation.username as string,
 					);
 				}
 				if (c === "public") {
 					return translations.OPERATION_CHANGE_PRIVACY.replace(
 						"%privacy%",
 						(operation.public ?? 0) > 0
-							? `\`${friendlyProtectionPartialAlter(translations, listFromMaskPartialAlters(operation.public ?? 0)).join("`, `")}\``
+							? `\`${friendlyProtectionAlters(translations, listFromMaskAlters(operation.public ?? 0)).join("`, `")}\``
 							: "",
 					);
-				}
-				if (c === "nicknameFormat") {
-					return translations.OPERATION_CHANGE_NICKNAME_FORMAT.replace(
-						"%format%",
-						(operation.nicknameFormat as string) ?? "_Unset_",
-					);
-				}
-				if (c === "disabled") {
-					return operation.disabled
-						? translations.OPERATION_CHANGE_DISABLED
-						: translations.OPERATION_CHANGE_ENABLED;
-				}
-				if (c === "PartialAlterDisplayTag") {
-					return translations.OPERATION_PartialAlter_SET_PartialAlter_TAG.replace(
-						"%tag%",
-						(operation.PartialAlterDisplayTag as string) ?? "_Unset_",
-					);
-				}
-				if (c === "PartialAlterAvatar") {
-					return translations[
-						operation.PartialAlterAvatar === null
-							? "OPERATION_AVATAR_UNDEFINED"
-							: "OPERATION_AVATAR"
-					].replace("%link%", operation.PartialAlterAvatar as string);
-				}
-				if (c === "PartialAlterBanner") {
-					return translations[
-						operation.PartialAlterBanner === null
-							? "OPERATION_BANNER_UNDEFINED"
-							: "OPERATION_BANNER"
-					].replace("%link%", operation.PartialAlterBanner as string);
-				}
-				if (c === "PartialAlterDescription") {
-					return translations.OPERATION_DESCRIPTION.replace(
-						"%description%",
-						((operation.PartialAlterDescription as string) ?? "_Unset_")
-							.split("\n")
-							.join("\n > "),
-					);
-				}
-				if (c === "PartialAlterPronouns") {
-					return translations.OPERATION_PRONOUNS.replace(
-						"%pronouns%",
-						(operation.PartialAlterPronouns as string) ?? "_Unset_",
-					);
-				}
-				if (c === "latchExpiration") {
-					return translations.OPERATION_LATCH_DELAY.replace(
-						"%delay%",
-						operation.latchExpiration
-							? convert(Math.floor(operation.latchExpiration / 1000))
-							: "_Unset_",
-					);
-				}
-				if (c === "displayTagMap") {
-					// Get the added display tag in the map
-					// Find the key in displayTagMap present in operation but not in PartialAlter, or whose value changed.
-					const prevMap = PartialAlter.displayTagMap ?? {};
-					const newMap = operation.displayTagMap ?? {};
-
-					const changes: { server: string; tag: string }[] = [];
-
-					for (const [server, tag] of Object.entries(newMap)) {
-						if (!(server in prevMap) || prevMap[server] !== tag) {
-							changes.push({ server, tag });
-						}
-					}
-
-					if (changes[0]) {
-						const { server, tag } = changes[0];
-						let formalServerName = `\`${server}\``
-						if (environment === "discord")
-							formalServerName = `**${(await client.guilds.fetch(server)).name}**`;
-
-						return translations.OPERATION_CHANGE_SE_TAG.replace(
-							"%server%",
-							formalServerName,
-						).replace("%tag%", tag ?? "_Unset_");
-					}
-					// If somehow no difference, fallback
-					return translations.OPERATION_FALLBACK.replace(
-						"%property%",
-						c,
-					).replace("%value%", "?");
 				}
 
 				return translations.OPERATION_FALLBACK.replace("%property%", c).replace(
@@ -147,21 +66,17 @@ export async function createPartialAlterOperation(
 
 	if (listItems.length === 0) return;
 
-	await operationCollection.insertOne(operationDb);
+	await alterOperationCollection.insertOne(operationDb);
 
 	if (environment === "discord")
-		await writeUserById(PartialAlter.associatedUserId, {
-			...(await getUserById(PartialAlter.associatedUserId)),
-			PartialAlter: {
-				...PartialAlter,
-				...operation,
-			},
-		});
+		await alterCollection.updateOne({ alterId: changedAlterId }, { $set: operation })
 
-	if (!PartialAlter.PartialAlterOperationDM)
+	const user = await getUserById(PartialAlter.systemId)
+
+	if (!user.system?.systemOperationDM)
 		try {
 			const dmChannel = await client.users
-				.createDM(PartialAlter.associatedUserId, true)
+				.createDM(user.userId, true)
 				.catch(() => null);
 
 			if (dmChannel)
@@ -177,11 +92,12 @@ export async function createPartialAlterOperation(
 										.setAccessory(
 											new Button()
 												.setCustomId(
-													InteractionIdentifier.PartialAlters.UndoOperation.create(
+													InteractionIdentifier.Systems.UndoOperation.create(
 														operationDb.id,
 													),
 												)
-												.setLabel("Undo Operation")
+												.setDisabled(true)
+												.setLabel("(currently unsupported)")
 												.setEmoji(emojis.undo)
 												.setStyle(ButtonStyle.Primary),
 										)
