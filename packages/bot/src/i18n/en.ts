@@ -641,5 +641,8 @@ Please download the JSON file sent to you and use the button to upload the attac
 
 There is an example below of what an example proxy with this role would look like:`,
 	CONTENTS_EMPTY: "-# There is no role container for this role as the contents are empty.",
-	EXAMPLE_PROXY_TEXT: "Example proxy text. Hi!"
+	EXAMPLE_PROXY_TEXT: "Example proxy text. Hi!",
+	
+	TAGS_PROFILE_LABEL: "**Tags:** ",
+	ALTERS_PROFILE_LABEL: "**Alters:** "
 }
