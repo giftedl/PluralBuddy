@@ -28,24 +28,24 @@ export default class SetUsernameButton extends ComponentCommand {
 
 	if (tag === null) {
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
+			components: new AlertView((await ctx.userTranslations())).errorView("ERROR_TAG_DOESNT_EXIST"),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 		})
 	}
 
 	const form = new Modal()
 		.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyForm.create(tag.tagId))
-		.setTitle(ctx.userTranslations().TAG_FORM_TITLE)
+		.setTitle((await ctx.userTranslations()).TAG_FORM_TITLE)
 		.addComponents(
 			[
 				new Label()
-					.setLabel(ctx.userTranslations().TAG_PRIVACY_FORM_LABEL)
-                    .setDescription(ctx.userTranslations().TAG_PRIVACY_FORM_DESC)
+					.setLabel((await ctx.userTranslations()).TAG_PRIVACY_FORM_LABEL)
+                    .setDescription((await ctx.userTranslations()).TAG_PRIVACY_FORM_DESC)
 					.setComponent(
                         new StringSelectMenu()
                             .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyType.create())
-                            .setOptions(tagPrivacySelection(ctx.userTranslations(), tag.public))
-                            .setValuesLength({ min: 0, max: tagPrivacySelection(ctx.userTranslations()).length })
+                            .setOptions(tagPrivacySelection((await ctx.userTranslations()), tag.public))
+                            .setValuesLength({ min: 0, max: tagPrivacySelection((await ctx.userTranslations())).length })
                             .setRequired(false)
 					)
 			]

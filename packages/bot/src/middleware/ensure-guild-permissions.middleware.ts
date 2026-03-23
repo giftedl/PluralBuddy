@@ -9,7 +9,7 @@ export const ensureGuildPermissions = createMiddleware<void>(async (middle) => {
 
 	if (ctx.guildId === undefined) {
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView(
+			components: new AlertView((await ctx.userTranslations())).errorView(
 				"DN_ERROR_SE",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -45,7 +45,7 @@ export const ensureGuildPermissions = createMiddleware<void>(async (middle) => {
 		)
 	) {
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView(
+			components: new AlertView((await ctx.userTranslations())).errorView(
 				"INSUFFICIENT_USER_PERMISSIONS",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

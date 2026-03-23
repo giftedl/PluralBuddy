@@ -90,7 +90,7 @@ export default class SystemCommand extends Command {
 					})));
 			} catch(_) {
 				return await ctx.ephemeral({
-					components: new AlertView(ctx.userTranslations()).errorView("MONGO_REGEX_ERROR"),
+					components: new AlertView((await ctx.userTranslations())).errorView("MONGO_REGEX_ERROR"),
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 				}, undefined, undefined, ctx)
 			}
@@ -102,7 +102,7 @@ export default class SystemCommand extends Command {
 			return await ctx.ephemeral(
 				{
 					components: [
-						...new AlertView(ctx.userTranslations()).errorView(
+						...new AlertView((await ctx.userTranslations())).errorView(
 							"INVISIBLE_ALTER",
 						),
 					],
@@ -119,7 +119,7 @@ export default class SystemCommand extends Command {
 
 		if (alter === null) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -129,7 +129,7 @@ export default class SystemCommand extends Command {
 		return await ctx.ephemeral(
 			{
 				components: [
-					...(await new AlterView(ctx.userTranslations()).alterProfileView(
+					...(await new AlterView((await ctx.userTranslations())).alterProfileView(
 						alter,
 						alter.systemId !== ctx.author.id,
 					)),
@@ -141,10 +141,10 @@ export default class SystemCommand extends Command {
 							]
 						: []),
 					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView(ctx.userTranslations()).alterConfigureButton(alter)
+						? new AlterView((await ctx.userTranslations())).alterConfigureButton(alter)
 						: []),
 					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView(ctx.userTranslations()).alterProxyModes(
+						? new AlterView((await ctx.userTranslations())).alterProxyModes(
 								alter,
 								ctx.guildId,
 							)

@@ -7,6 +7,7 @@ import type { StatisticResource } from "./cache/statistics";
 import type { ProxyResource } from "./cache/system-proxy-tags";
 import type { SimilarWebhookResource } from "./cache/similar-webhooks";
 import type { PGuildCache } from "./cache/plural-guild";
+import type { Pi18nCache } from "./cache/i18n";
 import type English from './i18n/en';
 
 
@@ -17,6 +18,7 @@ declare module "seyfert" {
 		alterProxy: ProxyResource;
 		similarWebhookResource: SimilarWebhookResource;
 		pguild: PGuildCache;
+		i18n: Pi18nCache;
 	}
 
 	interface UsingClient extends ParseClient<Client<true>> {}

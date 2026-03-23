@@ -27,12 +27,12 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 
         if (silent === "true")
             return await ctx.write({
-                components: new AlertView(ctx.userTranslations()).successView("DISABLED_DM_REPLIES"),
+                components: new AlertView((await ctx.userTranslations())).successView("DISABLED_DM_REPLIES"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         else
 		return await ctx.update({
-			components: new NudgePreferences(ctx.userTranslations()).nudgePreferences(user),
+			components: new NudgePreferences((await ctx.userTranslations())).nudgePreferences(user),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
         

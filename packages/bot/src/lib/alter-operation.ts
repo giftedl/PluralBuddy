@@ -11,8 +11,8 @@ import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { getUserById, writeUserById } from "../types/user";
 import { emojis } from "./emojis";
 import {
-	friendlyProtectionPartialAlter,
-	listFromMaskPartialAlters,
+	friendlyProtectionAlters,
+	listFromMaskAlters,
 } from "./privacy-bitmask";
 import convert from "./delay-converter";
 
@@ -22,7 +22,7 @@ export async function createPartialAlterOperation(
 	translations: TranslationString,
 	environment: "discord" | "api-exchange" | "api-web",
 ) {
-	let oldPartialAlter: PartialAlter<PAlter> = {};
+	let oldPartialAlter: Partial<PAlter> = {};
 
 	(Object.keys(operation) as (keyof PAlter)[]).forEach((v) => {
 		oldPartialAlter = { ...oldPartialAlter, [v]: PartialAlter[v] };

@@ -26,7 +26,7 @@ export default class SetUsernameButton extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 			})
 		}
@@ -36,10 +36,10 @@ export default class SetUsernameButton extends ComponentCommand {
 				InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsForm.create(
 				),
 			)
-			.setTitle(ctx.userTranslations().EDIT_SYSTEM_FORM_TITLE)
+			.setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
 			.addComponents([
 				new Label()
-					.setLabel(ctx.userTranslations().SYSTEM_PRONOUNS_FORM_LABEL)
+					.setLabel((await ctx.userTranslations()).SYSTEM_PRONOUNS_FORM_LABEL)
 					.setComponent(
 						system.systemPronouns === undefined
 							? new TextInput()

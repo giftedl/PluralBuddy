@@ -18,14 +18,14 @@ export default class AlterTab extends ComponentCommand {
 
         if (user.system === undefined) {
             return await ctx.followup({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
         return await ctx.editResponse({
             components: [
-                ...await new SystemSettingsView(ctx.userTranslations()).altersSettings(user.system)
+                ...await new SystemSettingsView((await ctx.userTranslations())).altersSettings(user.system)
 
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2

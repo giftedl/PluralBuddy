@@ -33,7 +33,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -42,7 +42,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 
 		if (user.system.alterIds.length >= 2000) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"TOO_MANY_ALTERS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -72,12 +72,12 @@ export default class CreateNewAlterForm extends ModalCommand {
 		if (alter.error) {
 			return await ctx.interaction.update({
 				components: [
-					...new SystemSettingsView(ctx.userTranslations()).topView(
+					...new SystemSettingsView((await ctx.userTranslations())).topView(
 						"alters",
 						user.system.associatedUserId,
 					),
 					...new AlertView(
-						ctx.userTranslations(),
+						(await ctx.userTranslations()),
 					).errorViewCustom(`There was an error while creating that alter:
 
 \`\`\`
@@ -99,7 +99,7 @@ ${z.prettifyError(alter.error)}
 
 		await ctx.interaction.update({
 			components: await new SystemSettingsView(
-				ctx.userTranslations(),
+				(await ctx.userTranslations()),
 			).altersSettings({
 				...user.system,
 				alterIds: [...user.system.alterIds, alter.data.alterId],

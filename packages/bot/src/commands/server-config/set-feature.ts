@@ -68,9 +68,8 @@ export default class SetLogChannel extends SubCommand {
 		ctx.client.cache.pguild.remove(nativeGuild.id)
 
 		return await ctx.editResponse({
-			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				ctx
-					.userTranslations()
+			components: new AlertView((await ctx.userTranslations())).successViewCustom(
+				((await ctx.userTranslations()))
 					[newValue ? "ENABLED_FEATURE" : "DISABLED_FEATURE"].replace(
 						"%name%",
 						Object.entries(friendlyFeatureIndex).find(

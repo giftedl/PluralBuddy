@@ -3,6 +3,7 @@
 import {
 	ActionRow,
 	Button,
+	CacheFrom,
 	CommandContext,
 	Container,
 	extendContext,
@@ -24,6 +25,7 @@ import { translations } from "./lang/en_us";
 import type { TranslationString } from "./lang";
 import { LoadingView } from "./views/loading";
 import type { PAlter } from "plurography";
+import { client } from ".";
 
 export const extendedContext = extendContext((interaction) => {
 	let contextAlter: PAlter | null = null;
@@ -108,15 +110,26 @@ export const extendedContext = extendContext((interaction) => {
 
 		return writtenMessage;
 	};
+	const language = async () => {
+		let data = (await client.cache.i18n.get(interaction.user.id))?.l;
+
+		if (data === undefined) {
+			data = (await getUserById(interaction.user.id)).userLang
+			await client.cache.i18n.set(CacheFrom.Gateway,interaction.user.id, {l: data});
+		}
+
+		return data;
+	};
 
 	return {
 		ephemeral,
+		language,
 		retrievePUser: async () => getUserById(interaction.user.id),
 		retrievePGuild: async () =>
 			PGuildObject.parseAsync(
 				await getGuildFromId(interaction.guildId ?? "??"),
 			),
-		userTranslations: () => translations,
+		userTranslations: async () => client.t(await language()).get(await language()),
 		setContextAlter: (alter: PAlter) => {
 			contextAlter = alter;
 		},

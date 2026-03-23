@@ -24,7 +24,7 @@ export default class SearchForm extends ComponentCommand {
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		return await ctx.modal(
 			new Modal()
-				.setTitle(ctx.userTranslations().SEARCH_FORM_TITLE)
+				.setTitle((await ctx.userTranslations()).SEARCH_FORM_TITLE)
 				.setComponents([
 					new Label()
 						.setComponent(
@@ -38,7 +38,7 @@ export default class SearchForm extends ComponentCommand {
 								required: false,
 							}),
 						)
-						.setLabel(ctx.userTranslations().AFFECTED_USER),
+						.setLabel((await ctx.userTranslations()).AFFECTED_USER),
 					new Label()
 						.setComponent(
 							new ChannelSelectMenu({
@@ -51,7 +51,7 @@ export default class SearchForm extends ComponentCommand {
 								required: false,
 							}),
 						)
-						.setLabel(ctx.userTranslations().AFFECTED_CHANNEL),
+						.setLabel((await ctx.userTranslations()).AFFECTED_CHANNEL),
 					new Label()
 						.setComponent(
 							new StringSelectMenu()
@@ -66,7 +66,7 @@ export default class SearchForm extends ComponentCommand {
 									),
 								),
 						)
-						.setLabel(ctx.userTranslations().AFFECTED_ERROR_TYPE),
+						.setLabel((await ctx.userTranslations()).AFFECTED_ERROR_TYPE),
 				])
 				.setCustomId(
 					InteractionIdentifier.Guilds.FormSelection.SearchingErrorsForm.create(),

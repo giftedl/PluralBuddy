@@ -15,11 +15,11 @@ export default class TagCNS extends ComponentCommand {
         const oldInteractionId = InteractionIdentifier.Setup.CreateNewSystem.SystemTag.substring(ctx.customId);
         const form = new Modal()
             .setCustomId(InteractionIdentifier.Setup.FormSelection.TagForm.create(oldInteractionId))
-            .setTitle(ctx.userTranslations().CREATING_NEW_SYSTEM_FORM_TITLE)
+            .setTitle((await ctx.userTranslations()).CREATING_NEW_SYSTEM_FORM_TITLE)
             .addComponents(
                 [
                     new Label()
-                        .setLabel(ctx.userTranslations().SYSTEM_TAG_FORM_LABEL)
+                        .setLabel((await ctx.userTranslations()).SYSTEM_TAG_FORM_LABEL)
                         .setComponent(
                             new TextInput()
                                 .setStyle(TextInputStyle.Short)

@@ -30,7 +30,7 @@ export default class NudgePreferencesCommand extends Command {
 		// End database migration
         
 		return await ctx.ephemeral({
-			components: new NudgePreferences(ctx.userTranslations()).nudgePreferences(user),
+			components: new NudgePreferences((await ctx.userTranslations())).nudgePreferences(user),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		}, undefined, undefined, ctx);
     }

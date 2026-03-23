@@ -17,7 +17,7 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
         return ctx.update({
-            components: new PluralBuddyIntro(ctx.userTranslations())
+            components: new PluralBuddyIntro((await ctx.userTranslations()))
               .createNewSystemPage(await ctx.retrievePGuild(), ctx.interaction.id, ctx.author.id),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
         });

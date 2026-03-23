@@ -29,7 +29,7 @@ export default class SetPronounsButton extends ModalCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -58,12 +58,12 @@ export default class SetPronounsButton extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new AlterView(ctx.userTranslations()).alterTopView(
+				...new AlterView((await ctx.userTranslations())).alterTopView(
 					"public-settings",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(ctx.userTranslations()).altersPublicView(
+				...new AlterView((await ctx.userTranslations())).altersPublicView(
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",

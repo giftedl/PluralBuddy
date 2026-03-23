@@ -39,7 +39,7 @@ export default class AddUserForm extends ComponentCommand {
 
 		if (user.nudging.blockedUsers.includes(userId as string)) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"USER_ALREADY_BLOCKED",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -60,7 +60,7 @@ export default class AddUserForm extends ComponentCommand {
 		};
 
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).successView(
+			components: new AlertView((await ctx.userTranslations())).successView(
 				"SUCCESSFULLY_BLOCKED",
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

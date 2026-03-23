@@ -22,7 +22,7 @@ export default class SearchButton extends ComponentCommand {
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		return await ctx.modal(
 			new Modal()
-				.setTitle(ctx.userTranslations().ROLE_PREFERENCE_SEARCH)
+				.setTitle((await ctx.userTranslations()).ROLE_PREFERENCE_SEARCH)
 				.setCustomId(
 					InteractionIdentifier.Guilds.FormSelection.SearchingRolePreferencesForm.create(),
 				)
@@ -35,7 +35,7 @@ export default class SearchButton extends ComponentCommand {
 								)
 								.setValuesLength({ min: 1, max: 1 }),
 						)
-						.setLabel(ctx.userTranslations().SEARCH_QUERY),
+						.setLabel((await ctx.userTranslations()).SEARCH_QUERY),
 				]),
 		);
 	}

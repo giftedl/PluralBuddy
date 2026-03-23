@@ -36,7 +36,7 @@ export default class AddPrefixCommand extends SubCommand {
 
 		if (guildObj.blacklistedRoles.includes(role.id)) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"BLACKLIST_ALREADY_EXISTS",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -45,7 +45,7 @@ export default class AddPrefixCommand extends SubCommand {
 
         if (guildObj.blacklistedRoles.length >= 25) {
             return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("TOO_MANY_BLACKLIST_ITEMS"),
+                components: new AlertView((await ctx.userTranslations())).errorView("TOO_MANY_BLACKLIST_ITEMS"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
             })
         }
@@ -59,9 +59,8 @@ export default class AddPrefixCommand extends SubCommand {
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.editResponse({
-			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				`${ctx.userTranslations().SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${ctx
-					.userTranslations()
+			components: new AlertView((await ctx.userTranslations())).successViewCustom(
+				`${(await ctx.userTranslations()).SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${((await ctx.userTranslations()))
 					.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 						"%blacklist_items%",
 						[

@@ -21,7 +21,7 @@ export default class AddUserForm extends ModalCommand {
 
         if (user.nudging.blockedUsers.includes(userId as string)) {
             return await ctx.write({
-                components: new AlertView(ctx.userTranslations()).errorView("USER_ALREADY_BLOCKED"),
+                components: new AlertView((await ctx.userTranslations())).errorView("USER_ALREADY_BLOCKED"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
@@ -34,7 +34,7 @@ export default class AddUserForm extends ModalCommand {
         user.nudging = { ...user.nudging, blockedUsers: [...user.nudging.blockedUsers, userId as string] };
 
         return await ctx.interaction.update({
-			components: new NudgePreferences(ctx.userTranslations()).nudgePreferences(user),
+			components: new NudgePreferences((await ctx.userTranslations())).nudgePreferences(user),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
     }

@@ -26,18 +26,18 @@ export default class SetPFPButton extends ComponentCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 			})
 		}
 
 		const form = new Modal()
 			.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPForm.create(alter.alterId))
-			.setTitle(ctx.userTranslations().ALTER_FORM_TITLE)
+			.setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
 			.addComponents(
 				[
 					new Label()
-						.setLabel(ctx.userTranslations().ALTER_SET_PFP)
+						.setLabel((await ctx.userTranslations()).ALTER_SET_PFP)
 						.setComponent(
 							new FileUpload()
 								.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create())

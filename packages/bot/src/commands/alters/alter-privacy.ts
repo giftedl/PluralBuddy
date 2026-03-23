@@ -7,6 +7,7 @@ import { alterCollection } from "@/mongodb"
 import { MessageFlags } from "seyfert/lib/types"
 import { AlertView } from "@/views/alert"
 import { friendlyProtectionAlters, listFromMaskAlters } from "@/lib/privacy-bitmask"
+import { createPartialAlterOperation } from "@/lib/alter-operation"
 
 const options = {
     "alter-name": createStringOption({
@@ -47,7 +48,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 
 		if (alter === null) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -59,7 +60,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
                 components: [new Container().setComponents(new TextDisplay().setContent(`Alter's can have privacy flags that identify how external users see your alter. All alters are exclusively private by default. Below are the public values that you added.
 
 **Current public privacy values**:
-\`${friendlyProtectionAlters(ctx.userTranslations(), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\`
+\`${friendlyProtectionAlters((await ctx.userTranslations()), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\`
 
 -# If you were trying to _set_ the privacy values, you may not have finished the command.`))],
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
@@ -76,23 +77,22 @@ export default class EditAlterPrivacyCommand extends SubCommand {
             newPublic = newPublic & ~flagValue;
         }
 
-               await createPartialAlterOperation(
+        await createPartialAlterOperation(
             { public: newPublic },
             alter,
-            ctx.userTranslations(),
+            (await ctx.userTranslations()),
             "discord",
         );
     
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView(ctx.userTranslations()).successViewCustom(
-					ctx
-						.userTranslations().ALTER_SUCCESS_PRIVACY.replace(
+				...new AlertView((await ctx.userTranslations())).successViewCustom(
+					(await ctx.userTranslations()).ALTER_SUCCESS_PRIVACY.replace(
 							"%alter%",
 							alter.username,
 						)
-						.replace("%new%", `\`${friendlyProtectionAlters(ctx.userTranslations(), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``)
+						.replace("%new%", `\`${friendlyProtectionAlters((await ctx.userTranslations()), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``)
                         .replace("%number%", (listFromMaskAlters(alter.public ?? 0) ?? []).length.toString()),
 				),
 			],

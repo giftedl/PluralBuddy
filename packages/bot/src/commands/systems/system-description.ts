@@ -41,7 +41,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -61,13 +61,12 @@ ${user.system.systemDescription ?? "⛔ Your system has no description."}
 			}, true, undefined, ctx);
 		}
 		
-		await createSystemOperation(user.system, { systemDescription }, ctx.userTranslations(), "discord")
+		await createSystemOperation(user.system, { systemDescription }, (await ctx.userTranslations()), "discord")
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView(ctx.userTranslations()).successViewCustom(
-					ctx
-						.userTranslations().ALTER_SUCCESS_DESC.replace(
+				...new AlertView((await ctx.userTranslations())).successViewCustom(
+					(await (await ctx.userTranslations())).ALTER_SUCCESS_DESC.replace(
 							"@%alter%",
 							"your system",
 						),

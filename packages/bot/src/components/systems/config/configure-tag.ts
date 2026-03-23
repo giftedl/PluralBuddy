@@ -29,7 +29,7 @@ export default class ConfigureAlter extends ComponentCommand {
 
 		if (tag === null) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -38,12 +38,12 @@ export default class ConfigureAlter extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new TagView(ctx.userTranslations()).tagTopView(
+				...new TagView((await ctx.userTranslations())).tagTopView(
 					"general",
 					tag.tagId,
 					tag.tagFriendlyName,
 				),
-				...new TagView(ctx.userTranslations()).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;", 
+				...new TagView((await ctx.userTranslations())).tagGeneral(tag, await ctx.getDefaultPrefix() ?? "pb;", 
 				ctx.interaction.message.messageReference === undefined,),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

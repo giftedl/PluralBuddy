@@ -34,11 +34,11 @@ export default class ServerConfigCommand extends Command {
 
 		return await ctx.ephemeral({
 			components: [
-				...new ServerConfigView(ctx.userTranslations()).topView(
+				...new ServerConfigView((await ctx.userTranslations())).topView(
 					"general",
 					pluralGuild.guildId,
 				),
-				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
+				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
 					pluralGuild,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,
