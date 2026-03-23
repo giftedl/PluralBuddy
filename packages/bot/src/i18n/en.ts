@@ -532,4 +532,5 @@ Systems can have **privacy values** which are values that describe who can see w
     PUBLIC_PROFILE_LABEL: "Public Profile",
 
     CONFIGURE_PROFILE_BTN: "Configure Profile",
+	MESSAGE_INFO_CONTENTS: `**Message ID:** {{ messageId }}\n**Sent by:** <@{{ userId }}> ({{ userId }})\n\n**Account Roles ({{ roleCount }})**\n{{ roleList }}`
 }
