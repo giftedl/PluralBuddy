@@ -77,7 +77,7 @@ export const client = new Client({
 				),
 			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] }
+			allowed_mentions: { replied_user: false }
 		}),
 		defaults: new PluralBuddyErrorCommand(),
 	},
