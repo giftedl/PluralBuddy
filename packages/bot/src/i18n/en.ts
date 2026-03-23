@@ -530,6 +530,9 @@ Systems can have **privacy values** which are values that describe who can see w
     TOP_BACK_LABEL: "Back",
     ALTER_PROXY_TAGS_LABEL: "Proxy Tags",
     PUBLIC_PROFILE_LABEL: "Public Profile",
+	ROLES_LABEL: "Roles",
+	FEATURES_LABEL: "Features",
+	ERROR_LOG_LABEL: "Error Log",
 
     CONFIGURE_PROFILE_BTN: "Configure Profile",
 	MESSAGE_INFO_CONTENTS: `**Message ID:** {{ messageId }}\n**Sent by:** <@{{ userId }}> ({{ userId }})\n\n**Account Roles ({{ roleCount }})**\n{{ roleList }}`,
@@ -571,5 +574,72 @@ Please paste the system token from SimplyPlural into PluralBuddy.`,
 You must export your system JSON file from PluralKit to import into PluralBuddy. To do this, either send \`pk;export\` in a server with PluralKit apart of it or just direct message <@466378653216014359> and send \`pk;export\` as a message.`,
 	PK_STEPTWO_DESC: `### Step 2: Import system contents
 Please download the JSON file sent to you and use the button to upload the attachment to PluralBuddy.`,
-	PK_UPLOAD: "Upload JSON"
+	PK_UPLOAD: "Upload JSON",
+
+	SRV_CFG_ID: "-# Server ID: `{{ guildId }}`",
+	SRV_CFG_TITLE: "## Server Preferences",
+	SRV_CFG_PREFIXES_DESC: `**Configure Prefixes**
+> Prefixes can be configured and set. You can have unlimited possible prefixes, comma separated.
+> Your current prefixes are {{ prefixList }}`,
+	SRV_CFG_PREFIXES_BTN: "Set Prefixes",
+	SRV_CFG_BLACKLISTS_DESC: `**Configure Blacklist**
+> Roles and channels can be blacklisted from proxying or using commands from PluralBuddy.`,
+	SRV_CFG_BLACKLISTS_ITEMS: `> Currently, the guild's blacklist items are: {{ list }}`,
+	SRV_CFG_BLACKLISTS_ITEMS_EMPTY: "> - _There are no blacklist items._",
+	SRV_CFG_BLACKLISTS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blacklist items.`,
+	SRV_CFG_ADD_CHANNELS: "Add Channels",
+	SRV_CFG_ADD_CATEGORIES: "Add Category",
+	SRV_CFG_ADD_ROLES: "Add Roles",
+	SRV_CFG_REMOVE_CATEGORY: "Remove Category",
+	SRV_CFG_SYS_TAGS_D: "Disable Mandatory System Tags",
+	SRV_CFG_SYS_TAGS_E: "Enable Mandatory System Tags",
+	SRV_CFG_SYS_REQ_TAGS: `**Require System Tags**
+> Guilds can require system tags. Clicking the button to the right will toggle that requirement.`,
+	SRV_CFG_MANAGE_ROLES: "Add Manager Roles",
+	SRV_CFG_MANAGERS_DESC: `**Server Managers**
+> Server managers can access all settings on PluralBuddy. You can have at maximum 25 server manager roles.
+> In order to configure server managers, you must have a role with Administrator or Manage Roles. Server managers cannot add/remove other server manager roles.`,
+	CURRENT_SRV_MANAGERS: `> Currently, the server manager roles are:{{ list }}`,
+	CURRENT_SRV_MANAGERS_EMPTY: `> - _There are no manager roles._`,
+	CURRENT_SRV_MANAGERS_EXTRA: `\n> - ... and {{ count }} extra role(s). Use {{ mentionCommand }} to see the rest of the manager roles.`,
+	SRV_CFG_LOGS_TITLE: `**Log Channels**
+> You can log messages proxied by PluralBuddy to provide insight on users sending messages. You can have one channel that you are using for proxy logging.`,
+	SRV_CFG_LOGS_DESC: `> This guild's current logging channel is: {{ logChannel }}`,
+	SRV_CFG_LOGS_UNSET: "_Unset_",
+	SRV_CFG_LOGS_BTN: "Set Logging Channel",
+	SRV_CFG_PROXY_DELAY: "Set Proxy Delay",
+	SRV_CFG_PROXY_DELAY_DESC: `**Proxy Delay**
+> After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`,
+	SRV_CFG_PROXY_DELAY_SEC: `> It is not recommended to go over a 1 second proxy delay.
+> This server's proxy delay currently is **{{ delay }} seconds** ({{ delayMs }}ms)`,
+
+	ERROR_LOG_TITLE: `## Error Log - {{ serverName }}`,
+	NO_ERRORS: "{{ catJamming }}   Nice! Your server hasn't ran into any errors!",
+	ERROR_TRIGGERED_BY: `Triggered by <@{{ userId }}>.`,
+	ERROR_TRIGGERED_IN: "Triggered in <#{{ channelId }}>.",
+    PAGINATION_BOTTOM_ERRORS: `-# Page {{ page }}/{{ maxPage }} · Found {{ errors }}/{{ maxErrors }} error(s) {{ possibleSearchQuery }}`,
+	ERROR_LOG_SEARCHING_FOR: "· Searching for {{ query }}",
+
+	FEATURE_FLAGS_TITLE: `## Feature Flags - {{ guildName }}
+> Feature flags allow you to control certain smaller features used on PluralBuddy.`,
+
+	FEATURE_D: "Disable",
+	FEATURE_E: "Enable",
+
+	ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+	ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
+> The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
+	ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",
+	ROLE_CONTAINER_CONTENTS_DESC: `**Role Container Contents**
+> This is the actual contents inside of the role-specific container. This is required for the container to appear. If this is blank, the container won't appear.`,
+	ROLE_CONTAINER_COLOR_BTN: "Edit Container Color",
+	ROLE_CONTAINER_COLOR_DESC: `**Role Container Color**
+> Containers on Discord have a color they can be. Otherwise, the color marker shows up as blank (unlike in embeds).`,
+	ROLE_CONTAINER_LOCATION_BTN: "Edit Container Location",
+	ROLE_CONTAINER_LOCATION_DESC: `**Role Container Location**
+> PluralBuddy can place the container either below the message contents or above it.
+
+There is an example below of what an example proxy with this role would look like:`,
+	CONTENTS_EMPTY: "-# There is no role container for this role as the contents are empty.",
+	EXAMPLE_PROXY_TEXT: "Example proxy text. Hi!"
 }
