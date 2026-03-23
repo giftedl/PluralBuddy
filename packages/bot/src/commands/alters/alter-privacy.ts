@@ -118,7 +118,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 			newPublic = newPublic & ~flagValue;
 		}
 
-		await createPartialAlterOperation(
+		const data = await createPartialAlterOperation(
 			alter.alterId,
 			alter,
 			{ public: newPublic },
@@ -135,11 +135,11 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 					)
 						.replace(
 							"%new%",
-							`\`${friendlyProtectionAlters(await ctx.userTranslations(), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``,
+							`\`${friendlyProtectionAlters(await ctx.userTranslations(), listFromMaskAlters(data?.public ?? 0)).join("`, `")}\``,
 						)
 						.replace(
 							"%number%",
-							(listFromMaskAlters(alter.public ?? 0) ?? []).length.toString(),
+							(listFromMaskAlters(data?.public ?? 0) ?? []).length.toString(),
 						),
 				),
 			],
