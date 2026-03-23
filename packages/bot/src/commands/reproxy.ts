@@ -1,8 +1,14 @@
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
-import { getSimilarWebhooks } from "@/lib/proxying/util";
+import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import { Message, Section, Separator, Thumbnail, type TopLevelBuilders } from "seyfert";
+import {
+	Message,
+	Section,
+	Separator,
+	Thumbnail,
+	type TopLevelBuilders,
+} from "seyfert";
 import {
 	AttachmentBuilder,
 	CommandContext,
@@ -98,6 +104,8 @@ export default class ReproxyCommand extends Command {
 			{ sort: { createdAt: -1 } },
 		);
 
+		if (!ctx.guildId) return;
+
 		console.log(message);
 
 		if (message === null) {
@@ -146,7 +154,7 @@ export default class ReproxyCommand extends Command {
 
 		const username = `${alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName ?? ""} ${(system?.displayTagMap ?? {})[ctx.guildId ?? ""] ?? system?.systemDisplayTag ?? ""}`;
 
-		pendingIgnoreDeletion.push(message.messageId)
+		pendingIgnoreDeletion.push(message.messageId);
 
 		webhook.messages
 			.write({
@@ -165,28 +173,39 @@ export default class ReproxyCommand extends Command {
 				},
 				query: {
 					wait: true,
-					...(parent === null ? {} : {thread_id: ctx.channelId} ),
+					...(parent === null ? {} : { thread_id: ctx.channelId }),
 				},
 			})
 			.then((sentMessage) => {
-				messagesCollection.replaceOne(
-					{ messageId: message.messageId },
-					{
-						messageId: sentMessage?.id ?? "0",
-						alterId: alter.alterId,
-						systemId,
-						createdAt: new Date(),
-						channelId: sentMessage?.channelId ?? "0",
-						guildId: message.guildId,
-					},
-				).then(v => console.log(v));
+				if (
+					(
+						system.systemAutoproxy.find((v) => v.serverId === ctx.guildId) ?? {
+							autoproxyMode: "off",
+						}
+					).autoproxyMode === "latch"
+				)
+					setLastLatchAlter(ctx.guildId ?? "", system, alter);
+
+				messagesCollection
+					.replaceOne(
+						{ messageId: message.messageId },
+						{
+							messageId: sentMessage?.id ?? "0",
+							alterId: alter.alterId,
+							systemId,
+							createdAt: new Date(),
+							channelId: sentMessage?.channelId ?? "0",
+							guildId: message.guildId,
+						},
+					)
+					.then((v) => console.log(v));
 				alterCollection.updateOne(
 					{ alterId: message.alterId, systemId: alter.systemId },
-					{ $inc: { messageCount: -1 } }
+					{ $inc: { messageCount: -1 } },
 				);
 				alterCollection.updateOne(
 					{ alterId: alter.alterId, systemId: alter.systemId },
-					{ $inc: { messageCount: 1 }}
+					{ $inc: { messageCount: 1 } },
 				);
 
 				(async () => {
@@ -194,10 +213,10 @@ export default class ReproxyCommand extends Command {
 					const user = await client.users.fetch(ctx.author.id);
 					const message = originalMessage.components
 						.map((v) => v.toBuilder())
-						.filter(v => v.data.type === ComponentType.TextDisplay)
-						.map(c => (c as TextDisplay).data.content)
-						.filter(c => c !== undefined)
-						.filter(c => !c.startsWith(`-# ${emojis.reply}`))
+						.filter((v) => v.data.type === ComponentType.TextDisplay)
+						.map((c) => (c as TextDisplay).data.content)
+						.filter((c) => c !== undefined)
+						.filter((c) => !c.startsWith(`-# ${emojis.reply}`))
 						.join("");
 
 					let color = "Green";
@@ -212,7 +231,7 @@ export default class ReproxyCommand extends Command {
 							)
 						).arrayBuffer();
 
-						color = (await getColor(image))?.hex() ?? "Green"
+						color = (await getColor(image))?.hex() ?? "Green";
 					} catch (_) {}
 
 					if (!guild.logChannel) return;
@@ -247,7 +266,7 @@ export default class ReproxyCommand extends Command {
 -# Proxied via: /reproxy
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 									)
-									.setColor(color as `#${string}` | "Green" ?? "Green"),
+									.setColor((color as `#${string}` | "Green") ?? "Green"),
 							],
 							flags: MessageFlags.IsComponentsV2,
 							allowed_mentions: { parse: [] },
@@ -261,7 +280,7 @@ export default class ReproxyCommand extends Command {
 								type: "FailedLogging",
 							}),
 						);
-					})()
+				})();
 			});
 
 		await webhook.messages.delete({
