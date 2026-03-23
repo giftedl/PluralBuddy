@@ -106,7 +106,6 @@ export default class ReproxyCommand extends Command {
 
 		if (!ctx.guildId) return;
 
-		console.log(message);
 
 		if (message === null) {
 			return await ctx.editResponse({
@@ -197,8 +196,7 @@ export default class ReproxyCommand extends Command {
 							channelId: sentMessage?.channelId ?? "0",
 							guildId: message.guildId,
 						},
-					)
-					.then((v) => console.log(v));
+					);
 				alterCollection.updateOne(
 					{ alterId: message.alterId, systemId: alter.systemId },
 					{ $inc: { messageCount: -1 } },
