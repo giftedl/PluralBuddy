@@ -37,7 +37,7 @@ export class AlertAssignTagView extends TranslatedView {
 				...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel("Create new tag")
+						.setLabel(this.translations.NEW_TAG)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
 						)
@@ -83,7 +83,7 @@ export class AlertAssignTagView extends TranslatedView {
 				.setColor(`#${getEmojiFromTagColor(pgObj.alter.color ?? "amber")}`)
 				.setComponents(
 					new TextDisplay().setContent(
-						`## Assign tag to @${pgObj.alter.username}`,
+						this.translations.ASSIGN_TAG_HEADER.replace("{{ alterUsername }}", pgObj.alter.username)
 					),
 					new Separator().setSpacing(Spacing.Large),
 					...alters.map((tag) => {
@@ -92,8 +92,8 @@ export class AlertAssignTagView extends TranslatedView {
 								new Button()
 									.setLabel(
 										pgObj.alter.tagIds.includes(tag.tagId)
-											? "Unassign Tag"
-											: "Assign Tag",
+											? this.translations.UNASSIGN_TAG
+											: this.translations.ASSIGNED_TAG,
 									)
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.AlterAssignPagination.ToggleAssign.create(
@@ -120,7 +120,16 @@ export class AlertAssignTagView extends TranslatedView {
 					}),
 					new Separator().setSpacing(Spacing.Large),
 					new TextDisplay().setContent(
-						`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)} · Found ${alters.length}/${pgObj.documentCount} tag(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\`` : ""}`,
+						this.translations.PAGINATION_BOTTOM_AAT
+							.replace("{{ page }}", String(pgObj.memoryPage))
+							.replace("{{ maxPage }}", String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)))
+							.replace("{{ alters }}", String(alters.length))
+							.replace("{{ maxAlters }}", String(pgObj.documentCount))
+							.replace("{{ time }}", String(Date.now() - time))
+							.replace("{{ possibleSearchQuery }}",
+								pgObj.searchQuery !== undefined ? this.translations.PAGINATION_SEARCH_QUERY
+									.replace("{{ query }}", pgObj.searchQuery) : ""
+							)
 					),
 					new ActionRow().setComponents(
 						new Button()
@@ -132,7 +141,7 @@ export class AlertAssignTagView extends TranslatedView {
 								),
 							),
 						new Button()
-							.setLabel("Previous Page")
+							.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
 							.setDisabled(pgObj?.memoryPage === 1)
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.AlterAssignPagination.PreviousPage.create(
@@ -141,7 +150,7 @@ export class AlertAssignTagView extends TranslatedView {
 							)
 							.setStyle(ButtonStyle.Primary),
 						new Button()
-							.setLabel("Next Page")
+							.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 							.setDisabled(
 								pgObj?.memoryPage ===
 									Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),

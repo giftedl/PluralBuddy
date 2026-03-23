@@ -465,4 +465,71 @@ Systems can have **privacy values** which are values that describe who can see w
 	AFFECTED_USER: "Affected User Query",
 	AFFECTED_CHANNEL: "Affected Channel Query",
 	AFFECTED_ERROR_TYPE: "Error Type Query",
+
+    NEW_TAG: "Create new tag",
+    ASSIGN_TAG_HEADER: `## Assign tag to @{{ alterUsername }}`,
+
+    ASSIGN_TAG: "Assign Tag",
+    UNASSIGN_TAG: "Unassign Tag",
+    PAGINATION_BOTTOM_AAT: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} tag(s) in {{ time }}ms {{ possibleSearchQuery }}`,
+    PAGINATION_SEARCH_QUERY: `· Querying for {{ query }}`,
+
+    AKA_PROFILE: "-# Also known as @{{ username }}",
+    MESSAGE_COUNT_LABEL_PROFILE: "**Message Count:** ",
+    LAST_SENT_TIME_PROFILE: "(last sent {{ timestamp }})",
+    OWNED_BY_PROFILE: "**Associated to:** ",
+    TAGS_PROFILE: "**Assigned tags**: ",
+    ID_SMALL_PROFILE: "-# ID: ",
+    LIST_MORE_PROFILE: ", and {{ length }} more...",
+    ALT_AVATAR: "@{{ alter }}'s avatar",
+    ALT_BANNER: "@{{ alter }}'s banner",
+
+    CURRENT_PROXY_MODE: "-# Current mode for @{{ username }} is {{ proxyMode }}",
+    UNLIMITED_ASSIGN: "You can assign an unlimited amount of tags to an alter and an unlimited amount of alters to a tag.",
+    AP_EXPLANATION: `You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
+> - *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
+> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
+> - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
+    REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
+    SELECT_DEFAULT_PROXY: "Select a proxy mode",
+
+    LATCH_NAME: "Latch Mode",
+    LATCH_DESC: "Set this alter as the first alter in latch mode.",
+
+    ALTER_NAME: "Alter Mode",
+    ALTER_DESC: "Only proxy this alter until auto-proxy is disabled.",
+
+    OFF_NAME: "Off",
+    OFF_DESC: "Disable auto-proxy in your system.",
+
+    DELETE_DESC: "**This cannot be undone.** Deleting an alter will delete your alter and its data.",
+    PROXY_MODE_TITLE: "### {{ circleQuestion }}   Proxy Mode · @{{ alterUsername }}",
+    SELECT_PM: "Please select the mode you would like to use below.",
+    FORCED_WEBHOOK_WARNING: `  {{ x }}   **This server enforces a required {{ policyType }} policy.** This means that all alters will have to use the {{ policyType }} proxy mode in this server specifically. Your message will be blocked from proxying if you are not using the Both proxy mode or using the enforced proxy mode.`,
+    POLICY_TYPE_NICK: "nickname",
+    POLICY_TYPE_WEBHOOK: "webhook",
+
+    OPTION_BACK: "Back",
+    OPTION_NICKNAME: "Nickname",
+    OPTION_WEBHOOK: "Webhook",
+    OPTION_BOTH: "Both",
+
+    PUBLIC_PROFILE_TITLE: `## Public Profile - @{{ alterUsername }}\nYour public profile is what your alter looks like to other users when they identify your messages.`,
+    PUBLIC_PROFILE_DN_DESC: `Display names are shown on webhooks when you proxy. These have less restrictions then usernames.\n-# Display Name: {{ currentDisplayName }}`,
+    PUBLIC_PROFILE_PFP_DESC: "You can set a **profile picture** by uploading an image using the modal on the right.",
+    PUBLIC_PROFILE_BANNER_DESC: "You can set a **banner** by uploading an image using the modal on the right.",
+    PUBLIC_PROFILE_PN_DESC: `You can set pronouns for your alter. Alter pronouns can be at maximum 100 characters long.\n-# @{{ alterUsername }}'s pronouns are: {{ alterPronouns }}`,
+    PUBLIC_PROFILE_UNSET_PN: "Not set",
+    PUBLIC_PROFILE_DESC_DESC: `You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: {{ commandMention }}`,
+    PUBLIC_PROFILE_COLOR_DESC: "Setting a color for an alter shows that color for their rank container along with their public profile.",
+    
+    ALTER_TOP_VIEW: `-# @{{ alterUsername }} • ID: \`{{ alterId }}\``,
+
+    GENERAL_LABEL: "General",
+    TOP_BACK_LABEL: "Back",
+    ALTER_PROXY_TAGS_LABEL: "Proxy Tags",
+    PUBLIC_PROFILE_LABEL: "Public Profile",
+
+    CONFIGURE_PROFILE_BTN: "Configure Profile",
 }
