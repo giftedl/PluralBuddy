@@ -12,7 +12,10 @@ import {
 	TextDisplay,
 	WebhookMessage,
 } from "seyfert";
-import type { InteractionCreateBodyRequest, InteractionMessageUpdateBodyRequest } from "seyfert/lib/common";
+import type {
+	InteractionCreateBodyRequest,
+	InteractionMessageUpdateBodyRequest,
+} from "seyfert/lib/common";
 import { emojis } from "./lib/emojis";
 import {
 	ButtonStyle,
@@ -38,7 +41,7 @@ export const extendedContext = extendContext((interaction) => {
 			editMessage: (body: InteractionCreateBodyRequest) => void;
 			reply?: (body: InteractionCreateBodyRequest) => void;
 		}) => void,
-		ctx?: CommandContext
+		ctx?: CommandContext,
 	) => {
 		if (interaction instanceof Message) {
 			if (
@@ -64,7 +67,7 @@ export const extendedContext = extendContext((interaction) => {
 							.setCustomId(`ephemeral-${interaction.id}`),
 					),
 				],
-				allowed_mentions: { replied_user: false }
+				allowed_mentions: { replied_user: false },
 			});
 
 			if (!message) return;
@@ -73,14 +76,12 @@ export const extendedContext = extendContext((interaction) => {
 
 			collector.run(`ephemeral-${interaction.id}`, async (i) => {
 				const locale = await getLanguageByUserId(i.user.id);
-				
+
 				if (i.user.id !== interaction.user.id)
 					return i.write({
 						components: [
 							new Container().setComponents(
-								new TextDisplay().setContent(
-									locale.NOT_ORIGINAL_RECIPIENT
-								),
+								new TextDisplay().setContent(locale.NOT_ORIGINAL_RECIPIENT),
 							),
 						],
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -116,15 +117,18 @@ export const extendedContext = extendContext((interaction) => {
 	};
 	const language = async () => {
 		try {
-		let data = (await client.cache.i18n.get(interaction.user.id))?.l;
+			let data = (await client.cache.i18n.get(interaction.user.id))?.l;
 
-		if (data === undefined) {
-			data = (await getUserById(interaction.user.id)).userLang
-			await client.cache.i18n.set(CacheFrom.Gateway,interaction.user.id, {l: data});
-		}
+			if (data === undefined) {
+				data = (await getUserById(interaction.user.id)).userLang;
+				await client.cache.i18n.set(CacheFrom.Gateway, interaction.user.id, {
+					l: data,
+				});
+			}
 
-		return data;} catch (_) {
-			return "en"
+			return data;
+		} catch (_) {
+			return "en";
 		}
 	};
 
@@ -136,7 +140,8 @@ export const extendedContext = extendContext((interaction) => {
 			PGuildObject.parseAsync(
 				await getGuildFromId(interaction.guildId ?? "??"),
 			),
-		userTranslations: async () => client.t(await language()).get(await language()),
+		userTranslations: async () =>
+			client.t(await language()).get(await language()),
 		setContextAlter: (alter: PAlter) => {
 			contextAlter = alter;
 		},
