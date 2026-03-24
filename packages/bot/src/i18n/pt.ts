@@ -3,10 +3,10 @@ export default {
 PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
 
 :track_next: To get started, click the Next Page button below to setup your system.`,
-  IMPORT_MESSAGE: `## Setting up your system
-You can create a new system which will allow you to create your alters and tags by yourself.
-Additionally, you can also import data from another bot like PluralKit.
--# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
+  IMPORT_MESSAGE: `## Configurando o seu sistema
+Você pode criar um novo sistema que lhe permitirá criar os seus alteradores e marcações por si mesmo.
+Além disso, você também pode importar dados de outro bot como o PluralKit.
+-# Para importar do Tupperbox, devido à falta de dados de exportação do Tupperbox de dados, você deve criar o sistema e então executar a importação de sistema \`{{ prefix }}\`.`,
   PAGINATION_NEXT_PAGE: "Next Page",
   PAGINATION_FINISH: "Finish",
   BLACKLISTED: "You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
@@ -544,5 +544,23 @@ There is an example below of what an example proxy with this role would look lik
   ALTER_COUNT_LABEL: "**Alter Count:** ",
   SELF_REACTION_ERR: "Unable to remove self-reaction",
   SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
-  REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}"
+  REACTION_ERR: "Unable to remove user reaction",
+  REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
+  AWAKE: "Hi! I'm awake, running PluralBuddy \`#{{ buildNumber }}/{{ branch }}\`.",
+  LINK_INVITE: "Invite",
+  LINK_SUPPORT: "Support",
+  LINK_DOCS: "Docs",
+  DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
+  DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
+  NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
+  NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
+  NOTIFIED_2: "-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+  OPT_OUT_DMS: "Opt-out of DMs",
+  UNDO_BTN: "Undo Operation",
+  EXPIRED: "Expired",
+  NOT_ORIGINAL_RECIPIENT: "You are not the original recipient of the message.",
+  IMPORT_REQ_DESC: "In order to submit your import data from another bot, you must put it into the PluralBuddy dashboard.",
+  IMPORT_REQ_WAITING: "-# Waiting for response...\n-# This expires in 15 minutes.",
+  VIEW_DASH: "View on Dashboard",
+  VALIDATION_TAG_ERROR: "There was an error while creating that tag:"
 };
