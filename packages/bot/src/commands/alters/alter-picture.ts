@@ -60,7 +60,7 @@ const options = {
 export default class EditAlterPictureCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.write({
-			components: new LoadingView(ctx.userTranslations()).loadingView(),
+			components: new LoadingView((await ctx.userTranslations())).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -75,7 +75,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		if (se && ctx.guildId === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -93,7 +93,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		if (alter === null) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -113,8 +113,8 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 			return await ctx.editResponse({
 				components: [
-					...new AlertView(ctx.userTranslations()).successViewCustom(
-						ctx.userTranslations().PFP_SUCCESS.replace("%alter%", alterName),
+					...new AlertView((await ctx.userTranslations())).successViewCustom(
+						(await ctx.userTranslations()).PFP_SUCCESS.replace("%alter%", alterName),
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
@@ -123,7 +123,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		if (attachmentText && !attachmentText.startsWith("https://")) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"INVALID_URL",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -133,7 +133,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		if (attachmentText === undefined && se) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"NO_GCP_SE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -163,7 +163,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			} catch (error) {
 				ctx.client.logger.fatal(error);
 				return await ctx.editResponse({
-					components: new AlertView(ctx.userTranslations()).errorView(
+					components: new AlertView((await ctx.userTranslations())).errorView(
 						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -187,8 +187,8 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView(ctx.userTranslations()).successViewCustom(
-					ctx.userTranslations().PFP_SUCCESS.replace("%alter%", alter.username),
+				...new AlertView((await ctx.userTranslations())).successViewCustom(
+					(await ctx.userTranslations()).PFP_SUCCESS.replace("%alter%", alter.username),
 				),
 				new Container().setComponents(
 					new MediaGallery().addItems(

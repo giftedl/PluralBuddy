@@ -60,7 +60,7 @@ export class SystemSettingsView extends TranslatedView {
 				new TextDisplay().setContent(`-# ID: \`${systemId}\``),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel("General")
+						.setLabel(this.translations.GENERAL_LABEL)
 						.setStyle(
 							currentTab === "general"
 								? ButtonStyle.Success
@@ -75,7 +75,7 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 						),
 					new Button()
-						.setLabel("Alters")
+						.setLabel(this.translations.ALTERS_LABEL)
 						.setStyle(
 							currentTab === "alters"
 								? ButtonStyle.Success
@@ -90,7 +90,7 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.Alters.Index.create(),
 						),
 					new Button()
-						.setLabel("Tags")
+						.setLabel(this.translations.TAGS_LABEL)
 						.setStyle(
 							currentTab === "tags"
 								? ButtonStyle.Success
@@ -103,7 +103,7 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.Tags.Index.create(),
 						),
 					new Button()
-						.setLabel("Public Profile")
+						.setLabel(this.translations.PUBLIC_PROFILE_LABEL)
 						.setStyle(
 							currentTab === "public-settings"
 								? ButtonStyle.Success
@@ -127,34 +127,35 @@ export class SystemSettingsView extends TranslatedView {
 			new Container()
 				.setComponents(
 					new TextDisplay().setContent(
-						`## ${emojis.settings} General Settings - ${system.systemName}`,
+						this.translations.GENERAL_SYSTEM_TITLE.replace(
+							"{{ emoji }}",
+							emojis.settings,
+						).replace("{{ systemName }}", system.systemName),
 					),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel("Set System Name")
+								.setLabel(this.translations.SYSTEM_NAME_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetName.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(
-								"The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
-							),
+							new TextDisplay().setContent(this.translations.SYSTEM_NAME_DESC),
 						),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel("Set Nickname Format")
+								.setLabel(this.translations.SYSTEM_NICKNAME_FORMAT_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetNicknameFormat.create(),
 								),
 						)
 						.setComponents(
 							new TextDisplay().setContent(
-								"The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
+								this.translations.SYSTEM_NICKNAME_FORMAT_DESC,
 							),
 						),
 					new Separator(),
@@ -162,7 +163,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel("Set System Privacy")
+								.setLabel(this.translations.SYSTEM_PRIVACY_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.create(),
 								),
@@ -170,24 +171,21 @@ export class SystemSettingsView extends TranslatedView {
 						.setComponents(
 							new TextDisplay().setContent(
 								// biome-ignore lint/style/useTemplate: a
-								"By default, your system is completely private besides for server automatic moderation and if you use command publicly. \n(with `-public` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself." +
+								this.translations.SYSTEM_PRIVACY_DESC +
 									((system.public ?? 0) > 0
 										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem(this.translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
 										: ""),
 							),
 						),
 
-					new TextDisplay().setContent(`You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
-						> - *Alter Mode*: All messages sent from this system will proxy on an alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with an alter regardless of proxy tags. **This requires to select an alter.**
-						> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
-						> - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`),
+					new TextDisplay().setContent(this.translations.SYSTEM_AP_DESC),
 
 					new ActionRow().setComponents(
 						new StringSelectMenu()
 							.setPlaceholder(
 								guildId === undefined
-									? "You must be in a server to proxy"
-									: "Select a proxy mode",
+									? this.translations.REQUIRED_SERVER_PROXY
+									: this.translations.SELECT_DEFAULT_PROXY,
 							)
 							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
 							.setDisabled(guildId === undefined)
@@ -196,10 +194,8 @@ export class SystemSettingsView extends TranslatedView {
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Latch.create(),
 									)
-									.setLabel("Latch Mode")
-									.setDescription(
-										"Set this alter as the first alter in latch mode.",
-									)
+									.setLabel(this.translations.LATCH_NAME)
+									.setDescription(this.translations.LATCH_DESC)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -208,10 +204,8 @@ export class SystemSettingsView extends TranslatedView {
 									),
 								new StringSelectOption()
 									.setValue("--")
-									.setLabel("Alter Mode")
-									.setDescription(
-										"This option cannot be selected. You must go into an alter to select this option.",
-									)
+									.setLabel(this.translations.ALTER_NAME)
+									.setDescription(this.translations.ALTER_DESC_DISABLED)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -222,8 +216,8 @@ export class SystemSettingsView extends TranslatedView {
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 									)
-									.setLabel("Off")
-									.setDescription("Disable auto-proxy in your system.")
+									.setLabel(this.translations.OFF_NAME)
+									.setDescription(this.translations.OFF_DESC)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -237,29 +231,25 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel("Export System")
+								.setLabel(this.translations.EXPORT_SYS_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(
-								"Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
-							),
+							new TextDisplay().setContent(this.translations.EXPORT_SYS_DESC),
 						),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel("Import System")
+								.setLabel(this.translations.IMPORT_SYS_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(
-								"Importing your system will allow you to take data from other bots in various import modes.",
-							),
+							new TextDisplay().setContent(this.translations.IMPORT_SYS_DESC),
 						),
 				)
 				.setColor("#1190FF"),
@@ -267,37 +257,37 @@ export class SystemSettingsView extends TranslatedView {
 				.setColor("#FF1717")
 				.setSpoiler(true)
 				.setComponents(
-					new TextDisplay().setContent("## Danger Zone"),
+					new TextDisplay().setContent(this.translations.DANGER_ZONE_TITLE),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(
 									system.disabled ? ButtonStyle.Primary : ButtonStyle.Danger,
 								)
-								.setLabel(`${system.disabled ? "Enable" : "Disable"} System`)
+								.setLabel(
+									system.disabled
+										? this.translations.SYSTEM_E
+										: this.translations.SYSTEM_D,
+								)
 								.setCustomId(
 									InteractionIdentifier.Systems.ToggleDisableSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(
-								"Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
-							),
+							new TextDisplay().setContent(this.translations.SYSTEM_D_DESC),
 						),
 					new Separator(),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Danger)
-								.setLabel("Delete System")
+								.setLabel(this.translations.DELETE_SYS_BTN)
 								.setCustomId(
 									InteractionIdentifier.Setup.RemoveOldSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(
-								"**This cannot be undone**. Deleting your system will **delete your system __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
-							),
+							new TextDisplay().setContent(this.translations.DELETE_SYS_DESC),
 						),
 				),
 		];
@@ -350,7 +340,7 @@ export class SystemSettingsView extends TranslatedView {
 
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(`## Alters`),
+				new TextDisplay().setContent(this.translations.ALTERS_TITLE),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
 					alters
@@ -363,16 +353,35 @@ export class SystemSettingsView extends TranslatedView {
 						(alters.filter((v) =>
 							has(AlterProtectionFlags.VISIBILITY, v.public),
 						).length === 0
-							? "*There are no public-facing alters in this page.*"
+							? this.translations.NO_PUBLIC_ALTERS_DESC
 							: ""),
 				),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})` : ""}`,
+					this.translations.ALTERS_PAGINATION.replace(
+						"{{ page }}",
+						String(pgObj.memoryPage),
+					)
+						.replace(
+							"{{ maxPage }}",
+							String(Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)),
+						)
+						.replace("{{ alters }}", String(alters.length))
+						.replace("{{ maxAlters }}", String(pgObj.documentCount))
+						.replace("{{ time }}", String(Date.now() - time))
+						.replace(
+							"{{ possibleSearchQuery }}",
+							pgObj.searchQuery !== undefined
+								? this.translations.ALTERS_POSSIBLE_SQ.replace(
+										"{{ query }}",
+										`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+									)
+								: "",
+						),
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel("Previous Page")
+						.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
 						.setDisabled(pgObj?.memoryPage === 1)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.PreviousPage.create(
@@ -381,7 +390,7 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setStyle(ButtonStyle.Primary),
 					new Button()
-						.setLabel("Next Page")
+						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
 								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
@@ -415,7 +424,7 @@ export class SystemSettingsView extends TranslatedView {
 				...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel("Create new alter")
+						.setLabel(this.translations.CREATE_NEW_ALTER_DESCRIPTION)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
 						)
@@ -462,13 +471,15 @@ export class SystemSettingsView extends TranslatedView {
 		return [
 			...this.topView("alters", system.associatedUserId),
 			new Container().setComponents(
-				new TextDisplay().setContent(`## Alters - ${system.systemName}`),
+				new TextDisplay().setContent(
+					`${this.translations.ALTERS_TITLE} - ${system.systemName}`,
+				),
 				new Separator().setSpacing(Spacing.Large),
 				...alters.map((alter) => {
 					return new Section()
 						.setAccessory(
 							new Button()
-								.setLabel("Edit Alter")
+								.setLabel(this.translations.ALTER_EDIT)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(
 										alter.alterId,
@@ -485,7 +496,26 @@ export class SystemSettingsView extends TranslatedView {
 				}),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)} · Found ${alters.length}/${pgObj.documentCount} alter(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})` : ""}`,
+					this.translations.ALTERS_PAGINATION.replace(
+						"{{ page }}",
+						String(pgObj.memoryPage),
+					)
+						.replace(
+							"{{ maxPage }}",
+							String(Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)),
+						)
+						.replace("{{ alters }}", String(alters.length))
+						.replace("{{ maxAlters }}", String(pgObj.documentCount))
+						.replace("{{ time }}", String(Date.now() - time))
+						.replace(
+							"{{ possibleSearchQuery }}",
+							pgObj.searchQuery !== undefined
+								? this.translations.ALTERS_POSSIBLE_SQ.replace(
+										"{{ query }}",
+										`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+									)
+								: "",
+						),
 				),
 				new ActionRow().setComponents(
 					new Button()
@@ -495,7 +525,7 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
 						),
 					new Button()
-						.setLabel("Previous Page")
+						.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
 						.setDisabled(pgObj?.memoryPage === 1)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(
@@ -504,7 +534,7 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setStyle(ButtonStyle.Primary),
 					new Button()
-						.setLabel("Next Page")
+						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
 								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
@@ -538,7 +568,7 @@ export class SystemSettingsView extends TranslatedView {
 				...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel("Create new tag")
+						.setLabel(this.translations.NEW_TAG_BTN)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
 						)
@@ -581,13 +611,15 @@ export class SystemSettingsView extends TranslatedView {
 		return [
 			...this.topView("tags", system.associatedUserId),
 			new Container().setComponents(
-				new TextDisplay().setContent(`## Tags - ${system.systemName}`),
+				new TextDisplay().setContent(
+					`${this.translations.TAG_TITLE} - ${system.systemName}`,
+				),
 				new Separator().setSpacing(Spacing.Large),
 				...alters.map((tag) => {
 					return new Section()
 						.setAccessory(
 							new Button()
-								.setLabel("Edit Tag")
+								.setLabel(this.translations.TAG_EDIT)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.ConfigureTag.create(
 										tag.tagId,
@@ -604,7 +636,26 @@ export class SystemSettingsView extends TranslatedView {
 				}),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`-# Page ${pgObj.memoryPage}/${Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)} · Found ${alters.length}/${pgObj.documentCount} tag(s) in ${Date.now() - time}ms${pgObj.searchQuery !== undefined ? ` · Querying for \`${pgObj.searchQuery}\`` : ""}`,
+					this.translations.TAGS_PAGINATION.replace(
+						"{{ page }}",
+						String(pgObj.memoryPage),
+					)
+						.replace(
+							"{{ maxPage }}",
+							String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)),
+						)
+						.replace("{{ alters }}", String(alters.length))
+						.replace("{{ maxAlters }}", String(pgObj.documentCount))
+						.replace("{{ time }}", String(Date.now() - time))
+						.replace(
+							"{{ possibleSearchQuery }}",
+							pgObj.searchQuery !== undefined
+								? this.translations.ALTERS_POSSIBLE_SQ.replace(
+										"{{ query }}",
+										`\`${pgObj.searchQuery}\``,
+									)
+								: "",
+						),
 				),
 				new ActionRow().setComponents(
 					new Button()
@@ -614,7 +665,7 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
 						),
 					new Button()
-						.setLabel("Previous Page")
+						.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
 						.setDisabled(pgObj?.memoryPage === 1)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.PreviousPage.create(
@@ -623,7 +674,7 @@ export class SystemSettingsView extends TranslatedView {
 						)
 						.setStyle(ButtonStyle.Primary),
 					new Button()
-						.setLabel("Next Page")
+						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
 								Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),
@@ -652,14 +703,17 @@ export class SystemSettingsView extends TranslatedView {
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					`## Public Profile - @${system.systemName}\nYour public profile is what your system looks like to other users when they identify your messages.`,
+					this.translations.S_PUBLIC_PROFILE_TITLE.replace(
+						"{{ systemName }}",
+						system.systemName,
+					),
 				),
 				new Separator().setSpacing(Spacing.Large),
 
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							"You can set a **profile picture** by uploading an image using the modal on the right.",
+							this.translations.PUBLIC_PROFILE_PFP_DESC,
 						),
 					)
 					.setAccessory(
@@ -674,7 +728,7 @@ export class SystemSettingsView extends TranslatedView {
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							"You can set a **banner** by uploading an image using the modal on the right.",
+							this.translations.PUBLIC_PROFILE_BANNER_DESC,
 						),
 					)
 					.setAccessory(
@@ -689,8 +743,14 @@ export class SystemSettingsView extends TranslatedView {
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							`You can set pronouns for your system. System pronouns can be at maximum 100 characters long.
--# ${system.systemName}'s pronouns are: ${system.systemPronouns ?? "Not set"}`,
+							this.translations.S_PUBLIC_PROFILE_PN_DESC.replace(
+								"{{ systemName }}",
+								system.systemName,
+							).replace(
+								"{{ pronouns }}",
+								system.systemPronouns ??
+									this.translations.PUBLIC_PROFILE_UNSET_PN,
+							),
 						),
 					)
 					.setAccessory(
@@ -705,8 +765,10 @@ export class SystemSettingsView extends TranslatedView {
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							`You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
--# To view your description in full, run: ${mentionCommand(prefix, "system description", isApplication)}`,
+							this.translations.S_PUBLIC_PROFILE_DESC_DESC.replace(
+								"{{ mention }}",
+								mentionCommand(prefix, "system description", isApplication),
+							),
 						),
 					)
 					.setAccessory(
@@ -721,8 +783,9 @@ export class SystemSettingsView extends TranslatedView {
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							`You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
--# ${system.systemName}'s system tag is: ${system.systemDisplayTag ?? "Not set"}`,
+							this.translations.PUBLIC_PROFILE_SYSTEM_TAG_DESC
+								.replace("{{ systemName }}", system.systemName)
+								.replace("{{ displayTag }}", system.systemDisplayTag ?? this.translations.PUBLIC_PROFILE_UNSET_PN)
 						),
 					)
 					.setAccessory(
@@ -740,10 +803,11 @@ export class SystemSettingsView extends TranslatedView {
 	importSettings(system: PSystem) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(`## Import data from another bot`),
+				new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_TITLE),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					`Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
+					
+					this.translations.IMPORT_SETTINGS_DESC
 				),
 				new Separator().setSpacing(Spacing.Small).setDivider(false),
 				new ActionRow().setComponents(
@@ -752,27 +816,27 @@ export class SystemSettingsView extends TranslatedView {
 						.setOptions([
 							new StringSelectOption()
 								.setDescription(
-									"Replace will replace existing data in your system with data. Does not make new system data.",
+									this.translations.REPLACE_DESC
 								)
-								.setLabel("Replace")
+								.setLabel(this.translations.REPLACE_NAME)
 								.setValue("replace"),
 							new StringSelectOption()
 								.setDescription(
-									"Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
+									this.translations.ADD_DESC
 								)
-								.setLabel("Add")
+								.setLabel(this.translations.ADD_NAME)
 								.setValue("add"),
 							new StringSelectOption()
 								.setDescription(
-									"Full import mode will both replace existing alters and add new ones.",
+									this.translations.FULL_IMPORT_DESC
 								)
-								.setLabel("Full Import")
+								.setLabel(this.translations.FULL_IMPORT_NAME)
 								.setValue("full-mode"),
 							new StringSelectOption()
 								.setDescription(
-									"Delete import mode will remove existing alters/tags missing from the import.",
+									this.translations.DELETE_IMPORT_DESC
 								)
-								.setLabel("Delete")
+								.setLabel(this.translations.DELETE_NAME)
 								.setValue("delete"),
 						]),
 				),

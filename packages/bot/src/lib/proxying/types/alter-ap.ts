@@ -212,6 +212,7 @@ export async function performAlterAutoProxy(
 					const lastMessageInChannel = await message.channel();
 					let continueBool = true;
 
+
 					if (
 						(lastMessageInChannel.isTextable() ||
 							lastMessageInChannel.isVoice()) &&

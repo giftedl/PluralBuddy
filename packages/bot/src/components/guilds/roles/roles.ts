@@ -21,11 +21,11 @@ export default class RolesTabButton extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new ServerConfigView(ctx.userTranslations()).topView(
+				...new ServerConfigView((await ctx.userTranslations())).topView(
 					"roles",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView(ctx.userTranslations()).rolesTab(
+				...new ServerConfigView((await ctx.userTranslations())).rolesTab(
 					pluralGuild,
 					nativeGuild,
 				),

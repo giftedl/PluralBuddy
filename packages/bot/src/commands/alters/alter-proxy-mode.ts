@@ -46,7 +46,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
 
         if (alter === null) {
             return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             }, undefined, undefined, ctx)
         }
@@ -54,7 +54,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
         if (alterProxy === undefined) {
             return await ctx.ephemeral({
                 components: [
-                    ...new AlterView(ctx.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
+                    ...new AlterView((await ctx.userTranslations())).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
                 ],
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             }, undefined, undefined, ctx)
@@ -77,12 +77,12 @@ export default class EditAlterProxyModeCommand extends SubCommand {
         
         return await ctx.ephemeral({
             components: [
-                ...new AlterView(ctx.userTranslations()).alterTopView(
+                ...new AlterView((await ctx.userTranslations())).alterTopView(
                     "general",
                     alter.alterId.toString(),
                     alter.username,
                 ),
-                ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId),
+                ...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter, ctx.guildId),
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
         }, undefined, undefined, ctx);

@@ -52,7 +52,7 @@ export default class AssignTag extends SubCommand {
 
 		if (alter === null) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -69,7 +69,7 @@ export default class AssignTag extends SubCommand {
 
 		if (tag === null) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -81,9 +81,8 @@ export default class AssignTag extends SubCommand {
 			alter.tagIds.includes(tag.tagId)
 		) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorViewCustom(
-					ctx
-						.userTranslations()
+				components: new AlertView((await ctx.userTranslations())).errorViewCustom(
+					(await (await ctx.userTranslations()))
 						.TAG_ALREADY_ASSIGNED.replaceAll(
 							"%tag%",
 							` ${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`,
@@ -104,9 +103,8 @@ export default class AssignTag extends SubCommand {
 		);
 
 		return await ctx.ephemeral({
-			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				ctx
-					.userTranslations()
+			components: new AlertView((await ctx.userTranslations())).successViewCustom(
+				((await ctx.userTranslations()))
 					.ASSIGNED_TAG.replaceAll(
 						"%tag%",
 						` ${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`,

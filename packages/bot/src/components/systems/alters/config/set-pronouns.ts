@@ -27,18 +27,18 @@ export default class SetUsernameButton extends ComponentCommand {
 
 	if (alter === null) {
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+			components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 		})
 	}
 
 	const form = new Modal()
 		.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPronounsForm.create(alter.alterId))
-		.setTitle(ctx.userTranslations().ALTER_FORM_TITLE)
+		.setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
 		.addComponents(
 			[
 				new Label()
-					.setLabel(ctx.userTranslations().SYSTEM_PRONOUNS_FORM_LABEL)
+					.setLabel((await ctx.userTranslations()).SYSTEM_PRONOUNS_FORM_LABEL)
 					.setComponent(
 						alter.pronouns === null ? new TextInput()
 							.setStyle(TextInputStyle.Short)

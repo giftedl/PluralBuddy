@@ -82,12 +82,12 @@ export class AlterView extends TranslatedView {
 
 		const innerComponents =
 			new TextDisplay().setContent(`${displayNameDisplayable ? `## ${alter.displayName}` : ""}
-${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : usernameDisplayable ? `-# Also known as @${alter.username}` : ""} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
+${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : usernameDisplayable ? this.translations.AKA_PROFILE.replace("{{ username }}", alter.username) : ""} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
 ${descriptionDisplayable && alter.description !== null ? "\n" : ""}${descriptionDisplayable ? sanitizedDescription.result : ""}${descriptionDisplayable && alter.description !== null ? "\n" : ""}
-${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}` : ""}
-**Associated to:** <@${alter.systemId}> (${alter.systemId})
-${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`).join(",  ")}${tags.length !== tagCount ? `, and ${tagCount - tags.length} more...` : ""}\n` : ""}
--# ID: \`${alter.alterId.toString()}\``);
+${messagesDisplayable ? `${this.translations.MESSAGE_COUNT_LABEL_PROFILE}${alter.messageCount} ${alter.lastMessageTimestamp !== null ? this.translations.LAST_SENT_TIME_PROFILE.replace("{{ timestamp }}", `<t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>`) : ""}` : ""}
+${this.translations.OWNED_BY_PROFILE}<@${alter.systemId}> (${alter.systemId})
+${tags.length !== 0 ? `${this.translations.TAGS_PROFILE}${tags.map((tag) => `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`).join(",  ")}${tags.length !== tagCount ? this.translations.LIST_MORE_PROFILE.replace("{{ length }}", String(tagCount - tags.length)) : ""}\n` : ""}
+${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 
 		const comp = new Container().setComponents(
 			!avatarDisplayable || alter.avatarUrl === null
@@ -95,16 +95,34 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 				: new Section()
 						.setAccessory(
 							new Thumbnail()
-								.setMedia(alter.avatarUrl === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : alter.avatarUrl)
-								.setDescription(`${alter.avatarUrl}'s avatar`),
+								.setMedia(
+									alter.avatarUrl === ""
+										? "https://pb.giftedly.dev/image/solar-centered.png"
+										: alter.avatarUrl,
+								)
+								.setDescription(
+									this.translations.ALT_AVATAR.replace(
+										"{{ alter }}",
+										alter.alterId.toString(),
+									),
+								),
 						)
 						.setComponents(innerComponents),
 			...(bannerDisplayable && alter.banner !== null
 				? [
 						new MediaGallery().setItems(
 							new MediaGalleryItem()
-								.setMedia(alter.banner === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : alter.banner)
-								.setDescription(`${alter.avatarUrl}'s banner`),
+								.setMedia(
+									alter.banner === ""
+										? "https://pb.giftedly.dev/image/solar-centered.png"
+										: alter.banner,
+								)
+								.setDescription(
+									this.translations.ALT_BANNER.replace(
+										"{{ alter }}",
+										alter.alterId.toString(),
+									),
+								),
 						),
 					]
 				: []),
@@ -192,7 +210,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 						.addComponents(
 							new TextDisplay().setContent(
 								`${this.translations.ALTER_SET_MODE_DESC}
--# Current mode for @${alter.username} is ${alter.alterMode[0]?.toUpperCase() + alter.alterMode.slice(1)}`,
+${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alter.username).replace("{{ proxyMode }}", alter.alterMode[0]?.toUpperCase() + alter.alterMode.slice(1))}`,
 							),
 						)
 						.setAccessory(
@@ -208,9 +226,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 					new Separator(),
 					new Section()
 						.addComponents(
-							new TextDisplay().setContent(
-								`You can assign an unlimited amount of tags to an alter and an unlimited amount of alters to a tag.`,
-							),
+							new TextDisplay().setContent(this.translations.UNLIMITED_ASSIGN),
 						)
 						.setAccessory(
 							new Button()
@@ -243,10 +259,7 @@ ${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTag
 								),
 						),
 					new Separator(),
-					new TextDisplay().setContent(`You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
-> - *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
-> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
-> - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.
+					new TextDisplay().setContent(`${this.translations.AP_EXPLANATION}
  
 ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId && a.autoproxyMode !== "off") ? `**Current auto-proxy mode:** ${system?.systemAutoproxy.find((a) => a.serverId)?.autoproxyMode} as ${(system?.systemAutoproxy.find((a) => a.serverId)?.autoproxyAlter ?? "0") === alter.alterId.toString() ? "*this alter*" : "*another alter*"}` : ``}`),
 
@@ -254,8 +267,8 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 						new StringSelectMenu()
 							.setPlaceholder(
 								guildId === undefined
-									? "You must be in a server to proxy"
-									: "Select a proxy mode",
+									? this.translations.REQUIRED_SERVER_PROXY
+									: this.translations.SELECT_DEFAULT_PROXY,
 							)
 							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
 							.setDisabled(guildId === undefined)
@@ -266,10 +279,8 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 											alter.alterId,
 										),
 									)
-									.setLabel("Latch Mode")
-									.setDescription(
-										"Set this alter as the first alter in latch mode.",
-									)
+									.setLabel(this.translations.LATCH_NAME)
+									.setDescription(this.translations.LATCH_DESC)
 									.setDefault(
 										system?.systemAutoproxy.some(
 											(a) =>
@@ -298,8 +309,8 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 									)
-									.setLabel("Off")
-									.setDescription("Disable auto-proxy in your system.")
+									.setLabel(this.translations.OFF_NAME)
+									.setDescription(this.translations.OFF_DESC)
 									.setDefault(
 										system?.systemAutoproxy.some(
 											(a) =>
@@ -311,9 +322,7 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 					new Separator(),
 					new Section()
 						.addComponents(
-							new TextDisplay().setContent(
-								"**This cannot be undone.** Deleting an alter will delete your alter and its data.",
-							),
+							new TextDisplay().setContent(this.translations.DELETE_DESC),
 						)
 						.setAccessory(
 							new Button()
@@ -339,11 +348,11 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 		return [
 			new Container()
 				.setComponents(
-					new TextDisplay().setContent(`### ${emojis.circleQuestion}   Proxy Mode · @${alterUsername}
+					new TextDisplay().setContent(`${this.translations.PROXY_MODE_TITLE.replace("{{ circleQuestion }}", emojis.circleQuestion).replace("{{ alterUsername }}", alterUsername)}
 ${this.translations.ALTER_SET_MODE_DESC}
 
-Please select the mode you would like to use below.
--# Current mode for @${alterUsername} is ${currentMode[0]?.toUpperCase() + currentMode.slice(1)}`),
+${this.translations.SELECT_PM}
+${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).replace("{{ proxyMode }}", currentMode[0]?.toUpperCase() + currentMode.slice(1))}`),
 				)
 				.setColor("#1190FF"),
 			...(guild.getFeatures().forcedNicknameMode ||
@@ -352,7 +361,15 @@ Please select the mode you would like to use below.
 						new Container()
 							.setComponents(
 								new TextDisplay().setContent(
-									`  ${emojis.x}   **This server enforces a required ${guild.getFeatures().forcedNicknameMode ? "nickname" : "webhook"} policy.** This means that all alters will have to use the ${guild.getFeatures().forcedNicknameMode ? "nickname" : "webhook"} proxy mode in this server specifically. Your message will be blocked from proxying if you are not using the Both proxy mode or using the enforced proxy mode.`,
+									this.translations.FORCED_WEBHOOK_WARNING.replace(
+										"{{ x }}",
+										emojis.x,
+									).replaceAll(
+										"{{ policyType }}",
+										guild.getFeatures().forcedNicknameMode
+											? this.translations.POLICY_TYPE_NICK
+											: this.translations.POLICY_TYPE_WEBHOOK,
+									),
 								),
 							)
 							.setColor("#B70000"),
@@ -366,7 +383,7 @@ Please select the mode you would like to use below.
 							alterId.toString(),
 						),
 					)
-					.setLabel("Back")
+					.setLabel(this.translations.OPTION_BACK)
 					.setStyle(ButtonStyle.Secondary),
 				new Button()
 					.setCustomId(
@@ -374,7 +391,7 @@ Please select the mode you would like to use below.
 							alterId.toString(),
 						),
 					)
-					.setLabel("Nickname")
+					.setLabel(this.translations.OPTION_NICKNAME)
 					.setStyle(ButtonStyle.Primary),
 				new Button()
 					.setCustomId(
@@ -382,7 +399,7 @@ Please select the mode you would like to use below.
 							alterId,
 						),
 					)
-					.setLabel("Webhook")
+					.setLabel(this.translations.OPTION_WEBHOOK)
 					.setStyle(ButtonStyle.Primary),
 				new Button()
 					.setCustomId(
@@ -390,7 +407,7 @@ Please select the mode you would like to use below.
 							alterId,
 						),
 					)
-					.setLabel("Both")
+					.setLabel(this.translations.OPTION_BOTH)
 					.setStyle(ButtonStyle.Primary),
 			),
 		];
@@ -409,13 +426,19 @@ Please select the mode you would like to use below.
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					`## Public Profile - @${alter.username}\nYour public profile is what your alter looks like to other users when they identify your messages.`,
+					this.translations.PUBLIC_PROFILE_TITLE.replace(
+						"{{ alterUsername }}",
+						alter.username,
+					),
 				),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							`Display names are shown on webhooks when you proxy. These have less restrictions then usernames.\n-# Display Name: ${alter.displayName}`,
+							this.translations.PUBLIC_PROFILE_DN_DESC.replace(
+								"{{ currentDisplayName }}",
+								alter.displayName,
+							),
 						),
 					)
 					.setAccessory(
@@ -459,7 +482,7 @@ Please select the mode you would like to use below.
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							"You can set a **profile picture** by uploading an image using the modal on the right.",
+							this.translations.PUBLIC_PROFILE_PFP_DESC,
 						),
 					)
 					.setAccessory(
@@ -476,7 +499,7 @@ Please select the mode you would like to use below.
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							"You can set a **banner** by uploading an image using the modal on the right.",
+							this.translations.PUBLIC_PROFILE_BANNER_DESC,
 						),
 					)
 					.setAccessory(
@@ -493,8 +516,13 @@ Please select the mode you would like to use below.
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							`You can set pronouns for your alter. Alter pronouns can be at maximum 100 characters long.
--# @${alter.username}'s pronouns are: ${alter.pronouns ?? "Not set"}`,
+							this.translations.PUBLIC_PROFILE_PN_DESC.replace(
+								"{{ alterUsername }}",
+								alter.username,
+							).replace(
+								"{{ alterPronouns }}",
+								alter.pronouns ?? this.translations.PUBLIC_PROFILE_UNSET_PN,
+							),
 						),
 					)
 					.setAccessory(
@@ -511,8 +539,15 @@ Please select the mode you would like to use below.
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							`You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
--# To view your description in full, run: ${mentionCommand(prefix, "edit-alter description", isApplication, alter.username)}`,
+							this.translations.PUBLIC_PROFILE_DESC_DESC.replace(
+								"{{ commandMention }}",
+								mentionCommand(
+									prefix,
+									"edit-alter description",
+									isApplication,
+									alter.username,
+								),
+							),
 						),
 					)
 					.setAccessory(
@@ -529,7 +564,7 @@ Please select the mode you would like to use below.
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							"Setting a color for an alter shows that color for their rank container along with their public profile.",
+							this.translations.PUBLIC_PROFILE_COLOR_DESC,
 						),
 					)
 					.setAccessory(
@@ -554,18 +589,21 @@ Please select the mode you would like to use below.
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					`-# @${alterUsername} • ID: \`${alterId}\``,
+					this.translations.ALTER_TOP_VIEW.replace(
+						"{{ alterUsername }}",
+						alterUsername,
+					).replace("{{ alterId }}", alterId),
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel("Back")
+						.setLabel(this.translations.TOP_BACK_LABEL)
 						.setStyle(ButtonStyle.Secondary)
 						.setEmoji(emojis.undo)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.Alters.Index.create(),
 						),
 					new Button()
-						.setLabel("General")
+						.setLabel(this.translations.GENERAL_LABEL)
 						.setStyle(
 							currentTab === "general"
 								? ButtonStyle.Success
@@ -582,7 +620,7 @@ Please select the mode you would like to use below.
 							),
 						),
 					new Button()
-						.setLabel("Proxy Tags")
+						.setLabel(this.translations.ALTER_PROXY_TAGS_LABEL)
 						.setStyle(
 							currentTab === "proxy-tags"
 								? ButtonStyle.Success
@@ -599,7 +637,7 @@ Please select the mode you would like to use below.
 							),
 						),
 					new Button()
-						.setLabel("Public Profile")
+						.setLabel(this.translations.PUBLIC_PROFILE_LABEL)
 						.setStyle(
 							currentTab === "public-settings"
 								? ButtonStyle.Success
@@ -624,7 +662,7 @@ Please select the mode you would like to use below.
 		return [
 			new ActionRow().setComponents(
 				new Button()
-					.setLabel("Configure Profile")
+					.setLabel(this.translations.CONFIGURE_PROFILE_BTN)
 					.setEmoji(emojis.wrenchWhite)
 					.setCustomId(
 						InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.create(
@@ -642,8 +680,8 @@ Please select the mode you would like to use below.
 				new StringSelectMenu()
 					.setPlaceholder(
 						guildId === undefined
-							? "You must be in a server to proxy"
-							: "Select a proxy mode",
+							? this.translations.REQUIRED_SERVER_PROXY
+							: this.translations.SELECT_DEFAULT_PROXY,
 					)
 					.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
 					.setDisabled(guildId === undefined)
@@ -654,9 +692,9 @@ Please select the mode you would like to use below.
 									alter.alterId,
 								),
 							)
-							.setLabel("Latch Mode")
+							.setLabel(this.translations.LATCH_NAME)
 							.setDescription(
-								"Set this alter as the first alter in latch mode.",
+								this.translations.LATCH_DESC,
 							),
 						new StringSelectOption()
 							.setValue(
@@ -664,16 +702,16 @@ Please select the mode you would like to use below.
 									alter.alterId,
 								),
 							)
-							.setLabel("Alter Mode")
+							.setLabel(this.translations.ALTER_NAME)
 							.setDescription(
-								"Only proxy this alter until auto-proxy is disabled.",
+								this.translations.ALTER_DESC,
 							),
 						new StringSelectOption()
 							.setValue(
 								InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 							)
-							.setLabel("Off")
-							.setDescription("Disable auto-proxy in your system."),
+							.setLabel(this.translations.OFF_NAME)
+							.setDescription(this.translations.OFF_DESC),
 					]),
 			),
 		];

@@ -1,11 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { TranslationString } from "../lang";
+import type { DefaultLocale } from "seyfert";
 
 export class TranslatedView {
-    translations: TranslationString;
+    translations: DefaultLocale;
 
-    constructor(translations: TranslationString) {
+    constructor(translations: DefaultLocale) {
         this.translations = translations;
     }
     

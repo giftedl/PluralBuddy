@@ -17,18 +17,18 @@ export default class SetPFPButton extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 			})
 		}
 
 		const form = new Modal()
 			.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.SystemBannerForm.create())
-			.setTitle(ctx.userTranslations().EDIT_SYSTEM_FORM_TITLE)
+			.setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
 			.addComponents(
 				[
 					new Label()
-						.setLabel(ctx.userTranslations().ALTER_SET_BANNER)
+						.setLabel((await ctx.userTranslations()).ALTER_SET_BANNER)
 						.setComponent(
 							new FileUpload()
 								.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.SystemBannerType.create())

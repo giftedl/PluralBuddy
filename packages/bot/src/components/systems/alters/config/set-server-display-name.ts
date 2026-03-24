@@ -27,7 +27,7 @@ export default class SetUsernameButton extends ComponentCommand {
 
 	if (alter === null) {
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+			components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 		})
 	}
@@ -37,11 +37,11 @@ export default class SetUsernameButton extends ComponentCommand {
 
 	const form = new Modal()
 		.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterServerDisplayNameForm.create(alter.alterId))
-		.setTitle(ctx.userTranslations().ALTER_FORM_TITLE)
+		.setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
 		.addComponents(
 			[
 				new Label()
-					.setLabel(ctx.userTranslations().ALTER_SERVER_DN_FORM_LABEL)
+					.setLabel((await ctx.userTranslations()).ALTER_SERVER_DN_FORM_LABEL)
 					.setComponent(
 						new TextInput()
 							.setStyle(TextInputStyle.Short)

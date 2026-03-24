@@ -67,9 +67,9 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
 
     await context.editOrReply({
       components: [
-        ...new AlertView(context.userTranslations()).errorViewCustom(
-          context
-            .userTranslations()
+        ...new AlertView(await context.userTranslations()).errorViewCustom(
+          (await context
+            .userTranslations())
             .PLURALBUDDY_OPTIONS_ERROR.replace("%options_errors%", errors)
         ),
       ],

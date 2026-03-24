@@ -13,7 +13,7 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
       return await ctx.update({
-        components: [...new PluralBuddyIntro(ctx.userTranslations()).pluralKitImportPage(ctx.interaction.id)]
+        components: [...new PluralBuddyIntro((await ctx.userTranslations())).pluralKitImportPage(ctx.interaction.id)]
       })
       
   }

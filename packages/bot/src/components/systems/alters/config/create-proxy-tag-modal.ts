@@ -34,7 +34,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 
 		if (alter === null) {
 			return await context.write({
-				components: new AlertView(context.userTranslations()).errorView(
+				components: new AlertView(await context.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -43,7 +43,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 
 		if (!proxyTag.includes("text")) {
 			return await context.write({
-				components: new AlertView(context.userTranslations()).errorView(
+				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -57,7 +57,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 
 		if (prefix.length > 20 || suffix.length > 20) {
 			return await context.write({
-				components: new AlertView(context.userTranslations()).errorView(
+				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_TOO_MANY_CHARS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -66,7 +66,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 
 		if (prefix === "" && suffix === "") {
 			return await context.write({
-				components: new AlertView(context.userTranslations()).errorView(
+				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -96,12 +96,12 @@ export default class CreateProxyTagModal extends ModalCommand {
 
 		return await context.interaction.update({
 			components: [
-				...new AlterView(context.userTranslations()).alterTopView(
+				...new AlterView(await context.userTranslations()).alterTopView(
 					"proxy-tags",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(context.userTranslations()).alterProxyTagsView(alter),
+				...new AlterView(await context.userTranslations()).alterProxyTagsView(alter),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

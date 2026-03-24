@@ -99,12 +99,8 @@ export async function add(
 				}) satisfies PAlter,
 		);
 
-	for (const replacedAlter of newAlters) {
-		await alterCollection.replaceOne(
-			{ alterId: replacedAlter.alterId },
-			replacedAlter,
-		);
-	}
+	if (newAlters.length + input.existing.alters.length >= 2000)
+		throw new Error("Too many alters");
 
 	const newTags = input.import.tags
 		.filter((v) =>
@@ -129,7 +125,16 @@ export async function add(
 					associatedAlters: v.existing?.associatedAlters ?? [],
 				}) satisfies PTag,
 		);
+	if (newTags.length + input.existing.tags.length >= 1000)
+		throw new Error("Too many tags");
 
+	for (const replacedAlter of newAlters) {
+		await alterCollection.replaceOne(
+			{ alterId: replacedAlter.alterId },
+			replacedAlter,
+		);
+	}
+	
 	for (const replacedTag of newTags) {
 		await tagCollection.replaceOne({ tagId: replacedTag.tagId }, replacedTag);
 	}

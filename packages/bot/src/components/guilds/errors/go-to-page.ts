@@ -22,11 +22,11 @@ export default class ViewErrorsTab extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new ServerConfigView(ctx.userTranslations()).topView(
+				...new ServerConfigView((await ctx.userTranslations())).topView(
 					"errors",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView(ctx.userTranslations()).errorSettings(
+				...new ServerConfigView((await ctx.userTranslations())).errorSettings(
 					pluralGuild,
 					nativeGuild,
                     Number(page ?? "1")

@@ -53,7 +53,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 
 		if (alter === null) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -83,9 +83,8 @@ ${alter.description ?? "⛔ Your alter has no description."}
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView(ctx.userTranslations()).successViewCustom(
-					ctx
-						.userTranslations()
+				...new AlertView((await ctx.userTranslations())).successViewCustom(
+					(await ctx.userTranslations())
 						.ALTER_SUCCESS_DESC.replace("%alter%", alter.username),
 				),
 			],

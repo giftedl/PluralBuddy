@@ -40,7 +40,7 @@ export default class ViewRoleContainer extends SubCommand {
 
 		if (!guild.rolePreferences.some((c) => c.roleId === role.id)) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ROLE_NO_SPECIAL_CONFIG",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

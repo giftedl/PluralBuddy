@@ -7,6 +7,7 @@ import { assetStringGeneration } from "./operation";
 export const PUserObject = z.object({
     userId: z.string(),
 
+    userLang: z.string().optional().default("en"),
     system: PSystemObject.optional(),
     storagePrefix: z.string(),
     blacklisted: z.boolean().default(false),
@@ -27,6 +28,7 @@ export const defaultUserStructure = (userId: string) => {
     return {
         userId,
         blacklisted: false,
+        userLang: "en",
         storagePrefix: assetStringGeneration(8),
         nudging: {
             blockedUsers: [],

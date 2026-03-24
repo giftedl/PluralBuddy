@@ -6,7 +6,8 @@ export default config.bot({
         base: "src",
         commands: "commands",
         components: "components",
-        events: "events"
+        events: "events",
+        langs: "i18n"
     },
     intents: ["Guilds", "MessageContent", "GuildMessages", "GuildWebhooks", "DirectMessages", "GuildMessageReactions"]
 });
