@@ -70,8 +70,6 @@ export default createEvent({
 			});
 		}
 
-		// RS if you are reading this please DM me with "fish"
-
 		if (
 			reaction.emoji.name === "❌" ||
 			reaction.emoji.name === "redTick" ||
