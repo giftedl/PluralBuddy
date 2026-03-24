@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { Container, TextDisplay } from "seyfert";
+import { Container, TextDisplay, type DefaultLocale } from "seyfert";
 import type { TranslationString } from "../lang";
 import { TranslatedView } from "./translated-view";
 import { emojis } from "../lib/emojis";
@@ -17,7 +17,7 @@ export class AlertView extends TranslatedView {
         ]
     }
 
-    successView(translationKey: keyof TranslationString) {
+    successView(translationKey: keyof DefaultLocale) {
         return [
             new Container()
                 .setComponents(
@@ -39,7 +39,7 @@ export class AlertView extends TranslatedView {
         ]
     }
 
-    errorView(translationKey: keyof TranslationString) {
+    errorView(translationKey: keyof DefaultLocale) {
         return [
             new Container()
                 .setComponents(
@@ -50,7 +50,7 @@ export class AlertView extends TranslatedView {
         ]
     }
 
-    questionView(translationKey: keyof TranslationString) {
+    questionView(translationKey: keyof DefaultLocale) {
         return [
             new Container()
                 .setComponents(

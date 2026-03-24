@@ -27,7 +27,7 @@ export default class SetPrivacyButton extends ComponentCommand {
 
         if (alter === null) {
             return await ctx.write({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
@@ -35,17 +35,17 @@ export default class SetPrivacyButton extends ComponentCommand {
 
         const form = new Modal()
             .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.create(alter.alterId))
-            .setTitle(ctx.userTranslations().ALTER_FORM_TITLE)
+            .setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
             .addComponents(
                 [
                     new Label()
-                        .setLabel(ctx.userTranslations().ALTER_SET_PRIVACY)
-                        .setDescription(ctx.userTranslations().TAG_PRIVACY_FORM_DESC)
+                        .setLabel((await ctx.userTranslations()).ALTER_SET_PRIVACY)
+                        .setDescription((await ctx.userTranslations()).TAG_PRIVACY_FORM_DESC)
                         .setComponent(
                             new StringSelectMenu()
                                 .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyType.create())
-                                .setOptions(alterPrivacySelection(ctx.userTranslations(), alter.public))
-                                .setValuesLength({ min: 0, max: alterPrivacySelection(ctx.userTranslations()).length })
+                                .setOptions(alterPrivacySelection((await ctx.userTranslations()), alter.public))
+                                .setValuesLength({ min: 0, max: alterPrivacySelection((await ctx.userTranslations())).length })
                                 .setRequired(false)
                         )
                 ]

@@ -49,7 +49,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 
 		if (alter === null) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -77,9 +77,8 @@ ${alter.pronouns}
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView(ctx.userTranslations()).successViewCustom(
-					ctx
-						.userTranslations().ALTER_SUCCESS_PRONOUNS.replace(
+				...new AlertView((await ctx.userTranslations())).successViewCustom(
+					(await ctx.userTranslations()).ALTER_SUCCESS_PRONOUNS.replace(
 							"%alter%",
 							alter.username,
 						)

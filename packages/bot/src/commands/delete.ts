@@ -37,7 +37,7 @@ export default class DeleteCommand extends Command {
 
 		if (message === null) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"NOT_RECENT_ENOUGH",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -51,7 +51,7 @@ export default class DeleteCommand extends Command {
 			message.guildId !== ctx.guildId
 		) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -67,7 +67,7 @@ export default class DeleteCommand extends Command {
 
 		if (similarWebhooks[0] === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_MANUAL_PROXY",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -84,7 +84,7 @@ export default class DeleteCommand extends Command {
 
 		return ctx
 			.editResponse({
-				components: new AlertView(ctx.userTranslations()).successView(
+				components: new AlertView((await ctx.userTranslations())).successView(
 					"SUCCESSFULLY_REMOVED_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

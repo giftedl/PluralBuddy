@@ -35,19 +35,19 @@ export default class AlterConfigCommand extends SubCommand {
 
         if (alter === null) {
             return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             },undefined,undefined,ctx)
         }
 
         return await ctx.ephemeral({
             components: [
-                ...new AlterView(ctx.userTranslations()).alterTopView(
+                ...new AlterView((await ctx.userTranslations())).alterTopView(
                     "general",
                     alter.alterId.toString(),
                     alter.username,
                 ),
-                ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId),
+                ...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter, ctx.guildId),
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
         },undefined,undefined,ctx);

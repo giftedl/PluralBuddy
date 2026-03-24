@@ -18,18 +18,18 @@ export default class SetUsernameButton extends ComponentCommand {
 
     if (user.system === undefined) {
       return await ctx.interaction.update({
-          components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+          components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
           flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
       })
     }
 
 	const form = new Modal()
 		.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.SystemDescriptionForm.create())
-		.setTitle(ctx.userTranslations().EDIT_SYSTEM_FORM_TITLE)
+		.setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
 		.addComponents(
 			[
 				new Label()
-					.setLabel(ctx.userTranslations().SYSTEM_DESCRIPTION_FORM_LABEL)
+					.setLabel((await ctx.userTranslations()).SYSTEM_DESCRIPTION_FORM_LABEL)
 					.setComponent(
 						user.system.systemDescription === undefined || user.system.systemDescription === "" ? new TextInput()
 							.setStyle(TextInputStyle.Paragraph)

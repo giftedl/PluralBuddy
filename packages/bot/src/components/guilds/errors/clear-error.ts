@@ -26,7 +26,7 @@ export default class ClearError extends ComponentCommand {
 
 		if (!pluralGuild.errorLog.some((c) => c.id === errorId)) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_DOESNT_EXIST",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -45,11 +45,11 @@ export default class ClearError extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new ServerConfigView(ctx.userTranslations()).topView(
+				...new ServerConfigView((await ctx.userTranslations())).topView(
 					"errors",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView(ctx.userTranslations()).errorSettings(
+				...new ServerConfigView((await ctx.userTranslations())).errorSettings(
 					pluralGuild,
 					nativeGuild
 				),

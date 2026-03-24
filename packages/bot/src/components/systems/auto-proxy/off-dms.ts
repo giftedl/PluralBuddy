@@ -19,7 +19,7 @@ export default class OffDMsButton extends ComponentCommand {
         const [ guildId ] = InteractionIdentifier.Systems.AutoProxy.Off.substring(ctx.customId);
 		if (guildId === undefined) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -31,7 +31,7 @@ export default class OffDMsButton extends ComponentCommand {
 
 		if (guild === undefined) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -40,7 +40,7 @@ export default class OffDMsButton extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -83,9 +83,8 @@ export default class OffDMsButton extends ComponentCommand {
         await ctx.interaction.message.delete();
 
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				ctx
-					.userTranslations()
+			components: new AlertView((await ctx.userTranslations())).successViewCustom(
+				((await ctx.userTranslations()))
 					.SET_AUTO_PROXY.replaceAll("%server_name%", guild?.name ?? "??")
 					.replaceAll("%mode%", "off"),
 			),

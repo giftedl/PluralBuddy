@@ -65,7 +65,22 @@ export class MessageInfo extends TranslatedView {
 			new Separator().setSpacing(Spacing.Large),
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					`**Message ID:** ${messageNative.id}\n**Sent by:** <@${user.id}> (${user.id})\n\n**Account Roles (${((await user.roles.list()) ?? []).length})**\n${((await user.roles.list()) ?? []).map((c) => c.name).filter(v => v !== "@everyone").join(", ")}`,
+					this.translations.MESSAGE_INFO_CONTENTS.replace(
+						"{{ messageId }}",
+						messageNative.id,
+					)
+						.replaceAll("{{ userId }}", user.id)
+						.replace(
+							"{{ roleCount }}",
+							String(((await user.roles.list()) ?? []).length),
+						)
+						.replace(
+							"{{ roleList }}",
+							((await user.roles.list()) ?? [])
+								.map((c) => c.name)
+								.filter((v) => v !== "@everyone")
+								.join(", "),
+						),
 				),
 				new Separator(),
 				new TextDisplay().setContent(

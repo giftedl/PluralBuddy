@@ -27,7 +27,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
 		await ctx.update({
-			components: new LoadingView(ctx.userTranslations()).loadingView(),
+			components: new LoadingView((await ctx.userTranslations())).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -35,7 +35,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -55,6 +55,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		});
 
 		await writeUserById(ctx.author.id, {
+			userLang: user.userLang,
 			userId: ctx.author.id,
 			blacklisted: false,
 			nudging: user.nudging,
@@ -65,7 +66,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		await tagCollection.deleteMany({ systemId: ctx.author.id });
 
 		return await ctx.editResponse({
-			components: new AlertView(ctx.userTranslations()).successView(
+			components: new AlertView((await ctx.userTranslations())).successView(
 				"SYSTEM_DELETION_FINISHED",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

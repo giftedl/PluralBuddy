@@ -23,7 +23,7 @@ export default class ConfigureSystem extends ComponentCommand {
                     new Container()
                         .setComponents(
                             new TextDisplay()
-                                .setContent("You are not the original recipient of the message.")
+                                .setContent((await ctx.userTranslations()).NOT_ORIGINAL_RECIPIENT)
                         )
                 ],
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
@@ -34,15 +34,15 @@ export default class ConfigureSystem extends ComponentCommand {
 
         if (user.system === undefined) {
             return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
         return await ctx.editResponse({
             components: [
-                ...new SystemSettingsView(ctx.userTranslations()).topView("general", user.system.associatedUserId),
-                ...new SystemSettingsView(ctx.userTranslations()).generalSettings(user.system, ctx.guildId)
+                ...new SystemSettingsView((await ctx.userTranslations())).topView("general", user.system.associatedUserId),
+                ...new SystemSettingsView((await ctx.userTranslations())).generalSettings(user.system, ctx.guildId)
 
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral

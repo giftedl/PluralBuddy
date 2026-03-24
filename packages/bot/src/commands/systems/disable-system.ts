@@ -18,7 +18,7 @@ export default class DisableSystemCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -28,13 +28,13 @@ export default class DisableSystemCommand extends SubCommand {
 		await createSystemOperation(
 			user.system,
 			{ disabled: !user.system.disabled },
-			ctx.userTranslations(),
+			(await ctx.userTranslations()),
 			"discord",
 		);
 
 		return await ctx.editResponse({
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			components: new AlertView(ctx.userTranslations()).successView(
+			components: new AlertView((await ctx.userTranslations())).successView(
 				user.system.disabled ? "ENABLED_SYSTEM" : "DISABLED_SYSTEM",
 			),
 		});

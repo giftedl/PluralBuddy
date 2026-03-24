@@ -14,11 +14,11 @@ export default class PluralKitUploadAttachment extends ComponentCommand {
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		return await ctx.modal(
 			new Modal()
-				.setTitle(ctx.userTranslations().IMPORT_PLURALKIT_DESCRIPTION)
+				.setTitle((await ctx.userTranslations()).IMPORT_PLURALKIT_DESCRIPTION)
 				.setCustomId(InteractionIdentifier.Setup.FormSelection.PkForm.create())
                 .setComponents(
                     [new Label()
-                        .setLabel(ctx.userTranslations().IMPORT_SOURCE_DESCRIPTION)
+                        .setLabel((await ctx.userTranslations()).IMPORT_SOURCE_DESCRIPTION)
                         .setComponent(
                             new FileUpload()
                                 .setCustomId(InteractionIdentifier.Setup.FormSelection.PkType.create())

@@ -18,7 +18,7 @@ export default class ClearLatchAutoProxy extends SubCommand {
         
 		if (system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -29,7 +29,7 @@ export default class ClearLatchAutoProxy extends SubCommand {
 
 		if (guild === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -54,7 +54,7 @@ export default class ClearLatchAutoProxy extends SubCommand {
 			);
 		} else {
             return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"NOT_IN_LATCH",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -62,8 +62,8 @@ export default class ClearLatchAutoProxy extends SubCommand {
         }
 
         return await ctx.editResponse({
-            components: new AlertView(ctx.userTranslations()).successViewCustom(
-                ctx.userTranslations().CLEARED_LATCH.replaceAll("%server_name%", guild.name)
+            components: new AlertView((await ctx.userTranslations())).successViewCustom(
+                (await ctx.userTranslations()).CLEARED_LATCH.replaceAll("%server_name%", guild.name)
             ),
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
         })

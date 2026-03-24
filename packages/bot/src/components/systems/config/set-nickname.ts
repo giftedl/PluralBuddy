@@ -17,7 +17,7 @@ export default class SetName extends ComponentCommand {
 
         if (oldSystemName === undefined) {
             return await ctx.interaction.update({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
           }
@@ -26,12 +26,12 @@ export default class SetName extends ComponentCommand {
         
         const form = new Modal()
             .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.NicknameForm.create())
-            .setTitle(ctx.userTranslations().EDIT_SYSTEM_FORM_TITLE)
+            .setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
             .addComponents(
                 [
                     new Label()
-                        .setLabel(ctx.userTranslations().SYSTEM_NICKNAME_FORM_LABEL)
-                        .setDescription(ctx.userTranslations().SYSTEM_NICKNAME_FORM_DESC)
+                        .setLabel((await ctx.userTranslations()).SYSTEM_NICKNAME_FORM_LABEL)
+                        .setDescription((await ctx.userTranslations()).SYSTEM_NICKNAME_FORM_DESC)
                         .setComponent(
                             new TextInput()
                                 .setStyle(TextInputStyle.Short)

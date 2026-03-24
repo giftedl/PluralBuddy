@@ -28,7 +28,7 @@ export default class SetProxyMode extends ComponentCommand {
 
         if (alter === null) {
             return await context.write({
-                components: new AlertView(context.userTranslations()).errorView(
+                components: new AlertView(await context.userTranslations()).errorView(
                     "ERROR_ALTER_DOESNT_EXIST",
                 ),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -37,7 +37,7 @@ export default class SetProxyMode extends ComponentCommand {
 
         return await context.update({
             components: [
-                ...new AlterView(context.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
+                ...new AlterView(await context.userTranslations()).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })

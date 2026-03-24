@@ -48,7 +48,7 @@ export default class EditAlterNameCommand extends SubCommand {
 
         if (alter === null) {
             return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             },undefined,undefined,ctx)
         }
@@ -57,7 +57,7 @@ export default class EditAlterNameCommand extends SubCommand {
 
         return await ctx.editResponse({
             components: [
-                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().RENAME_SUCCESS
+                ...new AlertView((await ctx.userTranslations())).successViewCustom((await ctx.userTranslations()).RENAME_SUCCESS
                     .replace("%alter%", alter.username))
             ],
             flags: MessageFlags.IsComponentsV2

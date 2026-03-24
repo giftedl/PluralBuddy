@@ -20,7 +20,7 @@ import { SubCommand } from "seyfert"
 export default class ExportCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
 		await ctx.write({
-			components: new LoadingView(ctx.userTranslations()).loadingView(),
+			components: new LoadingView((await ctx.userTranslations())).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -28,7 +28,7 @@ export default class ExportCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -49,7 +49,7 @@ export default class ExportCommand extends SubCommand {
 		});
 
 		return await ctx.editResponse({
-			components: new AlertView(ctx.userTranslations()).successView(
+			components: new AlertView((await ctx.userTranslations())).successView(
 				"SYSTEM_EXPORT_FINISHED",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

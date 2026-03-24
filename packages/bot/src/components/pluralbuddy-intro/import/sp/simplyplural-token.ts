@@ -15,11 +15,11 @@ export default class SimplyPluralToken extends ComponentCommand {
 	async run(ctx: ComponentContext) {
 		return await ctx.modal(
 			new Modal()
-				.setTitle(ctx.userTranslations().IMPORT_SIMPLYPLURAL_DESCRIPTION)
+				.setTitle((await ctx.userTranslations()).IMPORT_SIMPLYPLURAL_DESCRIPTION)
 				.setCustomId(InteractionIdentifier.Setup.FormSelection.SpTokenForm.create())
                 .setComponents(
                     [new Label()
-                        .setLabel(ctx.userTranslations().IMPORT_TOKEN_DESCRIPTION)
+                        .setLabel((await ctx.userTranslations()).IMPORT_TOKEN_DESCRIPTION)
                         .setComponent(
                             new TextInput()
                                 .setCustomId(InteractionIdentifier.Setup.FormSelection.SpToken.create())

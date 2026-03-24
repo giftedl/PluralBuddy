@@ -20,26 +20,26 @@ export default class SetName extends ComponentCommand {
 
         if (oldSystemPrivacy === undefined) {
             return await ctx.interaction.update({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
           }
         
         const form = new Modal()
             .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.PrivacyForm.create())
-            .setTitle(ctx.userTranslations().EDIT_SYSTEM_FORM_TITLE)
+            .setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
             .addComponents(
                 [
                     new Label()
-                        .setLabel(ctx.userTranslations().SYSTEM_PRIVACY_FORM_LABEL)
-                        .setDescription(ctx.userTranslations().CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC)
+                        .setLabel((await ctx.userTranslations()).SYSTEM_PRIVACY_FORM_LABEL)
+                        .setDescription((await ctx.userTranslations()).CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC)
                         .setComponent(
                             new StringSelectMenu()
                                 .setCustomId(InteractionIdentifier.Setup.FormSelection.PrivacyType.create())
                                 .setOptions(
-                                    privacySelection(ctx.userTranslations(), oldSystemPrivacy)
+                                    privacySelection((await ctx.userTranslations()), oldSystemPrivacy)
                                 )
-                                .setValuesLength({ min: 0, max: privacySelection(ctx.userTranslations()).length })
+                                .setValuesLength({ min: 0, max: privacySelection((await ctx.userTranslations())).length })
                                 .setRequired(false)
                                 
                         )
