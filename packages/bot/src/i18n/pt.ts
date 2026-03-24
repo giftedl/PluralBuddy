@@ -3,24 +3,24 @@ export default {
 PluralBuddy é um bot feito para preencher a falta de bots de pluralidade personalizáveis de qualidade para servidores e usuários.
 
 :track_next: Para começar, clique no botão "Próxima Página" abaixo para configurar o seu sistema.`,
-  IMPORT_MESSAGE: `## Setting up your system
-You can create a new system which will allow you to create your alters and tags by yourself.
-Additionally, you can also import data from another bot like PluralKit.
--# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
-  PAGINATION_NEXT_PAGE: "Next Page",
-  PAGINATION_FINISH: "Finish",
-  BLACKLISTED: "You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
+  IMPORT_MESSAGE: `## Configurando o seu sistema
+Você pode criar um novo sistema que lhe permitirá criar os seus integrantes e tags você mesmo.
+Além disso, você também pode importar dados de outro bot como o PluralKit.
+-# Para importar do Tupperbox, devido à falta de dados de exportação que o Tupperbox export data dá, você deve criar o sistema e então executar o comando \`{{ prefix }}system import\`.`,
+  PAGINATION_NEXT_PAGE: "Próxima Página",
+  PAGINATION_FINISH: "Concluir",
+  BLACKLISTED: "Você foi bloqueado na **{{ guild }}**. Você não pode usar o PluralBuddy nesse servidor.",
   // Does not need to be translated
   BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
 > -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
-  PAGINATION_PREVIOUS_PAGE: "Previous Page",
-  CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
-  ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",
-  OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
-  TOO_MANY_BLACKLIST_ITEMS: "There are too many blacklist items. You can only have 25 blacklist roles, and 25 blacklist channels at one time due to Discord modal limitations.",
+  PAGINATION_PREVIOUS_PAGE: "Página anterior",
+  CREATING_NEW_SYSTEM_HEADER: "## Criando um novo sistema",
+  ERROR_DISABLED_SYSTEM: "2f – Seu sistema está desativado. Não é possível usar proxy.",
+  OPTION_DISABLED: "Esta opção não pode ser selecionada. Esta opção está desativada.",
+  TOO_MANY_BLACKLIST_ITEMS: "Existem muitos itens na Blacklist. Você pode ter apenas 25 cargos na lista negra, e 25 canais na lista negra de por vez devido a limitações modais do Discord.",
   TOO_MANY_MANAGER_ITEMS: "There are too many manager items. You can only have 25 manager roles at one time due to Discord modal limitations.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,
