@@ -23,7 +23,7 @@ export default class ConfigureSystem extends ComponentCommand {
                     new Container()
                         .setComponents(
                             new TextDisplay()
-                                .setContent("You are not the original recipient of the message.")
+                                .setContent((await ctx.userTranslations()).NOT_ORIGINAL_RECIPIENT)
                         )
                 ],
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral

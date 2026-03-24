@@ -26,6 +26,7 @@ import type { TranslationString } from "./lang";
 import { LoadingView } from "./views/loading";
 import type { PAlter } from "plurography";
 import { client } from ".";
+import { getLanguageByUserId } from "./lib/lang";
 
 export const extendedContext = extendContext((interaction) => {
 	let contextAlter: PAlter | null = null;
@@ -70,12 +71,14 @@ export const extendedContext = extendContext((interaction) => {
 			const collector = message.createComponentCollector();
 
 			collector.run(`ephemeral-${interaction.id}`, async (i) => {
+				const locale = await getLanguageByUserId(i.user.id);
+				
 				if (i.user.id !== interaction.user.id)
 					return i.write({
 						components: [
 							new Container().setComponents(
 								new TextDisplay().setContent(
-									"You are not the original recipient of the message.",
+									locale.NOT_ORIGINAL_RECIPIENT
 								),
 							),
 						],

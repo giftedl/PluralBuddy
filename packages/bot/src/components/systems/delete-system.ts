@@ -55,6 +55,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		});
 
 		await writeUserById(ctx.author.id, {
+			userLang: user.userLang,
 			userId: ctx.author.id,
 			blacklisted: false,
 			nudging: user.nudging,

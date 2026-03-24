@@ -27,7 +27,7 @@ export default class ImportMode extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -55,7 +55,7 @@ export default class ImportMode extends ComponentCommand {
 					new Section()
 						.setComponents(
 							new TextDisplay().setContent(
-								"In order to submit your import data from another bot, you must put it into the PluralBuddy dashboard.",
+								(await ctx.userTranslations()).IMPORT_REQ_DESC,
 							),
 						)
 						.setAccessory(
@@ -64,9 +64,11 @@ export default class ImportMode extends ComponentCommand {
 									`${process.env.APP_HOST}/app/import-staging?id=${ctx.interaction.id}`,
 								)
 								.setStyle(ButtonStyle.Link)
-								.setLabel("View on Dashboard"),
+								.setLabel((await ctx.userTranslations()).VIEW_DASH),
 						),
-					new TextDisplay().setContent("-# Waiting for response...\n-# This expires in 15 minutes."),
+					new TextDisplay().setContent(
+						(await ctx.userTranslations()).IMPORT_REQ_WAITING,
+					),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

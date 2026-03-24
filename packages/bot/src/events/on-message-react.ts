@@ -48,9 +48,8 @@ export default createEvent({
 				)
 				.catch(() => {
 					createError(reaction.guildId ?? "", {
-						title: "Unable to remove user reaction",
-						description:
-							"PluralBuddy was unable to remove a user reaction while attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+						title: locale.REACTION_ERR,
+						description: locale.SELF_REACTION_DESC,
 						type: "FailedMessageReaction",
 						responsibleChannelId: reaction.channelId,
 						responsibleUserId: reaction.userId,
@@ -61,9 +60,8 @@ export default createEvent({
 
 		if (react === null) {
 			createError(reaction.guildId ?? "", {
-				title: "Unable to react with loading emoji after request",
-				description:
-					"PluralBuddy was unable to react with a loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+				title: locale.REACTION_ERR,
+				description: locale.SELF_REACTION_DESC,
 				type: "FailedMessageReaction",
 				responsibleChannelId: reaction.channelId,
 				responsibleUserId: reaction.userId,

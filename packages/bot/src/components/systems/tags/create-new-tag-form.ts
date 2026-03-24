@@ -61,7 +61,7 @@ export default class CreateNewAlterForm extends ModalCommand {
             return await ctx.editResponse({
                 components: [
                     ...new SystemSettingsView((await ctx.userTranslations())).topView("tags", user.system.associatedUserId),
-                    ...new AlertView((await ctx.userTranslations())).errorViewCustom(`There was an error while creating that tag:
+                    ...new AlertView((await ctx.userTranslations())).errorViewCustom(`${(await (ctx.userTranslations())).VALIDATION_TAG_ERROR}
 
 \`\`\`
 ${z.prettifyError(tag.error)}

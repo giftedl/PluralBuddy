@@ -31,7 +31,7 @@ export default class UndoOperationButton extends ComponentCommand {
                             .setDisabled(true)
                             .setStyle(ButtonStyle.Danger)
                             .setCustomId("b")
-                            .setLabel("Expired")
+                            .setLabel((await ctx.userTranslations()).EXPIRED)
                             .setEmoji(emojis.xWhite)
                     )
                 ]

@@ -714,5 +714,30 @@ There is an example below of what an example proxy with this role would look lik
 
 	SELF_REACTION_ERR: "Unable to remove self-reaction",
 	SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
-	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}"
+	REACTION_ERR: "Unable to remove user reaction",	
+
+	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
+	AWAKE: "Hi! I'm awake, running PluralBuddy \`#{{ buildNumber }}/{{ branch }}\`.",
+
+	LINK_INVITE: "Invite",
+	LINK_SUPPORT: "Support",
+	LINK_DOCS: "Docs",
+
+	DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
+	DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
+
+	NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
+	NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
+	NOTIFIED_2: "-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+	OPT_OUT_DMS: "Opt-out of DMs",
+	UNDO_BTN: "Undo Operation",
+	EXPIRED: "Expired",
+	NOT_ORIGINAL_RECIPIENT: "You are not the original recipient of the message.",
+
+	IMPORT_REQ_DESC: "In order to submit your import data from another bot, you must put it into the PluralBuddy dashboard.",
+	IMPORT_REQ_WAITING: "-# Waiting for response...\n-# This expires in 15 minutes.",
+
+	VIEW_DASH: "View on Dashboard",
+
+	VALIDATION_TAG_ERROR: "There was an error while creating that tag:"
 }
