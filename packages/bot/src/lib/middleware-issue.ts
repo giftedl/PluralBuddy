@@ -6,7 +6,7 @@ import type { TranslationString } from "../lang";
 import { AlertView } from "../views/alert";
 import { translations } from "../lang/en_us";
 
-export async function middlewareIssue(
+export function middlewareIssue(
     string: keyof TranslationString,
     ctx: {
         context: AnyContext, 
@@ -14,7 +14,7 @@ export async function middlewareIssue(
     }
 ) {
     ctx.context.ephemeral({
-        components: new AlertView(await ctx.context.userTranslations()).errorView(string),
+        components: new AlertView(ctx.context.userTranslations()).errorView(string),
         flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
     })
 

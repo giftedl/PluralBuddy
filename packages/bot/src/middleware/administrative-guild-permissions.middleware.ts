@@ -7,7 +7,7 @@ export const administrativeGuildPermissions = createMiddleware<void>(async (midd
 
     if (ctx.guildId === undefined) {
         return await ctx.write({
-            components: new AlertView((await ctx.userTranslations())).errorView(
+            components: new AlertView(ctx.userTranslations()).errorView(
                 "DN_ERROR_SE",
             ),
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -29,7 +29,7 @@ export const administrativeGuildPermissions = createMiddleware<void>(async (midd
         // this is NOT used in production. this is NOT a backdoor.
         (process.env.SRV_CFG_TEST_USER_ID && process.env.SRV_CFG_TEST_USER_ID === member.id))) {
         return await ctx.write({
-            components: new AlertView((await ctx.userTranslations())).errorView(
+            components: new AlertView(ctx.userTranslations()).errorView(
                 "INSUFFICIENT_USER_PERMISSIONS",
             ),
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

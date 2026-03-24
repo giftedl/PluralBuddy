@@ -253,34 +253,43 @@ export class PluralBuddyIntro extends TranslatedView {
 		textContainer.setComponents(
 			new TextDisplay().setContent(this.translations.SP_IMPORT_START),
 			new Separator().setSpacing(Spacing.Large),
-			new TextDisplay().setContent(this.translations.SP_IMPORT_DESC),
+			new TextDisplay().setContent(`### Step 1: Get a Simply Plural token
+PluralBuddy requires you create a Simply Plural token to import data into PluralBuddy.
+> PluralBuddy only sees your token once. After PluralBuddy gains the data from the Simply Plural data, it is destroyed.
+
+To create a token:
+1. Open navigation menu -> hit the gear
+2. Account -> Tokens
+3. Hit add token and select the "Read" scope
+4. Add token -> Copy the created token.`),
 			new MediaGallery().setItems(
 				new MediaGalleryItem()
 					.setMedia("attachment://sp-1.png")
-					.setDescription(this.translations.ALT_NAV_MENU),
+					.setDescription("Navigation Menu"),
 				new MediaGalleryItem()
 					.setMedia("attachment://sp-2.png")
-					.setDescription(this.translations.ALT_GEAR),
+					.setDescription("Gear"),
 				new MediaGalleryItem()
 					.setMedia("attachment://sp-3.png")
-					.setDescription(this.translations.ALT_ACCOUNTS),
+					.setDescription("Accounts"),
 				new MediaGalleryItem()
 					.setMedia("attachment://sp-4.png")
-					.setDescription(this.translations.ALT_TOKENS),
+					.setDescription("Tokens"),
 				new MediaGalleryItem()
 					.setMedia("attachment://sp-5.png")
-					.setDescription(this.translations.ALT_NEW_TOKEN),
+					.setDescription("Add new token"),
 				new MediaGalleryItem()
 					.setMedia("attachment://sp-6.png")
-					.setDescription(this.translations.ALT_READ_SCOPE),
+					.setDescription("Read scope"),
 				new MediaGalleryItem()
 					.setMedia("attachment://sp-7.png")
-					.setDescription(this.translations.ALT_COPY_TOKEN),
+					.setDescription("Copy token"),
 			),
 			new Separator(),
 			new Section()
 				.setComponents(
-					new TextDisplay().setContent(this.translations.SP_STEPTWO_DESC),
+					new TextDisplay().setContent(`### Step 2: Import system contents
+Please paste the system token from SimplyPlural into PluralBuddy.`),
 				)
 				.setAccessory(
 					new Button()
@@ -288,7 +297,7 @@ export class PluralBuddyIntro extends TranslatedView {
 							InteractionIdentifier.Setup.SimplyPluralUploadToken.create(),
 						)
 						.setEmoji(emojis.plus)
-						.setLabel(this.translations.SP_UPLOAD)
+						.setLabel("Upload Token")
 						.setStyle(ButtonStyle.Primary),
 				),
 		);
@@ -315,11 +324,13 @@ export class PluralBuddyIntro extends TranslatedView {
 		textContainer.setComponents(
 			new TextDisplay().setContent(this.translations.PK_IMPORT_START),
 			new Separator().setSpacing(Spacing.Large),
-			new TextDisplay().setContent(this.translations.PK_DESC),
+			new TextDisplay().setContent(`### Step 1: Export PluralKit system contents
+You must export your system JSON file from PluralKit to import into PluralBuddy. To do this, either send \`pk;export\` in a server with PluralKit apart of it or just direct message <@466378653216014359> and send \`pk;export\` as a message.`),
 			new Separator(),
 			new Section()
 				.setComponents(
-					new TextDisplay().setContent(this.translations.PK_STEPTWO_DESC),
+					new TextDisplay().setContent(`### Step 2: Import system contents
+Please download the JSON file sent to you and use the button to upload the attachment to PluralBuddy.`),
 				)
 				.setAccessory(
 					new Button()
@@ -327,7 +338,7 @@ export class PluralBuddyIntro extends TranslatedView {
 							InteractionIdentifier.Setup.PluralKitImport.UploadAttachment.create(),
 						)
 						.setEmoji(emojis.plus)
-						.setLabel(this.translations.PK_UPLOAD)
+						.setLabel("Upload JSON")
 						.setStyle(ButtonStyle.Primary),
 				),
 		);

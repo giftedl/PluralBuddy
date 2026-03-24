@@ -37,7 +37,7 @@ export default class SystemDisplayTagCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -46,7 +46,7 @@ export default class SystemDisplayTagCommand extends SubCommand {
 
 		if (se && ctx.guildId === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -65,13 +65,13 @@ export default class SystemDisplayTagCommand extends SubCommand {
 				: {
 						systemDisplayTag: (systemTag as string) ?? null,
 					},
-			(await ctx.userTranslations()),
+			ctx.userTranslations(),
 			"discord",
 		);
 
 		if (updatedSystem === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -79,8 +79,9 @@ export default class SystemDisplayTagCommand extends SubCommand {
 		}
 
 		await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
+			components: new AlertView(ctx.userTranslations()).successViewCustom(
+				ctx
+					.userTranslations()
 					.SYSTEM_SET_SYSTEM_TAG.replace("%tag%", systemTag ?? "_Unset_"),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

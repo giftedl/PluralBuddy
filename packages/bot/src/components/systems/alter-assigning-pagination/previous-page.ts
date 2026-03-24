@@ -23,7 +23,7 @@ export default class PreviousPageAlterAssigning extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -33,7 +33,7 @@ export default class PreviousPageAlterAssigning extends ComponentCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
@@ -55,7 +55,7 @@ export default class PreviousPageAlterAssigning extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-                ...await new AlertAssignTagView((await ctx.userTranslations())).alterAssignTag(user.system, undefined, corresponding)
+                ...await new AlertAssignTagView(ctx.userTranslations()).alterAssignTag(user.system, undefined, corresponding)
 			],
 		});
 	}

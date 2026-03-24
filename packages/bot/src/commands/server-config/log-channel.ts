@@ -46,7 +46,7 @@ export default class SetLogChannel extends SubCommand {
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successView(
+			components: new AlertView(ctx.userTranslations()).successView(
 				"LOGGING_CHANNEL_SET",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

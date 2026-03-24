@@ -29,13 +29,13 @@ export default class SearchingRolePreferencesForm extends ModalCommand {
         
         if (!roleObj) {
             return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView("ROLE_PREFERENCE_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ROLE_PREFERENCE_DOESNT_EXIST"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
 
         return await ctx.interaction.update({
-            components: new ServerConfigView((await ctx.userTranslations())).roleGeneralView(roleObj),
+            components: new ServerConfigView(ctx.userTranslations()).roleGeneralView(roleObj),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
             allowed_mentions: { parse: [] }
         })

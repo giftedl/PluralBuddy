@@ -26,7 +26,7 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -38,10 +38,10 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 				.setCustomId(
 					InteractionIdentifier.Systems.Configuration.FormSelection.Tags.CreateNewTagForm.create(),
 				)
-				.setTitle((await ctx.userTranslations()).CREATE_NEW_TAG_DESCRIPTION)
+				.setTitle(ctx.userTranslations().CREATE_NEW_TAG_DESCRIPTION)
 				.setComponents([
 					new Label()
-						.setLabel((await ctx.userTranslations()).ALTER_SET_DISPLAY)
+						.setLabel(ctx.userTranslations().ALTER_SET_DISPLAY)
 						.setComponent(
 							new TextInput()
 								.setStyle(TextInputStyle.Short)
@@ -52,11 +52,11 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 								),
 						),
 					new Label()
-						.setLabel((await ctx.userTranslations()).TAG_COLOR_FORM_LABEL)
+						.setLabel(ctx.userTranslations().TAG_COLOR_FORM_LABEL)
 						.setComponent(
 							new StringSelectMenu()
 								.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create())
-								.setOptions(tagColorSelection((await ctx.userTranslations())))
+								.setOptions(tagColorSelection(ctx.userTranslations()))
 						)
 				]),
 		);

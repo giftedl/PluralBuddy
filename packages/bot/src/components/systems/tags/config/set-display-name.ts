@@ -27,18 +27,18 @@ export default class SetUsernameButton extends ComponentCommand {
 
 	if (tag === null) {
 		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).errorView("ERROR_TAG_DOESNT_EXIST"),
+			components: new AlertView(ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 		})
 	}
 
 	const form = new Modal()
 		.setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameForm.create(tag.tagId))
-		.setTitle((await ctx.userTranslations()).TAG_FORM_TITLE)
+		.setTitle(ctx.userTranslations().TAG_FORM_TITLE)
 		.addComponents(
 			[
 				new Label()
-					.setLabel((await ctx.userTranslations()).ALTER_DISPLAY_NAME_FORM_LABEL)
+					.setLabel(ctx.userTranslations().ALTER_DISPLAY_NAME_FORM_LABEL)
 					.setComponent(
 						new TextInput()
 							.setStyle(TextInputStyle.Short)

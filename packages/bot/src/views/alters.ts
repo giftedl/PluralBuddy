@@ -82,12 +82,12 @@ export class AlterView extends TranslatedView {
 
 		const innerComponents =
 			new TextDisplay().setContent(`${displayNameDisplayable ? `## ${alter.displayName}` : ""}
-${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : usernameDisplayable ? this.translations.AKA_PROFILE.replace("{{ username }}", alter.username) : ""} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
+${!displayNameDisplayable ? (usernameDisplayable ? `## @${alter.username}` : "") : usernameDisplayable ? `-# Also known as @${alter.username}` : ""} ${pronounsDisplayable && (alter.pronouns !== null && alter.pronouns !== undefined) ? `· ${alter.pronouns}` : ""}
 ${descriptionDisplayable && alter.description !== null ? "\n" : ""}${descriptionDisplayable ? sanitizedDescription.result : ""}${descriptionDisplayable && alter.description !== null ? "\n" : ""}
-${messagesDisplayable ? `${this.translations.MESSAGE_COUNT_LABEL_PROFILE}${alter.messageCount} ${alter.lastMessageTimestamp !== null ? this.translations.LAST_SENT_TIME_PROFILE.replace("{{ timestamp }}", `<t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>`) : ""}` : ""}
-${this.translations.OWNED_BY_PROFILE}<@${alter.systemId}> (${alter.systemId})
-${tags.length !== 0 ? `${this.translations.TAGS_PROFILE}${tags.map((tag) => `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`).join(",  ")}${tags.length !== tagCount ? this.translations.LIST_MORE_PROFILE.replace("{{ length }}", String(tagCount - tags.length)) : ""}\n` : ""}
-${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
+${messagesDisplayable ? `**Message Count:** ${alter.messageCount} ${alter.lastMessageTimestamp !== null ? `(last sent <t:${Math.floor(alter.lastMessageTimestamp?.getTime() / 1000)}:R>)` : ""}` : ""}
+**Associated to:** <@${alter.systemId}> (${alter.systemId})
+${tags.length !== 0 ? `**Assigned tags**: ${tags.map((tag) => `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`).join(",  ")}${tags.length !== tagCount ? `, and ${tagCount - tags.length} more...` : ""}\n` : ""}
+-# ID: \`${alter.alterId.toString()}\``);
 
 		const comp = new Container().setComponents(
 			!avatarDisplayable || alter.avatarUrl === null
@@ -95,34 +95,16 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 				: new Section()
 						.setAccessory(
 							new Thumbnail()
-								.setMedia(
-									alter.avatarUrl === ""
-										? "https://pb.giftedly.dev/image/solar-centered.png"
-										: alter.avatarUrl,
-								)
-								.setDescription(
-									this.translations.ALT_AVATAR.replace(
-										"{{ alter }}",
-										alter.alterId.toString(),
-									),
-								),
+								.setMedia(alter.avatarUrl === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : alter.avatarUrl)
+								.setDescription(`${alter.avatarUrl}'s avatar`),
 						)
 						.setComponents(innerComponents),
 			...(bannerDisplayable && alter.banner !== null
 				? [
 						new MediaGallery().setItems(
 							new MediaGalleryItem()
-								.setMedia(
-									alter.banner === ""
-										? "https://pb.giftedly.dev/image/solar-centered.png"
-										: alter.banner,
-								)
-								.setDescription(
-									this.translations.ALT_BANNER.replace(
-										"{{ alter }}",
-										alter.alterId.toString(),
-									),
-								),
+								.setMedia(alter.banner === "" ? "https://pb.giftedly.dev/image/solar-centered.png" : alter.banner)
+								.setDescription(`${alter.avatarUrl}'s banner`),
 						),
 					]
 				: []),
@@ -210,7 +192,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${alter.alterId.toString()}\``);
 						.addComponents(
 							new TextDisplay().setContent(
 								`${this.translations.ALTER_SET_MODE_DESC}
-${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alter.username).replace("{{ proxyMode }}", alter.alterMode[0]?.toUpperCase() + alter.alterMode.slice(1))}`,
+-# Current mode for @${alter.username} is ${alter.alterMode[0]?.toUpperCase() + alter.alterMode.slice(1)}`,
 							),
 						)
 						.setAccessory(
@@ -226,7 +208,9 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alter.username)
 					new Separator(),
 					new Section()
 						.addComponents(
-							new TextDisplay().setContent(this.translations.UNLIMITED_ASSIGN),
+							new TextDisplay().setContent(
+								`You can assign an unlimited amount of tags to an alter and an unlimited amount of alters to a tag.`,
+							),
 						)
 						.setAccessory(
 							new Button()
@@ -259,7 +243,10 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alter.username)
 								),
 						),
 					new Separator(),
-					new TextDisplay().setContent(`${this.translations.AP_EXPLANATION}
+					new TextDisplay().setContent(`You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
+> - *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
+> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
+> - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.
  
 ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId && a.autoproxyMode !== "off") ? `**Current auto-proxy mode:** ${system?.systemAutoproxy.find((a) => a.serverId)?.autoproxyMode} as ${(system?.systemAutoproxy.find((a) => a.serverId)?.autoproxyAlter ?? "0") === alter.alterId.toString() ? "*this alter*" : "*another alter*"}` : ``}`),
 
@@ -267,8 +254,8 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 						new StringSelectMenu()
 							.setPlaceholder(
 								guildId === undefined
-									? this.translations.REQUIRED_SERVER_PROXY
-									: this.translations.SELECT_DEFAULT_PROXY,
+									? "You must be in a server to proxy"
+									: "Select a proxy mode",
 							)
 							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
 							.setDisabled(guildId === undefined)
@@ -279,8 +266,10 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 											alter.alterId,
 										),
 									)
-									.setLabel(this.translations.LATCH_NAME)
-									.setDescription(this.translations.LATCH_DESC)
+									.setLabel("Latch Mode")
+									.setDescription(
+										"Set this alter as the first alter in latch mode.",
+									)
 									.setDefault(
 										system?.systemAutoproxy.some(
 											(a) =>
@@ -309,8 +298,8 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 									)
-									.setLabel(this.translations.OFF_NAME)
-									.setDescription(this.translations.OFF_DESC)
+									.setLabel("Off")
+									.setDescription("Disable auto-proxy in your system.")
 									.setDefault(
 										system?.systemAutoproxy.some(
 											(a) =>
@@ -322,7 +311,9 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 					new Separator(),
 					new Section()
 						.addComponents(
-							new TextDisplay().setContent(this.translations.DELETE_DESC),
+							new TextDisplay().setContent(
+								"**This cannot be undone.** Deleting an alter will delete your alter and its data.",
+							),
 						)
 						.setAccessory(
 							new Button()
@@ -348,11 +339,11 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 		return [
 			new Container()
 				.setComponents(
-					new TextDisplay().setContent(`${this.translations.PROXY_MODE_TITLE.replace("{{ circleQuestion }}", emojis.circleQuestion).replace("{{ alterUsername }}", alterUsername)}
+					new TextDisplay().setContent(`### ${emojis.circleQuestion}   Proxy Mode · @${alterUsername}
 ${this.translations.ALTER_SET_MODE_DESC}
 
-${this.translations.SELECT_PM}
-${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).replace("{{ proxyMode }}", currentMode[0]?.toUpperCase() + currentMode.slice(1))}`),
+Please select the mode you would like to use below.
+-# Current mode for @${alterUsername} is ${currentMode[0]?.toUpperCase() + currentMode.slice(1)}`),
 				)
 				.setColor("#1190FF"),
 			...(guild.getFeatures().forcedNicknameMode ||
@@ -361,15 +352,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 						new Container()
 							.setComponents(
 								new TextDisplay().setContent(
-									this.translations.FORCED_WEBHOOK_WARNING.replace(
-										"{{ x }}",
-										emojis.x,
-									).replaceAll(
-										"{{ policyType }}",
-										guild.getFeatures().forcedNicknameMode
-											? this.translations.POLICY_TYPE_NICK
-											: this.translations.POLICY_TYPE_WEBHOOK,
-									),
+									`  ${emojis.x}   **This server enforces a required ${guild.getFeatures().forcedNicknameMode ? "nickname" : "webhook"} policy.** This means that all alters will have to use the ${guild.getFeatures().forcedNicknameMode ? "nickname" : "webhook"} proxy mode in this server specifically. Your message will be blocked from proxying if you are not using the Both proxy mode or using the enforced proxy mode.`,
 								),
 							)
 							.setColor("#B70000"),
@@ -383,7 +366,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 							alterId.toString(),
 						),
 					)
-					.setLabel(this.translations.OPTION_BACK)
+					.setLabel("Back")
 					.setStyle(ButtonStyle.Secondary),
 				new Button()
 					.setCustomId(
@@ -391,7 +374,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 							alterId.toString(),
 						),
 					)
-					.setLabel(this.translations.OPTION_NICKNAME)
+					.setLabel("Nickname")
 					.setStyle(ButtonStyle.Primary),
 				new Button()
 					.setCustomId(
@@ -399,7 +382,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 							alterId,
 						),
 					)
-					.setLabel(this.translations.OPTION_WEBHOOK)
+					.setLabel("Webhook")
 					.setStyle(ButtonStyle.Primary),
 				new Button()
 					.setCustomId(
@@ -407,7 +390,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 							alterId,
 						),
 					)
-					.setLabel(this.translations.OPTION_BOTH)
+					.setLabel("Both")
 					.setStyle(ButtonStyle.Primary),
 			),
 		];
@@ -426,19 +409,13 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					this.translations.PUBLIC_PROFILE_TITLE.replace(
-						"{{ alterUsername }}",
-						alter.username,
-					),
+					`## Public Profile - @${alter.username}\nYour public profile is what your alter looks like to other users when they identify your messages.`,
 				),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_DN_DESC.replace(
-								"{{ currentDisplayName }}",
-								alter.displayName,
-							),
+							`Display names are shown on webhooks when you proxy. These have less restrictions then usernames.\n-# Display Name: ${alter.displayName}`,
 						),
 					)
 					.setAccessory(
@@ -482,7 +459,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_PFP_DESC,
+							"You can set a **profile picture** by uploading an image using the modal on the right.",
 						),
 					)
 					.setAccessory(
@@ -499,7 +476,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_BANNER_DESC,
+							"You can set a **banner** by uploading an image using the modal on the right.",
 						),
 					)
 					.setAccessory(
@@ -516,13 +493,8 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_PN_DESC.replace(
-								"{{ alterUsername }}",
-								alter.username,
-							).replace(
-								"{{ alterPronouns }}",
-								alter.pronouns ?? this.translations.PUBLIC_PROFILE_UNSET_PN,
-							),
+							`You can set pronouns for your alter. Alter pronouns can be at maximum 100 characters long.
+-# @${alter.username}'s pronouns are: ${alter.pronouns ?? "Not set"}`,
 						),
 					)
 					.setAccessory(
@@ -539,15 +511,8 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_DESC_DESC.replace(
-								"{{ commandMention }}",
-								mentionCommand(
-									prefix,
-									"edit-alter description",
-									isApplication,
-									alter.username,
-								),
-							),
+							`You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: ${mentionCommand(prefix, "edit-alter description", isApplication, alter.username)}`,
 						),
 					)
 					.setAccessory(
@@ -564,7 +529,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 				new Section()
 					.addComponents(
 						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_COLOR_DESC,
+							"Setting a color for an alter shows that color for their rank container along with their public profile.",
 						),
 					)
 					.setAccessory(
@@ -589,21 +554,18 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					this.translations.ALTER_TOP_VIEW.replace(
-						"{{ alterUsername }}",
-						alterUsername,
-					).replace("{{ alterId }}", alterId),
+					`-# @${alterUsername} • ID: \`${alterId}\``,
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel(this.translations.TOP_BACK_LABEL)
+						.setLabel("Back")
 						.setStyle(ButtonStyle.Secondary)
 						.setEmoji(emojis.undo)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.Alters.Index.create(),
 						),
 					new Button()
-						.setLabel(this.translations.GENERAL_LABEL)
+						.setLabel("General")
 						.setStyle(
 							currentTab === "general"
 								? ButtonStyle.Success
@@ -620,7 +582,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 							),
 						),
 					new Button()
-						.setLabel(this.translations.ALTER_PROXY_TAGS_LABEL)
+						.setLabel("Proxy Tags")
 						.setStyle(
 							currentTab === "proxy-tags"
 								? ButtonStyle.Success
@@ -637,7 +599,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 							),
 						),
 					new Button()
-						.setLabel(this.translations.PUBLIC_PROFILE_LABEL)
+						.setLabel("Public Profile")
 						.setStyle(
 							currentTab === "public-settings"
 								? ButtonStyle.Success
@@ -662,7 +624,7 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 		return [
 			new ActionRow().setComponents(
 				new Button()
-					.setLabel(this.translations.CONFIGURE_PROFILE_BTN)
+					.setLabel("Configure Profile")
 					.setEmoji(emojis.wrenchWhite)
 					.setCustomId(
 						InteractionIdentifier.Systems.Configuration.Alters.ConfigureAlterExternal.create(
@@ -680,8 +642,8 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 				new StringSelectMenu()
 					.setPlaceholder(
 						guildId === undefined
-							? this.translations.REQUIRED_SERVER_PROXY
-							: this.translations.SELECT_DEFAULT_PROXY,
+							? "You must be in a server to proxy"
+							: "Select a proxy mode",
 					)
 					.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
 					.setDisabled(guildId === undefined)
@@ -692,9 +654,9 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 									alter.alterId,
 								),
 							)
-							.setLabel(this.translations.LATCH_NAME)
+							.setLabel("Latch Mode")
 							.setDescription(
-								this.translations.LATCH_DESC,
+								"Set this alter as the first alter in latch mode.",
 							),
 						new StringSelectOption()
 							.setValue(
@@ -702,16 +664,16 @@ ${this.translations.CURRENT_PROXY_MODE.replace("{{ username }}", alterUsername).
 									alter.alterId,
 								),
 							)
-							.setLabel(this.translations.ALTER_NAME)
+							.setLabel("Alter Mode")
 							.setDescription(
-								this.translations.ALTER_DESC,
+								"Only proxy this alter until auto-proxy is disabled.",
 							),
 						new StringSelectOption()
 							.setValue(
 								InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 							)
-							.setLabel(this.translations.OFF_NAME)
-							.setDescription(this.translations.OFF_DESC),
+							.setLabel("Off")
+							.setDescription("Disable auto-proxy in your system."),
 					]),
 			),
 		];

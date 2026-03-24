@@ -22,13 +22,13 @@ export default class SetupCommand extends Command {
         if (user.system !== undefined) {
             return await ctx.ephemeral({
                 components: [
-                    ...new AlertView((await ctx.userTranslations())).errorView("SETUP_ERROR_SYSTEM_ALREADY_EXISTS"), 
+                    ...new AlertView(ctx.userTranslations()).errorView("SETUP_ERROR_SYSTEM_ALREADY_EXISTS"), 
                     new ActionRow()
                         .setComponents(
                             new Button()
                                 .setEmoji(emojis.xWhite)
                                 .setStyle(ButtonStyle.Danger)
-                                .setLabel((await ctx.userTranslations()).SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN)
+                                .setLabel(ctx.userTranslations().SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN)
                                 .setCustomId(InteractionIdentifier.Setup.RemoveOldSystem.create())
                         )
                 ],
@@ -37,7 +37,7 @@ export default class SetupCommand extends Command {
         }
         
         await ctx.ephemeral({
-            components: new PluralBuddyIntro((await ctx.userTranslations())).pageOne(),
+            components: new PluralBuddyIntro(ctx.userTranslations()).pageOne(),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         }, undefined, undefined, ctx)
     }

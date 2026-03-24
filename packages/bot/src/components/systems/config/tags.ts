@@ -16,14 +16,14 @@ export default class TagButton extends ComponentCommand {
 
         if (user.system === undefined) {
             return await ctx.ephemeral({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
         return await ctx.update({
             components: [
-                ...await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(user.system)
+                ...await new SystemSettingsView(ctx.userTranslations()).tagsSettings(user.system)
 
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2

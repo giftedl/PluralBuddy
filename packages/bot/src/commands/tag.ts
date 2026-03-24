@@ -55,7 +55,7 @@ export default class TagCommand extends Command {
         if (tag === null && userTagMatch) {
             return await ctx.ephemeral({
                 components: [
-                    ...new AlertView((await ctx.userTranslations())).errorView("INVISIBLE_TAG")
+                    ...new AlertView(ctx.userTranslations()).errorView("INVISIBLE_TAG")
                 ],
                 flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
                 allowed_mentions: { parse: [] }
@@ -64,15 +64,15 @@ export default class TagCommand extends Command {
 
         if (tag === null) {
             return await ctx.ephemeral({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_TAG_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             }, undefined, undefined, ctx)
         }
 
         return await ctx.ephemeral({
             components: [
-                ...(new TagView((await ctx.userTranslations())).tagProfileView(tag, tag.systemId !== ctx.author.id)),
-                ...(tag.systemId === ctx.author.id ? new TagView((await ctx.userTranslations())).tagConfigureButton(tag) : [])
+                ...(new TagView(ctx.userTranslations()).tagProfileView(tag, tag.systemId !== ctx.author.id)),
+                ...(tag.systemId === ctx.author.id ? new TagView(ctx.userTranslations()).tagConfigureButton(tag) : [])
             ],
             flags: MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
             allowed_mentions: { parse: [] }

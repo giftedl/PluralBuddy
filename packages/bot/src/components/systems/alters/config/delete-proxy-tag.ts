@@ -37,7 +37,7 @@ export default class DeleteProxyTag extends ComponentCommand {
 			alter.proxyTags.filter((v) => v.id === proxyTag).length !== 1
 		) {
 			return await context.write({
-				components: new AlertView(await context.userTranslations()).errorView(
+				components: new AlertView(context.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -62,12 +62,12 @@ export default class DeleteProxyTag extends ComponentCommand {
 
 		return await context.interaction.update({
 			components: [
-				...new AlterView(await context.userTranslations()).alterTopView(
+				...new AlterView(context.userTranslations()).alterTopView(
 					"proxy-tags",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(await context.userTranslations()).alterProxyTagsView(alter),
+				...new AlterView(context.userTranslations()).alterProxyTagsView(alter),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

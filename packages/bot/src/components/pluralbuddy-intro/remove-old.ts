@@ -35,7 +35,7 @@ export default class RemoveOldSystem extends ComponentCommand {
 				new Container()
 					.setComponents(
 						new TextDisplay().setContent(
-							(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION,
+							ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION,
 						),
 					)
 					.setColor("#FF1717"),
@@ -46,7 +46,7 @@ export default class RemoveOldSystem extends ComponentCommand {
 							new Button()
 								.setEmoji(emojis.settingsWhite)
 								.setStyle(ButtonStyle.Primary)
-								.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
+								.setLabel(ctx.userTranslations().BACK_TO_SAFETY_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 								),
@@ -54,14 +54,15 @@ export default class RemoveOldSystem extends ComponentCommand {
 								.setEmoji(emojis.circleQuestionWhite)
 								.setStyle(ButtonStyle.Danger)
 								.setLabel(
-									(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+									ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN,
 								)
 								.setCustomId(
 									InteractionIdentifier.Systems.DeleteSystem.create(),
 								),
 						),
 						new TextDisplay().setContent(
-							(await ctx.userTranslations())
+							ctx
+								.userTranslations()
 								.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
 									"%command%",
 									mentionCommand(

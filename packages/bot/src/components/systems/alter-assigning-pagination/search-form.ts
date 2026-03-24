@@ -32,7 +32,7 @@ export default class SearchFormModal extends ModalCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -42,7 +42,7 @@ export default class SearchFormModal extends ModalCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
@@ -72,7 +72,7 @@ export default class SearchFormModal extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...(await new AlertAssignTagView((await ctx.userTranslations())).alterAssignTag(
+				...(await new AlertAssignTagView(ctx.userTranslations()).alterAssignTag(
 					user.system,
 					undefined,
 					corresponding,

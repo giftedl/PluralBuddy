@@ -16,14 +16,14 @@ export default class NameInteractionFormCNS extends ModalCommand {
     const temporarySystem = createdSystems.get(rootInteractionId);
 
     if (temporarySystem === undefined) {
-        return ctx.write({ content: (await ctx.userTranslations()).ERROR_INTERACTION_TOO_OLD, flags: MessageFlags.Ephemeral })
+        return ctx.write({ content: ctx.userTranslations().ERROR_INTERACTION_TOO_OLD, flags: MessageFlags.Ephemeral })
     }
 
     temporarySystem.systemName = ctx.interaction.getInputValue(InteractionIdentifier.Setup.FormSelection.NameType.create(), true) as string;
     createdSystems.set(rootInteractionId, temporarySystem)
     
     return ctx.interaction.update({
-        components: new PluralBuddyIntro((await ctx.userTranslations()))
+        components: new PluralBuddyIntro(ctx.userTranslations())
           .createNewSystemPage(await ctx.retrievePGuild(), rootInteractionId, ctx.author.id),
         flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
     });

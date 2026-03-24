@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, Section, TextDisplay, type DefaultLocale } from "seyfert";
+import { ActionRow, Button, Container, Section, TextDisplay } from "seyfert";
 import { client } from "..";
 import { operationCollection } from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
@@ -19,7 +19,7 @@ import convert from "./delay-converter";
 export async function createSystemOperation(
 	system: PSystem,
 	operation: Partial<PSystem>,
-	translations: DefaultLocale,
+	translations: TranslationString,
 	environment: "discord" | "api-exchange" | "api-web",
 ) {
 	let oldSystem: Partial<PSystem> = {};
@@ -181,7 +181,7 @@ export async function createSystemOperation(
 														operationDb.id,
 													),
 												)
-												.setLabel(translations.UNDO_BTN)
+												.setLabel("Undo Operation")
 												.setEmoji(emojis.undo)
 												.setStyle(ButtonStyle.Primary),
 										)
@@ -212,17 +212,17 @@ export async function createSystemOperation(
 							new Section()
 								.setComponents(
 									new TextDisplay().setContent(
-										translations.NOTIFIED_1,
+										"-# You were notified of this action due to your association with your PluralBuddy system.",
 									),
 									new TextDisplay().setContent(
-										translations.NOTIFIED_2,
+										"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
 									),
 								)
 								.setAccessory(
 									new Button()
 										.setCustomId(InteractionIdentifier.SnoozeDMs.create())
 										.setStyle(ButtonStyle.Danger)
-										.setLabel(translations.OPT_OUT_DMS)
+										.setLabel("Opt-out of DMs")
 										.setEmoji(emojis.xWhite),
 								),
 						],

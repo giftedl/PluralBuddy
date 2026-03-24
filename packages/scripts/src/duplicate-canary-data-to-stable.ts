@@ -20,7 +20,6 @@ const mongodb = new MongoClient(process.env.MONGO as string);
 const canaryDb = mongodb.db("pluralbuddy-canary");
 const normalDb = mongodb.db("pluralbuddy");
 
-
 const userSpinner = ora("copying user object..").start();
 
 // user object

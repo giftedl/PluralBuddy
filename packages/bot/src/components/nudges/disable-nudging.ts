@@ -34,7 +34,7 @@ export default class DisableNudgingButton extends ComponentCommand {
 		});
 
 		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).successView("DISABLE_NUDGING_DONE"),
+			components: new AlertView(ctx.userTranslations()).successView("DISABLE_NUDGING_DONE"),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 	}

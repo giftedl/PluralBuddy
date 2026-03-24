@@ -25,7 +25,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -41,7 +41,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (attachment.value.size > 1_000_000) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -63,7 +63,7 @@ export default class SetPFPForm extends ModalCommand {
 			objectName = newObject
 		} catch (error) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -73,16 +73,16 @@ export default class SetPFPForm extends ModalCommand {
 		const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
 
 		await createSystemOperation(
-			system, { systemAvatar: publicUrl }, (await ctx.userTranslations()), "discord"
+			system, { systemAvatar: publicUrl }, ctx.userTranslations(), "discord"
 		);
 
 		return await ctx.editResponse({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations())).topView(
+				...new SystemSettingsView(ctx.userTranslations()).topView(
 					"public-settings",
 					system.associatedUserId,
 				),
-				...new SystemSettingsView((await ctx.userTranslations())).publicProfile(
+				...new SystemSettingsView(ctx.userTranslations()).publicProfile(
 					system,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

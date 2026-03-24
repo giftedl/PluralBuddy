@@ -50,7 +50,6 @@ import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
 import { latencyDataPoints } from "@/analytics";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
-import { getLanguageByUserId } from "@/lib/lang";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -87,8 +86,6 @@ export type PWebhook = {
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message: Message) => {
-		const locale = await getLanguageByUserId(message.author.id);
-
 		latencyDataPoints.push(
 			Date.now() -
 				// @ts-ignore
@@ -105,7 +102,7 @@ export default createEvent({
 
 				try {
 					await message.author.write({
-						components: new AlertView(locale).errorView(
+						components: new AlertView(translations).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -120,13 +117,13 @@ export default createEvent({
 			return await message.reply({
 				components: [
 					new TextDisplay().setContent(
-						locale.AWAKE.replace("{{ buildNumber }}", String(buildNumber)).replace("{{ branch }}", process.env.BRANCH ?? "unknown")
+						`Hi! I'm awake, running PluralBuddy \`#${buildNumber}/${process.env.BRANCH ?? "unknown"}\`.`,
 					),
 					new ActionRow().setComponents(
 						[
-							{ n: locale.LINK_INVITE, l: "invite" },
-							{ n: locale.LINK_SUPPORT, l: "discord" },
-							{ n: locale.LINK_DOCS, l: "docs" },
+							{ n: "Invite", l: "invite" },
+							{ n: "Support", l: "discord" },
+							{ n: "Docs", l: "docs" },
 						].map((c) =>
 							new Button()
 								.setStyle(ButtonStyle.Link)
@@ -155,7 +152,7 @@ export default createEvent({
 							new Button()
 								.setCustomId("disabled")
 								.setDisabled(true)
-								.setLabel(locale.PAGINATION_PREVIOUS_PAGE)
+								.setLabel("Previous Page")
 								.setStyle(ButtonStyle.Primary),
 							new Button()
 								.setCustomId(
@@ -164,7 +161,7 @@ export default createEvent({
 									),
 								)
 								.setDisabled(helpPages[1] === undefined)
-								.setLabel(locale.PAGINATION_NEXT_PAGE)
+								.setLabel("Next Page")
 								.setStyle(ButtonStyle.Primary),
 						),
 					),
@@ -176,8 +173,8 @@ export default createEvent({
 			message.reply({
 				components: [
 					// @ts-ignore
-					...new AlertView(locale).errorView(
-						"NO_DM_CHANNELS",
+					...new AlertView(null).errorViewCustom(
+						"You cannot proxy inside of DM channels. Sorry!",
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
@@ -380,8 +377,9 @@ export default createEvent({
 									user.system.systemDisplayTag) === null)
 						) {
 							createProxyError(user, message, {
-								title: locale.DISPLAY_TAG_ENFORCE,
-								description: locale.DISPLAY_TAG_ENFORCE_DESC,
+								title: "Display Tag Enforcement Policy",
+								description:
+									'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
 								type: "EnforcedGuildTagRegulation",
 							});
 

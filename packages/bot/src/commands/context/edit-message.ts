@@ -36,10 +36,10 @@ export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 			.setCustomId(
 				InteractionIdentifier.EditMenu.EditContextForm.create(ctx.target.id),
 			)
-			.setTitle((await ctx.userTranslations()).EDIT_MESSAGE)
+			.setTitle(ctx.userTranslations().EDIT_MESSAGE)
 			.setComponents([
 				new Label()
-					.setLabel((await ctx.userTranslations()).MESSAGE_CONTENTS)
+					.setLabel(ctx.userTranslations().MESSAGE_CONTENTS)
 					.setComponent(
 						new TextInput()
 							.setCustomId(

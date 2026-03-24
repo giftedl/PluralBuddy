@@ -35,7 +35,7 @@ export default class SetLatchDelayCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -44,7 +44,7 @@ export default class SetLatchDelayCommand extends SubCommand {
 
 		if (parsedDelay === null || parsedDelay >= 36000000) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"LATCH_DELAY_INVALID",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -56,13 +56,13 @@ export default class SetLatchDelayCommand extends SubCommand {
 			{
 				latchExpiration: parsedDelay,
 			},
-			(await ctx.userTranslations()),
+			ctx.userTranslations(),
 			"discord",
 		);
 
 		if (updatedSystem === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -70,8 +70,9 @@ export default class SetLatchDelayCommand extends SubCommand {
 		}
 
 		await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
+			components: new AlertView(ctx.userTranslations()).successViewCustom(
+				ctx
+					.userTranslations()
 					.SYSTEM_SET_LATCH_DELAY.replace(
 						"%delay%",
 						convert(Math.floor(parsedDelay / 1000)),

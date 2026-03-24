@@ -19,11 +19,11 @@ export default class SetGuildPrefixes extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(ctx.userTranslations()).topView(
 					"general",
 					pluralGuild.guildId,
 				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
+				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
 					pluralGuild,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

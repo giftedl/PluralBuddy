@@ -43,10 +43,10 @@ export default class RoleGeneralLocationButton extends ComponentCommand {
 						roleId,
 					),
 				)
-				.setTitle((await ctx.userTranslations()).FORM_ROLE_CONFIG)
+				.setTitle(ctx.userTranslations().FORM_ROLE_CONFIG)
 				.setComponents([
 					new Label()
-						.setLabel((await ctx.userTranslations()).ROLE_LOCATION)
+						.setLabel(ctx.userTranslations().ROLE_LOCATION)
 						.setComponent(
 							new RadioGroup()
 								.setRequired(true)

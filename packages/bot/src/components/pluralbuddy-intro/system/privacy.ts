@@ -17,19 +17,19 @@ export default class NameCNS extends ComponentCommand {
         const oldInteractionId = InteractionIdentifier.Setup.CreateNewSystem.Privacy.substring(ctx.customId);
         const form = new Modal()
             .setCustomId(InteractionIdentifier.Setup.FormSelection.PrivacyForm.create(oldInteractionId))
-            .setTitle((await ctx.userTranslations()).CREATING_NEW_SYSTEM_FORM_TITLE)
+            .setTitle(ctx.userTranslations().CREATING_NEW_SYSTEM_FORM_TITLE)
             .addComponents(
                 [
                     new Label()
-                        .setLabel((await ctx.userTranslations()).SYSTEM_PRIVACY_FORM_LABEL)
-                        .setDescription((await ctx.userTranslations()).CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC)
+                        .setLabel(ctx.userTranslations().SYSTEM_PRIVACY_FORM_LABEL)
+                        .setDescription(ctx.userTranslations().CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC)
                         .setComponent(
                             new StringSelectMenu()
                                 .setCustomId(InteractionIdentifier.Setup.FormSelection.PrivacyType.create())
                                 .setOptions(
-                                    privacySelection((await ctx.userTranslations()))
+                                    privacySelection(ctx.userTranslations())
                                 )
-                                .setValuesLength({ min: 0, max: privacySelection((await ctx.userTranslations())).length })
+                                .setValuesLength({ min: 0, max: privacySelection(ctx.userTranslations()).length })
                                 .setRequired(false)
                         )
                 ]

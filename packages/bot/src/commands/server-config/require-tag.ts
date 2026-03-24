@@ -50,7 +50,7 @@ export default class RequireSystemTags extends SubCommand {
 		pluralGuild = await ctx.retrievePGuild();
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successView(
+			components: new AlertView(ctx.userTranslations()).successView(
 				pluralGuild.getFeatures().requiresGuildTag
 					? "REQUIRE_TAG_ENABLED"
 					: "REQUIRE_TAG_DISABLED",

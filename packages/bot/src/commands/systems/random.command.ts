@@ -36,7 +36,7 @@ export default class RandomSystemCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -72,7 +72,7 @@ export default class RandomSystemCommand extends SubCommand {
 
 			if (finalQuery === null || finalQuery[0] === undefined) {
 				return await ctx.write({
-					components: new AlertView((await ctx.userTranslations())).errorView(
+					components: new AlertView(ctx.userTranslations()).errorView(
 						"INSUFFICIENT_DATA_SIZE",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -88,7 +88,7 @@ export default class RandomSystemCommand extends SubCommand {
 
 				if (tagQuery === null) {
 					return await ctx.editResponse({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(ctx.userTranslations()).errorView(
 							"INSUFFICIENT_DATA_SIZE",
 						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -97,8 +97,8 @@ export default class RandomSystemCommand extends SubCommand {
 
 				return await ctx.ephemeral({
 					components: [
-						...(new TagView((await ctx.userTranslations())).tagProfileView(tagQuery, tagQuery.systemId !== ctx.author.id)),
-						...(tagQuery.systemId === ctx.author.id ? new TagView((await ctx.userTranslations())).tagConfigureButton(tagQuery) : [])
+						...(new TagView(ctx.userTranslations()).tagProfileView(tagQuery, tagQuery.systemId !== ctx.author.id)),
+						...(tagQuery.systemId === ctx.author.id ? new TagView(ctx.userTranslations()).tagConfigureButton(tagQuery) : [])
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					allowed_mentions: { parse: [] }
@@ -113,7 +113,7 @@ export default class RandomSystemCommand extends SubCommand {
 		
 				if (alterQuery === null) {
 					return await ctx.editResponse({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(ctx.userTranslations()).errorView(
 							"INSUFFICIENT_DATA_SIZE",
 						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -122,14 +122,14 @@ export default class RandomSystemCommand extends SubCommand {
 		
 				return await ctx.ephemeral({
 					components: [
-						...(await new AlterView((await ctx.userTranslations())).alterProfileView(
+						...(await new AlterView(ctx.userTranslations()).alterProfileView(
 							alterQuery,
 							alterQuery.systemId !== ctx.author.id,
 						)),
-						...new AlterView((await ctx.userTranslations())).alterConfigureButton(
+						...new AlterView(ctx.userTranslations()).alterConfigureButton(
 							alterQuery,
 						),
-						...new AlterView((await ctx.userTranslations())).alterProxyModes(alterQuery, ctx.guildId),
+						...new AlterView(ctx.userTranslations()).alterProxyModes(alterQuery, ctx.guildId),
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					allowed_mentions: { parse: [] },
@@ -139,7 +139,7 @@ export default class RandomSystemCommand extends SubCommand {
 
 		if (randomQuery[0] === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"INSUFFICIENT_DATA_SIZE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -153,7 +153,7 @@ export default class RandomSystemCommand extends SubCommand {
 
 		if (alterQuery === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"INSUFFICIENT_DATA_SIZE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -162,14 +162,14 @@ export default class RandomSystemCommand extends SubCommand {
 
 		return await ctx.ephemeral({
 			components: [
-				...(await new AlterView((await ctx.userTranslations())).alterProfileView(
+				...(await new AlterView(ctx.userTranslations()).alterProfileView(
 					alterQuery,
 					alterQuery.systemId !== ctx.author.id,
 				)),
-				...new AlterView((await ctx.userTranslations())).alterConfigureButton(
+				...new AlterView(ctx.userTranslations()).alterConfigureButton(
 					alterQuery,
 				),
-				...new AlterView((await ctx.userTranslations())).alterProxyModes(alterQuery, ctx.guildId),
+				...new AlterView(ctx.userTranslations()).alterProxyModes(alterQuery, ctx.guildId),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			allowed_mentions: { parse: [] },

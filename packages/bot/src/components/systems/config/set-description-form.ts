@@ -21,7 +21,7 @@ export default class SetPronounsButton extends ModalCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+				components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
 			})
 		}
@@ -33,17 +33,17 @@ export default class SetPronounsButton extends ModalCommand {
 
 		const newSystem = await createSystemOperation(system, {
 			systemDescription: newSystemDescription as string
-		}, (await ctx.userTranslations()), "discord")
+		}, ctx.userTranslations(), "discord")
 
 		system = newSystem;
 
 		return await ctx.interaction.update({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations())).topView(
+				...new SystemSettingsView(ctx.userTranslations()).topView(
 					"public-settings",
 					system.associatedUserId,
 				),
-				...new SystemSettingsView((await ctx.userTranslations())).publicProfile(
+				...new SystemSettingsView(ctx.userTranslations()).publicProfile(
 					system,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

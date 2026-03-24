@@ -23,7 +23,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 	if ("parentId" in channel && !isServerConfig)
 		if (blacklistedCategories.includes(channel.parentId ?? "")) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"FEATURE_DISABLED_CHANNEL",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -35,7 +35,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		!isServerConfig
 	) {
 		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).errorView(
+			components: new AlertView(ctx.userTranslations()).errorView(
 				"FEATURE_DISABLED_CHANNEL",
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -59,8 +59,9 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 				if (caseObj) {
 					try {
 						await (ctx.message as Message).author.write({
-							components: new AlertView((await ctx.userTranslations())).errorViewCustom(
-								(await ctx.userTranslations())
+							components: new AlertView(ctx.userTranslations()).errorViewCustom(
+								ctx
+									.userTranslations()
 									.BLACKLISTED_PC.replace(
 										"{{ libbyReasoning }}",
 										caseObj.reasoning,
@@ -84,8 +85,9 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 
 			try {
 				await (ctx.message as Message).author.write({
-					components: new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
+					components: new AlertView(ctx.userTranslations()).errorViewCustom(
+						ctx
+							.userTranslations()
 							.BLACKLISTED.replace(
 								"{{ guild }}",
 								(await ctx.guild())?.name ?? "",

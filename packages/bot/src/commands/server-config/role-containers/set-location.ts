@@ -119,8 +119,9 @@ export default class ViewRoleContainer extends SubCommand {
 						]
 					: []),
 				new Separator().setSpacing(Spacing.Small),
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
+				...new AlertView(ctx.userTranslations()).successViewCustom(
+					ctx
+						.userTranslations()
 						.SET_CONTAINERS_LOCATION.replace("%role%", role.id),
 				),
 				new ActionRow().setComponents(

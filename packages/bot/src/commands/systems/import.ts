@@ -24,13 +24,13 @@ export default class ImportCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return ctx.ephemeral({
-				components: new PluralBuddyIntro((await ctx.userTranslations())).pageTwo(await ctx.getDefaultPrefix() ?? "pb;"),
+				components: new PluralBuddyIntro(ctx.userTranslations()).pageTwo(await ctx.getDefaultPrefix() ?? "pb;"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral ,
 			}, undefined, undefined, ctx);
 		}
 
 		return await ctx.ephemeral({
-			components: new SystemSettingsView((await ctx.userTranslations())).importSettings(
+			components: new SystemSettingsView(ctx.userTranslations()).importSettings(
 				user.system,
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

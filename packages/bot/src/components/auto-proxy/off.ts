@@ -21,7 +21,7 @@ export default class OffAutoProxy extends ComponentCommand {
 
 		if (guild === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -30,7 +30,7 @@ export default class OffAutoProxy extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -73,14 +73,15 @@ export default class OffAutoProxy extends ComponentCommand {
 		await sendAutoproxyOperationDM(
 			system,
 			guild,
-			(await ctx.userTranslations()),
+			ctx.userTranslations(),
 			"discord",
 			"off",
 		);
 
 		return await ctx.write({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
+			components: new AlertView(ctx.userTranslations()).successViewCustom(
+				ctx
+					.userTranslations()
 					.SET_AUTO_PROXY.replaceAll("%server_name%", guild?.name ?? "??")
 					.replaceAll("%mode%", "off"),
 			),

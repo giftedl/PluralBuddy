@@ -16,10 +16,10 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 			.setCustomId(
 				InteractionIdentifier.Nudge.AddNudgeForm.create(),
 			)
-			.setTitle((await ctx.userTranslations()).NUDGE_BLOCKLIST)
+			.setTitle(ctx.userTranslations().NUDGE_BLOCKLIST)
 			.setComponents([
 				new Label()
-					.setLabel((await ctx.userTranslations()).BLOCKLIST_USER)
+					.setLabel(ctx.userTranslations().BLOCKLIST_USER)
 					.setComponent(
 						new UserSelectMenu()
 							.setCustomId(

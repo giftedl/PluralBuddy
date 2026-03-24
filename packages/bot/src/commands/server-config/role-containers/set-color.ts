@@ -54,7 +54,7 @@ export default class ViewRoleContainer extends SubCommand {
 			color = `#${role.color.toString(16)}`;
 		else if (color && !/^#?[0-9a-fA-F]{6}$/.test(color ?? "")) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView("ERROR_INVALID_COLOR"),
+				components: new AlertView(ctx.userTranslations()).errorView("ERROR_INVALID_COLOR"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 			})
 		}
@@ -121,8 +121,9 @@ export default class ViewRoleContainer extends SubCommand {
 						]
 					: []),
 				new Separator().setSpacing(Spacing.Small),
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
+				...new AlertView(ctx.userTranslations()).successViewCustom(
+					ctx
+						.userTranslations()
 						.SET_CONTAINERS_COLOR.replace("%role%", role.id),
 				),
 				new ActionRow().setComponents(

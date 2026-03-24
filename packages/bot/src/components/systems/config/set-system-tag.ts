@@ -17,7 +17,7 @@ export default class SetSystemTag extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.interaction.update({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -28,10 +28,10 @@ export default class SetSystemTag extends ComponentCommand {
 			.setCustomId(
 				InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagForm.create(),
 			)
-			.setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
+			.setTitle(ctx.userTranslations().EDIT_SYSTEM_FORM_TITLE)
 			.addComponents([
 				new Label()
-					.setLabel((await ctx.userTranslations()).SYSTEM_SYSTEM_TAG_FORM_LABEL)
+					.setLabel(ctx.userTranslations().SYSTEM_SYSTEM_TAG_FORM_LABEL)
 					.setComponent(
 						user.system.systemDisplayTag === undefined
 							? new TextInput()

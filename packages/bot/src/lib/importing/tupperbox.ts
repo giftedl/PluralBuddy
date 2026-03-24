@@ -89,7 +89,7 @@ export async function replace(
 						}),
 						tagIds: pluralbuddy.tagIds,
 						public: pluralbuddy.public,
-						avatarUrlMap: {},
+						avatarUrlMap: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -212,7 +212,7 @@ export async function add(
 						tagIds: [],
 						// TupperBox has no permission values... lol
 						public: 0,
-						avatarUrlMap: {},
+						avatarUrlMap: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -247,11 +247,6 @@ export async function add(
 		)
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
-		
-	if (newAlters.length + input.existing.alters.length >= 2000)
-		throw new Error("Too many alters");
-	if (newTags.length + input.existing.tags.length >= 1000)
-		throw new Error("Too many alters");
 
 	if (newTags.length > 0) await tagCollection.insertMany(newTags);
 

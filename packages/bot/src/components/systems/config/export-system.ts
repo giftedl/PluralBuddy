@@ -22,7 +22,7 @@ export default class ExportSystemButton extends ComponentCommand {
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		await ctx.write({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -30,7 +30,7 @@ export default class ExportSystemButton extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -50,7 +50,7 @@ export default class ExportSystemButton extends ComponentCommand {
 		});
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successView(
+			components: new AlertView(ctx.userTranslations()).successView(
 				"SYSTEM_EXPORT_FINISHED",
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

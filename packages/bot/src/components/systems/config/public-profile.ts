@@ -18,7 +18,7 @@ export default class PublicProfileBtn extends ComponentCommand {
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -27,11 +27,11 @@ export default class PublicProfileBtn extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations())).topView(
+				...new SystemSettingsView(ctx.userTranslations()).topView(
 					"public-settings",
 					user.system.associatedUserId,
 				),
-				...new SystemSettingsView((await ctx.userTranslations())).publicProfile(
+				...new SystemSettingsView(ctx.userTranslations()).publicProfile(
 					user.system,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction.message.messageReference === undefined,

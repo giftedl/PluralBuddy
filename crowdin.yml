@@ -1,3 +1,0 @@
-files:
-  - source: /packages/bot/src/i18n/en.ts
-    translation: /packages/bot/src/i18n/%two_letters_code%.ts

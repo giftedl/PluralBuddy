@@ -30,7 +30,7 @@ export default class NewRolePreferenceForm extends ModalCommand {
 
 		if (guild.rolePreferences.some((c) => c.roleId === roleId.id)) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ROLE_PREFERENCE_ALREADY_EXISTS",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -44,7 +44,7 @@ export default class NewRolePreferenceForm extends ModalCommand {
 		ctx.client.cache.pguild.remove(guild.guildId)
 
 		return await ctx.interaction.update({
-			components: new ServerConfigView((await ctx.userTranslations())).roleGeneralView({
+			components: new ServerConfigView(ctx.userTranslations()).roleGeneralView({
 				roleId: roleId.id,
 			}),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

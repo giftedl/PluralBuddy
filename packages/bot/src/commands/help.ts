@@ -52,7 +52,7 @@ export default class PluralBuddyHelpCommand extends Command {
 
 				try {
 					await (ctx.message as Message).author.write({
-						components: new AlertView((await ctx.userTranslations())).errorView(
+						components: new AlertView(ctx.userTranslations()).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -62,7 +62,7 @@ export default class PluralBuddyHelpCommand extends Command {
 			}
 
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"FEATURE_DISABLED_GUILD",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

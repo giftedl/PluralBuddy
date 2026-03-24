@@ -31,7 +31,7 @@ export default class UndoOperationButton extends ComponentCommand {
                             .setDisabled(true)
                             .setStyle(ButtonStyle.Danger)
                             .setCustomId("b")
-                            .setLabel((await ctx.userTranslations()).EXPIRED)
+                            .setLabel("Expired")
                             .setEmoji(emojis.xWhite)
                     )
                 ]
@@ -39,7 +39,7 @@ export default class UndoOperationButton extends ComponentCommand {
         }
 
         const followup = await ctx.followup({
-            components: new LoadingView((await ctx.userTranslations())).loadingView(),
+            components: new LoadingView(ctx.userTranslations()).loadingView(),
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
         })
         
@@ -47,7 +47,7 @@ export default class UndoOperationButton extends ComponentCommand {
 
         if (user.system === undefined) {
             return await followup.edit({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST")
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST")
             })
         }
 
@@ -60,8 +60,8 @@ export default class UndoOperationButton extends ComponentCommand {
         })
 
         await followup.edit({
-            components: new AlertView((await ctx.userTranslations()))
-                .successViewCustom((await ctx.userTranslations()).OPERATION_UNDO_SUCCESS
+            components: new AlertView(ctx.userTranslations())
+                .successViewCustom(ctx.userTranslations().OPERATION_UNDO_SUCCESS
                     .replace("%value-count%", operation.changedOperationStrings.length.toString()))
         })
         

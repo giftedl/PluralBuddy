@@ -23,7 +23,7 @@ export default class SystemCommand extends Command {
 
                 try {
                     await (ctx.message as Message).author.write({
-                        components: new AlertView((await ctx.userTranslations())).errorView("FEATURE_DISABLED_GUILD"),
+                        components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
                         flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
                     })
                 } catch (_) {}
@@ -31,7 +31,7 @@ export default class SystemCommand extends Command {
             }
 
             return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView("FEATURE_DISABLED_GUILD"),
+                components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
@@ -42,7 +42,7 @@ export default class SystemCommand extends Command {
                     .setComponents(
                         new TextDisplay()
                             .setContent(
-                                ctx.t.get(await ctx.language()).ABOUT_PB
+                                ctx.userTranslations().ABOUT_PB
                                     .replace("%version%", String(buildNumber))
                                     .replace("%branch%", process.env.BRANCH ?? "unknown")
                                     .replace("%catjamming%", emojis.catjamming)

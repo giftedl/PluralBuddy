@@ -28,7 +28,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		) as string;
 
 		await ctx.interaction.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -37,10 +37,10 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (!system)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView("SP_ERROR"),
+					...new AlertView(ctx.userTranslations()).errorView("SP_ERROR"),
 					new ActionRow().addComponents(
 						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
 							.setCustomId(
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
@@ -56,10 +56,10 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (!alters || !tags)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView("SP_ERROR"),
+					...new AlertView(ctx.userTranslations()).errorView("SP_ERROR"),
 					new ActionRow().addComponents(
 						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
 							.setCustomId(
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
@@ -94,8 +94,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (newSystem.error) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
+					...new AlertView(ctx.userTranslations()).errorViewCustom(
+						ctx
+							.userTranslations()
 							.PLURALBUDDY_IMPORT_ERROR.replace(
 								"%zod_errors%",
 								z.prettifyError(newSystem.error),
@@ -103,7 +104,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 					),
 					new ActionRow().addComponents(
 						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
 							.setCustomId(
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
@@ -208,7 +209,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		return await ctx.editResponse({
 			components: [
 				...new AlertView(
-					(await ctx.userTranslations()),
+					ctx.userTranslations(),
 				).successViewCustom(`Successfully imported your Simply Plural system!
 
 > **Disclaimer:** You may feel your system might not be completely identical to Simply Plural. This is because the core data structure of some resources are different from Simply Plural's and as a result may not be identical.

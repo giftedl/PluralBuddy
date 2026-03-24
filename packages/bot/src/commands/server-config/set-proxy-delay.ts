@@ -41,8 +41,9 @@ export default class SetProxyDelay extends SubCommand {
 		ctx.client.cache.pguild.remove(guild.guildId)
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
+			components: new AlertView(ctx.userTranslations()).successViewCustom(
+				ctx
+					.userTranslations()
 					.DELAY_CHANGED.replaceAll("%seconds%", String(proxyDelay))
 					.replaceAll("%ms%", String(proxyDelay * 1000)),
 			),

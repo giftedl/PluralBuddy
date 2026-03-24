@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, Section, TextDisplay, type DefaultLocale } from "seyfert";
+import { ActionRow, Button, Container, Section, TextDisplay } from "seyfert";
 import { client } from "..";
 import { alterCollection, alterOperationCollection, operationCollection } from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
@@ -21,7 +21,7 @@ export async function createPartialAlterOperation(
 	changedAlterId: number,
 	PartialAlter: PAlter,
 	operation: Partial<PAlter>,
-	translations: DefaultLocale,
+	translations: TranslationString,
 	environment: "discord" | "api-exchange" | "api-web",
 ) {
 	let oldPartialAlter: Partial<PAlter> = {};
@@ -128,17 +128,17 @@ export async function createPartialAlterOperation(
 							new Section()
 								.setComponents(
 									new TextDisplay().setContent(
-										translations.NOTIFIED_1,
+										"-# You were notified of this action due to your association with your PluralBuddy PartialAlter.",
 									),
 									new TextDisplay().setContent(
-										translations.NOTIFIED_2,
+										"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
 									),
 								)
 								.setAccessory(
 									new Button()
 										.setCustomId(InteractionIdentifier.SnoozeDMs.create())
 										.setStyle(ButtonStyle.Danger)
-										.setLabel(translations.OPT_OUT_DMS)
+										.setLabel("Opt-out of DMs")
 										.setEmoji(emojis.xWhite),
 								),
 						],

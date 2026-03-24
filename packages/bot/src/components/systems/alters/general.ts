@@ -29,15 +29,15 @@ export default class GeneralButton extends ComponentCommand {
 
         if (alter === null) {
             return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
         return await ctx.update({
             components: [
-                ...new AlterView((await ctx.userTranslations())).alterTopView("general", alter.alterId.toString(), alter.username),
-                ...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter, ctx.guildId)
+                ...new AlterView(ctx.userTranslations()).alterTopView("general", alter.alterId.toString(), alter.username),
+                ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId)
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 

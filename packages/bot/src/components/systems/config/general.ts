@@ -20,15 +20,15 @@ export default class GeneralTab extends ComponentCommand {
 
         if (user.system === undefined) {
             return await ctx.ephemeral({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
         return await ctx.update({
             components: [
-                ...new SystemSettingsView((await ctx.userTranslations())).topView("general", user.system.associatedUserId),
-                ...new SystemSettingsView((await ctx.userTranslations())).generalSettings(user.system, ctx.guildId)
+                ...new SystemSettingsView(ctx.userTranslations()).topView("general", user.system.associatedUserId),
+                ...new SystemSettingsView(ctx.userTranslations()).generalSettings(user.system, ctx.guildId)
 
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2

@@ -21,7 +21,7 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -31,7 +31,7 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 		await createSystemOperation(
 			system,
 			{ disabled: !system.disabled },
-			(await ctx.userTranslations()),
+			ctx.userTranslations(),
 			"discord",
 		);
 
@@ -39,11 +39,11 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new SystemSettingsView((await ctx.userTranslations())).topView(
+				...new SystemSettingsView(ctx.userTranslations()).topView(
 					"general",
 					system.associatedUserId,
 				),
-				...new SystemSettingsView((await ctx.userTranslations())).generalSettings(
+				...new SystemSettingsView(ctx.userTranslations()).generalSettings(
 					system,
 					ctx.guildId
 				),

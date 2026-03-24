@@ -40,11 +40,11 @@ export default class ToggleFeatureFlag extends ComponentCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(ctx.userTranslations()).topView(
 					"features",
 					guildObj.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).featuresTab(
+				...new ServerConfigView(ctx.userTranslations()).featuresTab(
 					PGuildObject.parse(guildObj),
                     nativeGuild
 				),

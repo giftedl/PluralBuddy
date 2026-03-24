@@ -38,11 +38,11 @@ export default class GuildPrefixesForm extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(ctx.userTranslations()).topView(
 					"general",
 					guildObj.guildId,
 				),
-				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
+				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
 					guildObj,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

@@ -37,10 +37,10 @@ export default class RoleGeneralColorButton extends ComponentCommand {
 						roleId,
 					),
 				)
-				.setTitle((await ctx.userTranslations()).FORM_ROLE_CONFIG)
+				.setTitle(ctx.userTranslations().FORM_ROLE_CONFIG)
 				.setComponents([
 					new Label()
-						.setLabel((await ctx.userTranslations()).ROLE_COLOR)
+						.setLabel(ctx.userTranslations().ROLE_COLOR)
 						.setComponent(
 							new TextInput()
 								.setStyle(TextInputStyle.Short)

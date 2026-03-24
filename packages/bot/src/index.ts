@@ -36,7 +36,7 @@ import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import { startStatisticalTimer } from "./analytics";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
-import { Pi18nCache } from "./cache/i18n";
+
 
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
@@ -105,7 +105,6 @@ client.setServices({
 				? new MemoryAdapter()
 				: new RedisAdapter({ redisOptions: { url: process.env.REDIS } }),
 	},
-	langs: { default: "en" },
 });
 
 await setupMongoDB();
@@ -118,7 +117,6 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 	client.cache,
 	client,
 );
-client.cache.i18n = new Pi18nCache(client.cache, client);
 
 await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });

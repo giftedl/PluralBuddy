@@ -17,11 +17,11 @@ export default class ServerErrors extends SubCommand {
 
 		return await ctx.ephemeral({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(ctx.userTranslations()).topView(
 					"errors",
 					pluralGuild.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).errorSettings(
+				...new ServerConfigView(ctx.userTranslations()).errorSettings(
 					pluralGuild,
 					nativeGuild
 				),

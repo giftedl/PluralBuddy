@@ -30,8 +30,9 @@ export default class AddManagerRole extends SubCommand {
 
         return await ctx.editResponse({
             
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				`${(await ctx.userTranslations()).SUCCESS_REMOVE_MANAGER_ROLE.replace("%item%", `<@&${ctx.options.role.id}>`)} ${((await ctx.userTranslations()))
+			components: new AlertView(ctx.userTranslations()).successViewCustom(
+				`${ctx.userTranslations().SUCCESS_REMOVE_MANAGER_ROLE.replace("%item%", `<@&${ctx.options.role.id}>`)} ${ctx
+					.userTranslations()
 					.SUCCESS_CHANGED_MANAGER_BLACKLIST.replace(
 						"%manager_roles%",
 						pluralGuild.managerRoles

@@ -33,7 +33,7 @@ export default class SetColorComponent extends ComponentCommand {
 
 		if (tag === null) {
 			return await ctx.followup({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -69,7 +69,7 @@ The current tag color for ${tag.tagFriendlyName} is   ${getEmojiFromTagColor(tag
 									InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorComponent.create(tag.tagId),
 								)
 								.setOptions(
-									tagColorSelection((await ctx.userTranslations()), tag.tagColor),
+									tagColorSelection(ctx.userTranslations(), tag.tagColor),
 								),
 						),
 					)

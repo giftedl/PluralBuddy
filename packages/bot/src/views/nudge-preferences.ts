@@ -17,62 +17,58 @@ export class NudgePreferences extends TranslatedView {
 	nudgePreferences(user: PUser) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(this.translations.NUDGE_PREF_TITLE),
+				new TextDisplay().setContent("## Nudge Preferences"),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.setAccessory(
 						new Button()
 							.setLabel(
 								(user.nudging ?? { currentlyEnabled: true }).currentlyEnabled
-									? this.translations.DISABLE_NUDGING
-									: this.translations.ENABLE_NUDGING,
+									? "Disable Nudging"
+									: "Enable Nudging",
 							)
 							.setCustomId(InteractionIdentifier.Nudge.ToggleNudge.create())
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.NUDGING_DESC),
+						new TextDisplay().setContent(
+							"Nudging allows other users to ping or nudge you based on your alter. You can toggle this setting at any time. Disabling this setting does not take away your ability to nudge others, it only disables the ability for others to nudge you.",
+						),
 					),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.setComponents(
-						new TextDisplay().setContent(this.translations.DM_REPLIES_DESC),
+						new TextDisplay().setContent(
+							"DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
+						),
 					)
 					.setAccessory(
 						new Button()
-							.setCustomId(
-								InteractionIdentifier.Nudge.ToggleDMReplies.create("false"),
-							)
+							.setCustomId(InteractionIdentifier.Nudge.ToggleDMReplies.create("false"))
 							.setStyle(ButtonStyle.Primary)
 							.setLabel(
 								user.nudging.dmReply
-									? this.translations.DISABLE_DM
-									: this.translations.ENABLE_DM,
+									? `Disable DM Replies`
+									: "Enable DM Replies",
 							),
 					),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					this.translations.BLOCK_USERS_DESC.replace(
-						"{{ userCount }}",
-						String(
-							((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? [])
-								.length,
-						),
-					),
+					`You can block users from nudging you specifically. Currently, you have ${((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? []).length} user(s) blocked.`,
 				),
 				new ActionRow().setComponents(
 					new Button()
 						.setLabel(
-							((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? []).length >= 100 ? this.translations.EXPORT_NUDGE_BLOCKLIST : this.translations.VIEW_NUDGE_BLOCKLIST,
+							`${((user.nudging ?? { blockedUsers: [] }).blockedUsers ?? []).length >= 100 ? "Export" : "View"} Nudge Blocklist`,
 						)
 						.setCustomId(InteractionIdentifier.Nudge.ExportBlockList.create())
 						.setStyle(ButtonStyle.Primary),
 					new Button()
-						.setLabel(this.translations.REMOVE_NUDGE_BLOCKED_USER)
+						.setLabel("Remove User")
 						.setCustomId(InteractionIdentifier.Nudge.RemoveBlock.create())
 						.setStyle(ButtonStyle.Danger),
 					new Button()
-						.setLabel(this.translations.ADD_NUDGE_BLOCKED_USER)
+						.setLabel("Add User")
 						.setCustomId(InteractionIdentifier.Nudge.AddBlock.create())
 						.setStyle(ButtonStyle.Secondary),
 				),

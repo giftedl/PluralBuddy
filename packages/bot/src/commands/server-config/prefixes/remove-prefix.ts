@@ -91,8 +91,9 @@ export default class AddPrefixCommand extends SubCommand {
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
+			components: new AlertView(ctx.userTranslations()).successViewCustom(
+				ctx
+					.userTranslations()
 					.SUCCESS_CHANGED_SERVER_PREFIXES.replace(
 						"%prefixes%",
 						guildObj.prefixes.map((c) => `> - ${c}`).join("\n"),

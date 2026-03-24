@@ -64,7 +64,7 @@ export default class SystemCommand extends Command {
 		if (message === undefined && attachment === undefined)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"CONTENT_ERROR_PROXY",
 					),
 				],
@@ -73,7 +73,7 @@ export default class SystemCommand extends Command {
 
 		if (((await ctx.guild())?.memberCount ?? 0) > 30) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"SERVER_TOO_BIG",
 				),
 
@@ -91,7 +91,7 @@ export default class SystemCommand extends Command {
 
 		if (alter === null) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -113,7 +113,7 @@ export default class SystemCommand extends Command {
 		if (!userPerms.has(["ManageWebhooks", "ManageMessages"]))
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"NO_PERMISSIONS_PROXY",
 					),
 				],
@@ -123,7 +123,7 @@ export default class SystemCommand extends Command {
 		if (alter.alterMode === "nickname")
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"NICKNAME_MANUAL_PROXY",
 					),
 				],
@@ -133,7 +133,7 @@ export default class SystemCommand extends Command {
 		if (system?.disabled)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_DISABLED_SYSTEM",
 					),
 				],
@@ -162,7 +162,7 @@ export default class SystemCommand extends Command {
 
 				return await ctx.editResponse({
 					components: [
-						...new AlertView((await ctx.userTranslations())).errorView(
+						...new AlertView(ctx.userTranslations()).errorView(
 							"ERROR_MANUAL_PROXY",
 						),
 					],
@@ -174,7 +174,7 @@ export default class SystemCommand extends Command {
 		if (webhook === undefined)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_MANUAL_PROXY",
 					),
 				],
@@ -238,7 +238,7 @@ export default class SystemCommand extends Command {
 				},
 				query: {
 					wait: true,
-					...(parent === null ? {} : { thread_id: ctx.channelId }),
+					...(parent === null ? {} : {thread_id: ctx.channelId} ),
 				},
 			})
 			.then((sentMessage) => {
@@ -339,19 +339,17 @@ export default class SystemCommand extends Command {
 						emoji.delete();
 					}
 
-				(async () => {
-					ctx.editResponse({
-						components: new AlertView(
-							(await ctx.userTranslations()),
-						).successViewCustom(
-							((await ctx.userTranslations())).SUCCESS_PROXY.replaceAll(
+				ctx.editResponse({
+					components: new AlertView(ctx.userTranslations()).successViewCustom(
+						ctx
+							.userTranslations()
+							.SUCCESS_PROXY.replaceAll(
 								"%message-link%",
 								`https://discord.com/channels/${ctx.guildId}/${sentMessage?.channelId}/${sentMessage?.id}`,
 							),
-						),
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					});
-				})();
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
 			});
 	}
 }

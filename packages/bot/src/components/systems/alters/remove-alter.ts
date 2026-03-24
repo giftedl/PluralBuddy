@@ -36,7 +36,7 @@ export default class RemoveAlterButton extends ComponentCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -55,14 +55,14 @@ export default class RemoveAlterButton extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successView(
+				...new AlertView(ctx.userTranslations()).successView(
 					"ALTER_DELETION_FINISHED",
 				),
 				new ActionRow().setComponents(
 					new Button()
 						.setEmoji(emojis.undo)
 						.setStyle(ButtonStyle.Secondary)
-						.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+						.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 						),

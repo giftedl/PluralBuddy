@@ -20,7 +20,7 @@ export default class WhoAskedCommand extends Command {
 		const roles = await ctx.member?.roles?.list()
 		if (ctx.guildId === "1077258761443483708" && !roles?.some(v => v.id === "1080157688752767046")) {
 			return ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView("UNABLE_TO_BE_FUNNY"),
+				components: new AlertView(ctx.userTranslations()).errorView("UNABLE_TO_BE_FUNNY"),
 				flags: MessageFlags.IsComponentsV2
 			})
 		}

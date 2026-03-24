@@ -72,7 +72,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 		if (alter === null) {
 			return await ctx.ephemeral(
 				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
+					components: new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_ALTER_DOESNT_EXIST",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -94,7 +94,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 							new TextDisplay().setContent(`Alter's can have privacy flags that identify how external users see your alter. All alters are exclusively private by default. Below are the public values that you added.
 
 **Current public privacy values**:
-\`${friendlyProtectionAlters(await ctx.userTranslations(), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\`
+\`${friendlyProtectionAlters(ctx.userTranslations(), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\`
 
 -# If you were trying to _set_ the privacy values, you may not have finished the command.`),
 						),
@@ -118,28 +118,27 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 			newPublic = newPublic & ~flagValue;
 		}
 
-		const data = await createPartialAlterOperation(
+		await createPartialAlterOperation(
 			alter.alterId,
 			alter,
 			{ public: newPublic },
-			await ctx.userTranslations(),
+			ctx.userTranslations(),
 			"discord",
 		);
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await ctx.userTranslations()).ALTER_SUCCESS_PRIVACY.replace(
-						"%alter%",
-						alter.username,
-					)
+				...new AlertView(ctx.userTranslations()).successViewCustom(
+					ctx
+						.userTranslations()
+						.ALTER_SUCCESS_PRIVACY.replace("%alter%", alter.username)
 						.replace(
 							"%new%",
-							`\`${friendlyProtectionAlters(await ctx.userTranslations(), listFromMaskAlters(data?.public ?? 0)).join("`, `")}\``,
+							`\`${friendlyProtectionAlters(ctx.userTranslations(), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\``,
 						)
 						.replace(
 							"%number%",
-							(listFromMaskAlters(data?.public ?? 0) ?? []).length.toString(),
+							(listFromMaskAlters(alter.public ?? 0) ?? []).length.toString(),
 						),
 				),
 			],

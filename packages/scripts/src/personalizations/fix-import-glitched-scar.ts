@@ -39,5 +39,3 @@ await normalDb.collection<PUser>("users").updateOne(
 		},
 	},
 );
-
-await mongodb.close();

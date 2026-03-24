@@ -27,7 +27,7 @@ export default class NicknameButton extends ComponentCommand {
 
         if (alter === null) {
             return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
@@ -48,12 +48,12 @@ export default class NicknameButton extends ComponentCommand {
         
         return await ctx.interaction.update({
             components: [
-                ...new AlterView((await ctx.userTranslations())).alterTopView(
+                ...new AlterView(ctx.userTranslations()).alterTopView(
                     "general",
                     alter.alterId.toString(),
                     alter.username,
                 ),
-                ...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter, ctx.guildId),
+                ...await new AlterView(ctx.userTranslations()).alterGeneralView(alter, ctx.guildId),
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
         });

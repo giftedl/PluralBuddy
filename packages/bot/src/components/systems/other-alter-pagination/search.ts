@@ -35,7 +35,7 @@ export default class NextPagePagination extends ComponentCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"ERROR_ASSIGN_PAGINATION_TOO_OLD",
 					),
 				],
@@ -45,7 +45,7 @@ export default class NextPagePagination extends ComponentCommand {
 
 		return await ctx.modal(
 			new Modal()
-				.setTitle((await ctx.userTranslations()).SEARCH_FORM_TITLE)
+				.setTitle(ctx.userTranslations().SEARCH_FORM_TITLE)
 				.setCustomId(
 					InteractionIdentifier.Systems.Configuration.FormSelection.OtherAlterPagination.SearchQueryForm.create(
 						corresponding.id,
@@ -53,8 +53,8 @@ export default class NextPagePagination extends ComponentCommand {
 				)
 				.setComponents([
 					new Label()
-						.setLabel((await ctx.userTranslations()).SEARCH_QUERY)
-						.setDescription((await ctx.userTranslations()).SEARCH_REG_EXPRESSIONS)
+						.setLabel(ctx.userTranslations().SEARCH_QUERY)
+						.setDescription(ctx.userTranslations().SEARCH_REG_EXPRESSIONS)
 						.setComponent(
 							new TextInput()
 								.setStyle(TextInputStyle.Short)
@@ -64,8 +64,8 @@ export default class NextPagePagination extends ComponentCommand {
 								.setRequired(true),
 						),
 					new Label()
-						.setLabel((await ctx.userTranslations()).SEARCH_QUERY_VALUE)
-						.setDescription((await ctx.userTranslations()).SEARCH_QUERY_VALUE_DESC)
+						.setLabel(ctx.userTranslations().SEARCH_QUERY_VALUE)
+						.setDescription(ctx.userTranslations().SEARCH_QUERY_VALUE_DESC)
 						.setComponent(
 							new StringSelectMenu()
 								.setRequired(true)
@@ -76,10 +76,10 @@ export default class NextPagePagination extends ComponentCommand {
 								.setOptions([
 									new StringSelectOption()
 										.setValue("display-name")
-										.setLabel((await ctx.userTranslations()).SEARCH_QUERY_DISPLAY_NAME),
+										.setLabel(ctx.userTranslations().SEARCH_QUERY_DISPLAY_NAME),
 									new StringSelectOption()
 										.setValue("username")
-										.setLabel((await ctx.userTranslations()).SEARCH_QUERY_USERNAME),
+										.setLabel(ctx.userTranslations().SEARCH_QUERY_USERNAME),
 								]),
 						),
 				]),

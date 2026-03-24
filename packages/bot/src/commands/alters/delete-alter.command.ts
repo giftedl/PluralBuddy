@@ -37,7 +37,7 @@ export default class DeleteAlterCommand extends SubCommand {
         
         if (alter === null) {
             return await ctx.ephemeral({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             },undefined,undefined,ctx)
         }
@@ -45,14 +45,14 @@ export default class DeleteAlterCommand extends SubCommand {
 
         return await ctx.ephemeral({
             components: [
-                ...new AlertView((await ctx.userTranslations())).questionViewCustom((await ctx.userTranslations()).CONFIRMATION_ALTER_DELETION.replace("%alter%", alter.username)),
+                ...new AlertView(ctx.userTranslations()).questionViewCustom(ctx.userTranslations().CONFIRMATION_ALTER_DELETION.replace("%alter%", alter.username)),
 
                 new ActionRow()
                     .setComponents(
                         new Button()
                             .setEmoji(emojis.circleQuestionWhite)
                             .setStyle(ButtonStyle.Primary)
-                            .setLabel((await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN)
+                            .setLabel(ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN)
                             .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.RemoveAlterConfirm.create(alter.alterId))
                     )
             ],

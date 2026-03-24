@@ -1,11 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import {
-	tagColors,
-	tagHexColors,
-	TagProtectionFlags,
-	type PTag,
-} from "@/types/tag";
+import { tagColors, tagHexColors, TagProtectionFlags, type PTag } from "@/types/tag";
 import { TranslatedView } from "./translated-view";
 import {
 	ActionRow,
@@ -29,24 +24,22 @@ import { AlertView } from "./alert";
 
 export class TagView extends TranslatedView {
 	tagProfileView(tag: PTag, external = false) {
+
+
 		if (external && !has(AlterProtectionFlags.VISIBILITY, tag.public)) {
 			return new AlertView(this.translations).errorView("INVISIBLE_TAG");
 		}
 
-		const nameDisplayable =
-			!external || has(TagProtectionFlags.NAME, tag.public);
-		const colorDisplayable =
-			!external || has(TagProtectionFlags.COLOR, tag.public);
-		const descriptionDisplayable =
-			!external || has(TagProtectionFlags.DESCRIPTION, tag.public);
-		const altersDisplayable =
-			!external || has(TagProtectionFlags.ALTERS, tag.public);
+		const nameDisplayable = !external || has(TagProtectionFlags.NAME, tag.public)
+		const colorDisplayable = !external || has(TagProtectionFlags.COLOR, tag.public)
+		const descriptionDisplayable = !external || has(TagProtectionFlags.DESCRIPTION, tag.public)
+		const altersDisplayable = !external || has(TagProtectionFlags.ALTERS, tag.public)
 
 		const innerComponents =
 			new TextDisplay().setContent(`${colorDisplayable || nameDisplayable ? `## ${colorDisplayable ? getEmojiFromTagColor(tag.tagColor) : ""} ${nameDisplayable ? tag.tagFriendlyName : ""}` : ""}
-${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}${descriptionDisplayable ? (tag.tagDescription ?? "") : ""}${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}
-${altersDisplayable ? `${this.translations.ALTER_COUNT_LABEL}${tag.associatedAlters.length}\n` : ""}
-${this.translations.ID_SMALL_PROFILE}\`${tag.tagId}\``);
+${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}${descriptionDisplayable ? tag.tagDescription ?? "" : ""}${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}
+${altersDisplayable ? `**Alter Count:** ${tag.associatedAlters.length}\n` : ""}
+-# ID: \`${tag.tagId}\``);
 
 		return [
 			new Container()
@@ -59,7 +52,7 @@ ${this.translations.ID_SMALL_PROFILE}\`${tag.tagId}\``);
 		return [
 			new ActionRow().setComponents(
 				new Button()
-					.setLabel(this.translations.CONFIGURE_PROFILE_BTN)
+					.setLabel("Configure Profile")
 					.setEmoji(emojis.wrenchWhite)
 					.setCustomId(
 						InteractionIdentifier.Systems.Configuration.Tags.ConfigureTagExternal.create(
@@ -74,23 +67,18 @@ ${this.translations.ID_SMALL_PROFILE}\`${tag.tagId}\``);
 	tagTopView(currentTab: "general", tagId: string, tagUsername: string) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(
-					this.translations.ALTER_TOP_VIEW.replace(
-						"{{ alterUsername }}",
-						tagUsername,
-					).replace("{{ alterId }}", tagId),
-				),
+				new TextDisplay().setContent(`-# ${tagUsername} • ID: \`${tagId}\``),
 
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel(this.translations.TOP_BACK_LABEL)
+						.setLabel("Back")
 						.setStyle(ButtonStyle.Secondary)
 						.setEmoji(emojis.undo)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.Tags.Index.create(),
 						),
 					new Button()
-						.setLabel(this.translations.GENERAL_LABEL)
+						.setLabel("General")
 						.setStyle(
 							currentTab === "general"
 								? ButtonStyle.Success
@@ -181,15 +169,8 @@ ${
 					new Section()
 						.addComponents(
 							new TextDisplay().setContent(
-								this.translations.T_PUBLIC_PROFILE_DESC_DESC.replace(
-									"{{ command }}",
-									mentionCommand(
-										prefix,
-										"edit-tag description",
-										applicationCommand,
-										tag.tagFriendlyName,
-									),
-								),
+								`You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: ${mentionCommand(prefix, "edit-tag description", applicationCommand, tag.tagFriendlyName)}`,
 							),
 						)
 						.setAccessory(

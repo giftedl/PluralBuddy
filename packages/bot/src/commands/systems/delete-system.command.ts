@@ -40,7 +40,7 @@ export default class SetupCommand extends SubCommand {
 
 		if (!system) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -53,7 +53,7 @@ export default class SetupCommand extends SubCommand {
 					new Container()
 						.setComponents(
 							new TextDisplay().setContent(
-								(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION,
+								ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION,
 							),
 						)
 						.setColor("#FF1717"),
@@ -65,7 +65,7 @@ export default class SetupCommand extends SubCommand {
 							new Button()
 								.setEmoji(emojis.settingsWhite)
 								.setStyle(ButtonStyle.Primary)
-								.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
+								.setLabel(ctx.userTranslations().BACK_TO_SAFETY_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 								),
@@ -74,7 +74,7 @@ export default class SetupCommand extends SubCommand {
 								.setStyle(ButtonStyle.Danger)
 								.setDisabled(true)
 								.setLabel(
-									(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+									ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN,
 								)
 								.setCustomId(
 									mi
@@ -83,7 +83,8 @@ export default class SetupCommand extends SubCommand {
 								),
 						),
 						new TextDisplay().setContent(
-							(await ctx.userTranslations())
+							ctx
+								.userTranslations()
 								.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
 									"%command%",
 									mentionCommand(
@@ -105,7 +106,7 @@ export default class SetupCommand extends SubCommand {
 						new Container()
 							.setComponents(
 								new TextDisplay().setContent(
-									(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION,
+									ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION,
 								),
 							)
 							.setColor("#FF1717"),
@@ -117,7 +118,7 @@ export default class SetupCommand extends SubCommand {
 								new Button()
 									.setEmoji(emojis.settingsWhite)
 									.setStyle(ButtonStyle.Primary)
-									.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
+									.setLabel(ctx.userTranslations().BACK_TO_SAFETY_BTN)
 									.setCustomId(
 										InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 									),
@@ -126,7 +127,7 @@ export default class SetupCommand extends SubCommand {
 									.setStyle(ButtonStyle.Danger)
 									.setDisabled(true)
 									.setLabel(
-										(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+										ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN,
 									)
 									.setCustomId(
 										mi
@@ -135,7 +136,8 @@ export default class SetupCommand extends SubCommand {
 									),
 							),
 							new TextDisplay().setContent(
-								(await ctx.userTranslations())
+								ctx
+									.userTranslations()
 									.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
 										"%command%",
 										mentionCommand(
@@ -156,7 +158,7 @@ export default class SetupCommand extends SubCommand {
 							new Container()
 								.setComponents(
 									new TextDisplay().setContent(
-										(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION,
+										ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION,
 									),
 								)
 								.setColor("#FF1717"),
@@ -165,7 +167,7 @@ export default class SetupCommand extends SubCommand {
 									new Button()
 										.setEmoji(emojis.settingsWhite)
 										.setStyle(ButtonStyle.Primary)
-										.setLabel((await ctx.userTranslations()).BACK_TO_SAFETY_BTN)
+										.setLabel(ctx.userTranslations().BACK_TO_SAFETY_BTN)
 										.setCustomId(
 											InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
 										),
@@ -173,7 +175,7 @@ export default class SetupCommand extends SubCommand {
 										.setEmoji(emojis.circleQuestionWhite)
 										.setStyle(ButtonStyle.Danger)
 										.setLabel(
-											(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
+											ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN,
 										)
 										.setCustomId(
 											mi
@@ -182,7 +184,8 @@ export default class SetupCommand extends SubCommand {
 										),
 								),
 								new TextDisplay().setContent(
-									(await ctx.userTranslations())
+									ctx
+										.userTranslations()
 										.CONFIRMATION_SYSTEM_DELETION_PRIVACY.replace(
 											"%command%",
 											mentionCommand(

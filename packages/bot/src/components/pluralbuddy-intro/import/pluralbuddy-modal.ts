@@ -29,7 +29,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 	async run(ctx: ModalContext) {
 		await ctx.interaction.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -45,12 +45,12 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (file.size > MAX_FILE_SIZE) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorView(
+					...new AlertView(ctx.userTranslations()).errorView(
 						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
 					),
 					new ActionRow().addComponents(
 						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
 							.setCustomId(
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
@@ -67,8 +67,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		if (parsed.error) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
+					...new AlertView(ctx.userTranslations()).errorViewCustom(
+						ctx
+							.userTranslations()
 							.PLURALBUDDY_IMPORT_ERROR.replace(
 								"%zod_errors%",
 								z.prettifyError(parsed.error),
@@ -76,7 +77,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 					),
 					new ActionRow().addComponents(
 						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+							.setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
 							.setCustomId(
 								InteractionIdentifier.Setup.Pagination.Page2.create(),
 							)
@@ -157,8 +158,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
+				...new AlertView(ctx.userTranslations()).successViewCustom(
+					ctx
+						.userTranslations()
 						.SUCCESSFULLY_IMPORTED.replace(
 							"%alter_count%",
 							String(data.system.alterIds.length),

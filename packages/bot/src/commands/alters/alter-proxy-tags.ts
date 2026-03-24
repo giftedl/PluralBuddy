@@ -36,15 +36,15 @@ export default class EditAlterProxyTagsCommand extends SubCommand {
 
         if (alter === null) {
             return await ctx.ephemeral({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_ALTER_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             }, undefined, undefined, ctx)
         }
 
         return await ctx.ephemeral({
             components: [
-                ...new AlterView((await ctx.userTranslations())).alterTopView("proxy-tags", alter.alterId.toString(), alter.username),
-                ...new AlterView((await ctx.userTranslations())).alterProxyTagsView(alter)
+                ...new AlterView(ctx.userTranslations()).alterTopView("proxy-tags", alter.alterId.toString(), alter.username),
+                ...new AlterView(ctx.userTranslations()).alterProxyTagsView(alter)
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         }, undefined, undefined, ctx)

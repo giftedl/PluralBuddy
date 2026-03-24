@@ -17,7 +17,7 @@ export default class OptOutDMs extends ComponentCommand {
 
 		if (system === undefined) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -32,13 +32,13 @@ export default class OptOutDMs extends ComponentCommand {
 
         if (system.systemOperationDM) {
             return await ctx.editResponse({
-                components: new AlertView((await ctx.userTranslations())).successView("OPTED_IN_OF_DMS"),
+                components: new AlertView(ctx.userTranslations()).successView("OPTED_IN_OF_DMS"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
 
         return await ctx.editResponse({
-            components: new AlertView((await ctx.userTranslations())).successView("OPTED_OUT_OF_DMS"),
+            components: new AlertView(ctx.userTranslations()).successView("OPTED_OUT_OF_DMS"),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })
     }

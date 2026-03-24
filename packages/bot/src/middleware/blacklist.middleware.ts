@@ -36,14 +36,15 @@ export const blacklistUserMiddleware = createMiddleware<void>(
 				});
 
 				return await ctx.ephemeral({
-					components: new AlertView((await ctx.userTranslations())).errorViewCustom(
+					components: new AlertView(ctx.userTranslations()).errorViewCustom(
 						possibleMatch
-							? (await ctx.userTranslations())
+							? ctx
+									.userTranslations()
 									.ERROR_ALTER_DOESNT_EXIST_SUGGESTION.replace(
 										"%suggestion%",
 										possibleMatch.username,
 									)
-							: (await ctx.userTranslations()).ERROR_ALTER_DOESNT_EXIST,
+							: ctx.userTranslations().ERROR_ALTER_DOESNT_EXIST,
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});

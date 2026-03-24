@@ -22,7 +22,7 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
 		return await ctx.editResponse({
 			components: [
 				...new PluralBuddyIntro(
-					(await ctx.userTranslations()),
+					ctx.userTranslations(),
 				).simplyPluralImportPage(),
 			],
 			files: [1, 2, 3, 4, 5, 6, 7].map((v) =>

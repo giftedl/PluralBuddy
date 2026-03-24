@@ -41,9 +41,9 @@ export class SystemView extends TranslatedView {
 			`${displayNameDisplayable ? `## ${system.systemName}` : ""}
 ${(pronounsDisplayable && system.systemPronouns) || (displayTagDisplayable && system.systemDisplayTag) ? `-# ${displayTagDisplayable && system.systemDisplayTag ? system.systemDisplayTag : ""}${(displayTagDisplayable && system.systemDisplayTag) && (pronounsDisplayable && system.systemPronouns) ? " · " : ""}${pronounsDisplayable && system.systemPronouns ? system.systemPronouns : ""}` : ""}
 ${descriptionDisplayable && system.systemDescription ? `\n${system.systemDescription}\n` : "\n"}
-${altersDisplayable ? `${this.translations.ALTERS_PROFILE_LABEL}${(system.alterIds as number[]).length}` : ""}
-${tagsDisplayable ? `${this.translations.TAGS_PROFILE_LABEL}${(system.tagIds as string[]).length}` : ""}
-${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.associatedUserId})`,
+${altersDisplayable ? `**Alters**: ${(system.alterIds as number[]).length}` : ""}
+${tagsDisplayable ? `**Tags:** ${(system.tagIds as string[]).length}` : ""}
+**Associated to:** <@${system.associatedUserId}> (${system.associatedUserId})`,
 		);
 
 		return [
@@ -59,7 +59,7 @@ ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.ass
 											? "https://pb.giftedly.dev/image/solar-centered.png"
 											: system.systemAvatar,
 									)
-									.setDescription(this.translations.ALT_AVATAR.replace("{{ alter }}", system.associatedUserId)),
+									.setDescription(`${system.systemName}'s avatar`),
 							)
 							.setComponents(innerComponents)
 					: innerComponents,
@@ -70,7 +70,7 @@ ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.ass
 							new MediaGallery().setItems(
 								new MediaGalleryItem()
 									.setMedia(system.systemBanner)
-									.setDescription(this.translations.ALT_BANNER.replace("{{ alter }}", system.associatedUserId)),
+									.setDescription(`${system.systemName}'s banner`),
 							),
 						]
 					: []),
@@ -82,7 +82,7 @@ ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.ass
 		return [
 			new ActionRow().setComponents(
 				new Button()
-					.setLabel(this.translations.CONFIGURE_PROFILE_BTN)
+					.setLabel("Configure Profile")
 					.setEmoji(emojis.wrenchWhite)
 					.setCustomId(
 						InteractionIdentifier.Systems.ConfigurePublicProfile.create(

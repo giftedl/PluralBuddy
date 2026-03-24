@@ -34,7 +34,7 @@ export default class NameSetSystemCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -46,13 +46,13 @@ export default class NameSetSystemCommand extends SubCommand {
 			{
 				nicknameFormat: newNicknameFormat as string,
 			},
-			(await ctx.userTranslations()),
+			ctx.userTranslations(),
 			"discord",
 		);
 
 		if (updatedSystem === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -60,8 +60,9 @@ export default class NameSetSystemCommand extends SubCommand {
 		}
 
 		await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				((await ctx.userTranslations()))
+			components: new AlertView(ctx.userTranslations()).successViewCustom(
+				ctx
+					.userTranslations()
 					.SYSTEM_SET_NAME.replace("%name%", newNicknameFormat),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

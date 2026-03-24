@@ -58,8 +58,9 @@ export default class CreateTagCommand extends SubCommand {
 		if (existingTag) {
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).errorViewCustom(
-						(await ctx.userTranslations())
+					...new AlertView(ctx.userTranslations()).errorViewCustom(
+						ctx
+							.userTranslations()
 							.TAG_ALREADY_EXISTS.replace("%display%", displayName),
 					),
 				],
@@ -67,7 +68,7 @@ export default class CreateTagCommand extends SubCommand {
 		}
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -75,7 +76,7 @@ export default class CreateTagCommand extends SubCommand {
 		}
 		if (user.system.tagIds.length >= 500) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"TOO_MANY_TAGS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -99,7 +100,7 @@ export default class CreateTagCommand extends SubCommand {
 			return await ctx.editResponse({
 				components: [
 					...new AlertView(
-						(await ctx.userTranslations()),
+						ctx.userTranslations(),
 					).errorViewCustom(`There was an error while creating that tag:
 
 \`\`\`
@@ -121,8 +122,9 @@ ${z.prettifyError(tag.error)}
 
 		await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
+				...new AlertView(ctx.userTranslations()).successViewCustom(
+					ctx
+						.userTranslations()
 						.CREATE_NEW_TAG_DONE.replace("%command%", mentionCommand((await ctx.getDefaultPrefix()) ?? "pb;", "tag", ctx.message === undefined, tag.data.tagFriendlyName))
 						.replaceAll("%tag_name%", tag.data.tagFriendlyName)
 						.replace("%color_emoji%", getEmojiFromTagColor(color)),
@@ -131,7 +133,7 @@ ${z.prettifyError(tag.error)}
                     new Container()
                         .setComponents(
                             new TextDisplay()
-                                .setContent((await ctx.userTranslations()).TAG_SPACE_WARNING)
+                                .setContent(ctx.userTranslations().TAG_SPACE_WARNING)
                         )
                 ] : []),
 			],

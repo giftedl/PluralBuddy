@@ -37,7 +37,7 @@ export default class AddPrefixCommand extends SubCommand {
 
         if (!categoryObj || !categoryObj.isCategory()) {
             return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"NOT_A_CATEGORY",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -53,7 +53,8 @@ export default class AddPrefixCommand extends SubCommand {
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(`${(await ctx.userTranslations()).SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${(await ctx.userTranslations())
+			components: new AlertView(ctx.userTranslations()).successViewCustom(`${ctx.userTranslations().SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${ctx
+				.userTranslations()
 				.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 					"%blacklist_items%",
 					[

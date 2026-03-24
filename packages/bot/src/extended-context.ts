@@ -3,7 +3,6 @@
 import {
 	ActionRow,
 	Button,
-	CacheFrom,
 	CommandContext,
 	Container,
 	extendContext,
@@ -25,8 +24,6 @@ import { translations } from "./lang/en_us";
 import type { TranslationString } from "./lang";
 import { LoadingView } from "./views/loading";
 import type { PAlter } from "plurography";
-import { client } from ".";
-import { getLanguageByUserId } from "./lib/lang";
 
 export const extendedContext = extendContext((interaction) => {
 	let contextAlter: PAlter | null = null;
@@ -72,14 +69,12 @@ export const extendedContext = extendContext((interaction) => {
 			const collector = message.createComponentCollector();
 
 			collector.run(`ephemeral-${interaction.id}`, async (i) => {
-				const locale = await getLanguageByUserId(i.user.id);
-				
 				if (i.user.id !== interaction.user.id)
 					return i.write({
 						components: [
 							new Container().setComponents(
 								new TextDisplay().setContent(
-									locale.NOT_ORIGINAL_RECIPIENT
+									"You are not the original recipient of the message.",
 								),
 							),
 						],
@@ -114,26 +109,15 @@ export const extendedContext = extendContext((interaction) => {
 
 		return writtenMessage;
 	};
-	const language = async () => {
-		let data = (await client.cache.i18n.get(interaction.user.id))?.l;
-
-		if (data === undefined) {
-			data = (await getUserById(interaction.user.id)).userLang
-			await client.cache.i18n.set(CacheFrom.Gateway,interaction.user.id, {l: data});
-		}
-
-		return data;
-	};
 
 	return {
 		ephemeral,
-		language,
 		retrievePUser: async () => getUserById(interaction.user.id),
 		retrievePGuild: async () =>
 			PGuildObject.parseAsync(
 				await getGuildFromId(interaction.guildId ?? "??"),
 			),
-		userTranslations: async () => client.t(await language()).get(await language()),
+		userTranslations: () => translations,
 		setContextAlter: (alter: PAlter) => {
 			contextAlter = alter;
 		},

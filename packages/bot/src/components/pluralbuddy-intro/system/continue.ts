@@ -33,7 +33,7 @@ export default class NameCNS extends ComponentCommand {
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
 		await ctx.update({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 		const oldInteractionId =
@@ -45,7 +45,7 @@ export default class NameCNS extends ComponentCommand {
 
 		if (temporarySystem === undefined) {
 			return ctx.write({
-				content: (await ctx.userTranslations()).ERROR_INTERACTION_TOO_OLD,
+				content: ctx.userTranslations().ERROR_INTERACTION_TOO_OLD,
 				flags: MessageFlags.Ephemeral,
 			});
 		}
@@ -63,8 +63,9 @@ export default class NameCNS extends ComponentCommand {
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
+				...new AlertView(ctx.userTranslations()).successViewCustom(
+					ctx
+						.userTranslations()
 						.CREATING_NEW_SYSTEM_SUCCESS.replaceAll(
 							"%command1%",
 							mentionCommand(

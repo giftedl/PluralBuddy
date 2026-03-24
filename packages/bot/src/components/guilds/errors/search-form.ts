@@ -46,11 +46,11 @@ export default class SearchingRolePreferencesForm extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView((await ctx.userTranslations())).topView(
+				...new ServerConfigView(ctx.userTranslations()).topView(
 					"errors",
 					guild.guildId,
 				),
-				...new ServerConfigView((await ctx.userTranslations())).errorSettings(
+				...new ServerConfigView(ctx.userTranslations()).errorSettings(
 					guild,
 					nativeGuild,
 					1,

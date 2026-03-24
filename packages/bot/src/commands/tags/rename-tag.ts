@@ -52,7 +52,7 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 
 		if (tag === null) {
 			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -84,8 +84,9 @@ ${tag.tagFriendlyName ?? "⛔ Your tag has no display name."}
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations())
+				...new AlertView(ctx.userTranslations()).successViewCustom(
+					ctx
+						.userTranslations()
 						.TAG_RENAME_SUCCESS.replace("%tag%", tag.tagFriendlyName),
 				),
 			],

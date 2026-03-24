@@ -46,12 +46,10 @@ export class ServerConfigView extends TranslatedView {
 	) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(
-					this.translations.SRV_CFG_ID.replace("{{ guildId }}", guildId),
-				),
+				new TextDisplay().setContent(`-# Server ID: \`${guildId}\``),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel(this.translations.GENERAL_LABEL)
+						.setLabel("General")
 						.setStyle(
 							currentTab === "general"
 								? ButtonStyle.Success
@@ -66,7 +64,7 @@ export class ServerConfigView extends TranslatedView {
 							InteractionIdentifier.Guilds.GeneralTab.Index.create(),
 						),
 					new Button()
-						.setLabel(this.translations.ROLES_LABEL)
+						.setLabel("Roles")
 						.setStyle(
 							currentTab === "roles"
 								? ButtonStyle.Success
@@ -77,7 +75,7 @@ export class ServerConfigView extends TranslatedView {
 						)
 						.setCustomId(InteractionIdentifier.Guilds.RolesTab.Index.create()),
 					new Button()
-						.setLabel(this.translations.FEATURES_LABEL)
+						.setLabel("Features")
 						.setStyle(
 							currentTab === "features"
 								? ButtonStyle.Success
@@ -92,7 +90,7 @@ export class ServerConfigView extends TranslatedView {
 							InteractionIdentifier.Guilds.FeaturesTab.Index.create(),
 						),
 					new Button()
-						.setLabel(this.translations.ERROR_LOG_LABEL)
+						.setLabel("Error Log")
 						.setStyle(
 							currentTab === "errors"
 								? ButtonStyle.Success
@@ -112,113 +110,73 @@ export class ServerConfigView extends TranslatedView {
 	async generalSettings(guild: PGuild, prefix: string, isApplication: boolean) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(this.translations.SRV_CFG_TITLE),
+				new TextDisplay().setContent("## Server Preferences"),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.setComponents(
-						new TextDisplay().setContent(
-							this.translations.SRV_CFG_PREFIXES_DESC.replace(
-								"{{ prefixList }}",
-								guild.prefixes.map((c) => `\`${c}\``).join(", "),
-							),
-						),
+						new TextDisplay().setContent(`**Configure Prefixes**
+> Prefixes can be configured and set. You can have unlimited possible prefixes, comma separated.
+> Your current prefixes are ${guild.prefixes.map((c) => `\`${c}\``).join(", ")}`),
 					)
 					.setAccessory(
 						new Button()
 							.setCustomId(
 								InteractionIdentifier.Guilds.GeneralTab.SetPrefixes.create(),
 							)
-							.setLabel(this.translations.SRV_CFG_PREFIXES_BTN)
+							.setLabel("Set Prefixes")
 							.setStyle(ButtonStyle.Primary),
 					),
-				new TextDisplay().setContent(this.translations.SRV_CFG_BLACKLISTS_DESC),
-				new TextDisplay().setContent(
-					this.translations.SRV_CFG_BLACKLISTS_ITEMS.replace(
-						"{{ list }}",
-						"\n" +
-							(guild.blacklistedChannels.length +
-								guild.blacklistedRoles.length +
-								guild.blacklistedCategories.length ===
-							0
-								? this.translations.SRV_CFG_BLACKLISTS_ITEMS_EMPTY
-								: [
-										...guild.blacklistedChannels.map((c) => {
-											return { id: c, type: "channel" };
-										}),
-										...guild.blacklistedRoles.map((c) => {
-											return { id: c, type: "role" };
-										}),
+				new TextDisplay().setContent(`**Configure Blacklist**
+> Roles and channels can be blacklisted from proxying or using commands from PluralBuddy.`),
+				new TextDisplay().setContent(`
+> Currently, the guild's blacklist items are: \n${(guild.blacklistedChannels.length + guild.blacklistedRoles.length + guild.blacklistedCategories.length) === 0 ? "> - _There are no blacklist items._" : ""}${[
+					...guild.blacklistedChannels.map((c) => {
+						return { id: c, type: "channel" };
+					}),
+					...guild.blacklistedRoles.map((c) => {
+						return { id: c, type: "role" };
+					}),
 
-										...(
-											await Promise.all(
-												guild.blacklistedCategories.map(async (c) => {
-													const category = await client.channels
-														.fetch(c)
-														.catch(() => null);
+					...(await Promise.all(guild.blacklistedCategories.map(async (c) => {
+						const category = await client.channels.fetch(c).catch(() => null);
 
-													if (!category || !category.isCategory()) {
-														return null;
-													}
+						if (!category || !category.isCategory()) {
+							return null;
+						}
 
-													return { id: category.name, type: "category" };
-												}),
-											)
-										).filter((v) => v !== null),
-									]
-										.slice(0, 5)
-										.map(
-											(c) =>
-												`> - ${c.type === "channel" ? "<#" : c.type === "category" ? "" : "<@&"}${c.id}${c.type !== "category" ? ">" : ""}`,
-										)
-										.join("\n")) +
-							(guild.blacklistedChannels.length +
-								guild.blacklistedRoles.length +
-								guild.blacklistedCategories.length >
-							5
-								? this.translations.SRV_CFG_BLACKLISTS_ITEMS_MORE.replace(
-										"{{ count }}",
-										String(
-											guild.blacklistedChannels.length +
-												guild.blacklistedRoles.length +
-												guild.blacklistedCategories.length -
-												5,
-										),
-									).replace(
-										"{{ commandMention }}",
-										mentionCommand(
-											prefix,
-											"server-config blacklist list",
-											isApplication,
-										),
-									)
-								: ""),
-					),
-				),
+						return { id: category.name, type: "category"}
+					}))).filter(v => v !== null)
+				]
+					.slice(0, 5)
+					.map((c) => `> - ${c.type === "channel" ? "<#" : (c.type === "category" ? "" : "<@&")}${c.id}${c.type !== "category" ? ">" : ""}`)
+					.join(
+						"\n",
+					)}${(guild.blacklistedChannels.length + guild.blacklistedRoles.length + guild.blacklistedCategories.length) > 5 ? `\n> - ... and ${guild.blacklistedChannels.length + guild.blacklistedRoles.length + guild.blacklistedCategories.length - 5} extra item(s). Use ${mentionCommand(prefix, "server-config blacklist list", isApplication)} to see the rest of the blacklist items.` : ""}`),
 
 				new ActionRow().setComponents(
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistChannel.create(),
 						)
-						.setLabel(this.translations.SRV_CFG_ADD_CHANNELS)
+						.setLabel("Add Channels")
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistCategory.create(),
 						)
-						.setLabel(this.translations.SRV_CFG_ADD_CATEGORIES)
+						.setLabel("Add Category")
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistRole.create(),
 						)
-						.setLabel(this.translations.SRV_CFG_ADD_ROLES)
+						.setLabel("Add Roles")
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Guilds.GeneralTab.RemoveBlacklistCategory.create(),
 						)
-						.setLabel(this.translations.SRV_CFG_REMOVE_CATEGORY)
+						.setLabel("Remove Category")
 						.setStyle(ButtonStyle.Danger),
 				),
 				new Section()
@@ -229,8 +187,8 @@ export class ServerConfigView extends TranslatedView {
 							)
 							.setLabel(
 								guild.getFeatures().requiresGuildTag
-									? this.translations.SRV_CFG_SYS_TAGS_D
-									: this.translations.SRV_CFG_SYS_TAGS_E,
+									? "Disable Mandatory System Tags"
+									: "Enable Mandatory System Tags",
 							)
 							.setStyle(
 								guild.getFeatures().requiresGuildTag
@@ -239,9 +197,8 @@ export class ServerConfigView extends TranslatedView {
 							),
 					)
 					.setComponents(
-						new TextDisplay().setContent(
-							this.translations.SRV_CFG_SYS_REQ_TAGS,
-						),
+						new TextDisplay().setContent(`**Require System Tags**
+> Guilds can require system tags. Clicking the button to the right will toggle that requirement.`),
 					),
 				new Section()
 					.setAccessory(
@@ -249,38 +206,20 @@ export class ServerConfigView extends TranslatedView {
 							.setCustomId(
 								InteractionIdentifier.Guilds.GeneralTab.AddManagers.create(),
 							)
-							.setLabel(this.translations.SRV_CFG_MANAGE_ROLES)
+							.setLabel("Add Manager Roles")
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
+						new TextDisplay().setContent(`**Server Managers**
+> Server managers can access all settings on PluralBuddy. You can have at maximum 25 server manager roles.
+> In order to configure server managers, you must have a role with Administrator or Manage Roles. Server managers cannot add/remove other server manager roles.`),
 						new TextDisplay().setContent(
-							this.translations.SRV_CFG_MANAGERS_DESC,
-						),
-						new TextDisplay().setContent(
-							this.translations.CURRENT_SRV_MANAGERS.replace(
-								"{{ list }}",
-								// biome-ignore lint/style/useTemplate: Simply not cleaner using templates
-								"\n" +
-									(guild.managerRoles.length === 0
-										? this.translations.CURRENT_SRV_MANAGERS_EMPTY
-										: guild.managerRoles
-												.slice(0, 5)
-												.map((c) => `> - <@&${c}>`)
-												.join("\n") +
-											(guild.managerRoles.length > 5
-												? this.translations.CURRENT_SRV_MANAGERS_EXTRA.replace(
-														"{{ count }}",
-														String(guild.managerRoles.length - 5),
-													).replace(
-														"{{ mentionCommand }}",
-														mentionCommand(
-															prefix,
-															"server-config manager-roles list",
-															isApplication,
-														),
-													)
-												: "")),
-							),
+							`> Currently, the server manager roles are:\n${guild.managerRoles.length === 0 ? "> - _There are no manager roles._" : ""}${guild.managerRoles
+								.slice(0, 5)
+								.map((c) => `> - <@&${c}>`)
+								.join(
+									"\n",
+								)}${guild.managerRoles.length > 5 ? `\n> - ... and ${guild.managerRoles.length - 5} extra role(s). Use ${mentionCommand(prefix, "server-config manager-roles list", isApplication)} to see the rest of the manager roles.` : ""}`,
 						),
 					),
 				new Section()
@@ -289,18 +228,14 @@ export class ServerConfigView extends TranslatedView {
 							.setCustomId(
 								InteractionIdentifier.Guilds.GeneralTab.SetLoggingChannel.create(),
 							)
-							.setLabel(this.translations.SRV_CFG_LOGS_BTN)
+							.setLabel("Set Logging Channel")
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.SRV_CFG_LOGS_TITLE),
+						new TextDisplay().setContent(`**Log Channels**
+> You can log messages proxied by PluralBuddy to provide insight on users sending messages. You can have one channel that you are using for proxy logging.`),
 						new TextDisplay().setContent(
-							this.translations.SRV_CFG_LOGS_DESC.replace(
-								"{{ logChannel }}",
-								guild.logChannel
-									? `<#${guild.logChannel}>`
-									: this.translations.SRV_CFG_LOGS_UNSET,
-							),
+							`> This guild's current logging channel is: ${guild.logChannel ? `<#${guild.logChannel}>` : "_Unset_"}`,
 						),
 					),
 				new Section()
@@ -309,19 +244,14 @@ export class ServerConfigView extends TranslatedView {
 							.setCustomId(
 								InteractionIdentifier.Guilds.GeneralTab.SetProxyDelay.create(),
 							)
-							.setLabel(this.translations.SRV_CFG_PROXY_DELAY)
+							.setLabel("Set Proxy Delay")
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(
-							this.translations.SRV_CFG_PROXY_DELAY_DESC,
-						),
-						new TextDisplay().setContent(
-							this.translations.SRV_CFG_PROXY_DELAY_SEC.replace(
-								"{{ delay }}",
-								String((guild.proxyDelay ?? 0) / 1000),
-							).replace("{{ delayMs }}", String(guild.proxyDelay ?? 0)),
-						),
+						new TextDisplay().setContent(`**Proxy Delay**
+> After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`),
+						new TextDisplay().setContent(`> It is not recommended to go over a 1 second proxy delay.
+> This server's proxy delay currently is **${(guild.proxyDelay ?? 0) / 1000} seconds** (${guild.proxyDelay ?? 0}ms)`),
 					),
 			),
 		];
@@ -355,20 +285,12 @@ export class ServerConfigView extends TranslatedView {
 
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(
-					this.translations.ERROR_LOG_TITLE.replace(
-						"{{ serverName }}",
-						nativeGuild.name,
-					),
-				),
+				new TextDisplay().setContent(`## Error Log - ${nativeGuild.name}`),
 				new Separator().setSpacing(Spacing.Large),
 				...(renderedErrors.length === 0
 					? [
 							new TextDisplay().setContent(
-								this.translations.NO_ERRORS.replace(
-									"{{ catJamming }}",
-									emojis.catjamming,
-								),
+								`${emojis.catjamming}   Nice! Your server hasn't ran into any errors!`,
 							),
 						]
 					: []),
@@ -387,40 +309,19 @@ export class ServerConfigView extends TranslatedView {
 						.setComponents(
 							new TextDisplay().setContent(
 								`**${error.title}** · \`${error.type}\`
-> - ${error.description} · <t:${Math.floor(error.timestamp.getTime() / 1000)}:S>${error.responsibleChannelId || error.responsibleUserId ? `\n> - ${error.responsibleUserId ? this.translations.ERROR_TRIGGERED_BY.replace("{{ userId }}", error.responsibleUserId) : ""}${error.responsibleChannelId ? this.translations.ERROR_TRIGGERED_IN.replace("{{ channelId }}", error.responsibleChannelId) : ""}` : ""}`,
+> - ${error.description} · <t:${Math.floor(error.timestamp.getTime() / 1000)}:S>${error.responsibleChannelId || error.responsibleUserId ? `\n> - ${error.responsibleUserId ? `Triggered by <@${error.responsibleUserId}>. ` : ""}${error.responsibleUserId ? `Triggered in <#${error.responsibleChannelId}>.` : ""}` : ""}`,
 							),
 						);
 				}),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					this.translations.PAGINATION_BOTTOM_ERRORS.replace(
-						"{{ page }}",
-						String(currentPage),
-					)
-						.replace("{{ maxPage }}", String(maxPages))
-						.replace("{{ errors }}", String(renderedErrors.length))
-						.replace("{{ maxErrors }}", String(newData.length))
-						.replace(
-							"{{ possibleSearchQuery }}",
-							filters?.channelId || filters?.userId || filters?.type
-								? this.translations.ERROR_LOG_SEARCHING_FOR.replace(
-										"{{ query }}",
-										[
-											filters.channelId ? `<#${filters.channelId}>` : undefined,
-											filters.userId ? `<@${filters.userId}>` : undefined,
-											filters.type,
-										]
-											.filter((c) => c !== undefined)
-											.join(", "),
-									)
-								: "",
-						),
+					`-# Page ${currentPage}/${maxPages} · Found ${renderedErrors.length}/${newData.length} error(s) ${filters?.channelId || filters?.userId || filters?.type ? `· Searching for ${[filters.channelId ? `<#${filters.channelId}>` : undefined, filters.userId ? `<@${filters.userId}>` : undefined, filters.type].filter((c) => c !== undefined).join(", ")}` : ""}`,
 				),
 				new ActionRow().setComponents(
 					new Button()
 						.setDisabled(currentPage === 1)
 						.setStyle(ButtonStyle.Primary)
-						.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
+						.setLabel("Previous Page")
 						.setCustomId(
 							InteractionIdentifier.Guilds.ErrorsTab.GoToPage.create(
 								currentPage - 1,
@@ -428,7 +329,7 @@ export class ServerConfigView extends TranslatedView {
 						),
 					new Button()
 						.setDisabled(currentPage === maxPages || maxPages === 0)
-						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
+						.setLabel("Next Page")
 						.setStyle(ButtonStyle.Primary)
 						.setCustomId(
 							InteractionIdentifier.Guilds.ErrorsTab.GoToPage.create(
@@ -450,12 +351,8 @@ export class ServerConfigView extends TranslatedView {
 	featuresTab(guild: PGuild, nativeGuild: Guild<"api" | "cached">) {
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(
-					this.translations.FEATURE_FLAGS_TITLE.replace(
-						"{{ guildName }}",
-						nativeGuild.name,
-					),
-				),
+				new TextDisplay().setContent(`## Feature Flags - ${nativeGuild.name}
+> Feature flags allow you to control certain smaller features used on PluralBuddy.`),
 				new Separator().setSpacing(Spacing.Large),
 				...Object.entries(friendlyFeatureIndex).map((c) =>
 					new Section()
@@ -480,8 +377,8 @@ export class ServerConfigView extends TranslatedView {
 								.setLabel(
 									// @ts-ignore
 									guild.getFeatures().has(GuildFlags[c[0]])
-										? this.translations.FEATURE_D
-										: this.translations.FEATURE_E,
+										? "Disable"
+										: "Enable",
 								),
 						),
 				),
@@ -573,18 +470,19 @@ export class ServerConfigView extends TranslatedView {
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(
-					this.translations.ROLE_TOP.replaceAll("{{ roleId }}", roleData.roleId)
+					`-# <@&${roleData.roleId}> • ID: \`${roleData.roleId}\``,
 				),
 				new ActionRow().setComponents(
 					new Button()
-						.setLabel(this.translations.OPTION_BACK)
+						.setLabel("Back")
 						.setStyle(ButtonStyle.Secondary)
 						.setEmoji(emojis.undo)
 						.setCustomId(InteractionIdentifier.Guilds.RolesTab.Index.create()),
 				),
 			),
 			new Container().setComponents(
-				new TextDisplay().setContent(this.translations.ROLE_CONFIG_TITLE.replace("{{ roleId }}", roleData.roleId)),
+				new TextDisplay().setContent(`## Role Configuration - <@&${roleData.roleId}>
+> The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.setAccessory(
@@ -594,11 +492,12 @@ export class ServerConfigView extends TranslatedView {
 									roleData.roleId,
 								),
 							)
-							.setLabel(this.translations.ROLE_CONTAINER_CONTENTS_BTN)
+							.setLabel("Edit Container Contents")
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.ROLE_CONTAINER_CONTENTS_DESC),
+						new TextDisplay().setContent(`**Role Container Contents**
+> This is the actual contents inside of the role-specific container. This is required for the container to appear. If this is blank, the container won't appear.`),
 					),
 				new Section()
 					.setAccessory(
@@ -608,11 +507,12 @@ export class ServerConfigView extends TranslatedView {
 									roleData.roleId,
 								),
 							)
-							.setLabel(this.translations.ROLE_CONTAINER_COLOR_BTN)
+							.setLabel("Edit Container Color")
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.ROLE_CONTAINER_COLOR_DESC),
+						new TextDisplay().setContent(`**Role Container Color**
+> Containers on Discord have a color they can be. Otherwise, the color marker shows up as blank (unlike in embeds).`),
 					),
 				new Section()
 					.setAccessory(
@@ -622,18 +522,21 @@ export class ServerConfigView extends TranslatedView {
 									roleData.roleId,
 								),
 							)
-							.setLabel(this.translations.ROLE_CONTAINER_LOCATION_BTN)
+							.setLabel("Edit Container Location")
 							.setStyle(ButtonStyle.Primary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(this.translations.ROLE_CONTAINER_LOCATION_DESC),
+						new TextDisplay().setContent(`**Role Container Location**
+> PluralBuddy can place the container either below the message contents or above it.
+
+There is an example below of what an example proxy with this role would look like:`),
 					),
 			),
 			new Separator().setSpacing(Spacing.Large),
 			...(roleData.containerContents === undefined
 				? [
 						new TextDisplay().setContent(
-							this.translations.CONTENTS_EMPTY
+							"-# There is no role container for this role as the contents are empty.",
 						),
 					]
 				: []),
@@ -652,7 +555,7 @@ export class ServerConfigView extends TranslatedView {
 								),
 					]
 				: []),
-			new TextDisplay().setContent(this.translations.EXAMPLE_PROXY_TEXT),
+			new TextDisplay().setContent("Example proxy text. Hi!"),
 			...(roleData.containerContents !== undefined &&
 			roleData.containerLocation === "bottom"
 				? [

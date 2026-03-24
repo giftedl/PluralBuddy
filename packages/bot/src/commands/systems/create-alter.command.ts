@@ -49,14 +49,14 @@ export default class CreateAlterCommand extends SubCommand {
 
         if (user.system === undefined) {
             return await ctx.editResponse({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
 
 		if (user.system.alterIds.length >= 2000) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(ctx.userTranslations()).errorView(
 					"TOO_MANY_ALTERS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -86,7 +86,7 @@ export default class CreateAlterCommand extends SubCommand {
         if (alter.error) {
             return await ctx.editResponse({
                 components: [
-                    ...new AlertView((await ctx.userTranslations())).errorViewCustom(`There was an error while creating that alter:
+                    ...new AlertView(ctx.userTranslations()).errorViewCustom(`There was an error while creating that alter:
 
 \`\`\`
 ${z.prettifyError(alter.error)}
@@ -110,7 +110,7 @@ ${z.prettifyError(alter.error)}
         
         await ctx.editResponse({
             components: [
-                ...new AlertView((await ctx.userTranslations())).successViewCustom((await ctx.userTranslations()).CREATE_NEW_ALTER_DONE
+                ...new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().CREATE_NEW_ALTER_DONE
                     .replace("%prefix%", server.prefixes[0] ?? "/")
                     .replace("%alter_id%", alter.data.username))
             ]

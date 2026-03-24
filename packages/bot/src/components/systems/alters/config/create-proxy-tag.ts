@@ -18,11 +18,11 @@ export default class CreateProxyTag extends ComponentCommand {
         return await context.modal(
             new Modal()
                 .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.ProxyForm.create(alterId?.toString() ?? ""))
-                .setTitle(await context.userTranslations().CREATING_NEW_PT_FORM_TITLE)
+                .setTitle(context.userTranslations().CREATING_NEW_PT_FORM_TITLE)
                 .addComponents(
                     new Label()
-                        .setLabel(await context.userTranslations().CREATING_NEW_PT_FORM_LABEL)
-                        .setDescription(await context.userTranslations().CREATING_NEW_PT_FORM_DESC)
+                        .setLabel(context.userTranslations().CREATING_NEW_PT_FORM_LABEL)
+                        .setDescription(context.userTranslations().CREATING_NEW_PT_FORM_DESC)
                         .setComponent(
                             new TextInput()
                                 .setStyle(TextInputStyle.Short)

@@ -13,11 +13,11 @@ export default class SetupImportPluralBuddy extends ComponentCommand {
     async run(ctx: ComponentContext<typeof this.componentType>) {
         ctx.modal(
             new Modal()
-                .setTitle((await ctx.userTranslations()).IMPORT_PLURALBUDDY_DESCRIPTION)
+                .setTitle(ctx.userTranslations().IMPORT_PLURALBUDDY_DESCRIPTION)
                 .setCustomId(InteractionIdentifier.Setup.FormSelection.ImportForm.create())
                 .setComponents(
                     [new Label()
-                        .setLabel((await ctx.userTranslations()).IMPORT_SOURCE_DESCRIPTION)
+                        .setLabel(ctx.userTranslations().IMPORT_SOURCE_DESCRIPTION)
                         .setComponent(
                             new FileUpload()
                                 .setCustomId(InteractionIdentifier.Setup.FormSelection.ImportType.create())

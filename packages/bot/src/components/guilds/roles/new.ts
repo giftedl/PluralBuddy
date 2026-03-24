@@ -21,7 +21,7 @@ export default class CreateNewRolePreference extends ComponentCommand {
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		return await ctx.modal(
 			new Modal()
-				.setTitle((await ctx.userTranslations()).NEW_ROLE_PREF)
+				.setTitle(ctx.userTranslations().NEW_ROLE_PREF)
 				.setCustomId(
 					InteractionIdentifier.Guilds.FormSelection.CreatingNewRoleForm.create(),
 				)
@@ -34,7 +34,7 @@ export default class CreateNewRolePreference extends ComponentCommand {
 								)
 								.setValuesLength({ min: 1, max: 1 }),
 						)
-						.setLabel((await ctx.userTranslations()).ROLE_USAGE),
+						.setLabel(ctx.userTranslations().ROLE_USAGE),
 				]),
 		);
 	}

@@ -28,7 +28,7 @@ export default class DeleteAlterButton extends ComponentCommand {
 
         if (alter === null) {
             return await ctx.write({
-                components: new AlertView((await ctx.userTranslations())).errorView(
+                components: new AlertView(ctx.userTranslations()).errorView(
                     "ERROR_ALTER_DOESNT_EXIST",
                 ),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -37,19 +37,19 @@ export default class DeleteAlterButton extends ComponentCommand {
 
         return await ctx.update({
             components: [
-                ...new AlertView((await ctx.userTranslations())).questionViewCustom((await ctx.userTranslations()).CONFIRMATION_ALTER_DELETION.replace("%alter%", alter.username)),
+                ...new AlertView(ctx.userTranslations()).questionViewCustom(ctx.userTranslations().CONFIRMATION_ALTER_DELETION.replace("%alter%", alter.username)),
 
                 new ActionRow()
                     .setComponents(
                         new Button()
                             .setEmoji(emojis.undo)
                             .setStyle(ButtonStyle.Secondary)
-                            .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+                            .setLabel(ctx.userTranslations().PAGINATION_PREVIOUS_PAGE)
                             .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.GeneralSettings.create(alter.alterId)),
                         new Button()
                             .setEmoji(emojis.circleQuestionWhite)
                             .setStyle(ButtonStyle.Primary)
-                            .setLabel((await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN)
+                            .setLabel(ctx.userTranslations().CONFIRMATION_SYSTEM_DELETION_BTN)
                             .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.RemoveAlterConfirm.create(alter.alterId))
                     )
             ],

@@ -25,7 +25,7 @@ export default class DisableNudgingButton extends ComponentCommand {
 		user.nudging.currentlyEnabled = !user.nudging.currentlyEnabled;
 
 		return await ctx.update({
-			components: new NudgePreferences((await ctx.userTranslations())).nudgePreferences(user),
+			components: new NudgePreferences(ctx.userTranslations()).nudgePreferences(user),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 	}
