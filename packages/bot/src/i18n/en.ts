@@ -498,6 +498,7 @@ Systems can have **privacy values** which are values that describe who can see w
 
     ALTER_NAME: "Alter Mode",
     ALTER_DESC: "Only proxy this alter until auto-proxy is disabled.",
+	ALTER_DESC_DISABLED: "This option cannot be selected. You must go into an alter to select this option.",
 
     OFF_NAME: "Off",
     OFF_DESC: "Disable auto-proxy in your system.",
@@ -519,11 +520,17 @@ Systems can have **privacy values** which are values that describe who can see w
     PUBLIC_PROFILE_PFP_DESC: "You can set a **profile picture** by uploading an image using the modal on the right.",
     PUBLIC_PROFILE_BANNER_DESC: "You can set a **banner** by uploading an image using the modal on the right.",
     PUBLIC_PROFILE_PN_DESC: `You can set pronouns for your alter. Alter pronouns can be at maximum 100 characters long.\n-# @{{ alterUsername }}'s pronouns are: {{ alterPronouns }}`,
-    PUBLIC_PROFILE_UNSET_PN: "Not set",
+	S_PUBLIC_PROFILE_PN_DESC: `You can set pronouns for your system. System pronouns can be at maximum 100 characters long.
+-# {{ systemName }}'s pronouns are: {{ pronouns }}`,
+	PUBLIC_PROFILE_UNSET_PN: "Not set",
     PUBLIC_PROFILE_DESC_DESC: `You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ commandMention }}`,
+	S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: {{ mention }}`,
     PUBLIC_PROFILE_COLOR_DESC: "Setting a color for an alter shows that color for their rank container along with their public profile.",
-    
+	PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
+-# {{ systemName }}'s system tag is: {{ displayTag }}`,
+
     ALTER_TOP_VIEW: `-# @{{ alterUsername }} • ID: \`{{ alterId }}\``,
 
     GENERAL_LABEL: "General",
@@ -533,6 +540,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	ROLES_LABEL: "Roles",
 	FEATURES_LABEL: "Features",
 	ERROR_LOG_LABEL: "Error Log",
+	ALTERS_LABEL: "Alters",
+	TAGS_LABEL: "Tags",
 
     CONFIGURE_PROFILE_BTN: "Configure Profile",
 	MESSAGE_INFO_CONTENTS: `**Message ID:** {{ messageId }}\n**Sent by:** <@{{ userId }}> ({{ userId }})\n\n**Account Roles ({{ roleCount }})**\n{{ roleList }}`,
@@ -644,5 +653,56 @@ There is an example below of what an example proxy with this role would look lik
 	EXAMPLE_PROXY_TEXT: "Example proxy text. Hi!",
 	
 	TAGS_PROFILE_LABEL: "**Tags:** ",
-	ALTERS_PROFILE_LABEL: "**Alters:** "
+	ALTERS_PROFILE_LABEL: "**Alters:** ",
+
+	GENERAL_SYSTEM_TITLE: `## {{ emoji }} General Settings - {{ systemName }}`,
+	SYSTEM_NAME_BTN: "Set System Name",
+	SYSTEM_NAME_DESC: "The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
+	SYSTEM_NICKNAME_FORMAT_BTN: "Set Nickname Format",
+	SYSTEM_NICKNAME_FORMAT_DESC: "The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
+
+	SYSTEM_PRIVACY_BTN: "Set System Privacy",
+	SYSTEM_PRIVACY_DESC: "By default, your system is completely private besides for server automatic moderation and if you use command publicly. \n(with `-public` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself.",
+	SYSTEM_AP_DESC: `You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
+> - *Alter Mode*: All messages sent from this system will proxy on an alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with an alter regardless of proxy tags. **This requires to select an alter.**
+> - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
+> - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
+	
+	EXPORT_SYS_BTN: "Export System",
+	EXPORT_SYS_DESC: "Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
+
+	IMPORT_SYS_BTN: "Import System",
+	IMPORT_SYS_DESC: "Importing your system will allow you to take data from other bots in various import modes.",
+
+	DANGER_ZONE_TITLE: "## Danger Zone",
+	SYSTEM_E: "Enable System",
+	SYSTEM_D: "Disable System",
+	SYSTEM_D_DESC: "Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
+	DELETE_SYS_BTN: "Delete System",
+	DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
+
+	ALTERS_TITLE: "## Alters",
+	NO_PUBLIC_ALTERS_DESC: "*There are no public-facing alters in this page.*",
+	ALTERS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} alter(s) in {{ time }}ms{{ possibleSearchQuery }}`,
+	ALTERS_POSSIBLE_SQ: `· Querying for {{ query }}`,
+	ALTER_EDIT: "Edit Alter",
+	NEW_TAG_BTN: "Create new tag",
+
+	TAG_TITLE: "## Tags",
+	TAG_EDIT: "Edit Tag",
+	TAGS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} tag(s) in {{ time }}ms{{ possibleSearchQuery }}`,
+
+	S_PUBLIC_PROFILE_TITLE: `## Public Profile - @{{ systemName }}\nYour public profile is what your system looks like to other users when they identify your messages.`,
+
+	IMPORT_SETTINGS_TITLE: `## Import data from another bot`,
+	IMPORT_SETTINGS_DESC: `Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
+
+	REPLACE_DESC: "Replace will replace existing data in your system with data. Does not make new system data.",
+	REPLACE_NAME: "Replace",
+	ADD_DESC: "Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
+	ADD_NAME: "Add",
+	FULL_IMPORT_DESC: "Full import mode will both replace existing alters and add new ones.",
+	FULL_IMPORT_NAME: "Full Import",
+	DELETE_IMPORT_DESC: "Delete import mode will remove existing alters/tags missing from the import.",
+	DELETE_NAME: "Delete",
 }
