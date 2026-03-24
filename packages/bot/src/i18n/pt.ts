@@ -1,8 +1,8 @@
 export default {
-  INTRODUCTION_MESSAGE: `## Welcome to PluralBuddy
-PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
+  INTRODUCTION_MESSAGE: `## Bem-vindo ao PluralBuddy
+PluralBuddy é um bot feito para preencher a falta de bots de pluralidade personalizáveis de qualidade para servidores e usuários.
 
-:track_next: To get started, click the Next Page button below to setup your system.`,
+:track_next: Para começar, clique no botão "Próxima Página" abaixo para configurar o seu sistema.`,
   IMPORT_MESSAGE: `## Setting up your system
 You can create a new system which will allow you to create your alters and tags by yourself.
 Additionally, you can also import data from another bot like PluralKit.
@@ -399,7 +399,7 @@ Systems can have **privacy values** which are values that describe who can see w
   ALTERS_LABEL: "Alters",
   TAGS_LABEL: "Tags",
   CONFIGURE_PROFILE_BTN: "Configure Profile",
-  MESSAGE_INFO_CONTENTS: `**Message ID:** {{ messageId }}\n**Sent by:** <@{{ userId }}> ({{ userId }})\n\n**Account Roles ({{ roleCount }})**\n{{ roleList }}`,
+  MESSAGE_INFO_CONTENTS: `**ID da mensagem:** {{ messageId }}\n**Enviado por:** <@{{ userId }}> ({{ userId }})\n\n**Cargos de conta ({{ roleCount }})**\n{{ roleList }}`,
   NUDGE_PREF_TITLE: "## Nudge Preferences",
   ENABLE_NUDGING: "Enable Nudging",
   DISABLE_NUDGING: "Disable Nudging",
