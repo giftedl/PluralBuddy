@@ -11,6 +11,8 @@ Additionally, you can also import data from another bot like PluralKit.
 	PAGINATION_FINISH: "Finish",
 	BLACKLISTED:
 		"You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
+	
+	// Does not need to be translated
 	BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
@@ -525,6 +527,8 @@ Systems can have **privacy values** which are values that describe who can see w
 	PUBLIC_PROFILE_UNSET_PN: "Not set",
     PUBLIC_PROFILE_DESC_DESC: `You can set a description for your alter. Alter descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ commandMention }}`,
+	T_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your tag. Tag descriptions can be at maximum 2,000 characters long.
+-# To view your description in full, run: {{ command }}`,
 	S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ mention }}`,
     PUBLIC_PROFILE_COLOR_DESC: "Setting a color for an alter shows that color for their rank container along with their public profile.",
@@ -705,4 +709,10 @@ There is an example below of what an example proxy with this role would look lik
 	FULL_IMPORT_NAME: "Full Import",
 	DELETE_IMPORT_DESC: "Delete import mode will remove existing alters/tags missing from the import.",
 	DELETE_NAME: "Delete",
+
+	ALTER_COUNT_LABEL: "**Alter Count:** ",
+
+	SELF_REACTION_ERR: "Unable to remove self-reaction",
+	SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}"
 }

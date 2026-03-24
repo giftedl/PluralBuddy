@@ -7,10 +7,10 @@ import { emojis } from "@/lib/emojis";
 import { getSimilarWebhooks } from "@/lib/proxying/util";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { translations } from "@/lang/en_us";
 import { AlertView } from "@/views/alert";
 import { MessageInfo } from "@/views/message-info";
 import { createError } from "@/lib/create-error";
+import { getLanguageByUserId } from "@/lib/lang";
 
 export default createEvent({
 	data: { name: "messageReactionAdd", once: false },
@@ -28,6 +28,7 @@ export default createEvent({
 
 		const { messageId } = reaction;
 		const message = await messagesCollection.findOne({ messageId });
+		const locale = await getLanguageByUserId(reaction.userId);
 
 		if (message === null) {
 			return;
@@ -38,22 +39,23 @@ export default createEvent({
 			reaction.channelId,
 		);
 		if (reaction.emoji.name !== null)
-			await client.reactions.delete(
-				reaction.messageId,
-				reaction.channelId,
-				reaction.emoji.id === null ? reaction.emoji.name : reaction.emoji,
-				reaction.userId,
-			).catch(() => {
-
-				createError(reaction.guildId ?? "", {
-					title: "Unable to remove user reaction",
-					description:
-						"PluralBuddy was unable to remove a user reaction while attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
-					type: "FailedMessageReaction",
-					responsibleChannelId: reaction.channelId,
-					responsibleUserId: reaction.userId,
+			await client.reactions
+				.delete(
+					reaction.messageId,
+					reaction.channelId,
+					reaction.emoji.id === null ? reaction.emoji.name : reaction.emoji,
+					reaction.userId,
+				)
+				.catch(() => {
+					createError(reaction.guildId ?? "", {
+						title: "Unable to remove user reaction",
+						description:
+							"PluralBuddy was unable to remove a user reaction while attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+						type: "FailedMessageReaction",
+						responsibleChannelId: reaction.channelId,
+						responsibleUserId: reaction.userId,
+					});
 				});
-			});
 
 		const react = await nativeMessage.react(emojis.loading).catch(() => null);
 
@@ -68,6 +70,8 @@ export default createEvent({
 			});
 		}
 
+		// RS if you are reading this please DM me with "fish"
+
 		if (
 			reaction.emoji.name === "❌" ||
 			reaction.emoji.name === "redTick" ||
@@ -77,21 +81,22 @@ export default createEvent({
 				message?.systemId !== reaction.userId ||
 				message.guildId !== reaction.guildId
 			) {
-				await client.reactions.delete(
-					reaction.messageId,
-					reaction.channelId,
-					emojis.loading,
-					client.applicationId,
-				).catch(() => {
-					createError(reaction.guildId ?? "", {
-						title: "Unable to remove self-reaction",
-						description:
-							"PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
-						type: "FailedMessageReaction",
-						responsibleChannelId: reaction.channelId,
-						responsibleUserId: reaction.userId,
+				await client.reactions
+					.delete(
+						reaction.messageId,
+						reaction.channelId,
+						emojis.loading,
+						client.applicationId,
+					)
+					.catch(() => {
+						createError(reaction.guildId ?? "", {
+							title: locale.SELF_REACTION_ERR,
+							description: locale.SELF_REACTION_DESC,
+							type: "FailedMessageReaction",
+							responsibleChannelId: reaction.channelId,
+							responsibleUserId: reaction.userId,
+						});
 					});
-				});
 				await nativeMessage.react(emojis.x);
 
 				setTimeout(
@@ -164,9 +169,15 @@ export default createEvent({
 					return await nativeUser.write({
 						components: [
 							new TextDisplay().setContent(
-								`-# ${emojis.reply} In response to: https://discord.com/channels/${reaction.guildId}/${reaction.channelId}/${reaction.messageId}`,
+								locale.REPLY_IN_RESPONSE.replace(
+									"{{ reply }}",
+									emojis.reply,
+								).replace(
+									"{{ link }}",
+									`https://discord.com/channels/${reaction.guildId}/${reaction.channelId}/${reaction.messageId}`,
+								),
 							),
-							...new AlertView(translations).errorView("USER_CANNOT_BE_NUDGED"),
+							...new AlertView(locale).errorView("USER_CANNOT_BE_NUDGED"),
 						],
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});
@@ -204,14 +215,14 @@ export default createEvent({
 					new ActionRow().setComponents(
 						new Button()
 							.setCustomId(InteractionIdentifier.Nudge.Snooze.create())
-							.setLabel(translations.NUDGE_SNOOZE)
+							.setLabel(locale.NUDGE_SNOOZE)
 							.setStyle(ButtonStyle.Primary)
 							.setEmoji(emojis.xWhite),
 						new Button()
 							.setCustomId(
 								InteractionIdentifier.Nudge.BlockUser.create(reaction.userId),
 							)
-							.setLabel(translations.BLOCK_SNOOZE)
+							.setLabel(locale.BLOCK_SNOOZE)
 							.setStyle(ButtonStyle.Secondary),
 					),
 				],
@@ -237,9 +248,15 @@ export default createEvent({
 				return await nativeUser.write({
 					components: [
 						new TextDisplay().setContent(
-							`-# ${emojis.reply} In response to: https://discord.com/channels/${reaction.guildId}/${reaction.channelId}/${reaction.messageId}`,
+							locale.REPLY_IN_RESPONSE.replace(
+								"{{ reply }}",
+								emojis.reply,
+							).replace(
+								"{{ link }}",
+								`https://discord.com/channels/${reaction.guildId}/${reaction.channelId}/${reaction.messageId}`,
+							),
 						),
-						...new AlertView(translations).errorView("DATA_DOESNT_EXIST"),
+						...new AlertView(locale).errorView("DATA_DOESNT_EXIST"),
 					],
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				});
@@ -255,7 +272,7 @@ export default createEvent({
 			);
 
 			return await nativeUser.write({
-				components: await new MessageInfo(translations).messageInfo(
+				components: await new MessageInfo(locale).messageInfo(
 					message,
 					alter,
 					user.system,
