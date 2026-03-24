@@ -115,6 +115,7 @@ export const extendedContext = extendContext((interaction) => {
 		return writtenMessage;
 	};
 	const language = async () => {
+		try {
 		let data = (await client.cache.i18n.get(interaction.user.id))?.l;
 
 		if (data === undefined) {
@@ -122,7 +123,9 @@ export const extendedContext = extendContext((interaction) => {
 			await client.cache.i18n.set(CacheFrom.Gateway,interaction.user.id, {l: data});
 		}
 
-		return data;
+		return data;} catch (_) {
+			return "en"
+		}
 	};
 
 	return {
