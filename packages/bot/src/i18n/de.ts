@@ -1,22 +1,22 @@
 export default {
-  INTRODUCTION_MESSAGE: `## Welcome to PluralBuddy
-PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
+  INTRODUCTION_MESSAGE: `## Willkommen bei PluralBuddy
+PluralBuddy ist ein Bot, der entwickelt wurde, um die Lücke zwischen Qualität und Anpassbarkeit im Plural Austausch für Discord Server und Benutzer zu schließen.
 
-:track_next: To get started, click the Next Page button below to setup your system.`,
-  IMPORT_MESSAGE: `## Setting up your system
-You can create a new system which will allow you to create your alters and tags by yourself.
-Additionally, you can also import data from another bot like PluralKit.
--# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
-  PAGINATION_NEXT_PAGE: "Next Page",
-  PAGINATION_FINISH: "Finish",
-  BLACKLISTED: "You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
+:track_next: Klicken Sie zum Starten auf die Schaltfläche Nächste Seite unten, um Ihr System einzurichten.`,
+  IMPORT_MESSAGE: `## Einrichten Ihres Systems
+Sie können ein neues System erstellen, mit dem Sie Ihre Änderungen und Tags selbst erstellen können.
+Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importieren.
+-# Um von Tupperbox zu importieren, da die Daten von Tupperbox nicht vorhanden sind, du musst das System erstellen und dann \`{{ prefix }}system import\` ausführen.`,
+  PAGINATION_NEXT_PAGE: "Nächste Seite",
+  PAGINATION_FINISH: "Ende",
+  BLACKLISTED: "Du wurdest von {{ guild }} auf die schwarze Liste gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht möglich.",
   // Does not need to be translated
   BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
 > -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
-  PAGINATION_PREVIOUS_PAGE: "Previous Page",
+  PAGINATION_PREVIOUS_PAGE: "Vorherige Seite",
   CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
   ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",
   OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
