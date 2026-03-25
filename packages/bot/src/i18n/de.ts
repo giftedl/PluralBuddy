@@ -9,7 +9,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
 -# Um von Tupperbox zu importieren, da die Daten von Tupperbox nicht vorhanden sind, du musst das System erstellen und dann \`{{ prefix }}system import\` ausführen.`,
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
-  BLACKLISTED: "Du wurdest von {{ guild }} auf die schwarze Liste gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht möglich.",
+  BLACKLISTED: "Du wurdest von {{ guild }} in die blacklist gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
   // Does not need to be translated
   BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
 
