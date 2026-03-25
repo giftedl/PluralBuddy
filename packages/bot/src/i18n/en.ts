@@ -739,5 +739,7 @@ There is an example below of what an example proxy with this role would look lik
 
 	VIEW_DASH: "View on Dashboard",
 
-	VALIDATION_TAG_ERROR: "There was an error while creating that tag:"
+	VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
+	ERROR_CREATING_WEBHOOK_TITLE: "Error while creating webhook for <#{{ channelId }}>",
+	ERROR_CREATING_WEBHOOK_DESC: "There was an error while creating the corresponding webhook for <#{{ channelId }}>. Check if PluralBuddy has the correct permissions in that channel."
 }

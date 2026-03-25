@@ -8,7 +8,10 @@ const language = async (id: string) => {
 
 		if (data === undefined) {
 			data = (await getUserById(id)).userLang;
-			await client.cache.i18n.set(CacheFrom.Gateway, id, { l: data });
+			try {
+				await client.cache.i18n.set(CacheFrom.Gateway, id, { l: data });
+
+			} catch (_) {}
 		}
 
 		return data;

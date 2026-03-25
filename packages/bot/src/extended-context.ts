@@ -121,9 +121,11 @@ export const extendedContext = extendContext((interaction) => {
 
 			if (data === undefined) {
 				data = (await getUserById(interaction.user.id)).userLang;
-				await client.cache.i18n.set(CacheFrom.Gateway, interaction.user.id, {
-					l: data,
-				});
+				try {
+					await client.cache.i18n.set(CacheFrom.Gateway, interaction.user.id, {
+						l: data,
+					});
+				} catch (_) {}
 			}
 
 			return data;

@@ -153,8 +153,8 @@ export default class SystemCommand extends Command {
 				.catch(() => null);
 			if (webhook === null) {
 				createError(ctx.guildId ?? "", {
-					title: `Error while creating webhook for <#${ctx.channelId}>`,
-					description: `There was an error while creating the corresponding webhook for <#${ctx.channelId}>. Check if PluralBuddy has the correct permissions in that channel.`,
+					title: (await ctx.userTranslations()).ERROR_CREATING_WEBHOOK_TITLE,
+					description: (await ctx.userTranslations()).ERROR_CREATING_WEBHOOK_DESC,
 					type: "WebhookFailedCreation",
 					responsibleUserId: ctx.author.id,
 					responsibleChannelId: ctx.channelId,
