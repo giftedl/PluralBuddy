@@ -35,11 +35,11 @@ Esse servidor requer uma **tag de sistema** para sistemas que estão fazendo pro
 Os sistemas podem ter **configurações de privacidade** que determinam quem pode ver qual parte do seu sistema. Por padrão, o sistema é completamente privado, não contando a moderação automática do servidor e as mensagens enviadas pelo sistema. No entanto, alterando-as mudará quem pode ver cada parte do seu sistema.`,
   CREATING_NEW_SYSTEM_PRIVACY_SET: "As configurações de privacidade pública são:",
   CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Selecione as configurações de privacidade que você deseja abrir ao público.",
-  CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
-### Next Steps
-> - To create a new alter, try using %command1%
-> - To create a new tag, try using %command2%`,
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
+  CREATING_NEW_SYSTEM_SUCCESS: `Novo sistema criado com sucesso!
+### Próximos passos
+> - Para criar um novo integrante, tente usar %command1%
+> - Para criar uma nova tag, tente usar %command2%`,
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – Você não pode configurar um novo sistema se um sistema sob a sua.",
   SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remover sistema e configurar novamente",
   ERROR_PAGINATION_TOO_OLD: '2g – That alter pagination component is too old, you cannot proceed. Please hit the "Alters" tab at the top of the message to reset the pagination.',
   ERROR_TAG_PAGINATION_TOO_OLD: '2h – That tag pagination component is too old, you cannot proceed. Please hit the "Tags" tab at the top of the message to reset the pagination.',
