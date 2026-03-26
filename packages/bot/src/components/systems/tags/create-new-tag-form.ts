@@ -22,7 +22,7 @@ export default class CreateNewAlterForm extends ModalCommand {
         const displayName = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameType.create(), true);
         const color = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(), true)
 
-        await ctx.interaction.update(ctx.loading())
+        await ctx.interaction.update(ctx.loading(await ctx.userTranslations()))
 
         const user = await ctx.retrievePUser();
         const server = await ctx.retrievePGuild();

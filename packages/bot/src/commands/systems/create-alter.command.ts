@@ -42,7 +42,7 @@ export default class CreateAlterCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
         const { username, "display-name": displayName } = ctx.options;
 
-        await ctx.write(ctx.loading())
+        await ctx.write(ctx.loading(await ctx.userTranslations()))
 
         const user = await ctx.retrievePUser();
         const server = await ctx.retrievePGuild();

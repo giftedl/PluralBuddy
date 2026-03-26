@@ -11,6 +11,7 @@ import {
 	Message,
 	TextDisplay,
 	WebhookMessage,
+	type DefaultLocale,
 } from "seyfert";
 import type {
 	InteractionCreateBodyRequest,
@@ -24,8 +25,6 @@ import {
 } from "seyfert/lib/types";
 import { getUserById } from "./types/user";
 import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
-import { translations } from "./lang/en_us";
-import type { TranslationString } from "./lang";
 import { LoadingView } from "./views/loading";
 import type { PAlter } from "plurography";
 import { client } from ".";
@@ -148,13 +147,13 @@ export const extendedContext = extendContext((interaction) => {
 			contextAlter = alter;
 		},
 		contextAlter: () => contextAlter,
-		loading: () => {
+		loading: (translations: DefaultLocale) => {
 			return {
 				components: new LoadingView(translations).loadingView(),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			};
 		},
-		loadingEphemeral: () => {
+		loadingEphemeral: (translations: DefaultLocale) => {
 			return ephemeral({
 				components: new LoadingView(translations).loadingView(),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

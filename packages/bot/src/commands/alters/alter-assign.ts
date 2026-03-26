@@ -1,6 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { translations } from "@/lang/en_us";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";

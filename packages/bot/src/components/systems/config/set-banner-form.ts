@@ -18,7 +18,7 @@ export default class SetPFPForm extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		await ctx.interaction.update(ctx.loading());
+		await ctx.interaction.update(ctx.loading(await ctx.userTranslations()));
 
 		const { system, storagePrefix } = await ctx.retrievePUser()
 

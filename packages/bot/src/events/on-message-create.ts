@@ -43,7 +43,6 @@ import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
 import { createProxyError } from "@/lib/proxying/error";
 import { helpPages } from "@/commands/help";
-import { translations } from "@/lang/en_us";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
@@ -263,7 +262,7 @@ export default createEvent({
 							new Container()
 								.setComponents(
 									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+										`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
 											"{{ alterCount }}",
 											(user.system?.alterIds.length ?? 0).toString(),
 										)
@@ -301,7 +300,7 @@ export default createEvent({
 							new Container()
 								.setComponents(
 									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+										`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
 											"{{ alterCount }}",
 											(user.system?.alterIds.length ?? 0).toString(),
 										)

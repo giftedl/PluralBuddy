@@ -45,7 +45,7 @@ export default class CreateTagCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { "display-name": displayName, color } = ctx.options;
 
-		await ctx.write(ctx.loading());
+		await ctx.write(ctx.loading(await ctx.userTranslations()));
 
 		const user = await ctx.retrievePUser();
 		const server = await ctx.retrievePGuild();
