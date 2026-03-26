@@ -6,6 +6,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "../lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
 import { AlertView } from "@/views/alert";
+import { LocalesT } from "seyfert";
 
 @Declare({
     name: "about",

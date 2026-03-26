@@ -86,7 +86,6 @@ export type PWebhook = {
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message: Message) => {
-		const locale = await getLanguageByUserId(message.author.id);
 
 		latencyDataPoints.push(
 			Date.now() -
@@ -96,7 +95,9 @@ export default createEvent({
 		handleDMReply(message);
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
+		
 		if (message.content === `<@${message.client.applicationId}>`) {
+			const locale = await getLanguageByUserId(message.author.id);
 			const guild = await getGuildFromId(message.guildId ?? "");
 
 			if (guild.getFeatures().disabledHelp) {
@@ -230,8 +231,10 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
+					const locale = await getLanguageByUserId(message.author.id);
+					
 					if (!(await blacklistedRole(guild, locale, message))) return;
-					if (!blacklistedChannel(guild, locale, message)) return;
+					if (!(await blacklistedChannel(guild, locale, message))) return;
 
 					performAlterAutoProxy(
 						message,
@@ -257,6 +260,7 @@ export default createEvent({
 
 				if (eligibleToProcess && process.env.REDIS)
 				try {
+					const locale = await getLanguageByUserId(message.author.id);
 					indexingMessage = await message.client.messages.write(channel, {
 						components: [
 							new Container()
@@ -293,6 +297,7 @@ export default createEvent({
 				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
 				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
+				const locale = await getLanguageByUserId(message.author.id);
 
 				if (i % 20 === 0 && indexingMessage) {
 					await indexingMessage?.edit({
@@ -401,7 +406,7 @@ export default createEvent({
 							removeFromMap();
 							return;
 						}
-						if (!blacklistedChannel(guild, locale, message)) {
+						if (!(await blacklistedChannel(guild, locale, message))) {
 							removeFromMap();
 							return;
 						}
@@ -463,8 +468,9 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
+					const locale = await getLanguageByUserId(message.author.id);
 					if (!(await blacklistedRole(guild, locale, message, true))) return;
-					if (!blacklistedChannel(guild, locale, message, true)) return;
+					if (!(await blacklistedChannel(guild, locale, message, true))) return;
 
 					performAlterAutoProxy(
 						message,
@@ -477,5 +483,6 @@ export default createEvent({
 				}
 			}
 		}
+		console.timeEnd("proxy tag parse");
 	},
 });

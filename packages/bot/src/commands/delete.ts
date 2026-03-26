@@ -8,6 +8,7 @@ import {
 	CommandContext,
 	createStringOption,
 	Declare,
+	LocalesT,
 	Message,
 	Options,
 	Webhook,

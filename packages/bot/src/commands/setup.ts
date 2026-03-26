@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Command, type CommandContext, Container, Declare, Emoji, TextDisplay } from "seyfert";
+import { ActionRow, Button, Command, type CommandContext, Container, Declare, Emoji, LocalesT, TextDisplay } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { PluralBuddyIntro } from "../views/pluralbuddy-intro";
 import { AlertView } from "../views/alert";

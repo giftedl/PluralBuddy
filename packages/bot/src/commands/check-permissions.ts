@@ -5,6 +5,7 @@ import {
 	CommandContext,
 	Container,
 	Declare,
+	LocalesT,
 	Message,
 	TextDisplay,
 } from "seyfert";
@@ -15,7 +16,7 @@ import { MessageFlags, PermissionFlagsBits } from "seyfert/lib/types";
 	description: "Ensure PluralBuddy has the proper permissions.",
 	aliases: ["permissions"],
 })
-export default class AppExplanationCommand extends Command {
+export default class CheckPermissionsCommand extends Command {
 	override async run(ctx: CommandContext) {
 		const guild = await ctx.retrievePGuild();
 

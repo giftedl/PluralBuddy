@@ -564,6 +564,7 @@ export const InteractionIdentifier = {
 		ImportMode: createStatic("systems/import-mode"),
 	},
 	Setup: {
+		SetLanguage: createStatic("setup/set-lang"),
 		RemoveOldSystem: createStatic("setup/remove-old-system"),
 		Pagination: {
 			Page1: createStatic("previous-page/pluralbuddy-intro/1"),

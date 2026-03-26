@@ -6,6 +6,7 @@ import {
 	Container,
 	createUserOption,
 	Declare,
+	LocalesT,
 	Message,
 	TextDisplay,
 } from "seyfert";

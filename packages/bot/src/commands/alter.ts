@@ -12,6 +12,7 @@ import {
 	Button,
 	TextDisplay,
 	Message,
+	LocalesT,
 } from "seyfert";
 import { alterCollection } from "../mongodb";
 import { AlterView } from "../views/alters";
@@ -23,12 +24,13 @@ const options = {
 	alter: createStringOption({
 		description:
 			"Name of the alter to query. You can use `<user-id>/<alter>` for alters from other systems.",
-		required: true,
+		required: true
 	}),
 	public: createBooleanOption({
 		description: "Do you want to expose this publicly? (non-ephemeral)",
 		aliases: ["p"],
 		flag: true,
+
 	}),
 };
 
