@@ -11,6 +11,7 @@ import {
 	StringSelectOption,
 	TextDisplay,
 	WebhookMessage,
+	type DefaultLocale,
 	type MessageStructure,
 	type WebhookMessageStructure,
 } from "seyfert";
@@ -254,13 +255,15 @@ export default createEvent({
 			let indexingMessage: MessageStructure | null =
 				null as MessageStructure | null;
 			let eligibleToProcess = false;
+			let locale: DefaultLocale | null = null;
 
 			const indexingTimeout = setTimeout(async () => {
+				if (locale === null)
+					locale = await getLanguageByUserId(message.author.id);
 				const channel = message.channelId;
 
 				if (eligibleToProcess && process.env.REDIS)
 				try {
-					const locale = await getLanguageByUserId(message.author.id);
 					indexingMessage = await message.client.messages.write(channel, {
 						components: [
 							new Container()
@@ -469,6 +472,7 @@ export default createEvent({
 
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
+					
 					if (!(await blacklistedRole(guild, locale, message, true))) return;
 					if (!(await blacklistedChannel(guild, locale, message, true))) return;
 

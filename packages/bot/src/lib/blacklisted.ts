@@ -1,10 +1,10 @@
-
 import { AlertView } from "@/views/alert";
 import type { PGuild } from "plurography";
 import type { DefaultLocale, Message } from "seyfert";
 import { getApplicableCase } from "./libby";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "./emojis";
+import { client } from "..";
 
 export async function blacklistedRole(
 	guild: PGuild,
@@ -55,10 +55,7 @@ export async function blacklistedRole(
 					try {
 						await message.author.write({
 							components: new AlertView(locales).errorViewCustom(
-								locales.BLACKLISTED.replace(
-									"{{ guild }}",
-									guild?.name ?? "",
-								),
+								locales.BLACKLISTED.replace("{{ guild }}", guild?.name ?? ""),
 							),
 							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 						});
@@ -82,28 +79,47 @@ export async function blacklistedChannel(
 			try {
 				await message.author.write({
 					components: new AlertView(locales).errorView(
-						"FEATURE_DISABLED_GUILD",
+						"FEATURE_DISABLED_CHANNEL",
 					),
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				});
 			} catch (_) {}
 		return false;
 	}
+	console.log(guild.blacklistedCategories, guild.blacklistedChannels);
 	if (guild.blacklistedCategories.length !== 0) {
 		const channel = await message.channel();
-		if ("parentId" in channel && channel.isCategory())
+		console.log(channel);
+		if ("parentId" in channel && !channel.isThread())
 			if (guild.blacklistedCategories.includes(channel.parentId ?? "")) {
 				if (!silent)
 					try {
 						await message.author.write({
 							components: new AlertView(locales).errorView(
-								"FEATURE_DISABLED_GUILD",
+								"FEATURE_DISABLED_CHANNEL",
 							),
 							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 						});
 					} catch (_) {}
-					return false;
+				return false;
 			}
+		if ("parentId" in channel && channel.isThread()) {
+			const parent = await client.channels.fetch(channel.parentId);
+
+			if ("parentId" in parent && !parent.isThread())
+				if (guild.blacklistedCategories.includes(parent.parentId ?? "")) {
+					if (!silent)
+						try {
+							await message.author.write({
+								components: new AlertView(locales).errorView(
+									"FEATURE_DISABLED_CHANNEL",
+								),
+								flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+							});
+						} catch (_) {}
+					return false;
+				}
+		}
 	}
 	return true;
 }
