@@ -9,7 +9,12 @@ export async function getReferencedMessageString(
 ) {
 	let userString = `<@${message.referencedMessage?.author.id}>`;
 	let messageString = `[${
-		message.referencedMessage?.content === ""
+		message.referencedMessage?.content
+		.replace(/<#(.*)>/, "")
+		.replaceAll("https://", "")
+.replaceAll("\n", "")
+		.replaceAll("http://", "")
+		.replaceAll(/<@!?(\d+)>/g, "") === ""
 			? "Jump to message"
 			: message.referencedMessage?.content
 					.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
@@ -57,7 +62,11 @@ export async function getReferencedMessageString(
 			if (alter !== null) {
 				userString = `@${alter?.username}`;
 				messageString = `[${
-					contents === ""
+					contents.replace(/<#(.*)>/, "")
+					.replaceAll("https://", "")
+			.replaceAll("\n", "")
+					.replaceAll("http://", "")
+					.replaceAll(/<@!?(\d+)>/g, "") === ""
 						? "Jump to message"
 						: contents
 								.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
