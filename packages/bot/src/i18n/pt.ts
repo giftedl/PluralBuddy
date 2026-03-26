@@ -85,7 +85,6 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   CREATING_NEW_PT_ERROR: "2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
   SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
-  PLURALBUDDY_IMPORT_SOURCE: "JSON Import Data",
   PLURALBUDDY_IMPORT_DESC: "Copie e cole os dados exportados do arquivo JSON abaixo",
   PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
   PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
@@ -426,16 +425,16 @@ To create a token:
   ALT_ACCOUNTS: "Contas",
   ALT_TOKENS: "Tokens",
   ALT_NEW_TOKEN: "Adicionar novo token",
-  ALT_READ_SCOPE: "Read scope",
+  ALT_READ_SCOPE: "Ler Escopo",
   ALT_COPY_TOKEN: "Copiar token",
   SP_STEPTWO_DESC: `### Step 2: Import system contents
 Please paste the system token from SimplyPlural into PluralBuddy.`,
-  SP_UPLOAD: "Upload Token",
+  SP_UPLOAD: "Fazer Upload do Token",
   PK_DESC: `### Step 1: Export PluralKit system contents
 You must export your system JSON file from PluralKit to import into PluralBuddy. To do this, either send \`pk;export\` in a server with PluralKit apart of it or just direct message <@466378653216014359> and send \`pk;export\` as a message.`,
   PK_STEPTWO_DESC: `### Step 2: Import system contents
 Please download the JSON file sent to you and use the button to upload the attachment to PluralBuddy.`,
-  PK_UPLOAD: "Upload JSON",
+  PK_UPLOAD: "Enviar JSON",
   SRV_CFG_ID: "-# ID do servidor: `{{ guildId }}`",
   SRV_CFG_TITLE: "## Preferências do Servidor",
   SRV_CFG_PREFIXES_DESC: `**Configure Prefixes**
@@ -467,19 +466,19 @@ Please download the JSON file sent to you and use the button to upload the attac
   SRV_CFG_LOGS_DESC: `> This guild's current logging channel is: {{ logChannel }}`,
   SRV_CFG_LOGS_UNSET: "_Unset_",
   SRV_CFG_LOGS_BTN: "Set Logging Channel",
-  SRV_CFG_PROXY_DELAY: "Set Proxy Delay",
-  SRV_CFG_PROXY_DELAY_DESC: `**Proxy Delay**
-> After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`,
-  SRV_CFG_PROXY_DELAY_SEC: `> It is not recommended to go over a 1 second proxy delay.
-> This server's proxy delay currently is **{{ delay }} seconds** ({{ delayMs }}ms)`,
-  ERROR_LOG_TITLE: `## Error Log - {{ serverName }}`,
-  NO_ERRORS: "{{ catJamming }}   Nice! Your server hasn't ran into any errors!",
-  ERROR_TRIGGERED_BY: `Triggered by <@{{ userId }}>.`,
-  ERROR_TRIGGERED_IN: "Triggered in <#{{ channelId }}>.",
-  PAGINATION_BOTTOM_ERRORS: `-# Page {{ page }}/{{ maxPage }} · Found {{ errors }}/{{ maxErrors }} error(s) {{ possibleSearchQuery }}`,
-  ERROR_LOG_SEARCHING_FOR: "· Searching for {{ query }}",
-  FEATURE_FLAGS_TITLE: `## Feature Flags - {{ guildName }}
-> Feature flags allow you to control certain smaller features used on PluralBuddy.`,
+  SRV_CFG_PROXY_DELAY: "Definir atraso do proxy",
+  SRV_CFG_PROXY_DELAY_DESC: `**Atraso do proxy**
+> Depois que PluralBuddy adquiri dados de uma nova mensagem sendo enviada, em condições perfeitas, PluralBuddy geralmente pode fazer o proxy de uma mensagem em <600ms. No entanto, se você usar um bot de moderação que é mais devagar que <600ms, você pode definir esse atraso para um valor mais alto.`,
+  SRV_CFG_PROXY_DELAY_SEC: `> Não é recomendado passar o atraso de proxy de 1 segundo.
+> O atraso do proxy deste servidor é **{{ delay }} segundos** ({{ delayMs }}ms)`,
+  ERROR_LOG_TITLE: `## Relatório de Erros - {{ serverName }}`,
+  NO_ERRORS: "{{ catJamming }}   Legal! Seu servidor não encontrou nenhum erro!",
+  ERROR_TRIGGERED_BY: `Causado por <@{{ userId }}>.`,
+  ERROR_TRIGGERED_IN: "Causado em <#{{ channelId }}>.",
+  PAGINATION_BOTTOM_ERRORS: `-# Pagina {{ page }}/{{ maxPage }} · encontrado {{ errors }}/{{ maxErrors }} erro(s) {{ possibleSearchQuery }}`,
+  ERROR_LOG_SEARCHING_FOR: "· Buscando por {{ query }}",
+  FEATURE_FLAGS_TITLE: `## Controlador de recursos - {{ guildName }}
+> essa função permitem que você controle certas funcionalidades menores usadas no PluralBuddy.`,
   FEATURE_D: "Desabilitar",
   FEATURE_E: "Habilitar",
   ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
@@ -520,7 +519,7 @@ There is an example below of what an example proxy with this role would look lik
   SYSTEM_D: "Disable System",
   SYSTEM_D_DESC: "Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
   DELETE_SYS_BTN: "Excluir Sistema",
-  DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
+  DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system data __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
   ALTERS_TITLE: "## Integrantes",
   NO_PUBLIC_ALTERS_DESC: "*Não há nenhum Integrante público nesta página.*",
   ALTERS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} alter(s) in {{ time }}ms{{ possibleSearchQuery }}`,
