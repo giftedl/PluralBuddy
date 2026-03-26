@@ -3,10 +3,15 @@ import { DocsLayout } from "@/components/layout/docs";
 import { baseOptions } from "@/lib/layout.shared";
 import { Handshake } from "lucide-react";
 
-export default function Layout({ children }: LayoutProps<"/docs">) {
+export default async function Layout({
+	params,
+	children,
+  }: LayoutProps<"/[lang]/docs">) {
+	const { lang } = await params;
+
 	return (
 		<DocsLayout
-			tree={source.pageTree}
+			tree={source.getPageTree(lang)}
 			{...baseOptions()}
 			links={[
 				{
@@ -28,7 +33,7 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
 						const meta = source.getNodeMeta(node);
 						if (!meta || !node.icon) return option;
 
-						const color = `var(--${meta.path.split("/")[0]}-color, var(--color-fd-foreground))`;
+						const color = `var(--${meta.path.split("/")[1]}-color, var(--color-fd-foreground))`;
 
 						return {
 							...option,

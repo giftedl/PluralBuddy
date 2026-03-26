@@ -1,13 +1,14 @@
-import { translations } from "@/lang/en_us";
+
 import { AlertView } from "@/views/alert";
 import type { PGuild } from "plurography";
-import type { Message } from "seyfert";
+import type { DefaultLocale, Message } from "seyfert";
 import { getApplicableCase } from "./libby";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "./emojis";
 
 export async function blacklistedRole(
 	guild: PGuild,
+	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
@@ -27,8 +28,8 @@ export async function blacklistedRole(
 					if (!silent)
 						try {
 							await message.author.write({
-								components: new AlertView(translations).errorViewCustom(
-									translations.BLACKLISTED_PC.replace(
+								components: new AlertView(locales).errorViewCustom(
+									locales.BLACKLISTED_PC.replace(
 										"{{ libbyReasoning }}",
 										caseObj.reasoning,
 									)
@@ -53,8 +54,8 @@ export async function blacklistedRole(
 				if (!silent)
 					try {
 						await message.author.write({
-							components: new AlertView(translations).errorViewCustom(
-								translations.BLACKLISTED.replace(
+							components: new AlertView(locales).errorViewCustom(
+								locales.BLACKLISTED.replace(
 									"{{ guild }}",
 									guild?.name ?? "",
 								),
@@ -72,6 +73,7 @@ export async function blacklistedRole(
 
 export async function blacklistedChannel(
 	guild: PGuild,
+	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
@@ -79,7 +81,7 @@ export async function blacklistedChannel(
 		if (!silent)
 			try {
 				await message.author.write({
-					components: new AlertView(translations).errorView(
+					components: new AlertView(locales).errorView(
 						"FEATURE_DISABLED_GUILD",
 					),
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -94,12 +96,13 @@ export async function blacklistedChannel(
 				if (!silent)
 					try {
 						await message.author.write({
-							components: new AlertView(translations).errorView(
+							components: new AlertView(locales).errorView(
 								"FEATURE_DISABLED_GUILD",
 							),
 							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 						});
 					} catch (_) {}
+					return false;
 			}
 	}
 	return true;

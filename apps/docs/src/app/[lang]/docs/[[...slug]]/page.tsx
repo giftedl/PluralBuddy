@@ -14,7 +14,7 @@ import { Feedback } from "@/components/feedback/client";
 import { PostHog } from "posthog-node";
 import { after } from "next/server";
 
-export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
+export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">) {
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
@@ -69,7 +69,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-	props: PageProps<"/docs/[[...slug]]">,
+	props: PageProps<"/[lang]/docs/[[...slug]]">,
 ): Promise<Metadata> {
 	const params = await props.params;
 	const page = source.getPage(params.slug);

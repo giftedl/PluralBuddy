@@ -50,7 +50,7 @@ import {
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Callout } from "../callout";
-import { markImportStagingDone } from "@/app/(app)/app/import-staging/actions";
+import { markImportStagingDone } from "@/app/[lang]/(app)/app/import-staging/actions";
 import { useRouter } from "next/navigation";
 import Spinner from "../ui/spinner";
 

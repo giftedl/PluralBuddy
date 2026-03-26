@@ -123,7 +123,7 @@ export default function ConsentPage() {
 								if (res.error) toast.error("Error while denying consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect) router.push(res.data.uri);
+									if (res.data.redirect) router.push((res.data as unknown as { uri: string }).uri);
 								}
 							}}
 						>
@@ -145,7 +145,7 @@ export default function ConsentPage() {
 									toast.error("Error while accepting consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect) router.push(res.data.uri);
+									if (res.data.redirect) router.push((res.data as unknown as { uri: string }).uri);
 								}
 							}}
 						>

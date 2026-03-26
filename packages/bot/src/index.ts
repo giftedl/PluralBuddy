@@ -37,6 +37,7 @@ import { startStatisticalTimer } from "./analytics";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
 import { emojis } from "./lib/emojis";
 import { Pi18nCache } from "./cache/i18n";
+import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
@@ -124,6 +125,7 @@ await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
 
 startIndexingCleanupTimer();
+startEmojiCleanupTimer();
 startStatisticalTimer();
 
 // API

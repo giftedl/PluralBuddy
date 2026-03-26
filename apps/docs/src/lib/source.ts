@@ -2,12 +2,14 @@ import { docs } from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader, multiple } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { openapiPlugin } from 'fumadocs-openapi/server';
+import { i18n } from '@/lib/i18n';
 
 // See https://fumadocs.dev/docs/headless/source-api for more info
 export const source = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
   plugins: [lucideIconsPlugin(), openapiPlugin()],
+  i18n
 });
 
 export function getPageImage(page: InferPageType<typeof source>) {

@@ -2,11 +2,13 @@ import { getUserById } from "@/types/user";
 import { client } from "..";
 import { CacheFrom } from "seyfert";
 
-const language = async (id: string) => {
+export async function language<T extends boolean | undefined>(id: string, noCache?: T): Promise<T extends true ? null | string : string> {
 	try {
 		let data = (await client.cache.i18n.get(id))?.l;
 
 		if (data === undefined) {
+			if (noCache)
+				return null as T extends true ? null | string : string;
 			data = (await getUserById(id)).userLang;
 			try {
 				await client.cache.i18n.set(CacheFrom.Gateway, id, { l: data });
@@ -16,9 +18,11 @@ const language = async (id: string) => {
 
 		return data;
 	} catch (_) {
+		if (noCache)
+			return null as T extends true ? null | string : string;
 		return "en";
 	}
 };
 
 export const getLanguageByUserId = async (id: string) =>
-	client.t(await language(id)).get(await language(id));
+	client.t(await language(id, false)).get(await language(id, false));

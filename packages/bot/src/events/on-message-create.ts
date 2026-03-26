@@ -231,8 +231,8 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
-					if (!(await blacklistedRole(guild, message))) return;
-					if (!blacklistedChannel(guild, message)) return;
+					if (!(await blacklistedRole(guild, locale, message))) return;
+					if (!blacklistedChannel(guild, locale, message)) return;
 
 					performAlterAutoProxy(
 						message,
@@ -398,11 +398,11 @@ export default createEvent({
 
 						console.timeEnd("proxy tag parse");
 
-						if (!(await blacklistedRole(guild, message))) {
+						if (!(await blacklistedRole(guild, locale, message))) {
 							removeFromMap();
 							return;
 						}
-						if (!blacklistedChannel(guild, message)) {
+						if (!blacklistedChannel(guild, locale, message)) {
 							removeFromMap();
 							return;
 						}
@@ -464,8 +464,8 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
-					if (!(await blacklistedRole(guild, message, true))) return;
-					if (!blacklistedChannel(guild, message, true)) return;
+					if (!(await blacklistedRole(guild, locale, message, true))) return;
+					if (!blacklistedChannel(guild, locale, message, true)) return;
 
 					performAlterAutoProxy(
 						message,
