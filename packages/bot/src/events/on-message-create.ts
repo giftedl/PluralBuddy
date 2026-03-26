@@ -300,9 +300,10 @@ export default createEvent({
 				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
 				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
-				const locale = await getLanguageByUserId(message.author.id);
 
 				if (i % 20 === 0 && indexingMessage) {
+					const locale = await getLanguageByUserId(message.author.id);
+
 					await indexingMessage?.edit({
 						components: [
 							new Container()
@@ -377,6 +378,7 @@ export default createEvent({
 								});
 
 					if (proxyTagValid(proxyTag, message)) {
+				const locale = await getLanguageByUserId(message.author.id);
 						// Check for system tag policy
 						if (
 							message.guildId &&
@@ -472,7 +474,7 @@ export default createEvent({
 
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
-					
+
 					if (!(await blacklistedRole(guild, locale, message, true))) return;
 					if (!(await blacklistedChannel(guild, locale, message, true))) return;
 
