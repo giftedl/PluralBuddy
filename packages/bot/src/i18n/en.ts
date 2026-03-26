@@ -118,7 +118,6 @@ Systems can have **privacy values** which are values that describe who can see w
 		"2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
 	SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
 
-	PLURALBUDDY_IMPORT_SOURCE: "JSON Import Data",
 	PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below",
 	PLURALBUDDY_IMPORT_ERROR:
 		"2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
@@ -683,7 +682,7 @@ There is an example below of what an example proxy with this role would look lik
 	SYSTEM_D: "Disable System",
 	SYSTEM_D_DESC: "Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
 	DELETE_SYS_BTN: "Delete System",
-	DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
+	DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system data __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
 
 	ALTERS_TITLE: "## Alters",
 	NO_PUBLIC_ALTERS_DESC: "*There are no public-facing alters in this page.*",

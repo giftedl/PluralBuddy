@@ -520,7 +520,7 @@ There is an example below of what an example proxy with this role would look lik
   SYSTEM_D: "Disable System",
   SYSTEM_D_DESC: "Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
   DELETE_SYS_BTN: "Excluir Sistema",
-  DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
+  DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system data __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
   ALTERS_TITLE: "## Integrantes",
   NO_PUBLIC_ALTERS_DESC: "*Não há nenhum Integrante público nesta página.*",
   ALTERS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} alter(s) in {{ time }}ms{{ possibleSearchQuery }}`,
