@@ -86,10 +86,8 @@ export async function blacklistedChannel(
 			} catch (_) {}
 		return false;
 	}
-	console.log(guild.blacklistedCategories, guild.blacklistedChannels);
 	if (guild.blacklistedCategories.length !== 0) {
 		const channel = await message.channel();
-		console.log(channel);
 		if ("parentId" in channel && !channel.isThread())
 			if (guild.blacklistedCategories.includes(channel.parentId ?? "")) {
 				if (!silent)
