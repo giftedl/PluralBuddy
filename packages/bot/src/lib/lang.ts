@@ -13,11 +13,14 @@ export async function language<T extends boolean | undefined>(id: string, noCach
 			try {
 				await client.cache.i18n.set(CacheFrom.Gateway, id, { l: data });
 
-			} catch (_) {}
+			} catch (e) {
+				console.error(e)
+			}
 		}
 
 		return data;
-	} catch (_) {
+	} catch (e) {
+		console.error(e)
 		if (noCache)
 			return null as T extends true ? null | string : string;
 		return "en";
