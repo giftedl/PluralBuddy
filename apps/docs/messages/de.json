@@ -10,7 +10,7 @@
         "oss_headline": "Open source",
         "oss_desc": "Find PluralBuddy on <github>GitHub</github>",
         "oss_about": "PluralBuddy is open-source – and will stay that way. All code running on your server or system is overseen by other individuals.",
-        "optimized_headline": "Optimized for <highligher>systems</highligher>",
+        "optimized_headline": "Optimized for <highlighter>systems</highlighter>",
         "optimized_desc": "At our forefront – PluralBuddy is built for systems and designed by systems.",
         "instant_headline": "Proxy now",
         "instant_title": "Proxy whenever you are ready.",
@@ -24,7 +24,7 @@
         "components_headline": "Batteries included",
         "components_title": "Commands not required.",
         "components_desc": "With the power of Components v2, most features on PluralBuddy can be done using plain old buttons as opposed to commands. However, you can pick and choice which one you'd like to use!",
-        "administrate_title": "<highlight>Administrate</highlight> with ease",
+        "administrate_title": "<highlighter>Administrate</highlighter> with ease",
         "administrate_desc": "PluralBuddy has numerous administrator related features – designed to keep a balance between admin and user control.",
         "change_bot_headline": "Change the bot",
         "change_bot_title": "Disable or enable different features of the bot",
@@ -40,7 +40,7 @@
         "sup_1": "After PluralBuddy gains information about a message from the Discord Gateway, it usually takes under 600ms in optimal conditions to proxy a message.",
         "sup_2": "Webhook proxy modes or nickname proxy modes can be enforced by a server administrator, made by decisions not inherently approved by PluralBuddy or its developers."
     },
-    "HeaderComponent": {
+    "FooterComponent": {
         "lgbt_lives_matter": "🏳️‍⚧️🏳️‍🌈 LGBTQIA+ lives matter. PluralBuddy and its team support all individuals regardless of their identity.",
         "heading_1": "Links",
         "join_support_server": "Join Support Server",
@@ -49,5 +49,24 @@
         "getting_started": "Getting Started",
         "ctx_menu_actions": "Context Menu Actions",
         "intro": "Introduction"
+    },
+    "ConsentPage": {
+        "title": "{client_name} is attempting to access data from your system",
+        "signed_in_as": "Signed in as {username}",
+        "invalid_app": "Invalid application",
+        "allowed_to": "This will allow {client_name} to:",
+        "scopes": {
+            "profile": "Access to your profile data – required.",
+            "openid": "Access to your Discord user ID",
+            "offline_access": "Access to refresh access to this service",
+            "alter:read": "Access to read alter data",
+            "alter:write": "Access to change alter settings",
+            "tags:read": "Access to read tag data",
+            "tags:write": "Access to change tag data",
+            "tags:alters": "Access to assign tags to alters",
+            "system:read": "Access to system data",
+            "system:write": "Access to change system settings",
+            "system:admin": "Access to read and write to systems AND alters."
+        }
     }
 }
