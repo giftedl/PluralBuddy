@@ -563,5 +563,10 @@ There is an example below of what an example proxy with this role would look lik
   VIEW_DASH: "Ver no Painel",
   VALIDATION_TAG_ERROR: "Ocorreu um erro ao criar essa tag:",
   ERROR_CREATING_WEBHOOK_TITLE: "Error while creating webhook for <#{{ channelId }}>",
-  ERROR_CREATING_WEBHOOK_DESC: "Ocorreu um erro ao criar o webhook correspondente para <#{{ channelId }}>. Verifique se o PluralBuddy tem as permissões corretas nesse canal."
+  ERROR_CREATING_WEBHOOK_DESC: "Ocorreu um erro ao criar o webhook correspondente para <#{{ channelId }}>. Verifique se o PluralBuddy tem as permissões corretas nesse canal.",
+  SET_LANGUAGE_DESC: `## {{ gear }} Set PluralBuddy language
+You can set the language that PluralBuddy uses while using commands. If a string isn't found, there is a fallback to the English version.
+
+{{ languages }}`,
+  SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**."
 };
