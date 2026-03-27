@@ -21,12 +21,11 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
   OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
   TOO_MANY_BLACKLIST_ITEMS: "Es gibt zu viele blacklist Artikel. Du kannst nur 25 blacklist Rollen und 25 blacklist Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
-  TOO_MANY_MANAGER_ITEMS: "There are too many manager items. You can only have 25 manager roles at one time due to Discord modal limitations.",
-  CREATING_NEW_SYSTEM_NAME_MESSAGE: `
-Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,
-  CREATING_NEW_SYSTEM_NAME_BUTTON: "Set name*",
-  CREATING_NEW_SYSTEM_NAME_SET: "Name is:",
-  CREATING_NEW_SYSTEM_TAG_BUTTON: "Set system tag*",
+  TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
+  CREATING_NEW_SYSTEM_NAME_MESSAGE: `Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
+  CREATING_NEW_SYSTEM_NAME_BUTTON: "Setze Name*",
+  CREATING_NEW_SYSTEM_NAME_SET: "Name ist:",
+  CREATING_NEW_SYSTEM_TAG_BUTTON: "System Etikett festlegen",
   CREATING_NEW_SYSTEM_TAG_SET: "System tag is:",
   CREATING_NEW_SYSTEM_TAG_MESSAGE: `
 This server requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
