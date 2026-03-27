@@ -342,7 +342,10 @@ Systems can have **privacy values** which are values that describe who can see w
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
-> %lineright% Art by %catjamming% @raincloudzy
+> %linein% Art by %catjamming% @raincloudzy
+> **Translations:**
+> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+> %lineright% 🇧🇷 Portuguese translations by @lemon_piece.
 
 -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
 
@@ -740,5 +743,11 @@ There is an example below of what an example proxy with this role would look lik
 
 	VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
 	ERROR_CREATING_WEBHOOK_TITLE: "Error while creating webhook for <#{{ channelId }}>",
-	ERROR_CREATING_WEBHOOK_DESC: "There was an error while creating the corresponding webhook for <#{{ channelId }}>. Check if PluralBuddy has the correct permissions in that channel."
+	ERROR_CREATING_WEBHOOK_DESC: "There was an error while creating the corresponding webhook for <#{{ channelId }}>. Check if PluralBuddy has the correct permissions in that channel.",
+
+	SET_LANGUAGE_DESC: `## {{ gear }} Set PluralBuddy language
+You can set the language that PluralBuddy uses while using commands. If a string isn't found, there is a fallback to the English version.
+
+{{ languages }}`,
+	SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**."
 }

@@ -49,7 +49,7 @@ export default class SystemCommand extends Command {
                                     .replace("%catjamming%", emojis.catjamming)
                                     .replace("%github%", emojis.github)
                                     .replace("%docs%", emojis.book)
-                                    .replace("%linein%", emojis.lineIn)
+                                    .replaceAll("%linein%", emojis.lineIn)
                                     .replace("%lineright%", emojis.lineRight)
                                     .replace("%command%", mentionCommand(await ctx.getDefaultPrefix() ?? "pb;", "setup", ctx.message === undefined))
                             )
