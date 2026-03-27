@@ -22,7 +22,8 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
   TOO_MANY_BLACKLIST_ITEMS: "Es gibt zu viele blacklist Artikel. Du kannst nur 25 blacklist Rollen und 25 blacklist Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
   TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
-  CREATING_NEW_SYSTEM_NAME_MESSAGE: `Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
+  CREATING_NEW_SYSTEM_NAME_MESSAGE: `
+Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
   CREATING_NEW_SYSTEM_NAME_BUTTON: "Setze Name*",
   CREATING_NEW_SYSTEM_NAME_SET: "Name ist:",
   CREATING_NEW_SYSTEM_TAG_BUTTON: "System Etikett festlegen",
