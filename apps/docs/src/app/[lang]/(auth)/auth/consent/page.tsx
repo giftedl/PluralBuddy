@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import Spinner from "@/components/ui/spinner";
 import {
 	Tooltip,
 	TooltipContent,
@@ -16,14 +17,19 @@ import { cn } from "@/lib/cn";
 import { Dithering } from "@paper-design/shaders-react";
 import { useQuery } from "@tanstack/react-query";
 import { CircleAlert, FileExclamationPoint } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function ConsentPage() {
 	const params = useSearchParams();
+	const t = useTranslations("ConsentPage");
 	const router = useRouter();
 	const session = authClient.useSession();
+
+	const [loading, setLoading] = useState(false);
 
 	const { resolvedTheme } = useTheme();
 	const { data, status } = useQuery({
@@ -37,8 +43,8 @@ export default function ConsentPage() {
 	// Submit consent with the code in the request body
 	const scopes = params.get("scope")?.split(" ");
 
-	if (data !== undefined && "message" in data) return <>Invalid application</>;
-	if (data !== undefined && !("data" in data)) return <>Invalid application</>;
+	if (data !== undefined && "message" in data) return <>{t("invalid_app")}</>;
+	if (data !== undefined && !("data" in data)) return <>{t("invalid_app")}</>;
 
 	return (
 		<div className="grid w-full flex-grow relative items-center justify-center px-4">
@@ -56,19 +62,21 @@ export default function ConsentPage() {
 							</div>
 						</div>
 						<h1 className="mt-6 text-xl font-medium tracking-tight">
-							{data.data?.client_name} is attempting to access data from your
-							system
+							{t("title", {
+								client_name: data.data?.client_name ?? "?",
+							})}
 						</h1>
 						<span className="text-sm text-muted-foreground">
-							Signed in as{" "}
-							<span className="font-medium text-foreground">
-								@{session.data?.user.name}
-							</span>
+							{t("signed_in_as", {
+								username: `@${session.data?.user.name}`
+							})}
 						</span>
 					</header>
 					<div className="border rounded-lg">
 						<div className="w-full p-4 bg-fd-secondary rounded-t-lg text-center">
-							<span>This will allow {data.data?.client_name} to:</span>
+							<span>{t("allowed_to", {
+								client_name: data.data?.client_name ?? "?"
+							})}</span>
 						</div>
 						<Separator />
 						{scopes
@@ -100,7 +108,7 @@ export default function ConsentPage() {
 												</TooltipContent>
 											</Tooltip>
 										)}
-										{scopeList.find((v) => v.title === scope)?.description}
+										{t(`scopes.${scopeList.find((v) => v.title === scope)?.title}`)}
 									</div>
 									{i + 1 !== scopes.length && <Separator />}
 								</>
@@ -115,6 +123,7 @@ export default function ConsentPage() {
 								"gap-1 w-full",
 							)}
 							onClick={async () => {
+								setLoading(false)
 								const res = await authClient.oauth2.consent({
 									accept: false,
 									scope: (scopes ?? []).join(" "),
@@ -123,11 +132,13 @@ export default function ConsentPage() {
 								if (res.error) toast.error("Error while denying consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect) router.push((res.data as unknown as { uri: string }).uri);
+									if (res.data.redirect)
+										router.push((res.data as unknown as { uri: string }).uri);
 								}
 							}}
+							disabled={loading}
 						>
-							Deny
+							{loading ? <Spinner /> : "Deny"}
 						</button>
 						<button
 							type="button"
@@ -136,6 +147,7 @@ export default function ConsentPage() {
 								"gap-1 w-full",
 							)}
 							onClick={async () => {
+								setLoading(true)
 								const res = await authClient.oauth2.consent({
 									accept: true,
 									scope: (scopes ?? []).join(" "),
@@ -145,11 +157,13 @@ export default function ConsentPage() {
 									toast.error("Error while accepting consent code");
 								else {
 									toast.success("Okay, done!");
-									if (res.data.redirect) router.push((res.data as unknown as { uri: string }).uri);
+									if (res.data.redirect)
+										router.push((res.data as unknown as { uri: string }).uri);
 								}
 							}}
+							disabled={loading}
 						>
-							Accept
+							{loading ? <Spinner /> : "Accept"}
 						</button>
 					</div>
 				</Card>

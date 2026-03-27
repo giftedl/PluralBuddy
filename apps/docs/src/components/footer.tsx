@@ -1,13 +1,18 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+"use client";
+
 import { ChevronRight } from "lucide-react";
 import { SolarPicture } from "./solar-picture";
 import { FlickeringGrid } from "./ui/flickering-grid";
 import { Separator } from "./ui/separator";
 import { JSX } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
+	const t = useTranslations("FooterComponent");
+
 	return (
 		<footer>
 			<Separator className="w-full" />
@@ -21,39 +26,38 @@ export function Footer() {
 							</span>
 						</Link>
 						<span className="tracking-tight text-muted-foreground text-left">
-							🏳️‍⚧️🏳️‍🌈 LGBTQIA+ lives matter. PluralBuddy and its team support all
-							individuals regardless of their identity.
+							{t("lgbt_lives_matter")}
 						</span>
 					</div>
 					<div className="pt-5 md:w-1/2">
 						<div className="flex flex-col justify-start md:flex-row md:items-start md:justify-between gap-y-5 lg:pl-10">
 							<div className="flex flex-col gap-y-2 list-none">
 								<li className="inline-flex mb-2 text-sm font-semibold text-primary">
-									Links
+									{t("heading_1")}
 								</li>
 								<FooterItem link="https://github.com/giftedl/PluralBuddy">
 									GitHub
 								</FooterItem>
 								<FooterItem link="https://gftl.fyi/invite">
-									Invite Bot
+									{t("invite")}
 								</FooterItem>
 								<FooterItem link="https://gftl.fyi/discord">
-									Join Support Server
+									{t("join_support_server")}
 								</FooterItem>
 								<FooterItem link="https://gftl.fyi/docs">
-									Documentation
+									{t("docs")}
 								</FooterItem>
 							</div>
 							<div className="flex flex-col gap-y-2 list-none">
 								<li className="inline-flex mb-2 text-sm font-semibold text-primary">
-									Documentation
+									{t("docs")}
 								</li>
 								<FooterItem link="/docs/pluralbuddy/get-started">
-									Getting Started
+									{t("getting_started")}
 								</FooterItem>
-								<FooterItem link="/docs/pluralbuddy/">Introduction</FooterItem>
+								<FooterItem link="/docs/pluralbuddy/">{t("intro")}</FooterItem>
 								<FooterItem link="/docs/pluralbuddy/get-started">
-									Context Menu Actions
+									{t("ctx_menu_actions")}
 								</FooterItem>
 							</div>
 						</div>

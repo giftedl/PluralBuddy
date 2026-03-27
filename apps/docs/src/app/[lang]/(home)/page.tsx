@@ -51,7 +51,7 @@ const buttonVariants = cva(
 
 export default async function HomePage() {
 	const t = await getTranslations("HomePage");
-	const th = await getTranslations("HeaderComponent");
+	const th = await getTranslations("FooterComponent");
 
 	return (
 		<div className="xl:pt-8 justify-center text-center flex-1 xl:mx-30 xl:border-x pb-[300px]">
@@ -156,7 +156,7 @@ export default async function HomePage() {
 			<div className="py-16 border-t border-b mt-2">
 				<h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-primary text-center text-balance pb-1">
 					{t.rich("optimized_headline", {
-						highligher: (chunks) => (
+						highlighter: (chunks) => (
 							<DynamicHighligher>{chunks as string}</DynamicHighligher>
 						),
 					})}
@@ -220,7 +220,7 @@ export default async function HomePage() {
 			<div className="py-16 border-t border-b mt-2">
 				<h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-primary text-center text-balance pb-1">
 					{t.rich("administrate_title", {
-						highligher: (chunks) => (
+						highlighter: (chunks) => (
 							<DynamicHighligher>{chunks as string}</DynamicHighligher>
 						),
 					})}
