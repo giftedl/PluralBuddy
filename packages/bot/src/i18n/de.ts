@@ -9,7 +9,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
 -# Um von Tupperbox zu importieren, da die Daten von Tupperbox nicht vorhanden sind, du musst das System erstellen und dann \`{{ prefix }}system import\` ausführen.`,
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
-  BLACKLISTED: "Du wurdest von {{ guild }} auf die schwarze Liste gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht möglich.",
+  BLACKLISTED: "Du wurdest von {{ guild }} in die blacklist gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
   // Does not need to be translated
   BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
 
@@ -17,16 +17,16 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
 > **Expires:** {{ libbyExpirationDate }}
 > -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
   PAGINATION_PREVIOUS_PAGE: "Vorherige Seite",
-  CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
-  ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",
-  OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
-  TOO_MANY_BLACKLIST_ITEMS: "There are too many blacklist items. You can only have 25 blacklist roles, and 25 blacklist channels at one time due to Discord modal limitations.",
-  TOO_MANY_MANAGER_ITEMS: "There are too many manager items. You can only have 25 manager roles at one time due to Discord modal limitations.",
+  CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
+  ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
+  OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
+  TOO_MANY_BLACKLIST_ITEMS: "Es gibt zu viele blacklist Artikel. Du kannst nur 25 blacklist Rollen und 25 blacklist Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
+  TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
-Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,
-  CREATING_NEW_SYSTEM_NAME_BUTTON: "Set name*",
-  CREATING_NEW_SYSTEM_NAME_SET: "Name is:",
-  CREATING_NEW_SYSTEM_TAG_BUTTON: "Set system tag*",
+Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
+  CREATING_NEW_SYSTEM_NAME_BUTTON: "Setze Name*",
+  CREATING_NEW_SYSTEM_NAME_SET: "Name ist:",
+  CREATING_NEW_SYSTEM_TAG_BUTTON: "System Etikett festlegen",
   CREATING_NEW_SYSTEM_TAG_SET: "System tag is:",
   CREATING_NEW_SYSTEM_TAG_MESSAGE: `
 This server requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
@@ -85,7 +85,6 @@ Systems can have **privacy values** which are values that describe who can see w
   CREATING_NEW_PT_ERROR: "2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
   SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
-  PLURALBUDDY_IMPORT_SOURCE: "JSON Import Data",
   PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below",
   PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
   PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
