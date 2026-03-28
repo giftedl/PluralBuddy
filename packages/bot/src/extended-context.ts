@@ -28,7 +28,7 @@ import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
 import { LoadingView } from "./views/loading";
 import type { PAlter } from "plurography";
 import { client } from ".";
-import { getLanguageByUserId } from "./lib/lang";
+import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
 
 export const extendedContext = extendContext((interaction) => {
 	let contextAlter: PAlter | null = null;
@@ -116,7 +116,7 @@ export const extendedContext = extendContext((interaction) => {
 	};
 	const language = async () => {
 		try {
-			let data = (await client.cache.i18n.get(interaction.user.id))?.l;
+			let data = langMemoryCache[interaction.user.id] ?? (await client.cache.i18n.get(interaction.user.id))?.l;
 
 			if (data === undefined) {
 				data = (await getUserById(interaction.user.id)).userLang;
@@ -124,6 +124,7 @@ export const extendedContext = extendContext((interaction) => {
 					await client.cache.i18n.set(CacheFrom.Gateway, interaction.user.id, {
 						l: data,
 					});
+					langMemoryCache[interaction.user.id] = data;
 				} catch (_) {}
 			}
 

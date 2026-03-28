@@ -2,7 +2,7 @@ import { getUserById } from "@/types/user";
 import { client } from "..";
 import { CacheFrom } from "seyfert";
 
-const langMemoryCache: Record<string, string> = {};
+export const langMemoryCache: Record<string, string> = {};
 
 export async function language<T extends boolean | undefined>(id: string, noCache?: T): Promise<T extends true ? null | string : string> {
 	try {

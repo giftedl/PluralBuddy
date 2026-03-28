@@ -1,4 +1,5 @@
 import { emojis } from "@/lib/emojis";
+import { langMemoryCache } from "@/lib/lang";
 import { userCollection } from "@/mongodb";
 import { writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
@@ -103,6 +104,7 @@ export default class SetupCommand extends Command {
 		}
 
 		ctx.client.cache.i18n.remove(ctx.author.id);
+		delete langMemoryCache[ctx.author.id];
 
 		await writeUserById(user.userId, {
 			...user,
