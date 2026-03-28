@@ -25,7 +25,7 @@ const options = {
 
 @Declare({
 	name: "description",
-	description: "Edit the description of an alter",
+	description: "Edit the description of your system",
 	aliases: ["desc", "d"],
 	contexts: ["BotDM", "Guild"],
 })
