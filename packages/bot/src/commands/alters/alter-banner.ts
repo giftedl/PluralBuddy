@@ -88,6 +88,8 @@ export default class EditAlterPictureCommand extends SubCommand {
                     bucketName,
                     objectName,
                     { authorId: ctx.author.id, alterId: String(alter.alterId), type: "banner" },
+                    
+					(alter.banner ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.banner?.split(user.storagePrefix)[1]}` : undefined
                 );
 
                 objectName = newObject;

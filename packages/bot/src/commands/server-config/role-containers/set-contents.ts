@@ -54,6 +54,7 @@ export default class ViewRoleContainer extends SubCommand {
 			await guildCollection.updateOne(
 				{ guildId: guild.guildId, "rolePreferences.roleId": role.id },
 				{ $set: { "rolePreferences.$.containerContents": contents } },
+				{ upsert: true }
 			);
 		else
 			await guildCollection.updateOne(
@@ -63,6 +64,7 @@ export default class ViewRoleContainer extends SubCommand {
 						rolePreferences: { roleId: role.id, containerContents: contents },
 					},
 				},
+				{ upsert: true }
 			);
 
 		ctx.client.cache.pguild.remove(guild.guildId)

@@ -157,6 +157,8 @@ export default class EditAlterPictureCommand extends SubCommand {
 						alterId: String(alter.alterId),
 						type: "profile-picture",
 					},
+
+					(alter.avatarUrl ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.avatarUrl?.split(user.storagePrefix)[1]}` : undefined
 				);
 
 				objectName = newObject;

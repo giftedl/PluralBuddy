@@ -65,6 +65,7 @@ export default class SetPFPForm extends ModalCommand {
 				bucketName,
 				objectName,
 				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "profile-picture/form" },
+				(alter.avatarUrl ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.avatarUrl?.split(user.storagePrefix)[1]}` : undefined
 			);
 
 			objectName = newObject;

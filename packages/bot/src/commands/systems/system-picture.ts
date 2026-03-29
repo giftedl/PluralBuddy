@@ -97,6 +97,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 					bucketName,
 					objectName,
 					{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture" },
+					(user.system.systemAvatar ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${user.system.systemAvatar?.split(user.storagePrefix)[1]}` : undefined
 				);
 				objectName = newObject;
 			} catch (error) {

@@ -58,6 +58,7 @@ export default class SetPFPForm extends ModalCommand {
 				bucketName,
 				objectName,
 				{ authorId: ctx.author.id, alterId: '@system', type: "banner/form" },
+				(system.systemBanner ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${storagePrefix}${system.systemBanner?.split(storagePrefix)[1]}` : undefined
 			);
 			
 			objectName = newObject
