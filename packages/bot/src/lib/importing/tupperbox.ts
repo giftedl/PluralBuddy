@@ -251,7 +251,7 @@ export async function add(
 	if (newAlters.length + input.existing.alters.length >= 2000)
 		throw new Error("Too many alters");
 	if (newTags.length + input.existing.tags.length >= 1000)
-		throw new Error("Too many alters");
+		throw new Error("Too many tags");
 
 	if (newTags.length > 0) await tagCollection.insertMany(newTags);
 
