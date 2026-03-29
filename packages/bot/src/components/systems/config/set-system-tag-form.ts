@@ -36,6 +36,7 @@ export default class SetPronounsButton extends ModalCommand {
 			systemDisplayTag: newSystemTag as string
 		}, (await ctx.userTranslations()), "discord")
 
+		if (newSystem)
 		system = newSystem;
 
 		return await ctx.interaction.update({

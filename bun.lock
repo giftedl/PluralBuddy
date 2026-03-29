@@ -1869,6 +1869,8 @@
 
     "samlify/uuid": ["uuid@8.3.2", "", { "bin": { "uuid": "dist/bin/uuid" } }, "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg=="],
 
+    "scripts/plurography": ["plurography@file:packages/plurography", { "dependencies": { "moment-timezone": "^0.6.0", "zod": "^4.1.12" }, "devDependencies": { "@asteasolutions/zod-to-openapi": "^8.4.3", "@types/bun": "latest", "bumpp": "^10.4.1" }, "peerDependencies": { "typescript": "^5" } }],
+
     "support-bot-module/@types/bun": ["@types/bun@1.3.10", "", { "dependencies": { "bun-types": "1.3.10" } }, "sha512-0+rlrUrOrTSskibryHbvQkDOWRJwJZqZlxrUs1u4oOoTln8+WIXBPmAuCF35SWB2z4Zl3E84Nl/D0P7803nigQ=="],
 
     "support-bot-module/seyfert": ["seyfert@4.2.2", "", {}, "sha512-pEVGIFwq4jldZ0aWwKDY2rQvnTlFWrz6bYl5jGTa/dSQo++LpaLMqo4w5MO5iu+u7ZfNR0DgviG4ePwa+tUZNg=="],
