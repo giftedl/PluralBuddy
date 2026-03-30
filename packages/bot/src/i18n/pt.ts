@@ -534,7 +534,7 @@ There is an example below of what an example proxy with this role would look lik
   S_PUBLIC_PROFILE_TITLE: `## Public Profile - @{{ systemName }}\nYour public profile is what your system looks like to other users when they identify your messages.`,
   IMPORT_SETTINGS_TITLE: `## Importar dados de outro bot`,
   IMPORT_SETTINGS_DESC: `Importar de outro bot permite que você substitua ou adicione dados de seus outros bots, ou fazer os dois como uma combinação.`,
-  REPLACE_DESC: "Replace will replace existing data in your system with data. Does not make new system data.",
+  REPLACE_DESC: "Substituir irá substituir os dados existentes no seu sistema por dados. Não faz novos dados do sistema.",
   REPLACE_NAME: "Substituir",
   ADD_DESC: "Adicionar novas tags ou membros de outro bot. Não substitui os dados de membros ou tags existentes.",
   ADD_NAME: "Adicionar",
@@ -572,5 +572,5 @@ You can set the language that PluralBuddy uses while using commands. If a string
 {{ languages }}`,
   SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**.",
   ALTER_AP_NAME: "Alter Mode",
-  ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled."
+  ALTER_AP_DESC: "Faz proxy somente desse integrante até que o auto-proxy seja desativado."
 };
