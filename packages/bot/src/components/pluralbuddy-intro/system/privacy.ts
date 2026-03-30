@@ -16,7 +16,7 @@ export default class NameCNS extends ComponentCommand {
     async run(ctx: ComponentContext<typeof this.componentType>) {
         const oldInteractionId = InteractionIdentifier.Setup.CreateNewSystem.Privacy.substring(ctx.customId);
         const form = new Modal()
-            .setCustomId(InteractionIdentifier.Setup.FormSelection.PrivacyForm.create(oldInteractionId))
+            .setCustomId(InteractionIdentifier.Setup.FormSelection.PrivacyForm.create(oldInteractionId[0] ?? ""))
             .setTitle((await ctx.userTranslations()).CREATING_NEW_SYSTEM_FORM_TITLE)
             .addComponents(
                 [

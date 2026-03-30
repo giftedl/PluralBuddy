@@ -293,9 +293,9 @@ ${system == null || system.systemAutoproxy.some((a) => a.serverId === guildId &&
 											alter.alterId,
 										),
 									)
-									.setLabel("Alter Mode")
+									.setLabel(this.translations.ALTER_AP_NAME)
 									.setDescription(
-										"Only proxy this alter until auto-proxy is disabled.",
+										this.translations.ALTER_AP_DESC,
 									)
 									.setDefault(
 										system?.systemAutoproxy.some(
