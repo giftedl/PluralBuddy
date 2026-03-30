@@ -570,5 +570,7 @@ There is an example below of what an example proxy with this role would look lik
 You can set the language that PluralBuddy uses while using commands. If a string isn't found, there is a fallback to the English version.
 
 {{ languages }}`,
-  SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**."
+  SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**.",
+  ALTER_AP_NAME: "Alter Mode",
+  ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled."
 };
