@@ -1,5 +1,8 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { translations } from "./en_us";
+import type { DefaultLocale } from "seyfert";
 
-export type TranslationString = typeof translations;
+/**
+ *  @deprecated
+ */
+export type TranslationString = DefaultLocale;

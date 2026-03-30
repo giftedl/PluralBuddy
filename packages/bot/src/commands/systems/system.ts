@@ -19,16 +19,16 @@ export default class SystemCommand extends Command {
 
         if (user.system === undefined) {
             return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             }, undefined, undefined, ctx)
         }
 
         return ctx.ephemeral({
             components: [
-                ...(new SystemView(ctx.userTranslations()).systemProfileView(user.system, 
+                ...(new SystemView((await ctx.userTranslations())).systemProfileView(user.system, 
                     user.system.associatedUserId !== ctx.author.id,)),
-                ...(new SystemView(ctx.userTranslations()).systemConfigureButton(user.system)),
+                ...(new SystemView((await ctx.userTranslations())).systemConfigureButton(user.system)),
             ],
             flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
             allowed_mentions: { parse: [] },

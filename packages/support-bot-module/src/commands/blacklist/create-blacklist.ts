@@ -13,7 +13,7 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
-	"user-id": createUserOption({
+	"user-id": createStringOption({
 		description: "User to blacklist",
 		required: true,
 	}),
@@ -39,7 +39,7 @@ export default class CreateBlacklistCommand extends SubCommand {
 		}
 
 		const { "user-id": userId, note: note } = ctx.options;
-        const user = await getUserById(userId.id)
+        const user = await getUserById(userId)
 
         if (user.blacklisted) {
             return await ctx.write({
@@ -51,13 +51,13 @@ export default class CreateBlacklistCommand extends SubCommand {
 
 		await noteCollection.insertOne({
 			note,
-			associatedUserId: userId.id,
+			associatedUserId: userId,
             date: new Date(),
             moderatorId: ctx.author.id
 		});
 
-        await writeUserById(userId.id, {
-            ...(await getUserById(userId.id)),
+        await writeUserById(userId, {
+            ...(await getUserById(userId)),
             blacklisted: true
         })
 

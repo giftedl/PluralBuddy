@@ -9,7 +9,12 @@ export async function getReferencedMessageString(
 ) {
 	let userString = `<@${message.referencedMessage?.author.id}>`;
 	let messageString = `[${
-		message.referencedMessage?.content === ""
+		message.referencedMessage?.content
+		.replace(/<#(.*)>/, "")
+		.replaceAll("https://", "")
+.replaceAll("\n", "")
+		.replaceAll("http://", "")
+		.replaceAll(/<@!?(\d+)>/g, "") === ""
 			? "Jump to message"
 			: message.referencedMessage?.content
 					.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
@@ -19,6 +24,7 @@ export async function getReferencedMessageString(
 					.replaceAll("http://", "")
 					.replaceAll(/<@!?(\d+)>/g, "")
 					.replaceAll("@everyone", "--")
+					.replace(/<#(.*)>/, "")
 	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 
 	if (message.referencedMessage?.webhookId === proxyWHId) {
@@ -56,7 +62,11 @@ export async function getReferencedMessageString(
 			if (alter !== null) {
 				userString = `@${alter?.username}`;
 				messageString = `[${
-					contents === ""
+					contents.replace(/<#(.*)>/, "")
+					.replaceAll("https://", "")
+			.replaceAll("\n", "")
+					.replaceAll("http://", "")
+					.replaceAll(/<@!?(\d+)>/g, "") === ""
 						? "Jump to message"
 						: contents
 								.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
@@ -66,6 +76,7 @@ export async function getReferencedMessageString(
         .replaceAll("\n", "")
 								.replaceAll(/<@!?(\d+)>/g, "")
 								.replaceAll("@everyone", "--")
+								.replace(/<#(.*)>/, "")
 				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 			}
 		}

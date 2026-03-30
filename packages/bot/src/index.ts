@@ -3,10 +3,17 @@
  *  - is licensed under MIT License.
  */
 
-import { CacheFrom, Client, Container, MemoryAdapter } from "seyfert";
+import {
+	ActionRow,
+	Button,
+	CacheFrom,
+	Client,
+	Container,
+	MemoryAdapter,
+} from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import { ComponentType, MessageFlags } from "seyfert/lib/types";
+import { ButtonStyle, ComponentType, MessageFlags } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
 import PluralBuddyHandleCommand from "./handle-command";
 import { LoadingView } from "./views/loading";
@@ -26,9 +33,15 @@ import api from "./api";
 import { indexingMessageMap } from "./events/on-message-create";
 import type { ContainerComponent } from "seyfert/lib/components/Container";
 import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
+import { startStatisticalTimer } from "./analytics";
+import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
+import { emojis } from "./lib/emojis";
+import { Pi18nCache } from "./cache/i18n";
+import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 
-export const buildNumber = 2533;
+export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
+	"latency",
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
 	"serverBlacklist",
@@ -56,8 +69,16 @@ export const client = new Client({
 		},
 		reply: (ctx) => true,
 		deferReplyResponse: (ctx) => ({
-			components: new LoadingView(ctx.userTranslations()).loadingView(),
+			components: [
+				new ActionRow().setComponents(
+					new Button()
+						.setCustomId("loading")
+						.setEmoji(emojis.loading)
+						.setStyle(ButtonStyle.Secondary),
+				),
+			],
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			allowed_mentions: { replied_user: false }
 		}),
 		defaults: new PluralBuddyErrorCommand(),
 	},
@@ -85,6 +106,7 @@ client.setServices({
 				? new MemoryAdapter()
 				: new RedisAdapter({ redisOptions: { url: process.env.REDIS } }),
 	},
+	langs: { default: "en" },
 });
 
 await setupMongoDB();
@@ -97,81 +119,15 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 	client.cache,
 	client,
 );
+client.cache.i18n = new Pi18nCache(client.cache, client);
 
 await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
 
-const guildCount = (await client.guilds.list({}, true)).length;
-const guilds = (await client.guilds.list({}, true)) ?? [];
-let userCount = 0;
-for (const unfetchedGuild of guilds.values()) {
-	const guild = await unfetchedGuild.fetch();
+startIndexingCleanupTimer();
+startEmojiCleanupTimer();
+startStatisticalTimer();
 
-	if (guild.members) {
-		userCount += guild.memberCount ?? 0;
-	}
-}
-setInterval(() => {
-	for (const [user, message] of Object.entries(indexingMessageMap)) {
-		if (
-			message.components[0] &&
-			message.components[0].type === ComponentType.Container
-		) {
-			const container = message.components[0] as ContainerComponent;
-
-			if (
-				container.components[0] &&
-				container.components[0].type === ComponentType.TextDisplay &&
-				(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
-			) {
-				setTimeout(async () => {
-					const newMessage = await message.fetch();
-					if (
-						newMessage.components[0] &&
-						newMessage.components[0].type === ComponentType.Container
-					) {
-						const container = newMessage.components[0] as ContainerComponent;
-
-						if (
-							container.components[0] &&
-							container.components[0].type === ComponentType.TextDisplay &&
-							(container.components[0] as TextDisplayComponent).content.endsWith("-# **Current Status:** 0% indexed.")
-						) {
-							await message.delete();
-							delete indexingMessageMap[user]
-						}
-					}
-				}, 4000);
-			}
-		}
-	}
-}, 4000);
-
-setInterval(
-	async () => {
-		const guildCount = (await client.guilds.list({}, true)).length;
-		const guilds = (await client.guilds.list({}, true)) ?? [];
-		let userCount = 0;
-		for (const unfetchedGuild of guilds.values()) {
-			const guild = await unfetchedGuild.fetch();
-
-			if (guild.members) {
-				userCount += guild.memberCount ?? 0;
-			}
-		}
-
-		await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
-			guildCount,
-			userCount,
-		});
-	},
-	1000 * 60 * 10,
-);
-
-await client.cache.statistic.set(CacheFrom.Gateway, "latest", {
-	guildCount,
-	userCount,
-});
-
+// API
 export type { ClientType } from "./api-types";
 export default api;

@@ -15,9 +15,11 @@
 		"typescript": "^5"
 	},
 	"dependencies": {
+		"@crowdin/crowdin-api-client": "^1.54.0",
 		"@hono/zod-validator": "^0.7.6",
 		"@sapphire/snowflake": "^3.5.5",
 		"@slipher/redis-adapter": "^0.0.6",
+		"colorthief": "^3.3.1",
 		"file-type": "^21.3.0",
 		"hono": "^4.12.1",
 		"mongodb": "^7.1.0",

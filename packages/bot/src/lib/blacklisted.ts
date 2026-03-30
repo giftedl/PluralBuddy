@@ -1,13 +1,14 @@
-import { translations } from "@/lang/en_us";
 import { AlertView } from "@/views/alert";
 import type { PGuild } from "plurography";
-import type { Message } from "seyfert";
+import type { DefaultLocale, Message } from "seyfert";
 import { getApplicableCase } from "./libby";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "./emojis";
+import { client } from "..";
 
 export async function blacklistedRole(
 	guild: PGuild,
+	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
@@ -27,8 +28,8 @@ export async function blacklistedRole(
 					if (!silent)
 						try {
 							await message.author.write({
-								components: new AlertView(translations).errorViewCustom(
-									translations.BLACKLISTED_PC.replace(
+								components: new AlertView(locales).errorViewCustom(
+									locales.BLACKLISTED_PC.replace(
 										"{{ libbyReasoning }}",
 										caseObj.reasoning,
 									)
@@ -53,11 +54,8 @@ export async function blacklistedRole(
 				if (!silent)
 					try {
 						await message.author.write({
-							components: new AlertView(translations).errorViewCustom(
-								translations.BLACKLISTED.replace(
-									"{{ guild }}",
-									guild?.name ?? "",
-								),
+							components: new AlertView(locales).errorViewCustom(
+								locales.BLACKLISTED.replace("{{ guild }}", guild?.name ?? ""),
 							),
 							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 						});
@@ -72,6 +70,7 @@ export async function blacklistedRole(
 
 export async function blacklistedChannel(
 	guild: PGuild,
+	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
@@ -79,8 +78,8 @@ export async function blacklistedChannel(
 		if (!silent)
 			try {
 				await message.author.write({
-					components: new AlertView(translations).errorView(
-						"FEATURE_DISABLED_GUILD",
+					components: new AlertView(locales).errorView(
+						"FEATURE_DISABLED_CHANNEL",
 					),
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				});
@@ -89,18 +88,36 @@ export async function blacklistedChannel(
 	}
 	if (guild.blacklistedCategories.length !== 0) {
 		const channel = await message.channel();
-		if ("parentId" in channel && channel.isCategory())
+		if ("parentId" in channel && !channel.isThread())
 			if (guild.blacklistedCategories.includes(channel.parentId ?? "")) {
 				if (!silent)
 					try {
 						await message.author.write({
-							components: new AlertView(translations).errorView(
-								"FEATURE_DISABLED_GUILD",
+							components: new AlertView(locales).errorView(
+								"FEATURE_DISABLED_CHANNEL",
 							),
 							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 						});
 					} catch (_) {}
+				return false;
 			}
+		if ("parentId" in channel && channel.isThread()) {
+			const parent = await client.channels.fetch(channel.parentId);
+
+			if ("parentId" in parent && !parent.isThread())
+				if (guild.blacklistedCategories.includes(parent.parentId ?? "")) {
+					if (!silent)
+						try {
+							await message.author.write({
+								components: new AlertView(locales).errorView(
+									"FEATURE_DISABLED_CHANNEL",
+								),
+								flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+							});
+						} catch (_) {}
+					return false;
+				}
+		}
 	}
 	return true;
 }

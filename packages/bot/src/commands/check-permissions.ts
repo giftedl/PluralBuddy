@@ -5,6 +5,7 @@ import {
 	CommandContext,
 	Container,
 	Declare,
+	LocalesT,
 	Message,
 	TextDisplay,
 } from "seyfert";
@@ -15,7 +16,7 @@ import { MessageFlags, PermissionFlagsBits } from "seyfert/lib/types";
 	description: "Ensure PluralBuddy has the proper permissions.",
 	aliases: ["permissions"],
 })
-export default class AppExplanationCommand extends Command {
+export default class CheckPermissionsCommand extends Command {
 	override async run(ctx: CommandContext) {
 		const guild = await ctx.retrievePGuild();
 
@@ -25,7 +26,7 @@ export default class AppExplanationCommand extends Command {
 
 				try {
 					await (ctx.message as Message).author.write({
-						components: new AlertView(ctx.userTranslations()).errorView(
+						components: new AlertView((await ctx.userTranslations())).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -35,7 +36,7 @@ export default class AppExplanationCommand extends Command {
 			}
 
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"FEATURE_DISABLED_GUILD",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -44,7 +45,7 @@ export default class AppExplanationCommand extends Command {
 
 		if (ctx.guildId === undefined) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"DN_ERROR_SE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

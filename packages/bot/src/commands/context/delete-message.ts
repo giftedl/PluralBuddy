@@ -20,14 +20,14 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 
         if (message === null) {
             return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_OWN_MESSAGE"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_OWN_MESSAGE"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
 
         }
         if (message?.systemId !== ctx.author.id || (message.guildId ?? undefined) !==( ctx.guildId ?? undefined)) {
             return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_OWN_MESSAGE"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_OWN_MESSAGE"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
@@ -40,7 +40,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
     
             if (similarWebhooks[0] === undefined) {
                 return await ctx.editResponse({
-                    components: new AlertView(ctx.userTranslations()).errorView("ERROR_MANUAL_PROXY"),
+                    components: new AlertView(await ctx.userTranslations()).errorView("ERROR_MANUAL_PROXY"),
                     flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
                 })
             }
@@ -71,7 +71,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 
 
         return ctx.editResponse({
-            components: new AlertView(ctx.userTranslations()).successView("SUCCESSFULLY_REMOVED_MESSAGE"),
+            components: new AlertView((await ctx.userTranslations())).successView("SUCCESSFULLY_REMOVED_MESSAGE"),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })
     }

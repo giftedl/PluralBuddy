@@ -31,7 +31,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -47,7 +47,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (attachment.value.size > 1_000_000) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -65,11 +65,12 @@ export default class SetPFPForm extends ModalCommand {
 				bucketName,
 				objectName,
 				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "banner/form" },
+				(alter.banner ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.banner?.split(user.storagePrefix)[1]}` : undefined
 			);
 			objectName = newObject;
 		} catch (error) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -84,12 +85,12 @@ export default class SetPFPForm extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new AlterView(ctx.userTranslations()).alterTopView(
+				...new AlterView((await ctx.userTranslations())).alterTopView(
 					"public-settings",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(ctx.userTranslations()).altersPublicView(
+				...new AlterView((await ctx.userTranslations())).altersPublicView(
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",

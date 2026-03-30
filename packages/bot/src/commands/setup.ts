@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Command, type CommandContext, Container, Declare, Emoji, TextDisplay } from "seyfert";
+import { ActionRow, Button, Command, type CommandContext, Container, Declare, Emoji, LocalesT, TextDisplay } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { PluralBuddyIntro } from "../views/pluralbuddy-intro";
 import { AlertView } from "../views/alert";
@@ -22,13 +22,13 @@ export default class SetupCommand extends Command {
         if (user.system !== undefined) {
             return await ctx.ephemeral({
                 components: [
-                    ...new AlertView(ctx.userTranslations()).errorView("SETUP_ERROR_SYSTEM_ALREADY_EXISTS"), 
+                    ...new AlertView((await ctx.userTranslations())).errorView("SETUP_ERROR_SYSTEM_ALREADY_EXISTS"), 
                     new ActionRow()
                         .setComponents(
                             new Button()
                                 .setEmoji(emojis.xWhite)
                                 .setStyle(ButtonStyle.Danger)
-                                .setLabel(ctx.userTranslations().SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN)
+                                .setLabel((await ctx.userTranslations()).SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN)
                                 .setCustomId(InteractionIdentifier.Setup.RemoveOldSystem.create())
                         )
                 ],
@@ -37,7 +37,7 @@ export default class SetupCommand extends Command {
         }
         
         await ctx.ephemeral({
-            components: new PluralBuddyIntro(ctx.userTranslations()).pageOne(),
+            components: new PluralBuddyIntro((await ctx.userTranslations())).pageOne(),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         }, undefined, undefined, ctx)
     }

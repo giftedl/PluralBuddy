@@ -3,6 +3,7 @@
 import {
 	ActionRow,
 	Button,
+	CacheFrom,
 	CommandContext,
 	Container,
 	extendContext,
@@ -10,8 +11,12 @@ import {
 	Message,
 	TextDisplay,
 	WebhookMessage,
+	type DefaultLocale,
 } from "seyfert";
-import type { InteractionCreateBodyRequest, InteractionMessageUpdateBodyRequest } from "seyfert/lib/common";
+import type {
+	InteractionCreateBodyRequest,
+	InteractionMessageUpdateBodyRequest,
+} from "seyfert/lib/common";
 import { emojis } from "./lib/emojis";
 import {
 	ButtonStyle,
@@ -20,10 +25,10 @@ import {
 } from "seyfert/lib/types";
 import { getUserById } from "./types/user";
 import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
-import { translations } from "./lang/en_us";
-import type { TranslationString } from "./lang";
 import { LoadingView } from "./views/loading";
 import type { PAlter } from "plurography";
+import { client } from ".";
+import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
 
 export const extendedContext = extendContext((interaction) => {
 	let contextAlter: PAlter | null = null;
@@ -35,7 +40,7 @@ export const extendedContext = extendContext((interaction) => {
 			editMessage: (body: InteractionCreateBodyRequest) => void;
 			reply?: (body: InteractionCreateBodyRequest) => void;
 		}) => void,
-		ctx?: CommandContext
+		ctx?: CommandContext,
 	) => {
 		if (interaction instanceof Message) {
 			if (
@@ -61,6 +66,7 @@ export const extendedContext = extendContext((interaction) => {
 							.setCustomId(`ephemeral-${interaction.id}`),
 					),
 				],
+				allowed_mentions: { replied_user: false },
 			});
 
 			if (!message) return;
@@ -68,13 +74,13 @@ export const extendedContext = extendContext((interaction) => {
 			const collector = message.createComponentCollector();
 
 			collector.run(`ephemeral-${interaction.id}`, async (i) => {
+				const locale = await getLanguageByUserId(i.user.id);
+
 				if (i.user.id !== interaction.user.id)
 					return i.write({
 						components: [
 							new Container().setComponents(
-								new TextDisplay().setContent(
-									"You are not the original recipient of the message.",
-								),
+								new TextDisplay().setContent(locale.NOT_ORIGINAL_RECIPIENT),
 							),
 						],
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -84,7 +90,6 @@ export const extendedContext = extendContext((interaction) => {
 					message.delete();
 					const writtenMessage = await i.write(body, true);
 
-					console.log(i.editResponse);
 					if (afterSendTask)
 						afterSendTask({
 							reply: interaction.message?.reply,
@@ -109,26 +114,47 @@ export const extendedContext = extendContext((interaction) => {
 
 		return writtenMessage;
 	};
+	const language = async () => {
+		try {
+			let data = langMemoryCache[interaction.user.id] ?? (await client.cache.i18n.get(interaction.user.id))?.l;
+
+			if (data === undefined) {
+				data = (await getUserById(interaction.user.id)).userLang;
+				try {
+					await client.cache.i18n.set(CacheFrom.Gateway, interaction.user.id, {
+						l: data,
+					});
+					langMemoryCache[interaction.user.id] = data;
+				} catch (_) {}
+			}
+
+			return data;
+		} catch (_) {
+			return "en";
+		}
+	};
 
 	return {
 		ephemeral,
+		language,
 		retrievePUser: async () => getUserById(interaction.user.id),
 		retrievePGuild: async () =>
 			PGuildObject.parseAsync(
 				await getGuildFromId(interaction.guildId ?? "??"),
 			),
-		userTranslations: () => translations,
+		userTranslations: async () =>
+			client.t(await language()).get(await language()),
 		setContextAlter: (alter: PAlter) => {
 			contextAlter = alter;
 		},
 		contextAlter: () => contextAlter,
-		loading: () => {
+		loading: (translations: DefaultLocale) => {
 			return {
 				components: new LoadingView(translations).loadingView(),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			};
 		},
-		loadingEphemeral: () => {
+		loadingEphemeral: (translations: DefaultLocale) => {
 			return ephemeral({
 				components: new LoadingView(translations).loadingView(),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,

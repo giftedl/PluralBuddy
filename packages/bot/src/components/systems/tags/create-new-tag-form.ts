@@ -22,7 +22,7 @@ export default class CreateNewAlterForm extends ModalCommand {
         const displayName = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDisplayNameType.create(), true);
         const color = ctx.interaction.getInputValue(InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagColorType.create(), true)
 
-        await ctx.interaction.update(ctx.loading())
+        await ctx.interaction.update(ctx.loading(await ctx.userTranslations()))
 
         const user = await ctx.retrievePUser();
         const server = await ctx.retrievePGuild();
@@ -30,7 +30,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 
 		if ((user.system?.tagIds.length ?? 0) >= 500) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"TOO_MANY_TAGS",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -39,7 +39,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 
         if (user.system === undefined) {
             return await ctx.ephemeral({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
@@ -60,8 +60,8 @@ export default class CreateNewAlterForm extends ModalCommand {
         if (tag.error) {
             return await ctx.editResponse({
                 components: [
-                    ...new SystemSettingsView(ctx.userTranslations()).topView("tags", user.system.associatedUserId),
-                    ...new AlertView(ctx.userTranslations()).errorViewCustom(`There was an error while creating that tag:
+                    ...new SystemSettingsView((await ctx.userTranslations())).topView("tags", user.system.associatedUserId),
+                    ...new AlertView((await ctx.userTranslations())).errorViewCustom(`${(await (ctx.userTranslations())).VALIDATION_TAG_ERROR}
 
 \`\`\`
 ${z.prettifyError(tag.error)}
@@ -81,7 +81,7 @@ ${z.prettifyError(tag.error)}
 		await tagCollection.insertOne(tag.data);
         
         await ctx.editResponse({
-            components: await new SystemSettingsView(ctx.userTranslations()).tagsSettings(user.system)
+            components: await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(user.system)
         })
     }
 }

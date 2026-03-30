@@ -26,7 +26,7 @@ export default class AddPrefixCommand extends SubCommand {
 
         if (guildObj.prefixes.includes(newPrefix)) {
             return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("PREFIX_ALREADY_EXISTS"),
+                components: new AlertView((await ctx.userTranslations())).errorView("PREFIX_ALREADY_EXISTS"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
@@ -37,7 +37,7 @@ export default class AddPrefixCommand extends SubCommand {
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
         return await ctx.editResponse({
-            components: new AlertView(ctx.userTranslations()).successViewCustom(ctx.userTranslations().SUCCESS_CHANGED_SERVER_PREFIXES.replace("%prefixes%", guildObj.prefixes.map((c) => `> - ${c}`).join("\n"))),
+            components: new AlertView((await ctx.userTranslations())).successViewCustom((await ctx.userTranslations()).SUCCESS_CHANGED_SERVER_PREFIXES.replace("%prefixes%", guildObj.prefixes.map((c) => `> - ${c}`).join("\n"))),
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
         })
     }

@@ -11,6 +11,7 @@ import {
 	StringSelectOption,
 	TextDisplay,
 	WebhookMessage,
+	type DefaultLocale,
 	type MessageStructure,
 	type WebhookMessageStructure,
 } from "seyfert";
@@ -43,11 +44,13 @@ import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
 import { createProxyError } from "@/lib/proxying/error";
 import { helpPages } from "@/commands/help";
-import { translations } from "@/lang/en_us";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
 import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
+import { latencyDataPoints } from "@/analytics";
+import { handleDMReply } from "@/lib/proxying/dm-replying";
+import { getLanguageByUserId } from "@/lib/lang";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -84,9 +87,18 @@ export type PWebhook = {
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message: Message) => {
+
+		latencyDataPoints.push(
+			Date.now() -
+				// @ts-ignore
+				message.createdTimestamp,
+		);
+		handleDMReply(message);
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
+		
 		if (message.content === `<@${message.client.applicationId}>`) {
+			const locale = await getLanguageByUserId(message.author.id);
 			const guild = await getGuildFromId(message.guildId ?? "");
 
 			if (guild.getFeatures().disabledHelp) {
@@ -94,7 +106,7 @@ export default createEvent({
 
 				try {
 					await message.author.write({
-						components: new AlertView(translations).errorView(
+						components: new AlertView(locale).errorView(
 							"FEATURE_DISABLED_GUILD",
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -109,13 +121,13 @@ export default createEvent({
 			return await message.reply({
 				components: [
 					new TextDisplay().setContent(
-						`Hi! I'm awake, running PluralBuddy \`#${buildNumber}/${process.env.BRANCH ?? "unknown"}\`.`,
+						locale.AWAKE.replace("{{ buildNumber }}", String(buildNumber)).replace("{{ branch }}", process.env.BRANCH ?? "unknown")
 					),
 					new ActionRow().setComponents(
 						[
-							{ n: "Invite", l: "invite" },
-							{ n: "Support", l: "discord" },
-							{ n: "Docs", l: "docs" },
+							{ n: locale.LINK_INVITE, l: "invite" },
+							{ n: locale.LINK_SUPPORT, l: "discord" },
+							{ n: locale.LINK_DOCS, l: "docs" },
 						].map((c) =>
 							new Button()
 								.setStyle(ButtonStyle.Link)
@@ -144,7 +156,7 @@ export default createEvent({
 							new Button()
 								.setCustomId("disabled")
 								.setDisabled(true)
-								.setLabel("Previous Page")
+								.setLabel(locale.PAGINATION_PREVIOUS_PAGE)
 								.setStyle(ButtonStyle.Primary),
 							new Button()
 								.setCustomId(
@@ -153,7 +165,7 @@ export default createEvent({
 									),
 								)
 								.setDisabled(helpPages[1] === undefined)
-								.setLabel("Next Page")
+								.setLabel(locale.PAGINATION_NEXT_PAGE)
 								.setStyle(ButtonStyle.Primary),
 						),
 					),
@@ -165,8 +177,8 @@ export default createEvent({
 			message.reply({
 				components: [
 					// @ts-ignore
-					...new AlertView(null).errorViewCustom(
-						"You cannot proxy inside of DM channels. Sorry!",
+					...new AlertView(locale).errorView(
+						"NO_DM_CHANNELS",
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
@@ -196,6 +208,7 @@ export default createEvent({
 		);
 
 		if (user.system === undefined) return;
+		if (user.blacklisted) return;
 		if (user.system.disabled) return;
 		if (
 			user.system.systemAutoproxy.some(
@@ -219,8 +232,10 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
-					if (!(await blacklistedRole(guild, message))) return;
-					if (!blacklistedChannel(guild, message)) return;
+					const locale = await getLanguageByUserId(message.author.id);
+					
+					if (!(await blacklistedRole(guild, locale, message))) return;
+					if (!(await blacklistedChannel(guild, locale, message))) return;
 
 					performAlterAutoProxy(
 						message,
@@ -240,18 +255,21 @@ export default createEvent({
 			let indexingMessage: MessageStructure | null =
 				null as MessageStructure | null;
 			let eligibleToProcess = false;
+			let locale: DefaultLocale | null = null;
 
 			const indexingTimeout = setTimeout(async () => {
+				if (locale === null)
+					locale = await getLanguageByUserId(message.author.id);
 				const channel = message.channelId;
 
-				if (eligibleToProcess)
+				if (eligibleToProcess && process.env.REDIS)
 				try {
 					indexingMessage = await message.client.messages.write(channel, {
 						components: [
 							new Container()
 								.setComponents(
 									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+										`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
 											"{{ alterCount }}",
 											(user.system?.alterIds.length ?? 0).toString(),
 										)
@@ -284,12 +302,14 @@ export default createEvent({
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 
 				if (i % 20 === 0 && indexingMessage) {
+					const locale = await getLanguageByUserId(message.author.id);
+
 					await indexingMessage?.edit({
 						components: [
 							new Container()
 								.setComponents(
 									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${translations.WAITING_INDEXING.replaceAll(
+										`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
 											"{{ alterCount }}",
 											(user.system?.alterIds.length ?? 0).toString(),
 										)
@@ -358,6 +378,7 @@ export default createEvent({
 								});
 
 					if (proxyTagValid(proxyTag, message)) {
+				const locale = await getLanguageByUserId(message.author.id);
 						// Check for system tag policy
 						if (
 							message.guildId &&
@@ -368,9 +389,8 @@ export default createEvent({
 									user.system.systemDisplayTag) === null)
 						) {
 							createProxyError(user, message, {
-								title: "Display Tag Enforcement Policy",
-								description:
-									'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+								title: locale.DISPLAY_TAG_ENFORCE,
+								description: locale.DISPLAY_TAG_ENFORCE_DESC,
 								type: "EnforcedGuildTagRegulation",
 							});
 
@@ -387,11 +407,11 @@ export default createEvent({
 
 						console.timeEnd("proxy tag parse");
 
-						if (!(await blacklistedRole(guild, message))) {
+						if (!(await blacklistedRole(guild, locale, message))) {
 							removeFromMap();
 							return;
 						}
-						if (!blacklistedChannel(guild, message)) {
+						if (!(await blacklistedChannel(guild, locale, message))) {
 							removeFromMap();
 							return;
 						}
@@ -453,8 +473,10 @@ export default createEvent({
 				console.timeEnd("proxy tag parse");
 
 				if (fetchedAlter) {
-					if (!(await blacklistedRole(guild, message, true))) return;
-					if (!blacklistedChannel(guild, message, true)) return;
+					const locale = await getLanguageByUserId(message.author.id);
+
+					if (!(await blacklistedRole(guild, locale, message, true))) return;
+					if (!(await blacklistedChannel(guild, locale, message, true))) return;
 
 					performAlterAutoProxy(
 						message,
@@ -467,5 +489,6 @@ export default createEvent({
 				}
 			}
 		}
+		console.timeEnd("proxy tag parse");
 	},
 });

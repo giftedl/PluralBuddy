@@ -269,7 +269,6 @@ export async function add(
 		.map((v) => v.zodData)
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
-	console.log(newAlters)
 
 	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
 
@@ -309,6 +308,12 @@ export async function add(
 		)
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
+
+
+		if ((newAlters.length + input.existing.alters.length) >= 2000)
+			throw new Error("Too many alters")
+		if ((newTags.length + input.existing.tags.length) >= 1000)
+			throw new Error("Too many tags")
 
 	if (newTags.length > 0) await tagCollection.insertMany(newTags);
 

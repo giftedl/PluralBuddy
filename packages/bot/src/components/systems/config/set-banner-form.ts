@@ -18,13 +18,13 @@ export default class SetPFPForm extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		await ctx.interaction.update(ctx.loading());
+		await ctx.interaction.update(ctx.loading(await ctx.userTranslations()));
 
 		const { system, storagePrefix } = await ctx.retrievePUser()
 
 		if (system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -40,7 +40,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (attachment.value.size > 1_000_000) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -58,12 +58,13 @@ export default class SetPFPForm extends ModalCommand {
 				bucketName,
 				objectName,
 				{ authorId: ctx.author.id, alterId: '@system', type: "banner/form" },
+				(system.systemBanner ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${storagePrefix}${system.systemBanner?.split(storagePrefix)[1]}` : undefined
 			);
 			
 			objectName = newObject
 		} catch (error) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -73,16 +74,16 @@ export default class SetPFPForm extends ModalCommand {
 		const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
 
 		await createSystemOperation(
-			system, { systemBanner: publicUrl }, ctx.userTranslations(), "discord"
+			system, { systemBanner: publicUrl }, (await ctx.userTranslations()), "discord"
 		);
 
 		return await ctx.editResponse({
 			components: [
-				...new SystemSettingsView(ctx.userTranslations()).topView(
+				...new SystemSettingsView((await ctx.userTranslations())).topView(
 					"public-settings",
 					system.associatedUserId,
 				),
-				...new SystemSettingsView(ctx.userTranslations()).publicProfile(
+				...new SystemSettingsView((await ctx.userTranslations())).publicProfile(
 					system,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

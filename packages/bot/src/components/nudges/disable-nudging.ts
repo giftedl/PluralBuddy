@@ -20,11 +20,11 @@ export default class DisableNudgingButton extends ComponentCommand {
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
 				{ userId: user.userId },
-				{ $set: { nudging: { blockedUsers: [], currentlyEnabled: true } } },
+				{ $set: { nudging: { blockedUsers: [], currentlyEnabled: true, dmReply: false } } },
 			);
 
 			// Set user in memory
-			user.nudging = { blockedUsers: [], currentlyEnabled: true };
+			user.nudging = { blockedUsers: [], currentlyEnabled: true, dmReply: false };
 		}
 		// End database migration
 
@@ -34,7 +34,7 @@ export default class DisableNudgingButton extends ComponentCommand {
 		});
 
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).successView("DISABLE_NUDGING_DONE"),
+			components: new AlertView((await ctx.userTranslations())).successView("DISABLE_NUDGING_DONE"),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 	}

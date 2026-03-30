@@ -37,10 +37,10 @@ export default class RoleGeneralContentsButton extends ComponentCommand {
 						roleId,
 					),
 				)
-				.setTitle(ctx.userTranslations().FORM_ROLE_CONFIG)
+				.setTitle((await ctx.userTranslations()).FORM_ROLE_CONFIG)
 				.setComponents([
 					new Label()
-						.setLabel(ctx.userTranslations().ROLE_CONTENTS)
+						.setLabel((await ctx.userTranslations()).ROLE_CONTENTS)
 						.setComponent(
 							new TextInput()
 								.setStyle(TextInputStyle.Paragraph)

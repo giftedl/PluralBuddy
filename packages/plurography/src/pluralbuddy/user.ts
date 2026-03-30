@@ -7,15 +7,18 @@ import { assetStringGeneration } from "./operation";
 export const PUserObject = z.object({
     userId: z.string(),
 
+    userLang: z.string().optional().default("en"),
     system: PSystemObject.optional(),
     storagePrefix: z.string(),
     blacklisted: z.boolean().default(false),
     nudging: z.object({
         blockedUsers: z.string().array(),
-        currentlyEnabled: z.boolean()
+        currentlyEnabled: z.boolean(),
+        dmReply: z.boolean().default(false),
     }).default({
         blockedUsers: [],
-        currentlyEnabled: true
+        currentlyEnabled: true,
+        dmReply: false,
     })
 })
 
@@ -25,10 +28,12 @@ export const defaultUserStructure = (userId: string) => {
     return {
         userId,
         blacklisted: false,
+        userLang: "en",
         storagePrefix: assetStringGeneration(8),
         nudging: {
             blockedUsers: [],
-            currentlyEnabled: true
+            currentlyEnabled: true,
+            dmReply: false
         }
     } satisfies PUser
 }

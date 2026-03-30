@@ -13,11 +13,11 @@ import { PSystemObject, type ImportStage } from "plurography";
 import type { BaseResource } from "seyfert";
 import { AlertView } from "./views/alert";
 import { importControllers } from "./lib/importing/importControllers";
-import { translations } from "./lang/en_us";
 import { LoadingView } from "./views/loading";
 import { MessageFlags } from "seyfert/lib/types";
 import type { StatisticResource } from "./cache/statistics";
 import { createSystemOperation } from "./lib/system-operation";
+import { getLanguageByUserId } from "./lib/lang";
 
 const SystemEditInput = PSystemObject.omit({
 	alterIds: true,
@@ -69,6 +69,8 @@ export const clientRoutes = app
 					{ error: "Provided import stage hasn't been responded to yet." },
 					{ status: 400 },
 				);
+
+				const translations = await getLanguageByUserId(importStage.originatingSystemId)
 
 			client.interactions
 				.editOriginal(importStage.webhook.token, {
@@ -135,8 +137,8 @@ export const clientRoutes = app
 		),
 		async ({ req, json }) => {
 			const { method, changedOperation, oldSystem } = req.valid("json");
+			const translations = await getLanguageByUserId(oldSystem.associatedUserId)
 
-			console.log(method)
 			createSystemOperation(
 				oldSystem,
 				changedOperation,

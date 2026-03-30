@@ -19,7 +19,7 @@ export default class SystemConfigCommand extends SubCommand {
 		if (user.system === undefined) {
 			return await ctx.ephemeral(
 				{
-					components: new AlertView(ctx.userTranslations()).errorView(
+					components: new AlertView((await ctx.userTranslations())).errorView(
 						"ERROR_SYSTEM_DOESNT_EXIST",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -33,11 +33,11 @@ export default class SystemConfigCommand extends SubCommand {
 		return await ctx.ephemeral(
 			{
 				components: [
-					...new SystemSettingsView(ctx.userTranslations()).topView(
+					...new SystemSettingsView((await ctx.userTranslations())).topView(
 						"general",
 						user.system.associatedUserId,
 					),
-					...new SystemSettingsView(ctx.userTranslations()).generalSettings(
+					...new SystemSettingsView((await ctx.userTranslations())).generalSettings(
 						user.system,
 						ctx.guildId,
 					),

@@ -15,5 +15,11 @@ export const { GET } = createFromSource(source, {
       // use your desired value, like page.slugs[0]
       tag: page.slugs[0],
     }
-  }
+  },
+  localeMap: {
+    // [locale]: Orama options
+    pt: { language: 'portuguese' },
+    de: { language: 'german' },
+    en: { language: 'english' },
+  },
 });

@@ -125,6 +125,7 @@ export async function uploadDiscordAttachmentToGcp(
 	bucketName: string,
 	objectName: string,
 	metadata: Record<string, string>,
+	oldObject?: string,
 ) {
 	const attachmentUrl = attachment.url;
 	const discordResponse = await fetch(attachmentUrl);
@@ -141,6 +142,7 @@ export async function uploadDiscordAttachmentToGcp(
 	const fileType = await fileTypeFromBuffer(buffer);
 	const gcpUploadUrl = `https://storage.googleapis.com/upload/storage/v1/b/${encodeURIComponent(bucketName)}/o?uploadType=media&name=${encodeURIComponent(objectName + `.${fileType?.ext}`)}`;
 	const gcpMetadataUrl = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucketName)}/o/${encodeURIComponent(objectName + `.${fileType?.ext}`)}`;
+	const gcpDeleteUrl = `https://storage.googleapis.com/storage/v1/b/${encodeURIComponent(bucketName)}/o/${encodeURIComponent(oldObject ?? "")}`;
 
 	const gcpResponse = await fetch(gcpUploadUrl, {
 		method: "POST",
@@ -163,8 +165,25 @@ export async function uploadDiscordAttachmentToGcp(
 		}),
 	});
 
+	if (oldObject) {
+		await fetch(gcpDeleteUrl, {
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+				"Content-Type": "application/json",
+			},
+		}).then(v => console.log(v))
+	}
+
 	return {
 		gcpResponse,
 		newObject: objectName + `.${fileType?.ext}`,
 	};
 }
+
+export async function deleteOneAttachment(
+	accessToken: string,
+	bucketName: string,
+	objectName: string,) {
+		
+	}

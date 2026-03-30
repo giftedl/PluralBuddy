@@ -262,14 +262,13 @@ export async function performAlterAutoProxy(
 		const { emojis: uploadedEmojis, newMessage: processedContents } =
 			await processEmojis(contents);
 
-		const messageComponents =
-			processedContents.length === 0
+		const messageComponents = [
+			...roleBeforeComponents,
+			...(processedContents.length === 0
 				? []
-				: [
-						...roleBeforeComponents,
-						new TextDisplay().setContent(processedContents),
-						...roleAfterComponents,
-					];
+				: [new TextDisplay().setContent(processedContents)]),
+			...roleAfterComponents,
+		];
 
 		if (message.guildId)
 			proxy(
@@ -284,7 +283,9 @@ export async function performAlterAutoProxy(
 				messageComponents,
 				uploadedEmojis,
 				guild,
-				(alter.avatarUrlMap ?? {})[message.guildId] ?? alter?.avatarUrl ?? undefined,
+				(alter.avatarUrlMap ?? {})[message.guildId] ??
+					alter?.avatarUrl ??
+					undefined,
 			);
 	}
 }

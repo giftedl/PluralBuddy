@@ -1,0 +1,5 @@
+files:
+  - source: /packages/bot/src/i18n/en.ts
+    translation: /packages/bot/src/i18n/%two_letters_code%.ts
+  - source: /apps/docs/messages/en.json
+    translation: /apps/docs/messages/%two_letters_code%.json

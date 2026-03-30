@@ -32,14 +32,14 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 
         if (guild.getFeatures().disabledNudging) {
             return await ctx.write({
-                components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
+                components: new AlertView((await ctx.userTranslations())).errorView("FEATURE_DISABLED_GUILD"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
 
 		if (message === null) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -53,7 +53,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 			user.nudging.blockedUsers.includes(ctx.author.id)
 		) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"USER_CANNOT_BE_NUDGED",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -68,14 +68,14 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 				new ActionRow().setComponents(
 					new Button()
 						.setCustomId(InteractionIdentifier.Nudge.Snooze.create())
-						.setLabel(ctx.userTranslations().NUDGE_SNOOZE)
+						.setLabel((await ctx.userTranslations()).NUDGE_SNOOZE)
 						.setStyle(ButtonStyle.Primary)
 						.setEmoji(emojis.xWhite),
 					new Button()
 						.setCustomId(
 							InteractionIdentifier.Nudge.BlockUser.create(ctx.author.id),
 						)
-						.setLabel(ctx.userTranslations().BLOCK_SNOOZE)
+						.setLabel((await ctx.userTranslations()).BLOCK_SNOOZE)
 						.setStyle(ButtonStyle.Secondary),
 				),
 			],

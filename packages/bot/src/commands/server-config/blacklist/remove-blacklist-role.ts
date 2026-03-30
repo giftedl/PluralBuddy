@@ -44,8 +44,7 @@ export default class AddPrefixCommand extends SubCommand {
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.editResponse({
-			components: new AlertView(ctx.userTranslations()).successViewCustom(`${ctx.userTranslations().SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${ctx
-				.userTranslations()
+			components: new AlertView((await ctx.userTranslations())).successViewCustom(`${(await ctx.userTranslations()).SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${(await ctx.userTranslations())
 				.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 					"%blacklist_items%",
 					[

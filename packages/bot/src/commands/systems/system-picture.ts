@@ -52,7 +52,7 @@ const options = {
 export default class EditAlterPictureCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.write({
-			components: new LoadingView(ctx.userTranslations()).loadingView(),
+			components: new LoadingView((await ctx.userTranslations())).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
@@ -61,7 +61,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -70,13 +70,13 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		if (attachmentText === undefined && attachment === undefined) {
 			await createSystemOperation(
-				user.system, { systemAvatar: null }, ctx.userTranslations(), "discord"
+				user.system, { systemAvatar: null }, (await ctx.userTranslations()), "discord"
 			);
 
 			return await ctx.editResponse({
 				components: [
-					...new AlertView(ctx.userTranslations()).successViewCustom(
-						ctx.userTranslations().PFP_SUCCESS.replace("@%alter%", "your system"),
+					...new AlertView((await ctx.userTranslations())).successViewCustom(
+						(await ctx.userTranslations()).PFP_SUCCESS.replace("@%alter%", "your system"),
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
@@ -97,11 +97,12 @@ export default class EditAlterPictureCommand extends SubCommand {
 					bucketName,
 					objectName,
 					{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture" },
+					(user.system.systemAvatar ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${user.system.systemAvatar?.split(user.storagePrefix)[1]}` : undefined
 				);
 				objectName = newObject;
 			} catch (error) {
 				return await ctx.editResponse({
-					components: new AlertView(ctx.userTranslations()).errorView(
+					components: new AlertView((await ctx.userTranslations())).errorView(
 						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -112,13 +113,13 @@ export default class EditAlterPictureCommand extends SubCommand {
 		const publicUrl = objectName !== undefined ? `https://pluralbuddy.giftedly.dev/${objectName}` : attachmentText;
 
 		await createSystemOperation(
-			user.system, { systemAvatar: publicUrl }, ctx.userTranslations(), "discord"
+			user.system, { systemAvatar: publicUrl }, (await ctx.userTranslations()), "discord"
 		);
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView(ctx.userTranslations()).successViewCustom(
-					ctx.userTranslations().PFP_SUCCESS.replace("@%alter%", "your system"),
+				...new AlertView((await ctx.userTranslations())).successViewCustom(
+					(await ctx.userTranslations()).PFP_SUCCESS.replace("@%alter%", "your system"),
 				),
 				new Container().setComponents(
 					new MediaGallery().addItems(

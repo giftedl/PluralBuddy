@@ -21,7 +21,7 @@ export default class SetProxyDelayForm extends ModalCommand {
 
         if (Number.isNaN(proxyDelay) || proxyDelay > 2.5 || proxyDelay < 0) {
             return await ctx.write({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_INVALID_NUMBER"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_INVALID_NUMBER"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
@@ -38,11 +38,11 @@ export default class SetProxyDelayForm extends ModalCommand {
 
 		return await ctx.interaction.update({
 			components: [
-				...new ServerConfigView(ctx.userTranslations()).topView(
+				...new ServerConfigView((await ctx.userTranslations())).topView(
 					"general",
 					guild.guildId,
 				),
-				...await new ServerConfigView(ctx.userTranslations()).generalSettings(
+				...await new ServerConfigView((await ctx.userTranslations())).generalSettings(
 					guild,
 					(await ctx.getDefaultPrefix()) ?? "",
 					ctx.interaction?.message?.messageReference === undefined,

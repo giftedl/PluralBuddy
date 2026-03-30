@@ -29,7 +29,7 @@ export default class RoleContentsForm extends ModalCommand {
 	
 		if (!role)
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ROLE_PREFERENCE_DOESNT_EXIST",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -48,7 +48,7 @@ export default class RoleContentsForm extends ModalCommand {
 		ctx.client.cache.pguild.remove(guild.guildId)
 
 		return await ctx.interaction.update({
-			components: new ServerConfigView(ctx.userTranslations()).roleGeneralView(
+			components: new ServerConfigView((await ctx.userTranslations())).roleGeneralView(
 				role,
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

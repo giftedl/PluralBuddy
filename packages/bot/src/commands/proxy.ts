@@ -30,6 +30,8 @@ import { processEmojis } from "@/lib/proxying/process-emojis";
 import { processUrlIntegrations } from "@/lib/proxying/process-url-attachments";
 import { createError } from "@/lib/create-error";
 import { getGuildFromId } from "@/types/guild";
+import { getColor } from "colorthief";
+import { getSimilarWebhooks } from "@/lib/proxying/util";
 
 const options = {
 	"alter-name": createStringOption({
@@ -62,7 +64,7 @@ export default class SystemCommand extends Command {
 		if (message === undefined && attachment === undefined)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
+					...new AlertView((await ctx.userTranslations())).errorView(
 						"CONTENT_ERROR_PROXY",
 					),
 				],
@@ -71,7 +73,7 @@ export default class SystemCommand extends Command {
 
 		if (((await ctx.guild())?.memberCount ?? 0) > 30) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"SERVER_TOO_BIG",
 				),
 
@@ -89,7 +91,7 @@ export default class SystemCommand extends Command {
 
 		if (alter === null) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -102,12 +104,16 @@ export default class SystemCommand extends Command {
 			true,
 		);
 
+		const channel = await ctx.channel();
+		const parent =
+			"parentId" in channel && channel.isThread() ? channel.parentId : null;
+
 		const system = (await ctx.retrievePUser()).system;
 
 		if (!userPerms.has(["ManageWebhooks", "ManageMessages"]))
 			return await ctx.editResponse({
 				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
+					...new AlertView((await ctx.userTranslations())).errorView(
 						"NO_PERMISSIONS_PROXY",
 					),
 				],
@@ -117,7 +123,7 @@ export default class SystemCommand extends Command {
 		if (alter.alterMode === "nickname")
 			return await ctx.editResponse({
 				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
+					...new AlertView((await ctx.userTranslations())).errorView(
 						"NICKNAME_MANUAL_PROXY",
 					),
 				],
@@ -127,20 +133,14 @@ export default class SystemCommand extends Command {
 		if (system?.disabled)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
+					...new AlertView((await ctx.userTranslations())).errorView(
 						"ERROR_DISABLED_SYSTEM",
 					),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 
-		const similarWebhooks = (
-			await client.webhooks.listFromChannel(ctx.channelId)
-		).filter(
-			(val) =>
-				val.name === "PluralBuddy Proxy" &&
-				(val.user ?? { id: 0 }).id === client.botId,
-		);
+		const similarWebhooks = await getSimilarWebhooks(parent ?? ctx.channelId);
 		let webhook = null;
 
 		if (similarWebhooks.length >= 1) {
@@ -153,8 +153,8 @@ export default class SystemCommand extends Command {
 				.catch(() => null);
 			if (webhook === null) {
 				createError(ctx.guildId ?? "", {
-					title: `Error while creating webhook for <#${ctx.channelId}>`,
-					description: `There was an error while creating the corresponding webhook for <#${ctx.channelId}>. Check if PluralBuddy has the correct permissions in that channel.`,
+					title: (await ctx.userTranslations()).ERROR_CREATING_WEBHOOK_TITLE,
+					description: (await ctx.userTranslations()).ERROR_CREATING_WEBHOOK_DESC,
 					type: "WebhookFailedCreation",
 					responsibleUserId: ctx.author.id,
 					responsibleChannelId: ctx.channelId,
@@ -162,7 +162,7 @@ export default class SystemCommand extends Command {
 
 				return await ctx.editResponse({
 					components: [
-						...new AlertView(ctx.userTranslations()).errorView(
+						...new AlertView((await ctx.userTranslations())).errorView(
 							"ERROR_MANUAL_PROXY",
 						),
 					],
@@ -174,7 +174,7 @@ export default class SystemCommand extends Command {
 		if (webhook === undefined)
 			return await ctx.editResponse({
 				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
+					...new AlertView((await ctx.userTranslations())).errorView(
 						"ERROR_MANUAL_PROXY",
 					),
 				],
@@ -238,6 +238,7 @@ export default class SystemCommand extends Command {
 				},
 				query: {
 					wait: true,
+					...(parent === null ? {} : { thread_id: ctx.channelId }),
 				},
 			})
 			.then((sentMessage) => {
@@ -253,6 +254,21 @@ export default class SystemCommand extends Command {
 				(async () => {
 					const guild = await getGuildFromId(ctx.guildId ?? "");
 					const user = await client.users.fetch(ctx.author.id);
+
+					let color = "Green";
+
+					if (!guild.logChannel) return;
+
+					try {
+						const image = await (
+							await fetch(
+								`https://wsrv.nl?url=${(alter?.avatarUrlMap ?? {})[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png"}`,
+								{ signal: AbortSignal.timeout(3000) },
+							)
+						).arrayBuffer();
+
+						color = (await getColor(image))?.hex() ?? "Green";
+					} catch (_) {}
 
 					if (!guild.logChannel) return;
 
@@ -286,7 +302,7 @@ export default class SystemCommand extends Command {
 -# Proxied via: /proxy
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
 									)
-									.setColor("Green"),
+									.setColor((color as `#${string}` | "Green") ?? "Green"),
 							],
 							flags: MessageFlags.IsComponentsV2,
 							allowed_mentions: { parse: [] },
@@ -323,17 +339,19 @@ export default class SystemCommand extends Command {
 						emoji.delete();
 					}
 
-				ctx.editResponse({
-					components: new AlertView(ctx.userTranslations()).successViewCustom(
-						ctx
-							.userTranslations()
-							.SUCCESS_PROXY.replaceAll(
+				(async () => {
+					ctx.editResponse({
+						components: new AlertView(
+							(await ctx.userTranslations()),
+						).successViewCustom(
+							((await ctx.userTranslations())).SUCCESS_PROXY.replaceAll(
 								"%message-link%",
 								`https://discord.com/channels/${ctx.guildId}/${sentMessage?.channelId}/${sentMessage?.id}`,
 							),
-					),
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				});
+						),
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					});
+				})();
 			});
 	}
 }

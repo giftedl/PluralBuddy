@@ -12,7 +12,7 @@ export default class DisabledOption extends ComponentCommand {
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		return await ctx.write({
-			components: new AlertView(ctx.userTranslations()).errorView(
+			components: new AlertView((await ctx.userTranslations())).errorView(
 				"OPTION_DISABLED",
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

@@ -23,14 +23,14 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 
         if (guild.getFeatures().disabledMessageInfo) {
             return await ctx.editResponse({
-                components: new AlertView(ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
+                components: new AlertView((await ctx.userTranslations())).errorView("FEATURE_DISABLED_GUILD"),
                 flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
             })
         }
 
 		if (message === null) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"MESSAGE_NOT_MINE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -42,7 +42,7 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 
 		if (user === null || user.system === undefined || alter === null) {
 			return await ctx.editResponse({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"DATA_DOESNT_EXIST",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -50,7 +50,7 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 		}
 
 		return await ctx.editResponse({
-			components: await new MessageInfo(ctx.userTranslations()).messageInfo(
+			components: await new MessageInfo((await ctx.userTranslations())).messageInfo(
 				message,
 				alter,
 				user.system,

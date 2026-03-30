@@ -18,10 +18,11 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
 	}
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
-		return await ctx.update({
+		await ctx.deferUpdate();
+		return await ctx.editResponse({
 			components: [
 				...new PluralBuddyIntro(
-					ctx.userTranslations(),
+					(await ctx.userTranslations()),
 				).simplyPluralImportPage(),
 			],
 			files: [1, 2, 3, 4, 5, 6, 7].map((v) =>

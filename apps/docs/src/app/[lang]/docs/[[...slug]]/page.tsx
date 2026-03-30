@@ -1,0 +1,85 @@
+import { getPageImage, source } from "@/lib/source";
+import {
+	DocsBody,
+	DocsDescription,
+	DocsPage,
+	DocsTitle,
+} from "@/components/layout/page";
+import { notFound } from "next/navigation";
+import { getMDXComponents } from "@/mdx-components";
+import type { Metadata } from "next";
+import { createRelativeLink } from "fumadocs-ui/mdx";
+import { Separator } from "@/components/ui/separator";
+import { Feedback } from "@/components/feedback/client";
+import { PostHog } from "posthog-node";
+import { after } from "next/server";
+
+export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">) {
+	const params = await props.params;
+	const page = source.getPage(params.slug);
+	if (!page) notFound();
+
+	const MDX = page.data.body;
+
+	return (
+		<DocsPage
+			toc={page.data.toc}
+			full={page.data.full}
+			tableOfContent={{
+				style: "clerk",
+			}}
+		>
+			<DocsTitle>{page.data.title}</DocsTitle>
+			<DocsDescription>{page.data.description}</DocsDescription>
+			<Separator />
+			<DocsBody>
+				<MDX
+					components={getMDXComponents({
+						// this allows you to link to other pages with relative file paths
+						a: createRelativeLink(source, page),
+					})}
+				/>
+			</DocsBody>
+			<Feedback
+				onSendAction={async (feedback) => {
+					"use server";
+
+					const posthog = new PostHog(process.env.POSTHOG_API_KEY ?? "", {
+						host: "https://us.i.posthog.com",
+						flushAt: 1, // flush immediately in serverless environment
+						flushInterval: 0, // same
+					});
+
+					await posthog.captureImmediate({
+						event: "on_rate_docs",
+						properties: feedback,
+					});
+
+					after(() => posthog.shutdown());
+
+					return { githubUrl: "https://github.com/giftedl/PluralBuddy" };
+				}}
+			/>
+		</DocsPage>
+	);
+}
+
+export async function generateStaticParams() {
+	return source.generateParams();
+}
+
+export async function generateMetadata(
+	props: PageProps<"/[lang]/docs/[[...slug]]">,
+): Promise<Metadata> {
+	const params = await props.params;
+	const page = source.getPage(params.slug);
+	if (!page) notFound();
+
+	return {
+		title: `${page.data.title} | PluralBuddy`,
+		description: page.data.description,
+		openGraph: {
+			images: getPageImage(page).url,
+		},
+	};
+}

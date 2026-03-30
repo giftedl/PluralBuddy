@@ -22,7 +22,7 @@ export default class NextPageTagPagination extends ComponentCommand {
 
         if (user.system === undefined) {
             return await ctx.followup({
-                components: new AlertView(ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
                 flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
             })
         }
@@ -30,7 +30,7 @@ export default class NextPageTagPagination extends ComponentCommand {
         if (corresponding === undefined) {
             return await ctx.followup({
                 components: [
-                    ...new AlertView(ctx.userTranslations()).errorView(
+                    ...new AlertView((await ctx.userTranslations())).errorView(
                         "ERROR_TAG_PAGINATION_TOO_OLD",
                     ),
                 ],
@@ -52,7 +52,7 @@ export default class NextPageTagPagination extends ComponentCommand {
 
         return await ctx.editResponse({
             components: [
-                ...await new SystemSettingsView(ctx.userTranslations()).tagsSettings(user.system, corresponding)
+                ...await new SystemSettingsView((await ctx.userTranslations())).tagsSettings(user.system, corresponding)
             ]
         })
     }

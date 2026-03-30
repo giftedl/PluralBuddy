@@ -30,7 +30,7 @@ export default class EditContextForm extends ModalCommand {
 
         if (message === null) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"NOT_RECENT_ENOUGH",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -42,7 +42,7 @@ export default class EditContextForm extends ModalCommand {
 			message.guildId !== ctx.guildId
 		) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_OWN_MESSAGE",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -57,7 +57,7 @@ export default class EditContextForm extends ModalCommand {
 
 		if (similarWebhooks[0] === undefined) {
 			return await ctx.write({
-				components: new AlertView(ctx.userTranslations()).errorView(
+				components: new AlertView((await ctx.userTranslations())).errorView(
 					"ERROR_MANUAL_PROXY",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -71,8 +71,8 @@ export default class EditContextForm extends ModalCommand {
 		await processEditContents(message, fetchedMessage, webhook, contents as string, guild, ctx.member)
 
 		return ctx.write({
-			components: new AlertView(ctx.userTranslations()).successViewCustom(
-				ctx.userTranslations().SUCCESSFULLY_EDITED_MESSAGE.replace("%message%", `https://discord.com/channels/${ctx.guildId}/${fetchedMessage?.channelId}/${fetchedMessage?.id}`),
+			components: new AlertView((await ctx.userTranslations())).successViewCustom(
+				(await ctx.userTranslations()).SUCCESSFULLY_EDITED_MESSAGE.replace("%message%", `https://discord.com/channels/${ctx.guildId}/${fetchedMessage?.channelId}/${fetchedMessage?.id}`),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

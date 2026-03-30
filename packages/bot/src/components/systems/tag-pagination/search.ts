@@ -35,7 +35,7 @@ export default class NextPagePagination extends ComponentCommand {
 		if (corresponding === undefined) {
 			return await ctx.write({
 				components: [
-					...new AlertView(ctx.userTranslations()).errorView(
+					...new AlertView((await ctx.userTranslations())).errorView(
 						"ERROR_TAG_PAGINATION_TOO_OLD",
 					),
 				],
@@ -45,12 +45,12 @@ export default class NextPagePagination extends ComponentCommand {
 
 		return await ctx.modal(
 			new Modal()
-				.setTitle(ctx.userTranslations().SEARCH_FORM_TITLE)
+				.setTitle((await ctx.userTranslations()).SEARCH_FORM_TITLE)
                 .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.TagPagination.SearchQueryForm.create(corresponding.id))
 				.setComponents([
 					new Label()
-						.setLabel(ctx.userTranslations().SEARCH_QUERY)
-						.setDescription(ctx.userTranslations().SEARCH_REG_EXPRESSIONS)
+						.setLabel((await ctx.userTranslations()).SEARCH_QUERY)
+						.setDescription((await ctx.userTranslations()).SEARCH_REG_EXPRESSIONS)
 						.setComponent(
                             new TextInput()
                                 .setStyle(TextInputStyle.Short)
