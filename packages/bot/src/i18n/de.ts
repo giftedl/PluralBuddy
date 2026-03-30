@@ -245,7 +245,10 @@ Systems can have **privacy values** which are values that describe who can see w
 
 > **Credits:**
 > %linein% Programmed w/ :heart_hands: by @giftedly 
-> %lineright% Art by %catjamming% @raincloudzy
+> %linein% Art by %catjamming% @raincloudzy
+> **Translations:**
+> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+> %lineright% 🇧🇷 Portuguese translations by @lemon_piece.
 
 -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
