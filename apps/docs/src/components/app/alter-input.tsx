@@ -40,10 +40,7 @@ export function AlterInput({
 				max: 50,
 				...(search === "" ? {} : { search }),
 			}),
-		getNextPageParam: (lastPage, pages, a, b) => {
-			console.log(a, b);
-			return lastPage.length > 0 ? pages.length + 50 : undefined;
-		},
+		getNextPageParam: (lastPage, pages, a, b) => lastPage.length > 0 ? pages.length + 50 : undefined,
 		initialPageParam: 0,
 	});
 
