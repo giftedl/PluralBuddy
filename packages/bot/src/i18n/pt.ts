@@ -93,7 +93,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   TAG_SPACE_WARNING: "Como essa tag tem **espaços** nela, alguns comandos podem exigir que você coloque o nome de exibição entre aspas para ser analisado corretamente. Além disso, você pode também usar comandos na aba apps.",
   TAG_ALREADY_EXISTS: "Você já tem uma tag chamada **%display%** no seu sistema.",
   CONFIRMATION_SYSTEM_DELETION: "# :warning: __VOCÊ ESTÁ EXCLUINDO O SEU SISTEM__ :warning:\n**Esta ação __NAO PODERÁ__ ser desfeita pelo suporte PluralBuddy **, ou por você, em qualquer circunstância, ou em QUALQUER data no futuro. __Isso excluirá TODOS os dados do sistema, incluindo tags, alteradores e outros conteúdos do seu sistema__.\n\n> **dica Pro:** Se você precisa simplesmente desativar o proxying para todos os integrantes, pode ser melhor **desativar** o sistema inteiro.",
-  CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
+  CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# Como por meio da [Política de Privacidade do PluralBuddy](https://gftl.fyi/privacy), esta ação apagará todos os dados relacionados ao seu sistema, **exceto** para banners do sistema e fotos de perfil. Esses podem ser excluídos usando o comando de %command%`media-included`.",
   CONFIRMATION_SYSTEM_DELETION_BTN: "Reconheço que isso se trata de uma ação permanente, continuar",
   BACK_TO_SAFETY_BTN: "Não, voltar à segurança",
   CONFIRMATION_ALTER_DELETION: "Are you sure you'd like to delete @%alter%? **This action cannot be undone.**",
