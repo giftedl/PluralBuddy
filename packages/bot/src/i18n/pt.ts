@@ -344,7 +344,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   OWNED_BY_PROFILE: "**Associado a:** ",
   TAGS_PROFILE: "**Tags atribuídas**: ",
   ID_SMALL_PROFILE: "-# ID: ",
-  LIST_MORE_PROFILE: ", and {{ length }} more...",
+  LIST_MORE_PROFILE: ", e mais {{ length }}...",
   ALT_AVATAR: "foto de perfil de @{{ alter }}",
   ALT_BANNER: "banner de @{{ alter }}",
   CURRENT_PROXY_MODE: "-# Modo atual para @{{ username }} é {{ proxyMode }}",
