@@ -9,9 +9,11 @@ import { PAlter } from "plurography";
 export async function getAvailableAlters({
 	skip,
 	max = 10,
+	search,
 }: {
 	skip?: number;
 	max?: number;
+	search?: string;
 }): Promise<PAlter[]> {
 	const session = await auth.api.getSession({
 		headers: await headers(),
@@ -32,10 +34,23 @@ export async function getAvailableAlters({
 	const alters = db.collection<PAlter>("alters");
 	const owner = await getDiscordIdBySessionId(session.user.id);
 	const applicationsList = await alters
-		.find({ systemId: owner })
+		.find({
+			systemId: owner,
+			...(search
+				? {
+						$or: [
+							{ $text: { $search: search, $caseSensitive: false } },
+							{ username: { $regex: `^${search}` } },
+						],
+					}
+				: {}),
+		})
 		.skip(skip ?? 0)
 		.limit(max)
 		.toArray();
 
-	return applicationsList.map(v => { let {_id, ...c} = v; return c;});
+	return applicationsList.map((v) => {
+		let { _id, ...c } = v;
+		return c;
+	});
 }

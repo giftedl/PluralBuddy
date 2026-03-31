@@ -4,7 +4,6 @@
 @import "tw-animate-css";
 @import "@fontsource-variable/atkinson-hyperlegible-mono";
 @import 'fumadocs-openapi/css/preset.css';
-@import "shadcn/tailwind.css";
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));

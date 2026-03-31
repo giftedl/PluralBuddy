@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllExpressApplications } from "@/app/(app)/app/express/actions";
+import { getAllExpressApplications } from "@/app/[lang]/(app)/app/express/actions";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
 import {
