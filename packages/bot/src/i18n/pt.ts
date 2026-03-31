@@ -359,7 +359,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   LATCH_DESC: "Definir este Integrante como o primeiro integrante no modo de trava.",
   ALTER_NAME: "Modo de Integrante",
   ALTER_DESC: "Faz proxy somente desse integrante até que o auto-proxy seja desativado.",
-  ALTER_DESC_DISABLED: "Esta opção não pode ser selecionada. Você deve entrar em um integrante para poder selecionar essa opção.",
+  ALTER_DESC_DISABLED: "Esta opção não pode ser escolhida. Você deve entrar como um integrante para poder escolher a opção.",
   OFF_NAME: "Desabilitado",
   OFF_DESC: "Desabilitar o auto-proxy do seu sistema.",
   DELETE_DESC: "**Isto não pode ser desfeito.** A exclusão de um Integrante apagará seus dados e integrante.",
