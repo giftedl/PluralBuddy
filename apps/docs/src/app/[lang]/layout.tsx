@@ -36,13 +36,13 @@ export default async function Layout({
 					}}
 					i18n={i18nUI.provider(lang)}
 				>
-					<TooltipProvider>{children}</TooltipProvider>
-					<Toaster position="bottom-right" />
-				
-					<NextIntlClientProvider>
-						{children}
-						<Toaster position="bottom-right" />
-					</NextIntlClientProvider>
+					<TooltipProvider>
+						<NextIntlClientProvider>
+							{children}
+
+							<Toaster position="bottom-right" />
+						</NextIntlClientProvider>
+					</TooltipProvider>
 				</RootProvider>
 			</Body>
 		</Html>
