@@ -46,7 +46,7 @@
 		"discord-interactions": "^4.4.0",
 		"fumadocs-core": "^16.6.16",
 		"fumadocs-mdx": "14.0.3",
-		"fumadocs-openapi": "^10.3.18",
+		"fumadocs-openapi": "10.1.1",
 		"fumadocs-ui": "16.1.0",
 		"hono": "^4.12.7",
 		"lucide-react": "^0.577.0",
