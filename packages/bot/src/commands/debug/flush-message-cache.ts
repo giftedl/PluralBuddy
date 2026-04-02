@@ -15,7 +15,11 @@ export default class FlushMessageCache extends SubCommand {
             })
 
         await ctx.deferReply()
-        await ctx.client.cache.messages?.adapter.remove("seyfert:message.*")
+
+        const guilds = (await ctx.client.guilds.list({}, true)) ?? [];
+
+        for (const guild of guilds)
+            await ctx.client.cache.messages?.flush(guild.id)
 
         return await ctx.editResponse({
             components: new AlertView(await ctx.userTranslations()).successViewCustom("Message cache flushed!"),
