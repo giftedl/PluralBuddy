@@ -17,7 +17,7 @@ export default class FlushMessageCache extends SubCommand {
         await ctx.deferReply()
         await ctx.client.cache.messages?.adapter.remove("message.*")
 
-        return await ctx.write({
+        return await ctx.editResponse({
             components: new AlertView(await ctx.userTranslations()).successViewCustom("Message cache flushed!"),
             flags: MessageFlags.IsComponentsV2
         })
