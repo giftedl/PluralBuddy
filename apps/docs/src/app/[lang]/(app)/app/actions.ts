@@ -6,6 +6,12 @@ import { MongoClient } from "mongodb";
 import { headers } from "next/headers";
 import { PAlter } from "plurography";
 
+function stripId(obj: any) {
+	const { _id, ...ret } = obj;
+
+	return ret;
+}
+
 export async function getAvailableAlters({
 	skip,
 	max = 10,
@@ -53,4 +59,25 @@ export async function getAvailableAlters({
 		let { _id, ...c } = v;
 		return c;
 	});
+}
+
+export async function getAlter(id: string): Promise<PAlter> {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
+	if (!session) throw new Error("Session error.");
+
+	const client = new MongoClient(process.env.MONGO ?? "");
+	await client.connect();
+
+	const db = client.db(
+		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
+	);
+	const alters = db.collection<PAlter>("alters");
+	const owner = await getDiscordIdBySessionId(session.user.id);
+
+	return stripId(
+		await alters.findOne({ alterId: Number(id), systemId: owner }),
+	);
 }

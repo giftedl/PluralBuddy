@@ -40,14 +40,17 @@ export function AlterInput({
 				max: 50,
 				...(search === "" ? {} : { search }),
 			}),
-		getNextPageParam: (lastPage, pages, a, b) => lastPage.length > 0 ? pages.length + 50 : undefined,
+		getNextPageParam: (lastPage, pages, a, b) =>
+			lastPage.length > 0 ? pages.length + 50 : undefined,
 		initialPageParam: 0,
 	});
 
 	if (isPending)
 		return (
-			<div className="fixed block top-[50%] right-[50%]">
-				<Spinner />
+			<div className="grid grid-cols-1 my-[30px] border p-3 rounded-2xl relative">
+				<div className="fixed block top-[50%] right-[50%] ">
+					<Spinner />
+				</div>
 			</div>
 		);
 
@@ -60,7 +63,12 @@ export function AlterInput({
 					value={dynamicSearch}
 					onChange={(e) => setDynamicSearch(e.target.value)}
 				/>
-				<Button onClick={() => {setSearch(dynamicSearch); refetch()}}>
+				<Button
+					onClick={() => {
+						setSearch(dynamicSearch);
+						refetch();
+					}}
+				>
 					<Search />
 				</Button>
 			</Field>
@@ -110,10 +118,15 @@ export function AlterInput({
 					))}
 				</div>
 
-{hasNextPage && <Button onClick={() => fetchNextPage()} className="w-full" disabled={isFetchingNextPage}>
-					{isFetchingNextPage && <Spinner />} Fetch More
-				</Button>}
-				
+				{hasNextPage && (
+					<Button
+						onClick={() => fetchNextPage()}
+						className="w-full"
+						disabled={isFetchingNextPage}
+					>
+						{isFetchingNextPage && <Spinner />} Fetch More
+					</Button>
+				)}
 			</div>
 		</div>
 	);
