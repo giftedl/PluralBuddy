@@ -380,6 +380,7 @@ export default createEvent({
 								});
 
 					if (proxyTagValid(proxyTag, message)) {
+						console.log("Attempted to proxy: ", proxyTag)
 				const locale = await getLanguageByUserId(message.author.id);
 						// Check for system tag policy
 						if (
