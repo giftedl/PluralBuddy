@@ -15,6 +15,10 @@ import { Button } from "../ui/shadcn-button";
 import { Separator } from "../ui/separator";
 import { SettingsSidebar } from "../settings-sidebar";
 import { CreateExpressModal } from "../app/create-express-modal";
+import { cn } from "@/lib/cn";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Link from "next/link";
+import { AlterView } from "../app/alter-view";
 
 export function ExpressList() {
 	const { isPending, data } = useQuery({
@@ -52,7 +56,39 @@ export function ExpressList() {
 						</CreateExpressModal>
 					</CardContent>
 				</Card>
-				<Separator className="mb-4" />
+				<Separator orientation="horizontal" className="h-px mb-3" />
+				{data?.map((v) => (
+					<Link href={`/app/express/alter/${v.alterId}`} key={v.alterId}>
+						<Card className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}>
+							<CardContent className="gap-4 flex items-center">
+								<div
+									style={{
+										backgroundColor:
+											(v.alter?.color as `#${string}`) ?? `#808080`,
+									}}
+									className=" h-[60px] w-[5px] rounded-xl"
+								/>
+								<Avatar>
+									<AvatarImage src={v.alter?.avatarUrl ?? ""} />
+									<AvatarFallback>
+										{v.alter?.displayName[0].toLocaleUpperCase()}
+									</AvatarFallback>
+								</Avatar>
+								<div>
+									<CardTitle className="text-sm">
+										@{v.alter?.username}{" "}
+										<span className="text-muted-foreground">
+											{v.alter?.displayName}
+										</span>
+									</CardTitle>
+									<CardDescription className="pt-1">
+										{v.alter?.description?.substring(0, 60)}
+									</CardDescription>
+								</div>
+							</CardContent>
+						</Card>
+					</Link>
+				))}
 			</div>
 		</main>
 	);

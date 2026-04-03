@@ -4,13 +4,23 @@ import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { MongoClient } from "mongodb";
 import { headers } from "next/headers";
-import { PAlter } from "plurography";
+import { PAlter, PExpressApplication } from "plurography";
 
 function stripId(obj: any) {
-	const { _id, ...ret } = obj;
+	if (!obj) return null;
+
+	let { _id, ...ret } = obj;
+
+	if (ret.token) {
+		const { token, ...newo } = ret;
+
+		ret = newo;
+	}
 
 	return ret;
 }
+
+type Expressified<T> = T & { isExpressified: boolean };
 
 export async function getAvailableAlters({
 	skip,
@@ -20,7 +30,7 @@ export async function getAvailableAlters({
 	skip?: number;
 	max?: number;
 	search?: string;
-}): Promise<PAlter[]> {
+}): Promise<Expressified<PAlter>[]> {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
@@ -38,8 +48,9 @@ export async function getAvailableAlters({
 		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 	);
 	const alters = db.collection<PAlter>("alters");
+	const applications = db.collection<PAlter>("applications");
 	const owner = await getDiscordIdBySessionId(session.user.id);
-	const applicationsList = await alters
+	const altersList = await alters
 		.find({
 			systemId: owner,
 			...(search
@@ -54,14 +65,20 @@ export async function getAvailableAlters({
 		.skip(skip ?? 0)
 		.limit(max)
 		.toArray();
+	const applicationsList = await applications
+		.find({ alterId: { $in: altersList.map((v) => v.alterId) } })
+		.toArray();
 
-	return applicationsList.map((v) => {
+	return altersList.map((v) => {
 		let { _id, ...c } = v;
-		return c;
+		return {
+			...c,
+			isExpressified: applicationsList.some((v) => v.alterId === c.alterId),
+		};
 	});
 }
 
-export async function getAlter(id: string): Promise<PAlter> {
+export async function getAlter(id: string): Promise<(PAlter & { express: PExpressApplication | null }) | null> {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
@@ -75,9 +92,18 @@ export async function getAlter(id: string): Promise<PAlter> {
 		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 	);
 	const alters = db.collection<PAlter>("alters");
+	const applications = db.collection<PExpressApplication>("applications");
 	const owner = await getDiscordIdBySessionId(session.user.id);
+	const alter = await alters.findOne({ alterId: Number(id), systemId: owner });
 
-	return stripId(
-		await alters.findOne({ alterId: Number(id), systemId: owner }),
-	);
+	if (!alter)
+		return null;
+
+	return {
+		...stripId(alter),
+		express:
+			stripId(
+				await applications.findOne({ alterId: Number(id), owner: owner }),
+			) ?? null,
+	};
 }

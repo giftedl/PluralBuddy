@@ -12,13 +12,17 @@ import { Field } from "../ui/field";
 import { Button } from "../ui/shadcn-button";
 import { Search } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { PAlter } from "plurography";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function AlterInput({
 	selectedAlter,
 	setSelectedAlter,
+	disableExpressAlters,
 }: {
 	selectedAlter: string | null;
 	setSelectedAlter: (newVal: string | null) => void;
+	disableExpressAlters?: boolean | undefined;
 }) {
 	const [search, setSearch] = useState("");
 	const [dynamicSearch, setDynamicSearch] = useState("");
@@ -76,44 +80,31 @@ export function AlterInput({
 				<div className="py-2 px-0.5 grid grid-cols-2 gap-2">
 					{data?.pages.map((page, i) => (
 						<React.Fragment key={i}>
-							{page.map((v) => (
-								<Card
-									key={v.alterId}
-									className={cn(
-										"min-h-[92px] min-w-[267px] cursor-pointer",
-										Number(selectedAlter) === v.alterId
-											? "transition-all bg-primary/30 border-primary border"
-											: "",
-									)}
-									onClick={() => setSelectedAlter(String(v.alterId))}
-								>
-									<CardContent className="gap-4 flex items-center">
-										<div
-											style={{
-												backgroundColor: (v.color as `#${string}`) ?? `#808080`,
-											}}
-											className=" h-[60px] w-[5px] rounded-xl"
-										/>
-										<Avatar>
-											<AvatarImage src={v.avatarUrl ?? ""} />
-											<AvatarFallback>
-												{v.displayName[0].toLocaleUpperCase()}
-											</AvatarFallback>
-										</Avatar>
-										<div>
-											<CardTitle className="text-sm">
-												@{v.username}{" "}
-												<span className="text-muted-foreground">
-													{v.displayName}
-												</span>
-											</CardTitle>
-											<CardDescription className="pt-1">
-												{v.description?.substring(0, 60)}
-											</CardDescription>
-										</div>
-									</CardContent>
-								</Card>
-							))}
+							{page.map((v) =>
+								disableExpressAlters && v.isExpressified ? (
+									<Tooltip key={v.alterId}>
+										<TooltipTrigger>
+											<AlterCard
+												v={v}
+												disableExpressAlters={disableExpressAlters ?? false}
+												selectedAlter={selectedAlter}
+												setSelectedAlter={setSelectedAlter}
+											/>
+										</TooltipTrigger>
+										<TooltipContent>
+											This alter already has an express application attached to it.
+										</TooltipContent>
+									</Tooltip>
+								) : (
+									<AlterCard
+										v={v}
+										key={v.alterId}
+										disableExpressAlters={disableExpressAlters ?? false}
+										selectedAlter={selectedAlter}
+										setSelectedAlter={setSelectedAlter}
+									/>
+								),
+							)}
 						</React.Fragment>
 					))}
 				</div>
@@ -129,5 +120,60 @@ export function AlterInput({
 				)}
 			</div>
 		</div>
+	);
+}
+
+function AlterCard({
+	v,
+	disableExpressAlters,
+	selectedAlter,
+	setSelectedAlter,
+}: {
+	v: PAlter & { isExpressified: boolean };
+	disableExpressAlters: boolean;
+	selectedAlter: string | null;
+	setSelectedAlter: (newVal: string | null) => void;
+}) {
+	return (
+		<Card
+			key={v.alterId}
+			className={cn(
+				"min-h-[92px] min-w-[267px] cursor-pointer",
+				disableExpressAlters && v.isExpressified
+					? "cursor-not-allowed bg-card/20"
+					: "cursor-pointer",
+				Number(selectedAlter) === v.alterId
+					? "transition-all bg-primary/30 border-primary border"
+					: "",
+			)}
+			onClick={() =>
+				(!v.isExpressified || !disableExpressAlters) &&
+				setSelectedAlter(String(v.alterId))
+			}
+		>
+			<CardContent className="gap-4 flex items-center">
+				<div
+					style={{
+						backgroundColor: (v.color as `#${string}`) ?? `#808080`,
+					}}
+					className=" h-[60px] w-[5px] rounded-xl"
+				/>
+				<Avatar>
+					<AvatarImage src={v.avatarUrl ?? ""} />
+					<AvatarFallback>
+						{v.displayName[0].toLocaleUpperCase()}
+					</AvatarFallback>
+				</Avatar>
+				<div>
+					<CardTitle className="text-sm">
+						@{v.username}{" "}
+						<span className="text-muted-foreground">{v.displayName}</span>
+					</CardTitle>
+					<CardDescription className="pt-1">
+						{v.description?.substring(0, 60)}
+					</CardDescription>
+				</div>
+			</CardContent>
+		</Card>
 	);
 }

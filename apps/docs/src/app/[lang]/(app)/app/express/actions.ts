@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
-import { APIApplication, RESTGetAPICurrentUserResult } from "discord-api-types/v10";
+import { APIApplication, RESTGetAPICurrentUserResult, RESTPatchCurrentApplicationJSONBody } from "discord-api-types/v10";
 import { MongoClient } from "mongodb";
 import { headers } from "next/headers";
 import { PAlter, PExpressApplication } from "plurography";
@@ -10,7 +10,7 @@ import { PAlter, PExpressApplication } from "plurography";
 export async function getAllExpressApplications(
 	skip?: number,
 	max: number = 0,
-): Promise<Omit<PExpressApplication, "token">[]> {
+): Promise<(Omit<PExpressApplication, "token"> & { alter: PAlter | null })[]> {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
@@ -102,6 +102,7 @@ export async function createExpressApplication(data: {
 
 	const importedKey = await crypto.subtle.importKey(
 		"raw",
+		// @ts-ignore
 		Uint8Array.fromHex(key),
 		"AES-GCM",
 		true,
@@ -125,6 +126,16 @@ export async function createExpressApplication(data: {
 		owner,
 		alterId: Number(data.alterId),
 	});
+
+	await fetch("https://discord.com/api/v10/applications/@me", {
+		method: "PATCH",
+		headers: { 
+			Authorization: `Bot ${data.token}`
+		},
+		body: JSON.stringify({
+			interactions_endpoint_url: `${process.env.NEXT_PUBLIC_HOST}/api/exchange/express/${discordData.id}`,
+		} satisfies RESTPatchCurrentApplicationJSONBody)
+	})
 
 	return {};
 }

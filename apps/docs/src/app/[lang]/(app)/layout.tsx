@@ -8,7 +8,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const queryClient = new QueryClient();
 
-export default function Layout({ children }: LayoutProps<"/">) {
+export default function Layout({ children }: LayoutProps<"/[lang]">) {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<NuqsAdapter>

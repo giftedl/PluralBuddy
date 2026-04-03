@@ -18,6 +18,7 @@ import { AlterView } from "./alter-view";
 import { Spinner } from "../ui/spinner";
 import { createExpressApplication } from "@/app/[lang]/(app)/app/express/actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function CreateExpressModal({ children }: { children: ReactNode }) {
 	const [open, setOpen] = useState(false);
@@ -25,6 +26,7 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 	const [token, setToken] = useState<string>("");
 	const [nextLoading, setNextLoading] = useState<boolean>(false);
 	const [page, setPage] = useState(0);
+	const router = useRouter();
 
 	useEffect(() => {
 		if (open === false) {
@@ -65,6 +67,7 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 								<AlterInput
 									selectedAlter={selectedAlter}
 									setSelectedAlter={setSelected}
+									disableExpressAlters
 								/>
 								<DialogFooter>
 									<Button
@@ -130,6 +133,11 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 											});
 
 											setNextLoading(false);
+
+											toast.success("Done!");
+
+											router.push(`/app/express/alter/${selectedAlter}`)
+											
 										}}
 									>
 										{nextLoading && <Spinner />} Next
