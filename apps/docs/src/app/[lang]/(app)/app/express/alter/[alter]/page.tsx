@@ -24,7 +24,7 @@ export default async function ExpressPage(props: PageProps<"/[lang]/app/express/
 		return <DiscordLoginComponent />;
 	}
 
-    const alterObj = await getAlter(alter);
+    const alterObj = await getAlter(alter, true);
     
     if (!alterObj)
         return notFound();

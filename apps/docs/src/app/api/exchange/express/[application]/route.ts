@@ -26,6 +26,7 @@ import {
 	MessageFlags,
 	RESTGetAPIInteractionOriginalResponseResult,
 	RESTPatchAPICurrentUserJSONBody,
+	RESTPatchCurrentApplicationJSONBody,
 } from "discord-api-types/v10";
 import {
 	ContainerBuilder,
@@ -274,6 +275,17 @@ export async function PUT(
 			avatar: finalAvatarData,
 			banner: finalBannerData,
 		} as RESTPatchAPICurrentUserJSONBody),
+	});
+
+	await fetch("https://discord.com/api/v10/applications/@me", {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bot ${botToken}`,
+		},
+		body: JSON.stringify({
+			icon: finalAvatarData,
+		} as RESTPatchCurrentApplicationJSONBody),
 	});
 
 	waitUntil(client.close());

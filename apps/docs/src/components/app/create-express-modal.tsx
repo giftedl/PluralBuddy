@@ -19,8 +19,11 @@ import { Spinner } from "../ui/spinner";
 import { createExpressApplication } from "@/app/[lang]/(app)/app/express/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export function CreateExpressModal({ children }: { children: ReactNode }) {
+	const t = useTranslations("ExpressModal");
+
 	const [open, setOpen] = useState(false);
 	const [selectedAlter, setSelected] = useState<string | null>(null);
 	const [token, setToken] = useState<string>("");
@@ -55,14 +58,8 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 								exit={{ opacity: 0, x: 40, scale: 0.97 }}
 								transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
 							>
-								<DialogTitle className="pb-3">
-									Select an associated alter
-								</DialogTitle>
-								<DialogDescription>
-									PluralBuddy associates an alter that already exists with the
-									new Express application you create. Choose an alter you'd like
-									to represent your new Express application.
-								</DialogDescription>
+								<DialogTitle className="pb-3">{t("page0_title")}</DialogTitle>
+								<DialogDescription>{t("page0_desc")}</DialogDescription>
 								<Separator />
 								<AlterInput
 									selectedAlter={selectedAlter}
@@ -74,7 +71,7 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 										disabled={selectedAlter === null}
 										onClick={() => setPage(1)}
 									>
-										Next
+										{t("pagination_next")}
 									</Button>
 								</DialogFooter>
 							</motion.div>
@@ -87,60 +84,69 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 								exit={{ opacity: 0, x: -40, scale: 0.97 }}
 								transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
 							>
-								<DialogTitle className="pb-3">
-									Create a Discord Application
-								</DialogTitle>
-								<DialogDescription>
-									Due to how PluralBuddy Express works, you need to create an
-									application for each alter that you want to assign with
-									Express.
-								</DialogDescription>
+								<DialogTitle className="pb-3">{t("page1_title")}</DialogTitle>
+								<DialogDescription>{t("page1_desc")}</DialogDescription>
 								<Separator />
 								<div className="p-4">
 									{selectedAlter && <AlterView selectedAlter={selectedAlter} />}
 								</div>
 								<Stepper className="p-4">
 									<StepperItem
-										title="Create an application"
-										description="You must go to the Discord Developer Portal to create an application for PluralBuddy."
+										title={t("stepper1_title")}
+										description={t("stepper1_desc")}
 									>
 										<Link
 											href="https://discord.com/developers/applications"
 											target="_blank"
 										>
-											<Button>Go to Discord Developer Portal</Button>
+											<Button>{t("stepper1_btn")}</Button>
 										</Link>
 									</StepperItem>
 									<StepperItem
-										title="Input bot token"
-										description="Hit the Bot Tab -> Reset token. Don't worry, this token is encrypted in our database."
+										title={t("stepper1_title")}
+										description={t("stepper1_desc")}
 									>
-										<Input placeholder="Bot Token" value={token} onChange={e => setToken(e.target.value)} />
+										<Input
+											placeholder="Bot Token"
+											value={token}
+											onChange={(e) => setToken(e.target.value)}
+										/>
 									</StepperItem>
 								</Stepper>
 								<DialogFooter>
-									<Button variant="outline" onClick={() => setPage(0)} disabled={nextLoading}>
-										Back
+									<Button
+										variant="outline"
+										onClick={() => setPage(0)}
+										disabled={nextLoading}
+									>
+										{t("pagination_back")}
 									</Button>
 									<Button
 										disabled={nextLoading || !token}
 										onClick={async () => {
-											setNextLoading(true)
+											setNextLoading(true);
 
-											await createExpressApplication({ token, alterId: selectedAlter ?? "" }).catch((e) => {
-												toast.error(<>Error while creating express application. <br/> Error: {e.message}</>);
-												setNextLoading(false)
+											await createExpressApplication({
+												token,
+												alterId: selectedAlter ?? "",
+											}).catch((e) => {
+												toast.error(
+													t.rich("error_creating", {
+														br: () => <br />,
+														message: e.message,
+													}),
+												);
+												setNextLoading(false);
 											});
 
 											setNextLoading(false);
 
-											toast.success("Done!");
+											toast.success(t("success"));
 
-											router.push(`/app/express/alter/${selectedAlter}`)
-											
+											router.push(`/app/express/alter/${selectedAlter}`);
 										}}
 									>
-										{nextLoading && <Spinner />} Next
+										{nextLoading && <Spinner />} {t("pagination_next")}
 									</Button>
 								</DialogFooter>
 							</motion.div>

@@ -2,7 +2,12 @@
 
 import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
-import { APIApplication, RESTGetAPICurrentUserResult, RESTPatchCurrentApplicationJSONBody } from "discord-api-types/v10";
+import {
+	APIApplication,
+	OAuth2Scopes,
+	RESTGetAPICurrentUserResult,
+	RESTPatchCurrentApplicationJSONBody,
+} from "discord-api-types/v10";
 import { MongoClient } from "mongodb";
 import { headers } from "next/headers";
 import { PAlter, PExpressApplication } from "plurography";
@@ -83,18 +88,21 @@ export async function createExpressApplication(data: {
 		alterId: Number(data.alterId),
 		systemId: owner,
 	});
-	const existingApplication = await applications
-		.findOne({ owner, alterId: Number(data.alterId) });
+	const existingApplication = await applications.findOne({
+		owner,
+		alterId: Number(data.alterId),
+	});
 
 	if (!alter || existingApplication) {
 		throw new Error("Not in correct state to create an express application.");
 	}
 
-	
-	const res = await fetch("https://discord.com/api/v10/applications/@me", { headers: { Authorization: `Bot ${data.token}`}});
+	const res = await fetch("https://discord.com/api/v10/applications/@me", {
+		headers: { Authorization: `Bot ${data.token}` },
+	});
 
 	if (!res.ok) {
-		throw new Error("Invalid token")
+		throw new Error("Invalid token");
 	}
 
 	const discordData: APIApplication = await res.json();
@@ -116,7 +124,7 @@ export async function createExpressApplication(data: {
 		Buffer.from(data.token),
 	);
 
-	applications.insertOne({
+	await applications.insertOne({
 		application: discordData.id,
 		token: {
 			iv: Buffer.from(iv).toString("hex"),
@@ -129,13 +137,28 @@ export async function createExpressApplication(data: {
 
 	await fetch("https://discord.com/api/v10/applications/@me", {
 		method: "PATCH",
-		headers: { 
-			Authorization: `Bot ${data.token}`
+		headers: {
+			Authorization: `Bot ${data.token}`,
+			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
 			interactions_endpoint_url: `${process.env.NEXT_PUBLIC_HOST}/api/exchange/express/${discordData.id}`,
-		} satisfies RESTPatchCurrentApplicationJSONBody)
-	})
+			integration_types_config: {
+				"0": {
+					oauth2_install_params: {
+						scopes: [OAuth2Scopes.Bot],
+						permissions: "0",
+					},
+				},
+				"1": {
+					oauth2_install_params: {
+						scopes: [OAuth2Scopes.ApplicationsCommands],
+						permissions: "0",
+					},
+				},
+			},
+		} satisfies RESTPatchCurrentApplicationJSONBody),
+	});
 
 	return {};
 }

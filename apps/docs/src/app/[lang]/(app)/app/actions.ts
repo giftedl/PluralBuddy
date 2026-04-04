@@ -2,6 +2,8 @@
 
 import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
+import { decryptExpressToken } from "@/lib/express-token-encryption";
+import { APIApplication, APIUser } from "discord-api-types/v10";
 import { MongoClient } from "mongodb";
 import { headers } from "next/headers";
 import { PAlter, PExpressApplication } from "plurography";
@@ -78,7 +80,17 @@ export async function getAvailableAlters({
 	});
 }
 
-export async function getAlter(id: string): Promise<(PAlter & { express: PExpressApplication | null }) | null> {
+export async function getAlter(
+	id: string,
+	with_app_data?: boolean,
+): Promise<
+	| (PAlter & {
+			express: PExpressApplication | null;
+			user: APIUser | undefined;
+			application: APIApplication | undefined;
+	  })
+	| null
+> {
 	const session = await auth.api.getSession({
 		headers: await headers(),
 	});
@@ -96,14 +108,41 @@ export async function getAlter(id: string): Promise<(PAlter & { express: PExpres
 	const owner = await getDiscordIdBySessionId(session.user.id);
 	const alter = await alters.findOne({ alterId: Number(id), systemId: owner });
 
-	if (!alter)
-		return null;
+	if (!alter) return null;
+
+	const expressData =
+		(await applications.findOne({ alterId: Number(id), owner: owner })) ?? null;
+
+	let discordUser: APIUser | undefined;
+	let discordApp: APIApplication | undefined;
+
+	if (with_app_data && expressData !== null) {
+		const botToken = await decryptExpressToken(
+			expressData.token.iv,
+			expressData.token.value,
+		);
+
+		discordUser = await (
+			await fetch("https://discord.com/api/v10/users/@me", {
+				headers: {
+					Authorization: `Bot ${botToken}`,
+				},
+			})
+		).json();
+
+		discordApp = await (
+			await fetch("https://discord.com/api/v10/applications/@me", {
+				headers: {
+					Authorization: `Bot ${botToken}`,
+				},
+			})
+		).json();
+	}
 
 	return {
 		...stripId(alter),
-		express:
-			stripId(
-				await applications.findOne({ alterId: Number(id), owner: owner }),
-			) ?? null,
+		express: stripId(expressData) ?? null,
+		user: discordUser,
+		application: discordApp,
 	};
 }

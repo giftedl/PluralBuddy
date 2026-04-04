@@ -19,12 +19,14 @@ import { cn } from "@/lib/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { AlterView } from "../app/alter-view";
+import { useTranslations } from "next-intl";
 
 export function ExpressList() {
 	const { isPending, data } = useQuery({
 		queryKey: ["express/list"],
 		queryFn: async () => getAllExpressApplications(),
 	});
+	const t = useTranslations("ExpressList");
 
 	if (isPending)
 		return (
@@ -45,10 +47,7 @@ export function ExpressList() {
 						<div>
 							<CardTitle>PluralBuddy Express</CardTitle>
 							<CardDescription>
-								Create user-proxies with PluralBuddy Express – assign your own
-								alters to Discord applications and use native Discord slash
-								commands to proxy as an alter. Works in direct messages, or any
-								server with Use External Apps granted.
+								{t("desc")}
 							</CardDescription>
 						</div>
 						<CreateExpressModal>
@@ -57,38 +56,40 @@ export function ExpressList() {
 					</CardContent>
 				</Card>
 				<Separator orientation="horizontal" className="h-px mb-3" />
-				{data?.map((v) => (
-					<Link href={`/app/express/alter/${v.alterId}`} key={v.alterId}>
-						<Card className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}>
-							<CardContent className="gap-4 flex items-center">
-								<div
-									style={{
-										backgroundColor:
-											(v.alter?.color as `#${string}`) ?? `#808080`,
-									}}
-									className=" h-[60px] w-[5px] rounded-xl"
-								/>
-								<Avatar>
-									<AvatarImage src={v.alter?.avatarUrl ?? ""} />
-									<AvatarFallback>
-										{v.alter?.displayName[0].toLocaleUpperCase()}
-									</AvatarFallback>
-								</Avatar>
-								<div>
-									<CardTitle className="text-sm">
-										@{v.alter?.username}{" "}
-										<span className="text-muted-foreground">
-											{v.alter?.displayName}
-										</span>
-									</CardTitle>
-									<CardDescription className="pt-1">
-										{v.alter?.description?.substring(0, 60)}
-									</CardDescription>
-								</div>
-							</CardContent>
-						</Card>
-					</Link>
-				))}
+				<div className="gap-3 grid">
+					{data?.map((v) => (
+						<Link href={`/app/express/alter/${v.alterId}`} key={v.alterId}>
+							<Card className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}>
+								<CardContent className="gap-4 flex items-center">
+									<div
+										style={{
+											backgroundColor:
+												(v.alter?.color as `#${string}`) ?? `#808080`,
+										}}
+										className=" h-[60px] w-[5px] rounded-xl"
+									/>
+									<Avatar>
+										<AvatarImage src={v.alter?.avatarUrl ?? ""} />
+										<AvatarFallback>
+											{v.alter?.displayName[0].toLocaleUpperCase()}
+										</AvatarFallback>
+									</Avatar>
+									<div>
+										<CardTitle className="text-sm">
+											@{v.alter?.username}{" "}
+											<span className="text-muted-foreground">
+												{v.alter?.displayName}
+											</span>
+										</CardTitle>
+										<CardDescription className="pt-1">
+											{v.alter?.description?.substring(0, 60)}
+										</CardDescription>
+									</div>
+								</CardContent>
+							</Card>
+						</Link>
+					))}
+				</div>
 			</div>
 		</main>
 	);
