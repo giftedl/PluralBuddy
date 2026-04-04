@@ -51,7 +51,7 @@ export function ExpressList() {
 							</CardDescription>
 						</div>
 						<CreateExpressModal>
-							<Button>Create Express Application</Button>
+							<Button>{t("btn")}</Button>
 						</CreateExpressModal>
 					</CardContent>
 				</Card>

@@ -14,7 +14,7 @@ export function Footer() {
 	const t = useTranslations("FooterComponent");
 
 	return (
-		<footer>
+		<footer className="border-t">
 			<Separator className="w-full" />
 			<div className="absolute overflow-hidden">
 				<div className="w-full pb-0 z-10 absolute flex flex-col md:flex-row md:items-center md:justify-between p-10">

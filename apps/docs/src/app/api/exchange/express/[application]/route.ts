@@ -179,7 +179,6 @@ export async function PUT(
 	const applications = db.collection<PExpressApplication>("applications");
 	const applicationObj = await applications.findOne({ application });
 
-
 	if (!applicationObj)
 		return Response.json(
 			{ error: "Must be owner of application" },
@@ -290,6 +289,44 @@ export async function PUT(
 
 	waitUntil(client.close());
 	return Response.json({ error: "Reloaded Discord commands" }, { status: 200 });
+}
+
+export async function DELETE(
+	request: NextRequest,
+	{ params }: { params: Promise<{ application: string }> },
+) {
+	const { application } = await params;
+
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
+	if (!session)
+		return Response.json({ error: "Session error." }, { status: 400 });
+
+	const client = new MongoClient(process.env.MONGO ?? "");
+	await client.connect();
+
+	const db = client.db(
+		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
+	);
+	const applications = db.collection<PExpressApplication>("applications");
+	const applicationObj = await applications.findOne({ application });
+
+	if (!applicationObj)
+		return Response.json(
+			{ error: "Must be owner of application" },
+			{ status: 405 },
+		);
+
+	if (
+		applicationObj.owner !== (await getDiscordIdBySessionId(session.user.id))
+	) {
+		return Response.json(
+			{ error: "Must be owner of application" },
+			{ status: 405 },
+		);
+	}
 }
 
 async function verifyDiscordRequest(
