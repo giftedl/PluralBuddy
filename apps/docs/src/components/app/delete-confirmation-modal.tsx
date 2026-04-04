@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { JSX, ReactNode, useState } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -24,7 +24,7 @@ export function DeleteConfirmationModal({
 	setOpen: (open: boolean) => void;
 	requiredDeletionText: string;
 	title: string;
-	description: string;
+	description: ReactNode;
 	onDelete: () => Promise<void>;
 }) {
 	const [loading, setLoading] = useState(false);
@@ -33,10 +33,9 @@ export function DeleteConfirmationModal({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogContent>
+			<DialogContent className="min-w-[700px]">
 				<DialogTitle>{title}</DialogTitle>
 				<DialogDescription>{description}</DialogDescription>
-				<DialogFooter>
 					<Input
 						className="w-full"
 						placeholder={t("placeholder", {
@@ -45,6 +44,7 @@ export function DeleteConfirmationModal({
                         value={value}
                         onChange={e => setValue(e.target.value)}
 					/>
+				<DialogFooter>
 					<Button
 						variant="destructive"
 						onClick={async () => {

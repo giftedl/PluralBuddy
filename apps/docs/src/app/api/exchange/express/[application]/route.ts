@@ -327,6 +327,11 @@ export async function DELETE(
 			{ status: 405 },
 		);
 	}
+
+	await applications.deleteOne({ application });
+
+
+	return Response.json({}, { status: 200 })
 }
 
 async function verifyDiscordRequest(

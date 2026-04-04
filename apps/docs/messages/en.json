@@ -135,7 +135,10 @@
         "profile_title": "Application Profile",
         "profile_user_id": "Copy User ID",
         "profile_resync_prfs": "Resync User Profile",
-        "profile_desc": "Your application profile is shown on the left (or above on mobile). PluralBuddy can sync your profile between what is shown in your system and the user data on your Express Application, however it is not automatic."
+        "profile_desc": "Your application profile is shown on the left (or above on mobile). PluralBuddy can sync your profile between what is shown in your system and the user data on your Express Application, however it is not automatic.",
+
+        "delete_title": "Delete {alter}'s Express Application",
+        "delete_desc": "By deleting this Express application, it will no longer be associated with a native Discord application. This will not delete the alter, just the association to a native Discord application. Using this applications commands after deletion will result in an error from Discord. <b>This action cannot be undone.</b><br></br><br></br>To delete this object, type {alter} in the input below to permanently:"
     },
     "RawJSONModal": {
         "title": "Raw JSON",

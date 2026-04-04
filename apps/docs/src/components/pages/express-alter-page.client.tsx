@@ -37,7 +37,7 @@ import { CreateExpressModal } from "../app/create-express-modal";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -47,6 +47,7 @@ import {
 } from "../ui/dropdown-menu";
 import { JSONModal } from "../app/json-modal";
 import { useTranslations } from "next-intl";
+import { DeleteConfirmationModal } from "../app/delete-confirmation-modal";
 
 export function ExpressAlterPage({
 	alter,
@@ -57,16 +58,26 @@ export function ExpressAlterPage({
 		application: APIApplication | undefined;
 	};
 }) {
-	const mutation = useMutation({
+	const refreshMutation = useMutation({
 		mutationFn: async (appId: string) => {
 			return await fetch(`/api/exchange/express/${appId}`, {
 				method: "PUT",
 			});
 		},
 	});
-    const t = useTranslations("ExpressPage")
+	const deleteMutation = useMutation({
+		mutationFn: async (appId: string) => {
+			return await fetch(`/api/exchange/express/${appId}`, {
+				method: "DELETE",
+			});
+		},
+	});
+
+	const t = useTranslations("ExpressPage");
 	const [authorizeLoading, setAuthorizeLoading] = useState(false);
 	const [jsonModalOpen, setJsonModalOpen] = useState(false);
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const router = useRouter();
 
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
@@ -78,6 +89,25 @@ export function ExpressAlterPage({
 					rootName="alter"
 					setOpen={setJsonModalOpen}
 				/>
+				<DeleteConfirmationModal
+					open={deleteModalOpen}
+					setOpen={setDeleteModalOpen}
+                    requiredDeletionText={alter.username}
+                    title={t("delete_title", {
+                        alter: alter.username
+                    })}
+                    description={t.rich("delete_desc", {
+                        alter: alter.username,
+                        b: (children) => <b>{children}</b>,
+                        br: () => <br></br>
+                    })}
+                    onDelete={async () => {
+                        await deleteMutation.mutateAsync(alter.express?.application ?? "");
+
+                        router.push("/app/express")
+                    }}
+				/>
+
 				<AlterView selectedAlter={String(alter.alterId)}>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -90,7 +120,7 @@ export function ExpressAlterPage({
 								disabled={authorizeLoading || alter.express === null}
 								onClick={async () => {
 									setAuthorizeLoading(true);
-									await mutation.mutateAsync(alter.express?.application ?? "");
+									await refreshMutation.mutateAsync(alter.express?.application ?? "");
 									setAuthorizeLoading(false);
 								}}
 							>
@@ -107,20 +137,30 @@ export function ExpressAlterPage({
 								</DropdownMenuItem>
 							</Link>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => navigator.clipboard.writeText(String(alter?.alterId))}>
+							<DropdownMenuItem
+								onClick={() =>
+									navigator.clipboard.writeText(String(alter?.alterId))
+								}
+							>
 								<Copy size={9} />
 								{t("nav_menu_copy_alter")}
 							</DropdownMenuItem>
-							<DropdownMenuItem disabled={alter.express === null} onClick={() => navigator.clipboard.writeText(String(alter?.express?.alterId))}>
+							<DropdownMenuItem
+								disabled={alter.express === null}
+								onClick={() =>
+									navigator.clipboard.writeText(String(alter?.express?.alterId))
+								}
+							>
 								<Copy size={9} />
-                                {t("nav_menu_copy_app")}
+								{t("nav_menu_copy_app")}
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={() => setJsonModalOpen(true)}>
 								<Code size={9} />
-                                {t("nav_menu_json")}
+								{t("nav_menu_json")}
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem className="text-red-400">
+
+							<DropdownMenuItem className="text-red-400" onClick={() => setDeleteModalOpen(true)}>
 								<Trash size={9} /> {t("nav_menu_delete")}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -135,9 +175,7 @@ export function ExpressAlterPage({
 							<AppWindow />
 						</EmptyMedia>
 						<EmptyTitle>{t("empty_title")}</EmptyTitle>
-						<EmptyDescription>
-							{t("empty_desc")}
-						</EmptyDescription>
+						<EmptyDescription>{t("empty_desc")}</EmptyDescription>
 						<EmptyContent className="flex-row justify-center gap-2">
 							<CreateExpressModal>
 								<Button>{t("empty_btn")}</Button>
@@ -156,7 +194,7 @@ export function ExpressAlterPage({
 								disabled={authorizeLoading}
 								onClick={async () => {
 									setAuthorizeLoading(true);
-									await mutation.mutateAsync(alter.express?.application ?? "");
+									await refreshMutation.mutateAsync(alter.express?.application ?? "");
 									setAuthorizeLoading(false);
 
 									window.open(
@@ -164,7 +202,8 @@ export function ExpressAlterPage({
 									);
 								}}
 							>
-								{authorizeLoading && <Spinner />}{t("auth_link")} <ExternalLink />
+								{authorizeLoading && <Spinner />}
+								{t("auth_link")} <ExternalLink />
 							</Button>
 						</CardContent>
 					</Card>
@@ -175,9 +214,7 @@ export function ExpressAlterPage({
 							<Separator className="h-px my-3" />
 
 							<Field>
-								<FieldLabel htmlFor="public-id">
-									{t("app_pk")}
-								</FieldLabel>
+								<FieldLabel htmlFor="public-id">{t("app_pk")}</FieldLabel>
 								<Input
 									id="public-id"
 									value={alter.express?.publicKey}
@@ -239,7 +276,7 @@ export function ExpressAlterPage({
 													disabled={authorizeLoading}
 													onClick={async () => {
 														setAuthorizeLoading(true);
-														await mutation.mutateAsync(
+														await refreshMutation.mutateAsync(
 															alter.express?.application ?? "",
 														);
 														setAuthorizeLoading(false);
@@ -248,7 +285,9 @@ export function ExpressAlterPage({
 													{authorizeLoading ? <Spinner /> : <RefreshCcw />}
 												</Button>
 											</TooltipTrigger>
-											<TooltipContent>{t("profile_resync_prfs")}</TooltipContent>
+											<TooltipContent>
+												{t("profile_resync_prfs")}
+											</TooltipContent>
 										</Tooltip>
 
 										<Avatar className="w-[80px] h-[80px] absolute bottom-0 left-[10px] border-6 border-card">
@@ -274,9 +313,7 @@ export function ExpressAlterPage({
 										</span>
 									</div>
 								</div>
-								<div className="px-4 max-md:py-4">
-                                    {t("profile_desc")}
-								</div>
+								<div className="px-4 max-md:py-4">{t("profile_desc")}</div>
 							</div>
 						</CardContent>
 					</Card>
