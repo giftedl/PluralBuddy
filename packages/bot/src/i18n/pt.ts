@@ -92,7 +92,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   CREATE_NEW_TAG_DONE: "Criado com sucesso  %color_emoji% **%tag_name%** em seu sistema. Use %command% para mais detalhes.",
   TAG_SPACE_WARNING: "Como essa tag tem **espaços** nela, alguns comandos podem exigir que você coloque o nome de exibição entre aspas para ser analisado corretamente. Além disso, você pode também usar comandos na aba apps.",
   TAG_ALREADY_EXISTS: "Você já tem uma tag chamada **%display%** no seu sistema.",
-  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system intead.",
+  CONFIRMATION_SYSTEM_DELETION: "# :warning: __VOCÊ ESTÁ EXCLUINDO O SEU SISTEM__ :warning:\n**Esta ação __NAO PODERÁ__ ser desfeita pelo suporte PluralBuddy **, ou por você, em qualquer circunstância, ou em QUALQUER data no futuro. __Isso excluirá TODOS os dados do sistema, incluindo tags, alteradores e outros conteúdos do seu sistema__.\n\n> **dica Pro:** Se você precisa simplesmente desativar o proxying para todos os integrantes, pode ser melhor **desativar** o sistema inteiro.",
   CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
   CONFIRMATION_SYSTEM_DELETION_BTN: "Reconheço que isso se trata de uma ação permanente, continuar",
   BACK_TO_SAFETY_BTN: "Não, voltar à segurança",
@@ -345,10 +345,10 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   TAGS_PROFILE: "**Tags atribuídas**: ",
   ID_SMALL_PROFILE: "-# ID: ",
   LIST_MORE_PROFILE: ", and {{ length }} more...",
-  ALT_AVATAR: "@{{ alter }}'s avatar",
-  ALT_BANNER: "@{{ alter }}'s banner",
-  CURRENT_PROXY_MODE: "-# Current mode for @{{ username }} is {{ proxyMode }}",
-  UNLIMITED_ASSIGN: "You can assign an unlimited amount of tags to an alter and an unlimited amount of alters to a tag.",
+  ALT_AVATAR: "foto de perfil de @{{ alter }}",
+  ALT_BANNER: "banner de @{{ alter }}",
+  CURRENT_PROXY_MODE: "-# Modo atual para @{{ username }} é {{ proxyMode }}",
+  UNLIMITED_ASSIGN: "Você pode atribuir uma quantidade ilimitada de tags a um integrante e uma quantidade ilimitada de integrantes a uma tag.",
   AP_EXPLANATION: `You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
 > - *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
 > - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
@@ -423,7 +423,7 @@ To create a token:
 3. Hit add token and select the "Read" scope
 4. Add token -> Copy the created token.`,
   ALT_NAV_MENU: "Menu de Navegação",
-  ALT_GEAR: "Gear",
+  ALT_GEAR: "Engrenagem",
   ALT_ACCOUNTS: "Contas",
   ALT_TOKENS: "Tokens",
   ALT_NEW_TOKEN: "Adicionar novo token",

@@ -48,11 +48,11 @@ export const extendedContext = extendContext((interaction) => {
 				(interaction.content.endsWith("-p") ||
 					interaction.content.endsWith("-public"))
 			) {
-				const writtenMessage = await interaction.reply(body);
+				const writtenMessage = await ctx?.editResponse(body);
 
 				if (afterSendTask)
 					afterSendTask({
-						reply: writtenMessage.reply,
+						reply: writtenMessage?.write,
 						editMessage: interaction.editResponse,
 					});
 				return writtenMessage;

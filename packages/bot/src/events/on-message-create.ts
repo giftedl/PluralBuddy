@@ -298,7 +298,9 @@ export default createEvent({
 			// Only find the alters that we need
 			for (let i = 0; i < user.system.alterIds.length; i++) {
 				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
+				console.time(`alter number #${i}`)
 				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
+				console.timeEnd(`alter number #${i}`)
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 
 				if (i % 20 === 0 && indexingMessage) {
@@ -378,6 +380,7 @@ export default createEvent({
 								});
 
 					if (proxyTagValid(proxyTag, message)) {
+						console.log("Attempted to proxy: ", proxyTag)
 				const locale = await getLanguageByUserId(message.author.id);
 						// Check for system tag policy
 						if (
