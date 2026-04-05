@@ -43,9 +43,9 @@ const options = {
 @Options(options)
 export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
 		const { alter: alterName, public: publicMode } = ctx.options;
 		const systemId = ctx.author.id;
+		await ctx.deferReply(!publicMode);
 
 		const publicMessage = publicMode
 			? publicMode
