@@ -7,7 +7,6 @@ import { Command, createMiddleware, Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export const serverBlacklist = createMiddleware<void>(async (middle) => {
-	console.time("server blacklist");
 	const { blacklistedChannels, blacklistedRoles, blacklistedCategories } =
 	PGuildObject.parse(
 		(await middle.context.client.cache.pguild.get(middle.context.guildId ?? ""))?.g ??
@@ -23,7 +22,6 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 
 	if ("parentId" in channel && !isServerConfig)
 		if (blacklistedCategories.includes(channel.parentId ?? "")) {
-			console.timeEnd("server blacklist");
 			return await ctx.write({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"FEATURE_DISABLED_CHANNEL",
@@ -36,7 +34,6 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		blacklistedChannels.includes(middle.context.channelId) &&
 		!isServerConfig
 	) {
-		console.timeEnd("server blacklist");
 		return await ctx.write({
 			components: new AlertView((await ctx.userTranslations())).errorView(
 				"FEATURE_DISABLED_CHANNEL",
@@ -81,7 +78,6 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 						});
 					} catch (_) {}
 
-					console.timeEnd("server blacklist");
 					return await middle.pass();
 				}
 			}
@@ -98,11 +94,9 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 				});
 			} catch (_) {}
-			console.timeEnd("server blacklist");
 			return await middle.pass();
 		}
 	}
 
-	console.timeEnd("server blacklist");
 	return middle.next();
 });
