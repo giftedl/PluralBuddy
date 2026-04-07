@@ -42,6 +42,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 		}
 
 		if (!proxyTag.includes("text")) {
+			console.log("1", proxyTag)
 			return await context.write({
 				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
@@ -65,6 +66,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 		}
 
 		if (prefix === "" && suffix === "") {
+			console.log("2", proxyTag)
 			return await context.write({
 				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
