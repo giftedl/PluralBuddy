@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { CreateExpressModal } from "../app/create-express-modal";
-import Link from "next/link";
+import { Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
 import { useRouter } from "next/navigation";
@@ -80,8 +80,7 @@ export function ExpressAlterPage({
     const router = useRouter();
 
 	return (
-		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
-			<SettingsSidebar page="express" />
+		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
 				<JSONModal
 					data={alter}
@@ -104,7 +103,7 @@ export function ExpressAlterPage({
                     onDelete={async () => {
                         await deleteMutation.mutateAsync(alter.express?.application ?? "");
 
-                        router.push("/app/express")
+                        router.push("/app/settings/express")
                     }}
 				/>
 
@@ -128,7 +127,7 @@ export function ExpressAlterPage({
 								{t("nav_menu_sync_prof")}
 							</DropdownMenuItem>
 							<Link
-								href={`https://discord.com/oauth2/authorize?client_id=${alter.express?.application}`}
+								to={ `https://discord.com/oauth2/authorize?client_id=${alter.express?.application}` }
 								target="_blank"
 							>
 								<DropdownMenuItem disabled={alter.express === null}>

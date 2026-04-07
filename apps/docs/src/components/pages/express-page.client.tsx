@@ -1,6 +1,5 @@
 "use client";
 
-import { getAllExpressApplications } from "@/app/[lang]/(app)/app/express/actions";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
 import {
@@ -17,21 +16,24 @@ import { SettingsSidebar } from "../settings-sidebar";
 import { CreateExpressModal } from "../app/create-express-modal";
 import { cn } from "@/lib/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import Link from "next/link";
+import { Link } from "react-router";
 import { AlterView } from "../app/alter-view";
 import { useTranslations } from "next-intl";
+import { DynamicPageTitle } from "../app/dynamic-title";
+import { useTRPCClient } from "@/server/client";
 
 export function ExpressList() {
+	const trpc = useTRPCClient();
 	const { isPending, data } = useQuery({
 		queryKey: ["express/list"],
-		queryFn: async () => getAllExpressApplications(),
+		queryFn: async () => trpc.ExpressRouter.getAllExpressApplications.query({}),
 	});
 	const t = useTranslations("ExpressList");
 
 	if (isPending)
 		return (
-			<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
-				<SettingsSidebar page="express" />
+			<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
+				<DynamicPageTitle title="PluralBuddy Express • PluralBuddy App" />
 				<div className="fixed block top-[50%] right-[50%]">
 					<Spinner />
 				</div>
@@ -39,11 +41,11 @@ export function ExpressList() {
 		);
 
 	return (
-		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
-			<SettingsSidebar page="express" />
+		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
+			<DynamicPageTitle title="PluralBuddy Express • PluralBuddy App" />
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
 				<Card className="w-full mb-4">
-					<CardContent className="flex justify-between items-start gap-3">
+					<CardContent className="md:flex justify-between items-start gap-3">
 						<div>
 							<CardTitle>PluralBuddy Express</CardTitle>
 							<CardDescription>
@@ -51,14 +53,14 @@ export function ExpressList() {
 							</CardDescription>
 						</div>
 						<CreateExpressModal>
-							<Button>{t("btn")}</Button>
+							<Button className="max-md:mt-3">{t("btn")}</Button>
 						</CreateExpressModal>
 					</CardContent>
 				</Card>
 				<Separator orientation="horizontal" className="h-px mb-3" />
 				<div className="gap-3 grid">
 					{data?.map((v) => (
-						<Link href={`/app/express/alter/${v.alterId}`} key={v.alterId}>
+						<Link to={{ pathname: `/app/settings/express/alter/${v.alterId}` }} key={v.alterId}>
 							<Card className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}>
 								<CardContent className="gap-4 flex items-center">
 									<div

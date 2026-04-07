@@ -1,16 +1,19 @@
-import Link from "next/link";
+import { Link, useLocation, useRoutes } from "react-router";
 import { Button } from "./ui/shadcn-button";
+import { Separator } from "./ui/separator";
 
-export function SettingsSidebar({ page }: { page: "apps" | "express" }) {
+export function SettingsSidebar() {
+	const location = useLocation()
+
 	return (
-		<div className="flex gap-2">
-			<Link href="/app/authorized-apps">
-				<Button variant={page === "apps" ? "outline" : "ghost"}>
+		<div className="block pt-18 px-2">
+			<Link to={{ pathname: "/app/settings/authorized-apps" }} className="h-min">
+				<Button variant={location.pathname.endsWith("authorized-apps") ? "outline" : "ghost"} className="w-full text-left">
 					Authorized Applications
 				</Button>
 			</Link>
-			<Link href="/app/express">
-				<Button variant={page === "express" ? "outline" : "ghost"}>
+			<Link to={{ pathname: "/app/settings/express"}} className="h-min">
+				<Button variant={!location.pathname.endsWith("authorized-apps") ? "outline" : "ghost"} className="w-full text-left mt-2" >
 					Express
 				</Button>
 			</Link>

@@ -12,14 +12,14 @@ import { Button } from "../ui/shadcn-button";
 import { Separator } from "../ui/separator";
 import { AnimatePresence, motion } from "motion/react";
 import { Stepper, StepperItem } from "../stepper";
-import Link from "next/link";
+import { Link } from "react-router";
 import { Input } from "../ui/input";
 import { AlterView } from "./alter-view";
 import { Spinner } from "../ui/spinner";
-import { createExpressApplication } from "@/app/[lang]/(app)/app/express/actions";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router";
 import { useTranslations } from "next-intl";
+import { useTRPCClient } from "@/server/client";
 
 export function CreateExpressModal({ children }: { children: ReactNode }) {
 	const t = useTranslations("ExpressModal");
@@ -29,7 +29,8 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 	const [token, setToken] = useState<string>("");
 	const [nextLoading, setNextLoading] = useState<boolean>(false);
 	const [page, setPage] = useState(0);
-	const router = useRouter();
+	const navigate = useNavigate();
+	const trpc = useTRPCClient();
 
 	useEffect(() => {
 		if (open === false) {
@@ -96,7 +97,8 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 										description={t("stepper1_desc")}
 									>
 										<Link
-											href="https://discord.com/developers/applications"
+											to="https://discord.com/developers/applications"
+											
 											target="_blank"
 										>
 											<Button>{t("stepper1_btn")}</Button>
@@ -126,24 +128,26 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 										onClick={async () => {
 											setNextLoading(true);
 
-											await createExpressApplication({
-												token,
-												alterId: selectedAlter ?? "",
-											}).catch((e) => {
-												toast.error(
-													t.rich("error_creating", {
-														br: () => <br />,
-														message: e.message,
-													}),
-												);
-												setNextLoading(false);
-											});
+											await trpc.ExpressRouter.createExpressApplication
+												.query({
+													token,
+													alterId: selectedAlter ?? "",
+												})
+												.catch((e) => {
+													toast.error(
+														t.rich("error_creating", {
+															br: () => <br />,
+															message: e.message,
+														}),
+													);
+													setNextLoading(false);
+												});
 
 											setNextLoading(false);
 
 											toast.success(t("success"));
 
-											router.push(`/app/express/alter/${selectedAlter}`);
+											navigate(`/app/settings/express/alter/${selectedAlter}`);
 										}}
 									>
 										{nextLoading && <Spinner />} {t("pagination_next")}

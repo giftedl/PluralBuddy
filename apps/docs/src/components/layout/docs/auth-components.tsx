@@ -94,7 +94,7 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 						</button>
 					</PopoverTrigger>
 					<PopoverContent className="grid grid-cols-1 gap-2">
-						<Link href="/app/authorized-apps">
+						<Link href="/app/settings/authorized-apps">
 							<button
 								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
 								type="button"

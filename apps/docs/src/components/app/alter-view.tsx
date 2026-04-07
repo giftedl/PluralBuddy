@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
-import { getAlter } from "@/app/[lang]/(app)/app/actions";
+import { useTRPCClient } from '@/server/client';
 import { Spinner } from "../ui/spinner";
 import { cn } from "@/lib/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -13,9 +13,10 @@ export function AlterView({
 	selectedAlter: string;
 	children?: JSX.Element;
 }) {
+	const trpc = useTRPCClient()
 	const { data: v, isPending } = useQuery({
 		queryKey: [`alter/${selectedAlter}`],
-		queryFn: async () => getAlter(selectedAlter),
+		queryFn: async () => trpc.AlterRouter.getAlter.query({ id: selectedAlter }),
 	});
 
 	if (isPending || !v) return <Spinner />;

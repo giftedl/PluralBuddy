@@ -1,19 +1,16 @@
-import { getAvailableAlters } from "@/app/[lang]/(app)/app/actions";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
 import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { TimestampString } from "./timestamp-string";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Field } from "../ui/field";
 import { Button } from "../ui/shadcn-button";
 import { Search } from "lucide-react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { PAlter } from "plurography";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useTRPCClient } from '@/server/client';
 
 export function AlterInput({
 	selectedAlter,
@@ -24,6 +21,7 @@ export function AlterInput({
 	setSelectedAlter: (newVal: string | null) => void;
 	disableExpressAlters?: boolean | undefined;
 }) {
+	const trpc = useTRPCClient();
 	const [search, setSearch] = useState("");
 	const [dynamicSearch, setDynamicSearch] = useState("");
 	const {
@@ -39,10 +37,10 @@ export function AlterInput({
 	} = useInfiniteQuery({
 		queryKey: [`alters/${search}`],
 		queryFn: async ({ pageParam = 0 }) =>
-			getAvailableAlters({
-				skip: pageParam,
-				max: 50,
-				...(search === "" ? {} : { search }),
+			trpc.AlterRouter.getAvailableAlters.query({
+					skip: pageParam,
+					max: 50,
+					...(search === "" ? {} : { search }),
 			}),
 		getNextPageParam: (lastPage, pages, a, b) =>
 			lastPage.length > 0 ? pages.length + 50 : undefined,

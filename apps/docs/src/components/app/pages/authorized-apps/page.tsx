@@ -1,8 +1,15 @@
+"use client";
+
 import { ImportDataForm } from "@/components/app/import-data-form";
 import { AuthorizedAppsCard } from "@/components/authorized-apps";
 import { DiscordLoginComponent } from "@/components/discord-login";
 import { SettingsSidebar } from "@/components/settings-sidebar";
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardTitle,
+} from "@/components/ui/card";
 import {
 	Empty,
 	EmptyDescription,
@@ -11,39 +18,30 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
-import { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
-import { getImportDataById } from "@/lib/get-import";
-import { AppWindow, ArrowUpRightIcon, CloudDownload } from "lucide-react";
-import { Metadata } from "next";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { AppWindow } from "lucide-react";
+import { DynamicPageTitle } from "../../dynamic-title";
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@/components/ui/spinner";
 
-export const metadata: Metadata = {
-	title: "Authorized Apps - PluralBuddy App",
-	description: "View authorized applications on PluralBuddy.",
-	applicationName: "PluralBuddy",
-};
- 
+export default function AuthorizedAppsPage() {
+	const { data, isPending } = useQuery({
+		queryKey: ["oauth-consent"],
+		queryFn: async () => authClient.oauth2.getConsents()
+	}) 
 
-export default async function AuthorizedAppsPage() {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-
-	if (session === null) {
-		return <DiscordLoginComponent />;
-	}
-
-	const data = await auth.api.getOAuthConsents({
-		// This endpoint requires session cookies.
-		headers: await headers(),
-	});
+	if (isPending)
+		return (
+			<div className="grid grid-cols-1 my-[30px] border p-3 rounded-2xl relative">
+				<div className="fixed block top-[50%] right-[50%] ">
+					<Spinner />
+				</div>
+			</div>
+		);
 
 	return (
-		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-18 items-center mx-auto max-w-[1000px] mb-3">
-			<SettingsSidebar page="apps" />
+		<main className="flex w-full flex-1 flex-col gap-6 md:md:px-4 max-md:px-2 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
+			<DynamicPageTitle title="Authorized Apps • PluralBuddy App" />
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
 				<Card className="w-full mb-4">
 					<CardContent>
@@ -58,7 +56,7 @@ export default async function AuthorizedAppsPage() {
 				</Card>
 				<Separator className="mb-4" />
 				<div className="grid grid-cols-1 gap-2">
-					{data.length === 0 && (
+					{data?.data?.length === 0 && (
 						<Empty>
 							<EmptyHeader>
 								<EmptyMedia variant="icon">
@@ -71,7 +69,7 @@ export default async function AuthorizedAppsPage() {
 							</EmptyHeader>
 						</Empty>
 					)}
-					{data.map((v) => (
+					{data?.data?.map((v) => (
 						<AuthorizedAppsCard app={v} key={v.clientId} />
 					))}
 				</div>

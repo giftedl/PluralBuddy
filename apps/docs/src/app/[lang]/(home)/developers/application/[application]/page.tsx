@@ -68,7 +68,7 @@ export default async function ApplicationPage({
 	if (app === undefined) redirect("/developers/applications");
 
 	return (
-		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
+		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
 			<div className="flex justify-between items-center gap-6 w-full">
 				<div className=" gap-3 flex-1 min-w-0">
 					<strong className="text-lg whitespace-nowrap mr-3">
