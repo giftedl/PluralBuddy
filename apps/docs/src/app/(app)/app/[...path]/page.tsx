@@ -6,7 +6,7 @@ import ExpressSpecificAlterPage from "@/components/app/pages/express/page";
 import NotFoundPage from "@/components/app/pages/not-found";
 import { SettingsLayout } from "@/components/app/pages/settings-layout";
 import { DiscordLoginComponent } from "@/components/discord-login";
-import { ExpressList } from "@/components/pages/express-page.client";
+import { ExpressList } from "@/components/app/pages/express/express-page.client";
 import { SettingsSidebar } from "@/components/settings-sidebar";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
@@ -27,6 +27,12 @@ import {
 	Outlet,
 } from "react-router";
 import superjson from "superjson";
+import ImportStagingPage from "@/components/app/pages/import-staging/page";
+import ImportStagingDonePage from "@/components/app/pages/import-staging/done/page";
+import { RemoteSidebarToggle } from "@/components/app/remote-sidebar-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { AppSettings } from "@/components/app/app-settings";
+import { IndexSettingsAppPage } from "@/components/app/pages/page";
 
 const queryClient = new QueryClient();
 
@@ -58,28 +64,55 @@ export default function PluralBuddyApp() {
 		return <DiscordLoginComponent />;
 	}
 
+	if ("virtualKeyboard" in navigator) {
+		navigator.virtualKeyboard.overlaysContent = false;
+	}
+
 	return (
-		<main className="router-boundrary">
+		<main className="router-boundrary overflow-hidden">
 			<QueryClientProvider client={queryClient}>
 				<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
 					<BrowserRouter>
-						<Routes>
-							<Route
-								path="/app/settings"
-								element={<SettingsLayout />}
-							>
+						<div className="p-2 h-14 w-full bg-sidebar flex justify-between items-center px-4 fixed z-50">
+							<div className="flex flex-row items-center float-left flex-wrap gap-1">
+								<RemoteSidebarToggle />
+							</div>
+							<div className="flex flex-row items-center float-right flex-wrap gap-1">
+								<ThemeToggle />
+								<AppSettings />
+							</div>
+						</div>
+						<div className="h-screen w-screen overflow-hidden">
+							<Routes>
+								<Route path="/app/settings" element={<SettingsLayout />}>
+									<Route
+										index
+										element={<IndexSettingsAppPage />}
+									/>
+									<Route
+										path="/app/settings/authorized-apps"
+										element={<AuthorizedAppsPage />}
+									/>
+									<Route
+										path="/app/settings/express/alter/:alter"
+										element={<ExpressSpecificAlterPage />}
+									/>
+									<Route
+										path="/app/settings/express"
+										element={<ExpressList />}
+									/>
+								</Route>
 								<Route
-									path="/app/settings/authorized-apps"
-									element={<AuthorizedAppsPage />}
+									path="/app/import-staging"
+									element={<ImportStagingPage />}
 								/>
 								<Route
-									path="/app/settings/express/alter/:alter"
-									element={<ExpressSpecificAlterPage />}
+									path="/app/import-staging/done"
+									element={<ImportStagingDonePage />}
 								/>
-								<Route path="/app/settings/express" element={<ExpressList />} />
-							</Route>
-							<Route path="*" element={<NotFoundPage />} />
-						</Routes>
+								<Route path="*" element={<NotFoundPage />} />
+							</Routes>
+						</div>
 					</BrowserRouter>
 				</TRPCProvider>
 			</QueryClientProvider>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "../../../ui/spinner";
 import {
 	Card,
 	CardContent,
@@ -9,24 +9,32 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "../ui/card";
-import { Button } from "../ui/shadcn-button";
-import { Separator } from "../ui/separator";
-import { SettingsSidebar } from "../settings-sidebar";
-import { CreateExpressModal } from "../app/create-express-modal";
+} from "../../../ui/card";
+import { Button } from "../../../ui/shadcn-button";
+import { Separator } from "../../../ui/separator";
+import { SettingsSidebar } from "../../../settings-sidebar";
+import { CreateExpressModal } from "../../create-express-modal";
 import { cn } from "@/lib/cn";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
 import { Link } from "react-router";
-import { AlterView } from "../app/alter-view";
+import { AlterView } from "../../alter-view";
 import { useTranslations } from "next-intl";
-import { DynamicPageTitle } from "../app/dynamic-title";
+import { DynamicPageTitle } from "../../dynamic-title";
 import { useTRPCClient } from "@/server/client";
+import { haptic } from "@/lib/haptic/haptic";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export function ExpressList() {
 	const trpc = useTRPCClient();
 	const { isPending, data } = useQuery({
 		queryKey: ["express/list"],
-		queryFn: async () => trpc.ExpressRouter.getAllExpressApplications.query({}),
+		queryFn: async () => trpc.express.getAllExpressApplications.query({}),
 	});
 	const t = useTranslations("ExpressList");
 
@@ -43,25 +51,48 @@ export function ExpressList() {
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
 			<DynamicPageTitle title="PluralBuddy Express • PluralBuddy App" />
+			<Card className="w-full">
+				<CardContent>
+					<Breadcrumb className="text-left">
+						<BreadcrumbList>
+							<BreadcrumbItem>
+								<BreadcrumbLink>Settings</BreadcrumbLink>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator />
+							<BreadcrumbItem>
+								<BreadcrumbLink href="/app/settings/express">
+									Express
+								</BreadcrumbLink>
+							</BreadcrumbItem>
+						</BreadcrumbList>
+					</Breadcrumb>
+				</CardContent>
+			</Card>
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
 				<Card className="w-full mb-4">
 					<CardContent className="md:flex justify-between items-start gap-3">
 						<div>
 							<CardTitle>PluralBuddy Express</CardTitle>
-							<CardDescription>
-								{t("desc")}
-							</CardDescription>
+							<CardDescription>{t("desc")}</CardDescription>
 						</div>
 						<CreateExpressModal>
-							<Button className="max-md:mt-3">{t("btn")}</Button>
+							<Button className="max-md:mt-3" onClick={() => haptic()}>
+								{t("btn")}
+							</Button>
 						</CreateExpressModal>
 					</CardContent>
 				</Card>
 				<Separator orientation="horizontal" className="h-px mb-3" />
 				<div className="gap-3 grid">
 					{data?.map((v) => (
-						<Link to={{ pathname: `/app/settings/express/alter/${v.alterId}` }} key={v.alterId}>
-							<Card className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}>
+						<Link
+							to={{ pathname: `/app/settings/express/alter/${v.alterId}` }}
+							key={v.alterId}
+						>
+							<Card
+								className={cn("min-h-[92px] min-w-[267px] cursor-pointer")}
+								onClick={() => haptic()}
+							>
 								<CardContent className="gap-4 flex items-center">
 									<div
 										style={{

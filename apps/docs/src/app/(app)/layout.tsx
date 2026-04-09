@@ -11,6 +11,16 @@ import { NextIntlClientProvider } from "next-intl";
 import NextTopLoader from "nextjs-toploader";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "next-themes";
+import { AuthComponents } from "@/components/layout/docs/auth-components";
+import { Button } from "@/components/ui/shadcn-button";
+import { Cog, PanelRightOpen } from "lucide-react";
+import { AppSettings } from "@/components/app/app-settings";
+import {
+	SidebarInset,
+	SidebarProvider,
+	SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { RemoteSidebarToggle } from "@/components/app/remote-sidebar-toggle";
 
 export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 	const messages = (await import(`../../../messages/en.json`)).default;
@@ -26,15 +36,7 @@ export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 						disableTransitionOnChange
 					>
 						<NextIntlClientProvider locale="en" messages={messages}>
-							<NuqsAdapter>
-								<div className="p-2 h-14 w-full bg-card border px-4 fixed z-50">
-									<div className="flex flex-row items-center float-right">
-										<ThemeToggle />
-									</div>
-								</div>
-								<div className="min-h-screen">{children}</div>
-								<Footer />
-							</NuqsAdapter>
+							<NuqsAdapter>{children}</NuqsAdapter>
 
 							<Toaster position="bottom-right" />
 						</NextIntlClientProvider>

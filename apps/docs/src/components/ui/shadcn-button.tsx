@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
+import { haptic } from "@/lib/haptic/haptic"
 
 import { cn } from "@/lib/utils"
 
@@ -46,10 +47,12 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  taptic = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
+    asChild?: boolean;
+    taptic?: boolean;
   }) {
   const Comp = asChild ? Slot.Root : "button"
 
@@ -60,6 +63,13 @@ function Button({
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
+      onClick={(e) => {
+        if (taptic === true)
+          haptic()
+
+        if (props.onClick)
+          props.onClick(e)
+      }}
     />
   )
 }

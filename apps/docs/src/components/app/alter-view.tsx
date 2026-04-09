@@ -16,7 +16,7 @@ export function AlterView({
 	const trpc = useTRPCClient()
 	const { data: v, isPending } = useQuery({
 		queryKey: [`alter/${selectedAlter}`],
-		queryFn: async () => trpc.AlterRouter.getAlter.query({ id: selectedAlter }),
+		queryFn: async () => trpc.alters.getAlter.query({ id: selectedAlter }),
 	});
 
 	if (isPending || !v) return <Spinner />;

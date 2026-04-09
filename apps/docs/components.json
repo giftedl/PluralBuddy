@@ -26,6 +26,7 @@
     "@magicui": "https://magicui.design/r/{name}.json",
     "@animate-ui": "https://animate-ui.com/r/{name}.json",
     "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
-    "@jalco": "https://ui.justinlevine.me/r/{name}.json"
+    "@jalco": "https://ui.justinlevine.me/r/{name}.json",
+    "@ncdai": "https://chanhdai.com/r/{name}.json"
   }
 }

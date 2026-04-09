@@ -1,5 +1,5 @@
 import { DiscordLoginComponent } from "@/components/discord-login";
-import { ExpressAlterPage as ExpressAlter } from "@/components/pages/express-alter-page.client";
+import { ExpressAlterPage as ExpressAlter } from "@/components/app/pages/express/express-alter-page.client";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
@@ -25,17 +25,24 @@ export default function ExpressAlterPage() {
 	const { data: alterObj, isPending: altersPending } = useQuery({
 		queryKey: [`alter/${alter}`],
 		queryFn: async () =>
-			trpc.AlterRouter.getAlter.query({ id: alter ?? "", with_app_data: true }),
+			trpc.alters.getAlter.query({ id: alter ?? "", with_app_data: true }),
 	});
 
-	if (altersPending) return <Spinner />;
+	if (altersPending)
+		return (
+			<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
+				<DynamicPageTitle title="PluralBuddy Express • PluralBuddy App" />
+				<div className="fixed block top-[50%] right-[50%]">
+					<Spinner />
+				</div>
+			</main>
+		);
 
 	if (!alterObj)
 		return (
 			<React.Fragment>
 				<DynamicPageTitle title="Unknown Alter • PluralBuddy App" />
 				<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
-
 					<Card>
 						<div className="align-center justify-center flex h-[calc(100vh-200px)] w-[100vh]">
 							<Empty>

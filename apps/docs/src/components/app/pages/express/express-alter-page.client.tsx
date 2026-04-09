@@ -1,12 +1,17 @@
 "use client";
 
 import { PAlter, PExpressApplication } from "plurography";
-import { SettingsSidebar } from "../settings-sidebar";
-import { AlterView } from "../app/alter-view";
-import { Card, CardContent, CardDescription, CardTitle } from "../ui/card";
-import { Label } from "../ui/label";
-import { Field, FieldLabel } from "../ui/field";
-import { Select } from "../ui/select";
+import { SettingsSidebar } from "../../../settings-sidebar";
+import { AlterView } from "../../alter-view";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardTitle,
+} from "../../../ui/card";
+import { Label } from "../../../ui/label";
+import { Field, FieldLabel } from "../../../ui/field";
+import { Select } from "../../../ui/select";
 import {
 	Empty,
 	EmptyContent,
@@ -14,14 +19,14 @@ import {
 	EmptyHeader,
 	EmptyMedia,
 	EmptyTitle,
-} from "../ui/empty";
-import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
+} from "../../../ui/empty";
+import { Input } from "../../../ui/input";
+import { Separator } from "../../../ui/separator";
 import React, { useState } from "react";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarImage } from "../../../ui/avatar";
 import Image from "next/image";
 import { APIApplication, APIUser } from "discord-api-types/v10";
-import { Button } from "../ui/shadcn-button";
+import { Button } from "../../../ui/shadcn-button";
 import {
 	AppWindow,
 	Code,
@@ -32,11 +37,11 @@ import {
 	RefreshCcw,
 	Trash,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { CreateExpressModal } from "../app/create-express-modal";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui/tooltip";
+import { CreateExpressModal } from "../../create-express-modal";
 import { Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "../../../ui/spinner";
 import { useRouter } from "next/navigation";
 import {
 	DropdownMenu,
@@ -44,10 +49,12 @@ import {
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { JSONModal } from "../app/json-modal";
+} from "../../../ui/dropdown-menu";
+import { JSONModal } from "../../json-modal";
 import { useTranslations } from "next-intl";
-import { DeleteConfirmationModal } from "../app/delete-confirmation-modal";
+import { DeleteConfirmationModal } from "../../delete-confirmation-modal";
+import { haptic } from "@/lib/haptic/haptic";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 export function ExpressAlterPage({
 	alter,
@@ -77,10 +84,33 @@ export function ExpressAlterPage({
 	const [authorizeLoading, setAuthorizeLoading] = useState(false);
 	const [jsonModalOpen, setJsonModalOpen] = useState(false);
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const router = useRouter();
+	const router = useRouter();
 
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
+			<Card className="w-full">
+				<CardContent>
+					<Breadcrumb className="text-left">
+						<BreadcrumbList>
+							<BreadcrumbItem>
+								<BreadcrumbLink>Settings</BreadcrumbLink>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator />
+							<BreadcrumbItem>
+								<BreadcrumbLink href="/app/settings/express">
+									Express
+								</BreadcrumbLink>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator />
+							<BreadcrumbItem>
+								<BreadcrumbLink href={`/app/settings/express/alter/${alter.alterId}`}>
+									@{alter.username}
+								</BreadcrumbLink>
+							</BreadcrumbItem>
+						</BreadcrumbList>
+					</Breadcrumb>
+				</CardContent>
+			</Card>
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
 				<JSONModal
 					data={alter}
@@ -91,26 +121,26 @@ export function ExpressAlterPage({
 				<DeleteConfirmationModal
 					open={deleteModalOpen}
 					setOpen={setDeleteModalOpen}
-                    requiredDeletionText={alter.username}
-                    title={t("delete_title", {
-                        alter: alter.username
-                    })}
-                    description={t.rich("delete_desc", {
-                        alter: alter.username,
-                        b: (children) => <b>{children}</b>,
-                        br: () => <br></br>
-                    })}
-                    onDelete={async () => {
-                        await deleteMutation.mutateAsync(alter.express?.application ?? "");
+					requiredDeletionText={alter.username}
+					title={t("delete_title", {
+						alter: alter.username,
+					})}
+					description={t.rich("delete_desc", {
+						alter: alter.username,
+						b: (children) => <b>{children}</b>,
+						br: () => <br></br>,
+					})}
+					onDelete={async () => {
+						await deleteMutation.mutateAsync(alter.express?.application ?? "");
 
-                        router.push("/app/settings/express")
-                    }}
+						router.push("/app/settings/express");
+					}}
 				/>
 
 				<AlterView selectedAlter={String(alter.alterId)}>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost">
+							<Button variant="ghost" onClick={() => haptic()}>
 								<Ellipsis />
 							</Button>
 						</DropdownMenuTrigger>
@@ -119,7 +149,9 @@ export function ExpressAlterPage({
 								disabled={authorizeLoading || alter.express === null}
 								onClick={async () => {
 									setAuthorizeLoading(true);
-									await refreshMutation.mutateAsync(alter.express?.application ?? "");
+									await refreshMutation.mutateAsync(
+										alter.express?.application ?? "",
+									);
 									setAuthorizeLoading(false);
 								}}
 							>
@@ -127,7 +159,7 @@ export function ExpressAlterPage({
 								{t("nav_menu_sync_prof")}
 							</DropdownMenuItem>
 							<Link
-								to={ `https://discord.com/oauth2/authorize?client_id=${alter.express?.application}` }
+								to={`https://discord.com/oauth2/authorize?client_id=${alter.express?.application}`}
 								target="_blank"
 							>
 								<DropdownMenuItem disabled={alter.express === null}>
@@ -159,7 +191,10 @@ export function ExpressAlterPage({
 							</DropdownMenuItem>
 							<DropdownMenuSeparator />
 
-							<DropdownMenuItem className="text-red-400" onClick={() => setDeleteModalOpen(true)}>
+							<DropdownMenuItem
+								className="text-red-400"
+								onClick={() => setDeleteModalOpen(true)}
+							>
 								<Trash size={9} /> {t("nav_menu_delete")}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
@@ -193,11 +228,14 @@ export function ExpressAlterPage({
 								disabled={authorizeLoading}
 								onClick={async () => {
 									setAuthorizeLoading(true);
-									await refreshMutation.mutateAsync(alter.express?.application ?? "");
+									await refreshMutation.mutateAsync(
+										alter.express?.application ?? "",
+									);
 									setAuthorizeLoading(false);
 
 									window.open(
 										`https://discord.com/oauth2/authorize?client_id=${alter.express?.application}`,
+										"_newtab",
 									);
 								}}
 							>
@@ -237,7 +275,7 @@ export function ExpressAlterPage({
 							<Separator className="h-px my-3" />
 
 							<div className="md:flex">
-								<div className="rounded-xl min-w-[356px] max-w-[356px] border p-4 grid gap-2">
+								<div className="rounded-xl md:min-w-[356px] max-w-[356px] border p-4 grid gap-2">
 									<div className="relative h-[150px]">
 										{alter.banner ? (
 											<img
@@ -246,7 +284,7 @@ export function ExpressAlterPage({
 												alt={t("alt_banner")}
 											/>
 										) : (
-											<div className="bg-[#5865F2] w-[320px] h-[120px] rounded-xl absolute" />
+											<div className="bg-[#5865F2] w-full md:min-w-[320px] max-w-[320px] h-[120px] rounded-xl absolute" />
 										)}
 
 										<Tooltip>

@@ -37,7 +37,7 @@ export function AlterInput({
 	} = useInfiniteQuery({
 		queryKey: [`alters/${search}`],
 		queryFn: async ({ pageParam = 0 }) =>
-			trpc.AlterRouter.getAvailableAlters.query({
+			trpc.alters.getAvailableAlters.query({
 					skip: pageParam,
 					max: 50,
 					...(search === "" ? {} : { search }),
@@ -75,7 +75,7 @@ export function AlterInput({
 				</Button>
 			</Field>
 			<div className=" max-h-[300px] overflow-y-auto">
-				<div className="py-2 px-0.5 grid grid-cols-2 gap-2">
+				<div className="md:py-2 md:px-0.5 grid md:grid-cols-2 gap-2">
 					{data?.pages.map((page, i) => (
 						<React.Fragment key={i}>
 							{page.map((v) =>

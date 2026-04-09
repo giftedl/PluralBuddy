@@ -23,6 +23,7 @@ import { AppWindow } from "lucide-react";
 import { DynamicPageTitle } from "../../dynamic-title";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 export default function AuthorizedAppsPage() {
 	const { data, isPending } = useQuery({
@@ -40,8 +41,25 @@ export default function AuthorizedAppsPage() {
 		);
 
 	return (
-		<main className="flex w-full flex-1 flex-col gap-6 md:md:px-4 max-md:px-2 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
+		<main className="flex w-full flex-1 flex-col gap-6 md:md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
 			<DynamicPageTitle title="Authorized Apps • PluralBuddy App" />
+			<Card className="w-full">
+				<CardContent>
+					<Breadcrumb className="text-left">
+						<BreadcrumbList>
+							<BreadcrumbItem>
+								<BreadcrumbLink>Settings</BreadcrumbLink>
+							</BreadcrumbItem>
+							<BreadcrumbSeparator />
+							<BreadcrumbItem>
+								<BreadcrumbLink href="/app/settings/authorized-apps">
+									Authorized Apps
+								</BreadcrumbLink>
+							</BreadcrumbItem>
+						</BreadcrumbList>
+					</Breadcrumb>
+				</CardContent>
+			</Card>
 			<div className="max-md:space-y-3 items-center gap-6 w-full">
 				<Card className="w-full mb-4">
 					<CardContent>
