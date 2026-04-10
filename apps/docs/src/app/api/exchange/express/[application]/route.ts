@@ -34,6 +34,7 @@ import {
 	TextDisplayBuilder,
 } from "@discordjs/builders";
 import { decryptExpressToken } from "@/lib/express-token-encryption";
+import { DiscordClient } from "@/lib/express-proxying";
 
 export async function POST(
 	request: NextRequest,
@@ -82,6 +83,7 @@ export async function POST(
 		applicationObj.token.iv,
 		applicationObj.token.value,
 	);
+	const discordClient = new DiscordClient(botToken);
 
 	if (interaction.type === InteractionType.ApplicationCommand) {
 		if (
@@ -113,18 +115,18 @@ export async function POST(
 			(v) =>
 				v.name === "text" && v.type === ApplicationCommandOptionType.String,
 		) as APIApplicationCommandInteractionDataStringOption;
+		const justEmojis = (textOption?.value ?? "")
+			.replace(" ", "")
+			.trim()
+			.split(/\s+/)
+			.every((part) => /^<a?:\w+:\d+>$/.test(part));
+		console.log(justEmojis);
 
 		after(async () => {
-			const response = await fetch(
-				`https://discord.com/api/v10/webhooks/${application}/${interaction.token}/messages/@original`,
-				{
-					headers: {
-						Authorization: `Bot ${botToken}`,
-					},
-				},
+			const interactionMessage = await discordClient.getOriginalMessage(
+				application,
+				interaction.token,
 			);
-			const interactionMessage =
-				(await response.json()) as RESTGetAPIInteractionOriginalResponseResult;
 
 			await messages.insertOne({
 				alterId: alterObject?.alterId ?? 0,
@@ -143,7 +145,9 @@ export async function POST(
 			type: InteractionResponseType.ChannelMessageWithSource,
 			data: {
 				components: [
-					new TextDisplayBuilder().setContent(textOption?.value ?? "").toJSON(),
+					new TextDisplayBuilder()
+						.setContent(`${justEmojis ? `# ` : ""}${textOption?.value ?? ""}`)
+						.toJSON(),
 				],
 				flags: MessageFlags.IsComponentsV2,
 			},
@@ -198,6 +202,7 @@ export async function PUT(
 		applicationObj.token.iv,
 		applicationObj.token.value,
 	);
+	const discordClient = new DiscordClient(botToken);
 
 	const alters = db.collection<PAlter>("alters");
 	const alterObject = await alters.findOne({
@@ -211,39 +216,27 @@ export async function PUT(
 			{ status: 400 },
 		);
 
-	await fetch(
-		`https://discord.com/api/v10/applications/${applicationObj.application}/commands`,
-		{
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bot ${botToken}`,
-			},
-			method: "PUT",
-			body: JSON.stringify([
-				new SlashCommandBuilder()
-					.setName(alterObject.username.toLocaleLowerCase().substring(0, 30))
-					.setDescription(
-						`Proxy as ${alterObject.displayName.substring(0, 30)}`,
-					)
-					.setIntegrationTypes(
-						ApplicationIntegrationType.UserInstall,
-						ApplicationIntegrationType.GuildInstall,
-					)
-					.setContexts(
-						InteractionContextType.BotDM,
-						InteractionContextType.Guild,
-						InteractionContextType.PrivateChannel,
-					)
-					.addStringOption((option) =>
-						option
-							.setName("text")
-							.setDescription("Text to put in the proxy tags")
-							.setRequired(true),
-					)
-					.toJSON(),
-			] as Array<APIApplicationCommand>),
-		},
-	);
+	await discordClient.postApplicationCommands(application, [
+		new SlashCommandBuilder()
+			.setName(alterObject.username.toLocaleLowerCase().substring(0, 30))
+			.setDescription(`Proxy as ${alterObject.displayName.substring(0, 30)}`)
+			.setIntegrationTypes(
+				ApplicationIntegrationType.UserInstall,
+				ApplicationIntegrationType.GuildInstall,
+			)
+			.setContexts(
+				InteractionContextType.BotDM,
+				InteractionContextType.Guild,
+				InteractionContextType.PrivateChannel,
+			)
+			.addStringOption((option) =>
+				option
+					.setName("text")
+					.setDescription("Text to put in the proxy tags")
+					.setRequired(true),
+			)
+			.toJSON(),
+	] as Array<APIApplicationCommand>);
 
 	let avatarData = alterObject.avatarUrl
 		? await fetch(`https://wsrv.nl/?url=${alterObject.avatarUrl}`)
@@ -263,28 +256,13 @@ export async function PUT(
 		finalBannerData = `data:${bannerData.headers.get("content-type")};base64,${Buffer.from(await bannerData.arrayBuffer()).toString("base64")}`;
 	}
 
-	await fetch("https://discord.com/api/v10/users/@me", {
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bot ${botToken}`,
-		},
-		body: JSON.stringify({
-			username: alterObject.displayName,
-			avatar: finalAvatarData,
-			banner: finalBannerData,
-		} as RESTPatchAPICurrentUserJSONBody),
+	await discordClient.editCurrentUser({
+		username: alterObject.displayName,
+		avatar: finalAvatarData,
+		banner: finalBannerData,
 	});
-
-	await fetch("https://discord.com/api/v10/applications/@me", {
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bot ${botToken}`,
-		},
-		body: JSON.stringify({
-			icon: finalAvatarData,
-		} as RESTPatchCurrentApplicationJSONBody),
+	await discordClient.editCurrentApplication({
+		icon: finalAvatarData,
 	});
 
 	waitUntil(client.close());
@@ -330,8 +308,7 @@ export async function DELETE(
 
 	await applications.deleteOne({ application });
 
-
-	return Response.json({}, { status: 200 })
+	return Response.json({}, { status: 200 });
 }
 
 async function verifyDiscordRequest(
