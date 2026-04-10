@@ -54,7 +54,13 @@ import { JSONModal } from "../../json-modal";
 import { useTranslations } from "next-intl";
 import { DeleteConfirmationModal } from "../../delete-confirmation-modal";
 import { haptic } from "@/lib/haptic/haptic";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export function ExpressAlterPage({
 	alter,
@@ -103,7 +109,9 @@ export function ExpressAlterPage({
 							</BreadcrumbItem>
 							<BreadcrumbSeparator />
 							<BreadcrumbItem>
-								<BreadcrumbLink href={`/app/settings/express/alter/${alter.alterId}`}>
+								<BreadcrumbLink
+									href={`/app/settings/express/alter/${alter.alterId}`}
+								>
 									@{alter.username}
 								</BreadcrumbLink>
 							</BreadcrumbItem>
@@ -222,6 +230,11 @@ export function ExpressAlterPage({
 					<Card className="w-full">
 						<CardContent>
 							<CardTitle>{t("add_app_title")}</CardTitle>
+							<CardDescription>
+								{t("add_app_description", {
+									alterName: alter.username,
+								})}
+							</CardDescription>
 							<Separator className="h-px my-3" />
 							<Button
 								className="w-full"

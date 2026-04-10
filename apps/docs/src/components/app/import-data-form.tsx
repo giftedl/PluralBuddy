@@ -101,6 +101,7 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 					const parsedData = PluralKitSystem.safeParse(JSON.parse(value.data));
 
 					if (parsedData.error) {
+						console.error(parsedData.error)
 						toast.error("This is not a valid PluralKit configuration.");
 						return;
 					}
@@ -129,6 +130,7 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 
 					if (parsedData.error) {
 						toast.error("This is not a valid PluralBuddy configuration.");
+						console.error(parsedData.error)
 						return;
 					}
 

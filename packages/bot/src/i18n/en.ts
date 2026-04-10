@@ -752,5 +752,13 @@ You can set the language that PluralBuddy uses while using commands. If a string
 {{ languages }}`,
 	SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**.",
 	ALTER_AP_NAME: "Alter Mode",
-	ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled."
+	ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled.",
+
+	EXPRESS_HERO: `### Introducing PluralBuddy Express
+PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
+ - You create an application in Discord's Developer Portal
+ - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
+ - $0, forever
+
+Hit the button to the right to open this alter in the dashboard.`
 }

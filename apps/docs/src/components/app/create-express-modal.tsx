@@ -21,31 +21,68 @@ import { useNavigate } from "react-router";
 import { useTranslations } from "next-intl";
 import { useTRPCClient } from "@/server/client";
 import { useMediaQuery } from "fumadocs-core/utils/use-media-query";
-import { Drawer, DrawerContent, DrawerFooter, DrawerTrigger } from "../ui/drawer";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerFooter,
+	DrawerTrigger,
+} from "../ui/drawer";
+import { useQueryState } from "nuqs";
 
 export function CreateExpressModal({ children }: { children: ReactNode }) {
-	const t = useTranslations("ExpressModal");
 	const isDesktop = useMediaQuery("(min-width: 768px)");
-	const snapPoints = ['148px', '355px', 1];
 
-	const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
+	const [selectedAlter, setSelected] = useQueryState("alter");
+	const [page, setPage] = useState(0);
 	const [open, setOpen] = useState(false);
+
+	const manualCloseSetOpen = (newState: boolean) => {
+		if (newState === false) {
+			setSelected(null);
+			setPage(0);
+		}
+		setOpen(newState)
+	}
+
+	useEffect(() => {
+		if (selectedAlter !== null) {
+			setOpen(true);
+			setPage(1);
+		}
+	}, []);
+
 
 	if (isDesktop)
 		return (
-			<Dialog open={open} onOpenChange={setOpen}>
+			<Dialog open={open} onOpenChange={manualCloseSetOpen}>
 				<DialogTrigger>{children}</DialogTrigger>
 				<DialogContent className="block min-w-[700px]">
-					<DialogContents open={open} setOpen={setOpen} FooterComponent={DialogFooter} />
+					<DialogContents
+						open={open}
+						setOpen={manualCloseSetOpen}
+						FooterComponent={DialogFooter}
+						selectedAlter={selectedAlter}
+						setSelectedAlter={setSelected}
+						page={page}
+						setPage={setPage}
+					/>
 				</DialogContent>
 			</Dialog>
 		);
 
 	return (
-		<Drawer open={open} onOpenChange={setOpen}>
+		<Drawer open={open} onOpenChange={manualCloseSetOpen}>
 			<DrawerTrigger>{children}</DrawerTrigger>
 			<DrawerContent className="px-2">
-				<DialogContents open={open} setOpen={setOpen} FooterComponent={DrawerFooter} />
+				<DialogContents
+					open={open}
+					setOpen={manualCloseSetOpen}
+					FooterComponent={DrawerFooter}
+					selectedAlter={selectedAlter}
+					setSelectedAlter={setSelected}
+					page={page}
+					setPage={setPage}
+				/>
 			</DrawerContent>
 		</Drawer>
 	);
@@ -54,26 +91,25 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 function DialogContents({
 	open,
 	setOpen,
-	FooterComponent
+	selectedAlter,
+	setSelectedAlter: setSelected,
+	FooterComponent,
+	page,
+	setPage,
 }: {
 	open: boolean;
 	setOpen: (value: boolean) => void;
-	FooterComponent: ({children}: { children: ReactNode }) => ReactNode
+	selectedAlter: string | null;
+	setSelectedAlter: (value: string | null) => void;
+	page: number | null;
+	setPage: (value: number) => void;
+	FooterComponent: ({ children }: { children: ReactNode }) => ReactNode;
 }) {
 	const t = useTranslations("ExpressModal");
-	const [selectedAlter, setSelected] = useState<string | null>(null);
 	const [token, setToken] = useState<string>("");
 	const [nextLoading, setNextLoading] = useState<boolean>(false);
-	const [page, setPage] = useState(0);
 	const navigate = useNavigate();
 	const trpc = useTRPCClient();
-
-	useEffect(() => {
-		if (open === false) {
-			setSelected(null);
-			setPage(0);
-		}
-	}, [open]);
 
 	useEffect(() => {
 		if (page === 0) {

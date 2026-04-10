@@ -124,6 +124,7 @@
         "empty_btn": "Create Application",
 
         "add_app_title": "Add Application to your Account",
+        "add_app_description": "Authorize this application and use the /{alterName} command to get started with Express!",
         "auth_link": "Authorize Link",
 
         "app_info_title": "Application Info",
