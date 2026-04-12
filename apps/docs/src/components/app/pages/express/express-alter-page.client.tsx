@@ -73,14 +73,14 @@ export function ExpressAlterPage({
 }) {
 	const refreshMutation = useMutation({
 		mutationFn: async (appId: string) => {
-			return await fetch(`/api/exchange/express/${appId}`, {
+			return await fetch(`/api/v1/express/${appId}`, {
 				method: "PUT",
 			});
 		},
 	});
 	const deleteMutation = useMutation({
 		mutationFn: async (appId: string) => {
-			return await fetch(`/api/exchange/express/${appId}`, {
+			return await fetch(`/api/v1/express/${appId}`, {
 				method: "DELETE",
 			});
 		},

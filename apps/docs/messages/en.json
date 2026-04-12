@@ -104,7 +104,7 @@
 
         "pagination_back": "Back",
         
-        "error_creating": "Error while creating express application. <br><br/> Error: {message}",
+        "error_creating": "Error while creating express application. Error: {message}",
         "success": "Done!"
     },
     "ExpressList": {

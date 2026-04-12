@@ -41,8 +41,8 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 			setSelected(null);
 			setPage(0);
 		}
-		setOpen(newState)
-	}
+		setOpen(newState);
+	};
 
 	useEffect(() => {
 		if (selectedAlter !== null) {
@@ -50,7 +50,6 @@ export function CreateExpressModal({ children }: { children: ReactNode }) {
 			setPage(1);
 		}
 	}, []);
-
 
 	if (isDesktop)
 		return (
@@ -200,6 +199,8 @@ function DialogContents({
 								onClick={async () => {
 									setNextLoading(true);
 
+									let err = false;
+
 									await trpc.express.createExpressApplication
 										.query({
 											token,
@@ -207,19 +208,20 @@ function DialogContents({
 										})
 										.catch((e) => {
 											toast.error(
-												t.rich("error_creating", {
-													br: () => <br />,
+												t("error_creating", {
 													message: e.message,
 												}),
 											);
 											setNextLoading(false);
+											err = true;
 										});
 
-									setNextLoading(false);
+									if (!err) {
+										toast.success(t("success"));
 
-									toast.success(t("success"));
-
-									navigate(`/app/settings/express/alter/${selectedAlter}`);
+										setNextLoading(false);
+										navigate(`/app/settings/express/alter/${selectedAlter}`);
+									}
 								}}
 							>
 								{nextLoading && <Spinner />} {t("pagination_next")}

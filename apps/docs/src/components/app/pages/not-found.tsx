@@ -15,7 +15,7 @@ export default function NotFoundPage() {
 							</EmptyMedia>
 							<EmptyTitle>Page not found</EmptyTitle>
 							<EmptyDescription>
-                                Our hamster wheels looked extra hard, and we couldn't quite find what page you were looking for. Maybe it's not in the PluralBuddy app?
+                                Our hamster wheels spinned extra hard, and we couldn't quite find what page you were looking for. Maybe it's not in the PluralBuddy app?
 							</EmptyDescription>
 						</EmptyHeader>
 					</Empty>

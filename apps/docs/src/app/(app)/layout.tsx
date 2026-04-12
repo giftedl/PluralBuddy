@@ -21,6 +21,12 @@ import {
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { RemoteSidebarToggle } from "@/components/app/remote-sidebar-toggle";
+import { Metadata } from "next";
+
+export const metadata = {
+	title: "PluralBuddy App",
+	description: "PluralBuddy app"
+} satisfies Metadata
 
 export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 	const messages = (await import(`../../../messages/en.json`)).default;

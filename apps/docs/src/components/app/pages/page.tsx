@@ -39,7 +39,7 @@ export function IndexSettingsAppPage() {
 				</Link>
 			</Item>
 			<Item variant="outline" size="sm" asChild>
-				<Link to="/app/settings/authorized-apps">
+				<Link to="/app/settings/express">
 					<ItemMedia>
 						<TrainFront className="size-5" />
 					</ItemMedia>

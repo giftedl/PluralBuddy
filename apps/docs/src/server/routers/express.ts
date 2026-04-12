@@ -138,7 +138,7 @@ export const ExpressRouter = router({
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					interactions_endpoint_url: `${process.env.NEXT_PUBLIC_HOST}/api/exchange/express/${discordData.id}`,
+					interactions_endpoint_url: `${process.env.NEXT_PUBLIC_HOST}/api/v1/express/${discordData.id}`,
 					integration_types_config: {
 						"0": {
 							oauth2_install_params: {

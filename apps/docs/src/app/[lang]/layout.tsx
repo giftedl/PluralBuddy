@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import OramaSearchDialog from "@/components/search-orama";
 import { i18nUI } from "@/lib/layout.shared";
 import { NextIntlClientProvider } from "next-intl";
+import { notFound } from "next/navigation";
 
 const inter = Inter({
 	subsets: ["latin"],
