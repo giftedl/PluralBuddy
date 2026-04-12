@@ -19,7 +19,7 @@ if (!values.userId) throw new Error("no user id");
 const mongodb = new MongoClient(process.env.MONGO as string);
 const normalDb = mongodb.db("pluralbuddy-canary");
 const alters = await normalDb.collection<PAlter>("alters");
-const ids = [...Array(10).keys()].map((_, i) =>{
+const ids = [...Array(2000).keys()].map((_, i) =>{
 	const date = new Date();
 
 	date.setSeconds(i)

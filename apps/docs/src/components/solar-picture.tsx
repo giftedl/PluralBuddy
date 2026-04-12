@@ -14,7 +14,7 @@ export function SolarPicture() {
 					<AvatarFallback>Solar</AvatarFallback>
 				</Avatar>
 			</TooltipTrigger>
-			<TooltipContent className="text-center space-y-2 bg-card!" arrowClass="bg-card! fill-card!">
+			<TooltipContent className="text-center space-y-2 bg-card!">
 				<Image
 					src="/image/solar.png"
 					width={256}

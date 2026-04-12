@@ -3,10 +3,10 @@
 
 import { scopeList } from "@/components/devs/create-new-app-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { buttonVariants } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import Spinner from "@/components/ui/spinner";
+import { Button } from "@/components/ui/shadcn-button";
+import { Spinner } from "@/components/ui/spinner";
 import {
 	Tooltip,
 	TooltipContent,
@@ -116,10 +116,9 @@ export default function ConsentPage() {
 					</div>
 
 					<div className="flex items-center w-full gap-2">
-						<button
+						<Button
 							type="button"
 							className={cn(
-								buttonVariants({ variant: "outline" }),
 								"gap-1 w-full",
 							)}
 							onClick={async () => {
@@ -138,12 +137,11 @@ export default function ConsentPage() {
 							}}
 							disabled={loading}
 						>
-							{loading ? <Spinner /> : "Deny"}
-						</button>
-						<button
+							Deny
+						</Button>
+						<Button
 							type="button"
 							className={cn(
-								buttonVariants({ variant: "primary" }),
 								"gap-1 w-full",
 							)}
 							onClick={async () => {
@@ -164,7 +162,7 @@ export default function ConsentPage() {
 							disabled={loading}
 						>
 							{loading ? <Spinner /> : "Accept"}
-						</button>
+						</Button>
 					</div>
 				</Card>
 			)}

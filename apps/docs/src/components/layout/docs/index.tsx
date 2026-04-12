@@ -175,7 +175,7 @@ export function DocsLayout({
 						) : null}
 						{themeSwitch.enabled !== false &&
 							(themeSwitch.component ?? (
-								<ThemeToggle className="p-0" mode={themeSwitch.mode} />
+								<ThemeToggle mode={themeSwitch.mode} />
 							))}
 						<SidebarTrigger
 							className={cn(
@@ -261,7 +261,7 @@ export function DocsLayout({
 							{themeSwitch.enabled !== false &&
 								(themeSwitch.component ?? (
 									<ThemeToggle
-										className="ms-auto p-0"
+										className="ms-auto"
 										mode={themeSwitch.mode}
 									/>
 								))}

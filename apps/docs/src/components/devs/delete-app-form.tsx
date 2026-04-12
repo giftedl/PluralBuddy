@@ -16,7 +16,7 @@ import { Input } from "../ui/input";
 import { buttonVariants } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { Trash } from "lucide-react";
-import { DropdownMenuItem } from "../ui/dropdown-menu";
+import { DropdownMenuItem } from "@/components/animate-ui/components/radix/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { OAuthClient } from "@better-auth/oauth-provider";
 import { authClient } from "@/lib/auth-client";

@@ -11,7 +11,8 @@ import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 @Declare({
 	type: ApplicationCommandType.Message,
 	name: `${process.env.BRANCH === "canary" ? "Canary " : ""}Get Message Info`,
-	contexts: ["BotDM", "Guild"],
+    contexts: ["BotDM", "Guild", "PrivateChannel"],
+    integrationTypes: ["GuildInstall", "UserInstall"]
 })
 export default class GetMessageInfoCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {

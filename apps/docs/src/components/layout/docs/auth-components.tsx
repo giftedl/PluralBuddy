@@ -12,15 +12,32 @@ import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/ui/svgs/discord";
 import { cn } from "@/lib/cn";
 
-import { BadgeCheck, Code, LogIn, LogOut, Plug } from "lucide-react";
+import { BadgeCheck, Clapperboard, Code, LogIn, LogOut, Plug } from "lucide-react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut } from "@/components/auth/signed-in";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 
 export function AuthComponents({ style }: { style: "main" | "docs" }) {
 	const session = authClient.useSession();
+
+	if (session.isPending)
+		return (
+			<button
+				aria-label="Sign In"
+				className={cn(
+					buttonVariants({ size: "icon-sm", color: "ghost" }),
+					"cursor-pointer",
+					style === "main" ? "border size-[36px]" : "",
+				)}
+				type="button"
+				disabled
+			>
+				<Spinner />
+			</button>
+		);
 
 	return (
 		<>
@@ -77,7 +94,15 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 						</button>
 					</PopoverTrigger>
 					<PopoverContent className="grid grid-cols-1 gap-2">
-						<Link href="/app/authorized-apps">
+						<Link href="/app/settings/express">
+							<button
+								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
+								type="button"
+							>
+								<Clapperboard size={16} /> PluralBuddy Express
+							</button>
+						</Link>
+						<Link href="/app/settings/authorized-apps">
 							<button
 								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
 								type="button"

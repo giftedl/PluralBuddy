@@ -9,6 +9,7 @@ Additionally, you can also import data from another bot like PluralKit.
 -# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
 	PAGINATION_NEXT_PAGE: "Next Page",
 	PAGINATION_FINISH: "Finish",
+	NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
 	BLACKLISTED:
 		"You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
 	
@@ -751,5 +752,13 @@ You can set the language that PluralBuddy uses while using commands. If a string
 {{ languages }}`,
 	SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**.",
 	ALTER_AP_NAME: "Alter Mode",
-	ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled."
+	ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled.",
+
+	EXPRESS_HERO: `### Introducing PluralBuddy Express
+PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
+ - You create an application in Discord's Developer Portal
+ - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
+ - $0, forever
+
+Hit the button to the right to open this alter in the dashboard.`
 }

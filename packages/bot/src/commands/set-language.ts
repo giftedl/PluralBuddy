@@ -69,7 +69,7 @@ export default class SetupCommand extends Command {
 		const progress = await translationStatusApi.getFileProgress(
 			Number(process.env.CROWDIN_PROJ_ID ?? ""),
 			Number(process.env.CROWDIN_FILE_ID ?? ""),
-		);
+		).catch(v => null);
 
 		if (!language) {
 			return await ctx.ephemeral(
@@ -85,7 +85,7 @@ export default class SetupCommand extends Command {
 										"{{ languages }}",
 										[
 											`> - ${getFlagEmoji("US")} English - source`,
-											...progress.data.map(
+											...(progress ?? {data: []}).data.map(
 												(v) =>
 													`> - ${getFlagEmoji(v.data.language.twoLettersCode)} ${v.data.language.name} - ${v.data.approvalProgress}% translated`,
 											),
@@ -115,7 +115,7 @@ export default class SetupCommand extends Command {
 			components: new AlertView(locale).successViewCustom(
 				locale.SET_LANGUAGE_TO.replace(
 					"{{ language }}",
-					progress.data.find((v) => v.data.language.twoLettersCode === language)
+					!progress ? language : progress.data.find((v) => v.data.language.twoLettersCode === language)
 						?.data.language.name ?? "Unknown",
 				),
 			),

@@ -1,6 +1,5 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { buttonVariants } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { EllipsisIcon, LayoutGrid, Pencil, Plus, Trash } from "lucide-react";
@@ -20,7 +19,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/animate-ui/components/radix/dropdown-menu";
 import { DeleteAppForm } from "@/components/devs/delete-app-form";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -52,7 +51,7 @@ export default async function DeveloperApplications() {
 	if (applications === null) redirect("/");
 
 	return (
-		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
+		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
 			<div className="md:flex max-md:space-y-3 justify-between items-center gap-6 w-full">
 				<div className=" gap-3 flex-1 min-w-0">
 					<strong className="text-lg whitespace-nowrap mr-3">
@@ -65,16 +64,15 @@ export default async function DeveloperApplications() {
 					</span>
 				</div>
 				<CreateNewAppForm>
-					<button
+					<Button
 						type="button"
 						className={cn(
-							buttonVariants({ variant: "primary" }),
 							"inline-flex items-center gap-1",
 						)}
 					>
 						<Plus size={20} />
 						<span>New Application</span>
-					</button>
+					</Button>
 				</CreateNewAppForm>
 			</div>
 			<Separator />
@@ -98,15 +96,15 @@ export default async function DeveloperApplications() {
 
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<button
+									<Button
 										type="button"
+										variant="ghost"
 										className={cn(
-											buttonVariants({ variant: "ghost" }),
 											"inline-flex items-center gap-1",
 										)}
 									>
 										<EllipsisIcon size={16} />
-									</button>
+									</Button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent>
 									<Link href={`/developers/application/${application.client_id}`}>

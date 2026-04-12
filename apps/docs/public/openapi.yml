@@ -150,7 +150,7 @@ components:
   parameters: 
     {}
 paths: 
-  "/exchange/users/{user}/system": 
+  "/v1/users/{user}/system": 
     get: 
       summary: Get PluralBuddy system
       description: "Get data of a PluralBuddy system. `{user}` can be `@me` to target the current OAuth user."
@@ -221,7 +221,7 @@ paths:
                 required: 
                   - type
                   - friendly
-  "/exchange/messages/{id}": 
+  "/v1/messages/{id}": 
     get: 
       summary: Get PluralBuddy message
       security: 
@@ -269,7 +269,7 @@ paths:
                           system: 
                             type: string
                             examples: 
-                              - api/exchange/users/1481859816656736257/system
+                              - api/v1/users/1481859816656736257/system
                         required: 
                           - system
                     required: 
