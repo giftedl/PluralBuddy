@@ -50,9 +50,9 @@ import {
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Callout } from "../callout";
-import { useNavigate, useNavigation } from "react-router";
-import {Spinner} from "../ui/spinner";
-import { useTRPCClient } from "@/server/client";
+import { markImportStagingDone } from "@/app/[lang]/(app)/app/import-staging/actions";
+import { useRouter } from "next/navigation";
+import Spinner from "../ui/spinner";
 
 const formSchema = z.object({
 	from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {
@@ -78,13 +78,12 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 	const [open, setOpen] = useState(false);
 	const [alterCount, setAlterCount] = useState(0);
 	const [tagCount, setTagCount] = useState(0);
-	const router = useNavigate();
+	const router = useRouter();
 	const [type, setType] = useState<
 		"PluralKit" | "PluralBuddy" | "TupperBox" | ""
 	>("");
 	const [data, setData] = useState("");
 	const [loading, setLoading] = useState(false);
-	const trpc = useTRPCClient();
 
 	const form = useForm({
 		defaultValues: {
@@ -101,7 +100,6 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 					const parsedData = PluralKitSystem.safeParse(JSON.parse(value.data));
 
 					if (parsedData.error) {
-						console.error(parsedData.error)
 						toast.error("This is not a valid PluralKit configuration.");
 						return;
 					}
@@ -130,7 +128,6 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 
 					if (parsedData.error) {
 						toast.error("This is not a valid PluralBuddy configuration.");
-						console.error(parsedData.error)
 						return;
 					}
 
@@ -336,13 +333,13 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 							onClick={async () => {
 								setLoading(true);
 
-								await trpc.import_staging.markImportStagingDone.query({
+								await markImportStagingDone({
 									from: type as "PluralBuddy" | "PluralKit" | "TupperBox",
 									importStagingId: importData.webhook.id,
 									data,
 								});
 
-								router("/app/import-staging/done");
+								router.push("/app/import-staging/done");
 							}}
 						>
 							{loading && <Spinner />}

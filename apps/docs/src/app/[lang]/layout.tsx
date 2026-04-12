@@ -5,11 +5,8 @@ import { Body } from "@/components/body";
 import { Html } from "@/components/html";
 import { Toaster } from "@/components/ui/sonner";
 import { Viewport } from "next";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import OramaSearchDialog from "@/components/search-orama";
 import { i18nUI } from "@/lib/layout.shared";
 import { NextIntlClientProvider } from "next-intl";
-import { notFound } from "next/navigation";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -32,18 +29,12 @@ export default async function Layout({
 					theme={{
 						enabled: true,
 					}}
-					search={{
-						SearchDialog: OramaSearchDialog,
-					}}
 					i18n={i18nUI.provider(lang)}
 				>
-					<TooltipProvider>
-						<NextIntlClientProvider>
-							{children}
-
-							<Toaster position="bottom-right" />
-						</NextIntlClientProvider>
-					</TooltipProvider>
+					<NextIntlClientProvider>
+						{children}
+						<Toaster position="bottom-right" />
+					</NextIntlClientProvider>
 				</RootProvider>
 			</Body>
 		</Html>

@@ -2,8 +2,8 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/shadcn-button";
 import { Discord } from "@/components/ui/svgs/discord";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/cn";
@@ -35,8 +35,9 @@ export default function SignInPage() {
 					</span>
 				</header>
 
-				<Button
+				<button
 					className={cn(
+						buttonVariants({ variant: "secondary" }),
 						"w-full mt-8 gap-2",
 					)}
 					type="button"
@@ -47,7 +48,7 @@ export default function SignInPage() {
 					}}
 				>
 					<Discord className="size-[16px]" /> Continue with Discord
-				</Button>
+				</button>
 			</Card>
 			<Dithering
 				className="w-screen h-screen absolute"

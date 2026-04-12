@@ -10,8 +10,7 @@ import { MessageFlags } from "seyfert/lib/types";
 	name: "nudge-preferences",
 	description: "Configure options about nudging",
 	aliases: ["nudge-pref", "np"],
-	contexts: ["Guild", "BotDM", "PrivateChannel"],
-	integrationTypes: ["GuildInstall", "UserInstall"]
+	contexts: ["Guild", "BotDM"],
 })
 export default class NudgePreferencesCommand extends Command {
     override async run(ctx: CommandContext) {

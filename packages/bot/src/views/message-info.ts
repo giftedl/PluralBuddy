@@ -24,7 +24,7 @@ export class MessageInfo extends TranslatedView {
 		alter: PAlter,
 		system: PSystem,
 		messageNative: Message,
-		user: GuildMemberStructure | undefined,
+		user: GuildMemberStructure,
 		external: boolean,
 	) {
 		let contents = "";
@@ -69,14 +69,14 @@ export class MessageInfo extends TranslatedView {
 						"{{ messageId }}",
 						messageNative.id,
 					)
-						.replaceAll("{{ userId }}", user?.id ?? "")
+						.replaceAll("{{ userId }}", user.id)
 						.replace(
 							"{{ roleCount }}",
-							String(((await user?.roles.list()) ?? []).length),
+							String(((await user.roles.list()) ?? []).length),
 						)
 						.replace(
 							"{{ roleList }}",
-							((await user?.roles.list()) ?? [])
+							((await user.roles.list()) ?? [])
 								.map((c) => c.name)
 								.filter((v) => v !== "@everyone")
 								.join(", "),
@@ -84,7 +84,7 @@ export class MessageInfo extends TranslatedView {
 				),
 				new Separator(),
 				new TextDisplay().setContent(
-					`https://discord.com/channels/${message.guildId ?? "@me"}/${message.channelId}/${message.messageId}`,
+					`https://discord.com/channels/${message.guildId}/${message.channelId}/${message.messageId}`,
 				),
 			),
 		];

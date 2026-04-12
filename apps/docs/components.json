@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "radix-nova",
+  "style": "radix-lyra",
   "rsc": true,
   "tsx": true,
   "tailwind": {
@@ -11,9 +11,6 @@
     "prefix": ""
   },
   "iconLibrary": "lucide",
-  "rtl": false,
-  "menuColor": "default",
-  "menuAccent": "subtle",
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils",
@@ -23,10 +20,6 @@
   },
   "registries": {
     "@svgl": "https://svgl.app/r/{name}.json",
-    "@magicui": "https://magicui.design/r/{name}.json",
-    "@animate-ui": "https://animate-ui.com/r/{name}.json",
-    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
-    "@jalco": "https://ui.justinlevine.me/r/{name}.json",
-    "@ncdai": "https://chanhdai.com/r/{name}.json"
+    "@magicui": "https://magicui.design/r/{name}.json"
   }
 }

@@ -7,8 +7,7 @@ import type { PAlter } from "./types/alter";
 import type { POperation } from "./types/operation";
 import type { PMessage } from "./types/message";
 import type { PTag } from "./types/tag";
-import type { PExpressApplication, PGuildError } from "plurography";
-import type { PAlterOperation } from "plurography";
+import type { PAlterOperation, PGuildError } from "plurography";
 import { connectMongo } from "./lib/libby";
 import type { PAnalytics } from "./types/analytics";
 
@@ -22,7 +21,6 @@ export let operationCollection: Collection<POperation>;
 export let alterOperationCollection: Collection<PAlterOperation>;
 export let errorCollection: Collection<PGuildError>;
 export let messagesCollection: Collection<PMessage>;
-export let applicationsCollection: Collection<PExpressApplication>;
 export let analyticsCollection: Collection<PAnalytics>;
 
 export async function setupMongoDB() {
@@ -51,7 +49,6 @@ export async function setupDatabases() {
     messagesCollection = mainDb.collection("messages")
     tagCollection = mainDb.collection("tags")
     errorCollection = mainDb.collection("errors")
-    applicationsCollection = mainDb.collection("applications")
     analyticsCollection = mainDb.collection("analytics")
     alterOperationCollection = mainDb.collection("alter-operations");
 

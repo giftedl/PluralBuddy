@@ -18,8 +18,7 @@ const config = {
 		serverActions: {
 			bodySizeLimit: "5mb"
 		}
-	},
-	allowedDevOrigins: ['192.168.0.234']
+	}
 };
 
 const withNextIntl = createNextIntlPlugin();

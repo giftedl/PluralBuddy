@@ -44,7 +44,7 @@ import {
 	DrawerTrigger,
 } from "../ui/drawer";
 import { authClient } from "@/lib/auth-client";
-import {Spinner} from "../ui/spinner";
+import Spinner from "../ui/spinner";
 
 export const scopeList = [
 	{ title: "profile", description: "Access to your profile data – required." },

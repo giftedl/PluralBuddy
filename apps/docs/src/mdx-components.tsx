@@ -24,7 +24,6 @@ export const MDXFeedbackBlock = (props: any) => (
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
 	return {
 		...defaultMdxComponents,
-		mark: (a) => <div>{a}</div>,
 		img: (props) => {
 			return <ImageZoom {...(props as any)} {...(props.src as any)} />;
 		},

@@ -13,19 +13,19 @@
 	src: url('/font/gg-sans.ttf') format('truetype');
 	font-weight: 400;
   }
-
+  
   @font-face {
 	font-family: 'gg sans';
 	src: url('/font/gg-sans-medium.ttf') format('truetype');
 	font-weight: 500;
   }
-
+  
   @font-face {
 	font-family: 'gg sans';
 	src: url('/font/gg-sans-semibold.ttf') format('truetype');
 	font-weight: 600;
   }
-
+  
   @font-face {
 	font-family: 'gg sans';
 	src: url('/font/gg-sans-bold.ttf') format('truetype');
@@ -33,7 +33,7 @@
   }
 
 @theme inline {
-	--font-sans: var(--font-sans);
+	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
 
 	--color-border: var(--border);
@@ -73,7 +73,6 @@
 	--radius-xl: calc(var(--radius) + 4px);
 	--animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s)
 		infinite;
-	--color-foreground: var(--foreground);
 	@keyframes ripple {
 		0%,
 		100% {
@@ -83,9 +82,6 @@
 			transform: translate(-50%, -50%) scale(0.9);
 		}
 	}
-	--radius-2xl: calc(var(--radius) * 1.8);
-	--radius-3xl: calc(var(--radius) * 2.2);
-	--radius-4xl: calc(var(--radius) * 2.6)
 }
 
 .pluralbuddy {
@@ -113,25 +109,24 @@
 	--muted-foreground: oklch(0.556 0 0);
 	--accent: oklch(0.97 0 0);
 	--accent-foreground: oklch(0.205 0 0);
-	--destructive: oklch(0.577 0.245 27.325);
+	--destructive: oklch(0.58 0.22 27);
 	--border: oklch(0.922 0 0);
 	--input: oklch(0.922 0 0);
 	--ring: oklch(0.708 0 0);
-	--chart-1: oklch(0.809 0.105 251.813);
-	--chart-2: oklch(0.623 0.214 259.815);
-	--chart-3: oklch(0.546 0.245 262.881);
-	--chart-4: oklch(0.488 0.243 264.376);
-	--chart-5: oklch(0.424 0.199 265.638);
-	--radius: 0.625rem;
+	--chart-1: oklch(0.82 0.11 346);
+	--chart-2: oklch(0.73 0.18 350);
+	--chart-3: oklch(0.66 0.21 354);
+	--chart-4: oklch(0.59 0.22 1);
+	--chart-5: oklch(0.52 0.2 4);
+	--radius: 0;
 	--sidebar: oklch(0.985 0 0);
 	--sidebar-foreground: oklch(0.145 0 0);
-	--sidebar-primary: oklch(0.205 0 0);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
+	--sidebar-primary: oklch(0.59 0.22 1);
+	--sidebar-primary-foreground: oklch(0.97 0.01 343);
 	--sidebar-accent: oklch(0.97 0 0);
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
-	--background: oklch(1 0 0);
 }
 
 .dark {
@@ -157,20 +152,19 @@
 	--border: oklch(1 0 0 / 10%);
 	--input: oklch(1 0 0 / 15%);
 	--ring: oklch(0.556 0 0);
-	--chart-1: oklch(0.809 0.105 251.813);
-	--chart-2: oklch(0.623 0.214 259.815);
-	--chart-3: oklch(0.546 0.245 262.881);
-	--chart-4: oklch(0.488 0.243 264.376);
-	--chart-5: oklch(0.424 0.199 265.638);
+	--chart-1: oklch(0.82 0.11 346);
+	--chart-2: oklch(0.73 0.18 350);
+	--chart-3: oklch(0.66 0.21 354);
+	--chart-4: oklch(0.59 0.22 1);
+	--chart-5: oklch(0.52 0.2 4);
 	--sidebar: oklch(0.205 0 0);
 	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
+	--sidebar-primary: oklch(0.73 0.18 350);
+	--sidebar-primary-foreground: oklch(0.97 0.01 343);
 	--sidebar-accent: oklch(0.269 0 0);
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
-	--background: oklch(0.145 0 0);
 }
 
 .pluralbuddy.dark,
@@ -187,12 +181,10 @@
 	* {
 		border-color: var(--border);
 		outline-color: var(--ring);
-    @apply border-border outline-ring/50;
 	}
 	body {
 		background-color: var(--color-background);
 		color: var(--text-base);
-    @apply bg-background text-foreground;
 	}
 
 	/* Scrollbar styles for Firefox */
@@ -219,9 +211,6 @@
 	body.policies,
 	html#policies.light {
 		scrollbar-color: #cc8b00 var(--background-shad);
-	}
-  html {
-    @apply font-sans;
 	}
 }
 

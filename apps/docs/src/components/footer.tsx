@@ -14,7 +14,7 @@ export function Footer() {
 	const t = useTranslations("FooterComponent");
 
 	return (
-		<footer className="border-t">
+		<footer>
 			<Separator className="w-full" />
 			<div className="absolute overflow-hidden">
 				<div className="w-full pb-0 z-10 absolute flex flex-col md:flex-row md:items-center md:justify-between p-10">
@@ -52,9 +52,6 @@ export function Footer() {
 								<li className="inline-flex mb-2 text-sm font-semibold text-primary">
 									{t("docs")}
 								</li>
-								<FooterItem link="/">
-									Home
-								</FooterItem>
 								<FooterItem link="/docs/pluralbuddy/get-started">
 									{t("getting_started")}
 								</FooterItem>

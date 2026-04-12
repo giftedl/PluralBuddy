@@ -6,8 +6,9 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import { EllipsisIcon, Pencil, Trash, X } from "lucide-react";
 import Link from "next/link";
 import { DeleteAppForm } from "@/components/devs/delete-app-form";
@@ -32,7 +33,7 @@ import {
 import { Button } from "@/components/ui/shadcn-button";
 import { Badge } from "@/components/ui/badge";
 import { RedirectURLs } from "@/components/devs/redirect-urls";
-import type { Metadata, ResolvingMetadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { DiscordLoginComponent } from "@/components/discord-login";
@@ -56,7 +57,7 @@ export default async function ApplicationPage({
 	if (session === null) {
 		return <DiscordLoginComponent />;
 	}
-
+	
 	const { application } = await params;
 	const apps = await auth.api.getOAuthClients({
 		// This endpoint requires session cookies.
@@ -68,7 +69,7 @@ export default async function ApplicationPage({
 	if (app === undefined) redirect("/developers/applications");
 
 	return (
-		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
+		<main className="flex w-full flex-1 flex-col gap-6 px-4 pt-12 items-center mx-auto max-w-[1000px] max-xl:pt-26 mb-3">
 			<div className="flex justify-between items-center gap-6 w-full">
 				<div className=" gap-3 flex-1 min-w-0">
 					<strong className="text-lg whitespace-nowrap mr-3">
@@ -83,13 +84,15 @@ export default async function ApplicationPage({
 				</div>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button
+						<button
 							type="button"
-							variant="outline"
-							className={cn("inline-flex items-center gap-1")}
+							className={cn(
+								buttonVariants({ variant: "outline" }),
+								"inline-flex items-center gap-1",
+							)}
 						>
 							<EllipsisIcon size={16} />
-						</Button>
+						</button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent>
 						<DeleteAppForm application={app}>

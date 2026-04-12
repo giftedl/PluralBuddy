@@ -12,7 +12,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/animate-ui/components/radix/dropdown-menu";
+} from "./ui/dropdown-menu";
 import {
 	Dialog,
 	DialogClose,
@@ -29,7 +29,7 @@ import {
 	DrawerTitle,
 } from "./ui/drawer";
 import { useState } from "react";
-import {Spinner} from "./ui/spinner";
+import Spinner from "./ui/spinner";
 import { useRouter } from "next/navigation";
 
 export function AuthorizedAppsCard({ app }: { app: OAuthConsent<Scope[]> }) {
