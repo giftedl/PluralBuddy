@@ -83,5 +83,66 @@
             "system:write": "Access to change system settings",
             "system:admin": "Access to read and write to systems AND alters."
         }
+    },
+    "DeleteComponent": {
+        "placeholder": "Type \"{requiredDeletionText}\" to delete this object",
+        "btn_label": "Delete"
+    },
+    "ExpressModal": {
+        "page0_title": "Select an associated alter",
+        "page0_desc": "PluralBuddy associates an alter that already exists with the new Express application you create. Choose an alter you'd like to represent your new Express application.",
+        "pagination_next": "Next",
+        "page1_title": "Create a Discord Application",
+        "page1_desc": "Due to how PluralBuddy Express works, you need to create an application for each alter that you want to assign with Express.",
+
+        "stepper1_title": "Create an application",
+        "stepper1_desc": "You must go to the Discord Developer Portal to create an application for PluralBuddy.",
+        "stepper1_btn": "Go to Discord Developer Portal",
+
+        "stepper2_title": "Input bot token",
+        "stepper2_desc": "Hit the Bot Tab -> Reset token. Don't worry, this token is encrypted in our database.",
+
+        "pagination_back": "Back",
+        
+        "error_creating": "Error while creating express application. Error: {message}",
+        "success": "Done!"
+    },
+    "ExpressList": {
+        "desc": "Create user-proxies with PluralBuddy Express – assign your own alters to Discord applications and use native Discord slash commands to proxy as an alter. Works in direct messages, or any server with Use External Apps granted.",
+        "btn": "Create Express Application"
+    },
+    "ExpressPage": {
+        "nav_menu_sync_prof": "Resync User Profile",
+        "nav_menu_auth": "Authorize",
+        "nav_menu_copy_alter": "Copy Alter ID",
+        "nav_menu_copy_app": "Copy Application ID",
+        "nav_menu_json": "View as JSON",
+        "nav_menu_delete": "Delete Application",
+
+        "empty_title": "Not a PluralBuddy Express Alter",
+        "empty_desc": "This alter does exist in your system, however it doesn't have an associated PluralBuddy Express Application.",
+        "empty_btn": "Create Application",
+
+        "add_app_title": "Add Application to your Account",
+        "add_app_description": "Authorize this application and use the /{alterName} command to get started with Express!",
+        "auth_link": "Authorize Link",
+
+        "app_info_title": "Application Info",
+        "app_pk": "Application Public Key",
+        "app_id": "Application ID",
+
+        "alt_banner": "Alter Banner",
+
+        "profile_title": "Application Profile",
+        "profile_user_id": "Copy User ID",
+        "profile_resync_prfs": "Resync User Profile",
+        "profile_desc": "Your application profile is shown on the left (or above on mobile). PluralBuddy can sync your profile between what is shown in your system and the user data on your Express Application, however it is not automatic.",
+
+        "delete_title": "Delete {alter}'s Express Application",
+        "delete_desc": "By deleting this Express application, it will no longer be associated with a native Discord application. This will not delete the alter, just the association to a native Discord application. Using this applications commands after deletion will result in an error from Discord. <b>This action cannot be undone.</b><br></br><br></br>To delete this object, type {alter} in the input below to permanently:"
+    },
+    "RawJSONModal": {
+        "title": "Raw JSON",
+        "desc": "Usually useful for power users."
     }
 }
