@@ -16,14 +16,14 @@ RUN cd /temp/dev && bun install --force
 RUN cd /temp/dev/packages/bot && bun install --force
 
 # install with --production (exclude devDependencies)
-RUN mkdir -p /temp/prod
-RUN mkdir -p /temp/prod/packages/bot
-RUN mkdir -p /temp/prod/packages/plurography
-COPY package.json /temp/prod/
-COPY packages/bot/package.json /temp/prod/packages/bot
-COPY packages/plurography/package.json /temp/prod/packages/plurography
-RUN cd /temp/prod && bun install --force
-RUN cd /temp/prod/packages/bot && bun install --force
+RUN mkdir -p /usr/pluralbuddy/
+RUN mkdir -p /usr/pluralbuddy/packages/bot
+RUN mkdir -p /usr/pluralbuddy/packages/plurography
+COPY package.json /usr/pluralbuddy/
+COPY packages/bot/package.json /usr/pluralbuddy/packages/bot
+COPY packages/plurography/package.json /usr/pluralbuddy/packages/plurography
+RUN cd /usr/pluralbuddy/ && bun install --force
+RUN cd /usr/pluralbuddy/packages/bot && bun install --force
 
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
@@ -33,7 +33,7 @@ COPY . .
 
 # copy production dependencies and source code into final image
 FROM base AS release
-COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=install /usr/pluralbuddy/node_modules node_modules
 COPY --from=prerelease /usr/pluralbuddy/packages ./packages
 COPY --from=prerelease /usr/pluralbuddy/package.json .
 COPY --from=prerelease /usr/pluralbuddy/tsconfig.json .
