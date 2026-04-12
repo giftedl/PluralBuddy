@@ -14,7 +14,7 @@ const registry = new OpenAPIRegistry();
 
 registry.registerPath({
 	method: "get",
-	path: "/exchange/users/{user}/system",
+	path: "/v1/users/{user}/system",
 	summary: "Get PluralBuddy system",
 	description:
 		"Get data of a PluralBuddy system. `{user}` can be `@me` to target the current OAuth user.",
@@ -69,7 +69,7 @@ registry.registerPath({
 });
 registry.registerPath({
 	method: "get",
-	path: "/exchange/messages/{id}",
+	path: "/v1/messages/{id}",
 	summary: "Get PluralBuddy message",
 	security: [{ oAuth2: [] }],
 	responses: {
@@ -81,7 +81,7 @@ registry.registerPath({
 						message: PMessageObject.extend({
 							endpoints: z.object({
 								system: z.string().meta({
-									examples: ["api/exchange/users/1481859816656736257/system"],
+									examples: ["api/v1/users/1481859816656736257/system"],
 								}),
 							}),
 						}),

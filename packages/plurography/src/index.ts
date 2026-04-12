@@ -30,5 +30,6 @@ export * from "./pluralbuddy/user";
 export * from "./pluralbuddy/util";
 export * from "./pluralbuddy/import-staging";
 export * from "./pluralbuddy/import-notation";
+export * from "./pluralbuddy/express-application";
 
 export * from "./supportbuddy/blacklist-note";

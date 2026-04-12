@@ -105,7 +105,8 @@ export const alterPrivacySelection = (translations: TranslationString, existing?
 
 export const tagColorSelection = (translations: TranslationString, existing?: string) => [
     ...tagColors.map((color) => new StringSelectOption()
-        .setLabel(color)
+    // @ts-ignore
+        .setLabel(translations[`TAG_COLOR_${color}`])
         .setEmoji(getEmojiFromTagColor(color))
         .setValue(InteractionIdentifier.Selection.TagColors[color as keyof typeof InteractionIdentifier.Selection.TagColors].create())
         .setDefault(existing === color))

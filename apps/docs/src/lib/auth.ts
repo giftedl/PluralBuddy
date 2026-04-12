@@ -26,9 +26,11 @@ export const auth = betterAuth({
 			enabled: true,
 			clientId: process.env.CLIENT_ID as string,
 			clientSecret: process.env.CLIENT_SECRET as string,
+			
+			prompt: "none&integration_type=1" as 'none',
 			overrideUserInfoOnSignIn: true,
 			disableDefaultScope: true,
-			scope: ["identify"],
+			scope: ["identify", "applications.commands"],
 			getUserInfo: async (token) => {
 
 				// Custom implementation to get user info

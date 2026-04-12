@@ -180,3 +180,10 @@ export async function uploadDiscordAttachmentToGcp(
 		newObject: objectName + `.${fileType?.ext}`,
 	};
 }
+
+export async function deleteOneAttachment(
+	accessToken: string,
+	bucketName: string,
+	objectName: string,) {
+		
+	}
