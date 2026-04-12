@@ -3,7 +3,7 @@ export async function decryptExpressToken(iv: string, token: string) {
 
 	const importedKey = await crypto.subtle.importKey(
 		"raw",
-		Uint8Array.fromHex(key),
+		hexToBuffer(key),
 		"AES-GCM",
 		true,
 		["encrypt", "decrypt"],

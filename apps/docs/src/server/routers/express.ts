@@ -107,7 +107,7 @@ export const ExpressRouter = router({
 			const importedKey = await crypto.subtle.importKey(
 				"raw",
 				// @ts-ignore
-				Uint8Array.fromHex(key),
+				hexToBuffer(key),
 				"AES-GCM",
 				true,
 				["encrypt", "decrypt"],
@@ -159,3 +159,8 @@ export const ExpressRouter = router({
 			return {};
 		}),
 });
+
+function hexToBuffer(hex: string) {
+    const arr = new Uint8Array((hex.match(/.{1,2}/g) ?? []).map(byte => parseInt(byte, 16)));
+    return arr.buffer;
+}
