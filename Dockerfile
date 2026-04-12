@@ -35,6 +35,9 @@ COPY . .
 FROM base AS release
 COPY --from=install /usr/pluralbuddy/node_modules node_modules
 COPY --from=prerelease /usr/pluralbuddy/packages ./packages
+# Bun keeps deps under root node_modules/.bun and symlinks from each workspace package; COPY ./packages above would omit these, breaking imports (e.g. seyfert).
+COPY --from=install /usr/pluralbuddy/packages/bot/node_modules ./packages/bot/node_modules
+COPY --from=install /usr/pluralbuddy/packages/plurography/node_modules ./packages/plurography/node_modules
 COPY --from=prerelease /usr/pluralbuddy/package.json .
 COPY --from=prerelease /usr/pluralbuddy/tsconfig.json .
 
