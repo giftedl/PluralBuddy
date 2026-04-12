@@ -12,8 +12,8 @@ RUN mkdir -p /temp/dev/packages/plurography
 COPY package.json bun.lock /temp/dev/
 COPY packages/bot/package.json /temp/dev/packages/bot
 COPY packages/plurography/package.json /temp/dev/packages/plurography
-RUN cd /temp/dev && bun install --force
-RUN cd /temp/dev/packages/bot && bun install --force
+RUN cd /temp/dev && bun install
+RUN cd /temp/dev/packages/bot && bun install
 
 # install with --production (exclude devDependencies)
 RUN mkdir -p /temp/prod
@@ -22,8 +22,8 @@ RUN mkdir -p /temp/prod/packages/plurography
 COPY package.json bun.lock /temp/prod/
 COPY packages/bot/package.json /temp/prod/packages/bot
 COPY packages/plurography/package.json /temp/prod/packages/plurography
-RUN cd /temp/prod && bun install --force
-RUN cd /temp/prod/packages/bot && bun install --force
+RUN cd /temp/prod && bun install
+RUN cd /temp/prod/packages/bot && bun install
 
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
