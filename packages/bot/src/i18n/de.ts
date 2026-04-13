@@ -9,7 +9,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
 -# Um von Tupperbox zu importieren, da die Daten von Tupperbox nicht vorhanden sind, du musst das System erstellen und dann \`{{ prefix }}system import\` ausführen.`,
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
-  NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
+  NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
   BLACKLISTED: "Du wurdest von {{ guild }} in die blacklist gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
   // Does not need to be translated
   BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
@@ -28,9 +28,8 @@ Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens
   CREATING_NEW_SYSTEM_NAME_BUTTON: "Setze Name*",
   CREATING_NEW_SYSTEM_NAME_SET: "Name ist:",
   CREATING_NEW_SYSTEM_TAG_BUTTON: "System Etikett festlegen",
-  CREATING_NEW_SYSTEM_TAG_SET: "System tag is:",
-  CREATING_NEW_SYSTEM_TAG_MESSAGE: `
-This server requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
+  CREATING_NEW_SYSTEM_TAG_SET: "System Tag ist:",
+  CREATING_NEW_SYSTEM_TAG_MESSAGE: `Dieser Server benötigt ein **System Tag** für Systeme, die hier proxying. Um hier ein System zu erstellen, benötigen Sie ein System Tag.`,
   CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Set privacy values",
   CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
 Systems can have **privacy values** which are values that describe who can see what part of your system. By default, your system is completely private besides server automatic moderation and the message that your system sends. However, changing them will change those values.`,
