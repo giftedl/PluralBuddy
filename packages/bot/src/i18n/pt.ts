@@ -134,7 +134,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   ALTER_SET_SERVER_NAME: "Definir Nome de Exibição Para Servidor",
   ALTER_SET_SERVER_NAME_DESC: `Setting this value will make this alter's display name a different value when fronting in %server%.
 -# Your name in %server% is: %name%`,
-  ALTER_SET_USERNAME_DESC: "Alter usernames cannot have any spaces and can only be less than 20 characters. They are used to identify your system in commands.",
+  ALTER_SET_USERNAME_DESC: "Nomes de usuário de integrantes não pode conter espaços e devem ter no máximo 20 caracteres. Eles são usados para identificar seu sistema em comandos.",
   ALTER_SET_USERNAME_SPACES: "Não pode haver espaços, `@`, `\\` ou `/` em nomes de usuário.",
   ALTER_DISPLAY_NAME_FORM_LABEL: "Nome de Exibição",
   ALTER_SET_PRONOUNS: "Definir Pronomes",
