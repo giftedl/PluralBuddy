@@ -326,7 +326,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
 
 **%name%**
 > %description%`,
-  ENABLED_FEATURE: `Successfully enabled that feature.
+  ENABLED_FEATURE: `Recurso ativado com sucesso.
 
 **%name%**
 > %description%`,
