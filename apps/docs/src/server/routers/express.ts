@@ -1,10 +1,14 @@
 import z from "zod";
 import { baseProcedure } from "../init";
 import { router } from "../trpc";
-import { MongoClient } from "mongodb";
+import { Double, MongoClient } from "mongodb";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { PAlter, PExpressApplication } from "plurography";
-import { APIApplication, OAuth2Scopes, RESTPatchCurrentApplicationJSONBody } from "discord-api-types/v10";
+import {
+	APIApplication,
+	OAuth2Scopes,
+	RESTPatchCurrentApplicationJSONBody,
+} from "discord-api-types/v10";
 
 export const ExpressRouter = router({
 	getAllExpressApplications: baseProcedure
@@ -48,10 +52,14 @@ export const ExpressRouter = router({
 					if (alter) {
 						const { _id, ...safeAlter } = alter;
 
-						return { ...c, alter: safeAlter };
+						return {
+							...c,
+							alter: safeAlter,
+							usesContainer: c.usesContainer ?? false,
+						};
 					}
 
-					return { ...c, alter: null };
+					return { ...c, alter: null, usesContainer: c.usesContainer ?? false };
 				}),
 			);
 		}),
@@ -129,6 +137,7 @@ export const ExpressRouter = router({
 				publicKey: discordData.verify_key,
 				owner,
 				alterId: Number(input.alterId),
+				usesContainer: false,
 			});
 
 			await fetch("https://discord.com/api/v10/applications/@me", {
@@ -158,9 +167,56 @@ export const ExpressRouter = router({
 
 			return {};
 		}),
+
+	edit: baseProcedure
+		.input(
+			z.object({
+				alter_id: z.string(),
+				options: z.object({
+					usesContainer: z.boolean().optional().default(false),
+					profileName: z.string().optional()
+				}),
+			}),
+		)
+		.query(async ({ input, ctx }) => {
+			const session = ctx.session;
+
+			if (!session) throw new Error("Session error.");
+
+			const client = new MongoClient(process.env.MONGO ?? "");
+			await client.connect();
+
+			const db = client.db(
+				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
+			);
+			const applications = db.collection<PExpressApplication>("applications");
+			const owner = await getDiscordIdBySessionId(session.user.id);
+			const application = await applications
+				.find({ owner, alterId: Number(input.alter_id) })
+				.toArray();
+
+			if (!application) throw new Error("Doesn't exist");
+
+			if (input.options.profileName === "")
+				input.options.profileName = undefined;
+
+			await applications.updateOne(
+				{
+					owner,
+					alterId: Number(input.alter_id),
+				},
+				{
+					$set: input.options,
+				},
+			);
+
+			return { ...application, ...input.options };
+		}),
 });
 
 function hexToBuffer(hex: string) {
-    const arr = new Uint8Array((hex.match(/.{1,2}/g) ?? []).map(byte => parseInt(byte, 16)));
-    return arr.buffer;
+	const arr = new Uint8Array(
+		(hex.match(/.{1,2}/g) ?? []).map((byte) => parseInt(byte, 16)),
+	);
+	return arr.buffer;
 }

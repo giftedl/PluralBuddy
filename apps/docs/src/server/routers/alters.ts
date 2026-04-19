@@ -108,7 +108,7 @@ export const AlterRouter = router({
     
         return {
             ...stripId(alter),
-            express: stripId(expressData) ?? null,
+            express: {...(stripId(expressData) ?? null), usesContainer: expressData?.usesContainer ?? false},
             user: discordUser,
             application: discordApp,
         };

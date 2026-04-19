@@ -9,13 +9,16 @@ import { waitUntil } from "@vercel/functions";
 import {
 	APIApplicationCommand,
 	APIApplicationCommandInteraction,
+	APIApplicationCommandInteractionDataAttachmentOption,
 	APIApplicationCommandInteractionDataBasicOption,
 	APIApplicationCommandInteractionDataStringOption,
 	APIApplicationCommandPermissionsConstant,
+	APIAttachment,
 	APIChatInputApplicationCommandInteractionData,
 	APIInteraction,
 	APIInteractionResponse,
 	APIInteractionResponsePong,
+	APIMessage,
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
 	ApplicationIntegrationType,
@@ -30,11 +33,18 @@ import {
 } from "discord-api-types/v10";
 import {
 	ContainerBuilder,
+	ContextMenuCommandBuilder,
+	MediaGalleryBuilder,
+	MediaGalleryItemBuilder,
 	SlashCommandBuilder,
 	TextDisplayBuilder,
 } from "@discordjs/builders";
 import { decryptExpressToken } from "@/lib/express-token-encryption";
 import { DiscordClient } from "@/lib/express-proxying";
+
+import * as alterCommand from "@/server/express/alter-command";
+import * as replyCommand from "@/server/express/reply-command";
+import * as replyModal from "@/server/express/reply-modal";
 
 export async function POST(
 	request: NextRequest,
@@ -83,75 +93,16 @@ export async function POST(
 		applicationObj.token.iv,
 		applicationObj.token.value,
 	);
+
 	const discordClient = new DiscordClient(botToken);
+	
+	const interactions = [alterCommand, replyCommand, replyModal];
 
-	if (interaction.type === InteractionType.ApplicationCommand) {
-		if (
-			alterObject?.systemId !==
-			(interaction.user ?? interaction.member?.user)?.id
-		) {
-			return NextResponse.json({
-				type: InteractionResponseType.ChannelMessageWithSource,
-				data: {
-					components: [
-						new ContainerBuilder()
-							.setAccentColor(11993088)
-							.addTextDisplayComponents(
-								new TextDisplayBuilder().setContent(
-									`You are not the owner of this alter or this alter doesn't exist anymore.\n-# PluralBuddy Express • Alter: \`${applicationObj.alterId}\` • [PluralBuddy](<https://pb.giftedly.dev>)`,
-								),
-							)
-							.toJSON(),
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				},
-			});
+	for (const interactionType of interactions) {
+		if (alterObject && interactionType.filter(interaction, alterObject)) {
+			// @ts-ignore Who asked!
+			return await interactionType.interaction(interaction, alterObject, discordClient, application, messages, client, applicationObj)
 		}
-
-		const options =
-			(interaction.data as APIChatInputApplicationCommandInteractionData)
-				.options ?? [];
-		const textOption = options.find(
-			(v) =>
-				v.name === "text" && v.type === ApplicationCommandOptionType.String,
-		) as APIApplicationCommandInteractionDataStringOption;
-		const justEmojis = (textOption?.value ?? "")
-			.replace(" ", "")
-			.trim()
-			.split(/\s+/)
-			.every((part) => /^<a?:\w+:\d+>$/.test(part));
-		console.log(justEmojis);
-
-		after(async () => {
-			const interactionMessage = await discordClient.getOriginalMessage(
-				application,
-				interaction.token,
-			);
-
-			await messages.insertOne({
-				alterId: alterObject?.alterId ?? 0,
-				systemId: alterObject?.systemId ?? "",
-				channelId: interaction.channel.id,
-				guildId: interaction.guild_id,
-				expressUserId: application,
-				createdAt: new Date(),
-				messageId: interactionMessage.id,
-			});
-
-			await client.close();
-		});
-
-		return NextResponse.json({
-			type: InteractionResponseType.ChannelMessageWithSource,
-			data: {
-				components: [
-					new TextDisplayBuilder()
-						.setContent(`${justEmojis ? `# ` : ""}${textOption?.value ?? ""}`)
-						.toJSON(),
-				],
-				flags: MessageFlags.IsComponentsV2,
-			},
-		});
 	}
 
 	waitUntil(client.close());
@@ -233,9 +184,27 @@ export async function PUT(
 				option
 					.setName("text")
 					.setDescription("Text to put in the proxy tags")
-					.setRequired(true),
+					.setRequired(false),
+			)
+			.addAttachmentOption((option) =>
+				option
+					.setName("attachment")
+					.setDescription("Attachment to use")
+					.setRequired(false),
 			)
 			.toJSON(),
+		new ContextMenuCommandBuilder()
+			.setType(ApplicationCommandType.Message)
+			.setName("Reply")
+			.setIntegrationTypes(
+				ApplicationIntegrationType.UserInstall,
+				ApplicationIntegrationType.GuildInstall,
+			)
+			.setContexts(
+				InteractionContextType.BotDM,
+				InteractionContextType.Guild,
+				InteractionContextType.PrivateChannel,
+			),
 	] as Array<APIApplicationCommand>);
 
 	let avatarData = alterObject.avatarUrl
@@ -257,12 +226,13 @@ export async function PUT(
 	}
 
 	await discordClient.editCurrentUser({
-		username: alterObject.displayName,
+		username: (applicationObj.profileName ?? alterObject.displayName).split('').filter(char => /[a-zA-Z ]/.test(char)).join(''),
 		avatar: finalAvatarData,
 		banner: finalBannerData,
+		
 	});
 	await discordClient.editCurrentApplication({
-		icon: finalAvatarData,
+		icon: finalAvatarData
 	});
 
 	waitUntil(client.close());

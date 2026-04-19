@@ -30,6 +30,7 @@ import { Button } from "../../../ui/shadcn-button";
 import {
 	AppWindow,
 	Code,
+	Cog,
 	Copy,
 	Ellipse,
 	Ellipsis,
@@ -61,6 +62,7 @@ import {
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { PreferencesModal } from "../../preferences-modal";
 
 export function ExpressAlterPage({
 	alter,
@@ -89,6 +91,7 @@ export function ExpressAlterPage({
 	const t = useTranslations("ExpressPage");
 	const [authorizeLoading, setAuthorizeLoading] = useState(false);
 	const [jsonModalOpen, setJsonModalOpen] = useState(false);
+	const [preferencesOpen, setPreferencesOpen] = useState(false);
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 	const router = useRouter();
 
@@ -126,6 +129,7 @@ export function ExpressAlterPage({
 					rootName="alter"
 					setOpen={setJsonModalOpen}
 				/>
+				<PreferencesModal alter={alter} open={preferencesOpen} setOpen={setPreferencesOpen} />
 				<DeleteConfirmationModal
 					open={deleteModalOpen}
 					setOpen={setDeleteModalOpen}
@@ -153,6 +157,10 @@ export function ExpressAlterPage({
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-[200px]">
+							<DropdownMenuItem disabled={alter.express === null} onClick={() => setPreferencesOpen(true)}>
+								<Cog />
+								{t("nav_menu_pref")}
+							</DropdownMenuItem>
 							<DropdownMenuItem
 								disabled={authorizeLoading || alter.express === null}
 								onClick={async () => {

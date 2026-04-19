@@ -9,6 +9,8 @@ export const PExpressApplication = z.object({
     publicKey: z.string(),
     owner: z.string(),
     alterId: z.number(),
+    usesContainer: z.boolean().default(false),
+    profileName: z.string().default("").optional()
 })
 
 export type PExpressApplication = z.infer<typeof PExpressApplication>;
