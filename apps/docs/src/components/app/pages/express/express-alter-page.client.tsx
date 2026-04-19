@@ -43,7 +43,7 @@ import { CreateExpressModal } from "../../create-express-modal";
 import { Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { Spinner } from "../../../ui/spinner";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -93,7 +93,7 @@ export function ExpressAlterPage({
 	const [jsonModalOpen, setJsonModalOpen] = useState(false);
 	const [preferencesOpen, setPreferencesOpen] = useState(false);
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-	const router = useRouter();
+	const router = useNavigate();
 
 	return (
 		<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
@@ -145,7 +145,7 @@ export function ExpressAlterPage({
 					onDelete={async () => {
 						await deleteMutation.mutateAsync(alter.express?.application ?? "");
 
-						router.push("/app/settings/express");
+						router("/app/settings/express");
 					}}
 				/>
 
@@ -301,7 +301,7 @@ export function ExpressAlterPage({
 										{alter.banner ? (
 											<img
 												src={alter.banner}
-												className="w-[320px] h-[120px] rounded-xl z-0"
+												className="w-[320px] h-[120px] rounded-xl z-0 object-cover"
 												alt={t("alt_banner")}
 											/>
 										) : (
