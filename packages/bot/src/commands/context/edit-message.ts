@@ -16,6 +16,7 @@ import {
 	ApplicationCommandType,
 	ComponentType,
 	TextInputStyle,
+	type APIContainerComponent,
 	type APITextDisplayComponent,
 } from "seyfert/lib/types";
 
@@ -26,11 +27,18 @@ import {
 })
 export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 	override async run(ctx: MenuCommandContext<MessageCommandInteraction>) {
-		const contents = ctx.target.components.find(
-			(v) =>
-				v.data.type === ComponentType.TextDisplay &&
-				!v.data.content.startsWith(`-# ${emojis.reply}`),
+		const isExpress = ctx.target.webhookId === undefined;
+		const contents = ctx.target.components.find((v) =>
+			isExpress
+				? (v.data.type === ComponentType.TextDisplay &&
+						!v.data.content.startsWith(`-# ${emojis.reply}`)) ||
+					v.data.type === ComponentType.Container
+				: v.data.type === ComponentType.TextDisplay &&
+					!v.data.content.startsWith(`-# ${emojis.reply}`),
 		);
+		const innerComp = (contents ?? { data: { content: "" } }).data as
+			| APITextDisplayComponent
+			| APIContainerComponent;
 
 		const modal = new Modal()
 			.setCustomId(
@@ -46,10 +54,11 @@ export default class EditMessageContextMenuCommand extends ContextMenuCommand {
 								InteractionIdentifier.EditMenu.EditContextType.create(),
 							)
 							.setValue(
-								(
-									(contents ?? { data: { content: "" } })
-										.data as APITextDisplayComponent
-								).content,
+								"content" in innerComp
+									? innerComp.content
+									: innerComp.components[0]?.type === ComponentType.TextDisplay
+										? innerComp.components[0]?.content
+										: "",
 							)
 							.setStyle(TextInputStyle.Paragraph)
 							.setRequired(true),
