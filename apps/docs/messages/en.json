@@ -112,6 +112,7 @@
         "btn": "Create Express Application"
     },
     "ExpressPage": {
+        "nav_menu_pref": "Preferences",
         "nav_menu_sync_prof": "Resync User Profile",
         "nav_menu_auth": "Authorize",
         "nav_menu_copy_alter": "Copy Alter ID",
