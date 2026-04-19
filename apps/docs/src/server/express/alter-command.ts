@@ -23,7 +23,7 @@ import { PAlter, PExpressApplication, PMessage } from "plurography";
 export function filter(interaction: APIInteraction, alter: PAlter) {
 	return (
 		interaction.type === InteractionType.ApplicationCommand &&
-		interaction.data.name === alter.username
+		interaction.data.name === alter.username.toLocaleLowerCase().substring(0, 30)
 	);
 }
 
