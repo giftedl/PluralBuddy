@@ -6,12 +6,15 @@ import type { PAutoProxy } from "@/types/auto-proxy";
 import { AlertView } from "@/views/alert";
 import { CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { Shortcut } from "yunaforseyfert";
 
 @Declare({
     name: "off",
     description: "Disable auto-proxy",
-    contexts: ["Guild", "BotDM"]
+    contexts: ["Guild", "BotDM"],
+	aliases: ["shutup"]
 })
+@Shortcut()
 export default class OffAutoProxy extends SubCommand {
     override async run(ctx: CommandContext) {
 		await ctx.deferReply(true);
