@@ -35,7 +35,7 @@ import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 
 declare global {
-	var trpcClient: ReturnType<typeof trpc.createClient>
+	var trpcClient: ReturnType<typeof trpc.createClient>;
 }
 
 const queryClient = new QueryClient();
@@ -53,9 +53,8 @@ export default function PluralBuddyApp() {
 		}),
 	);
 
-	if (!globalThis.trpcClient)
-		globalThis.trpcClient = trpcClient;
-	
+	if (!globalThis.trpcClient) globalThis.trpcClient = trpcClient;
+
 	if (isPending)
 		return (
 			<div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 block justify-center text-center gap-2">
@@ -91,11 +90,9 @@ export default function PluralBuddyApp() {
 						</div>
 						<div className="h-screen w-screen overflow-hidden">
 							<Routes>
+								<Route path="/app/m" element={<></>} />
 								<Route path="/app/settings" element={<SettingsLayout />}>
-									<Route
-										index
-										element={<IndexSettingsAppPage />}
-									/>
+									<Route index element={<IndexSettingsAppPage />} />
 									<Route
 										path="/app/settings/authorized-apps"
 										element={<AuthorizedAppsPage />}

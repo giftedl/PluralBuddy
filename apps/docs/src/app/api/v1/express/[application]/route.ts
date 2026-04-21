@@ -229,7 +229,6 @@ export async function PUT(
 		username: (applicationObj.profileName ?? alterObject.displayName).split('').filter(char => /[a-zA-Z ]/.test(char)).join(''),
 		avatar: finalAvatarData,
 		banner: finalBannerData,
-		
 	});
 	await discordClient.editCurrentApplication({
 		icon: finalAvatarData

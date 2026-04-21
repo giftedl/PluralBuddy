@@ -809,6 +809,6 @@ const document = generator.generateDocument({
 });
 
 Bun.write(
-	"../../apps/docs/public/openapi.yml",
+	"../../apps/docs/./public/openapi.yml",
 	YAML.stringify(document, null, 2),
 );

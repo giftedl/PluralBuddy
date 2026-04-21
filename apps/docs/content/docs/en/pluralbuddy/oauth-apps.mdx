@@ -1,0 +1,22 @@
+---
+title: "OAuth Applications"
+description: "OAuth Applications allow your users an easy access to system data"
+icon: Key
+---
+
+PluralBuddy is a [OAuth 2.1](https://oauth.net/2.1/) compliant OAuth provider. This means that you can have a "Login with PluralBuddy" button or something similar which allows your users to sign in via PluralBuddy, which prompts users to then sign in with their Discord account.
+
+In addition to just being a login provider, it allows you to pull out data from the user's system, being a very secure and convient alternative to features like static tokens from other bots.
+
+## Getting Started
+
+First off, head over to the [PluralBuddy developer portal](/developers/applications) and create an application. It must contain all of the scopes you'd like to take off the user, or just standard ones if you need to have users login. 
+
+Some scopes are very similar to ones found on other applications using OAuth 2.1. For example, `offline_access` allows you to get a refresh token in the Token Endpoint below, which allows you to get access to the account for a longer amount of time (which is more useful if you are trying to get data from a system consistently).
+
+## Authorize User
+
+```
+GET /auth/oauth2/Authorize
+```
+?client_id=1481112267222159360&response_type=code&redirect_uri=https://profile.pridebot.xyz&scope=profile%20openid%20offline_access%20alter:read%20system:read&code_challenge=ax9I9jrrhY7lQvfi-lS77lQg9roRB0b6JE8I7YFsEPE&code_challenge_method=S256
