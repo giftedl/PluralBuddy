@@ -3,6 +3,8 @@ import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import Link from "next/link";
 import { i18n } from "@/lib/i18n";
 import { defineI18nUI } from "fumadocs-ui/i18n";
+import { Suspense } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const i18nUI = defineI18nUI(i18n, {
 	translations: {
@@ -22,10 +24,19 @@ export function baseOptions(): BaseLayoutProps {
 	return {
 		nav: {
 			title: (
-				<Link href="/" className="flex items-center gap-2">
-					<SolarPicture />
+				<span className="flex items-center gap-2">
+					<Suspense
+						fallback={
+							<Avatar>
+								<AvatarImage src="/image/solar-centered.png" />
+								<AvatarFallback>Solar</AvatarFallback>
+							</Avatar>
+						}
+					>
+						<SolarPicture />
+					</Suspense>
 					PluralBuddy
-				</Link>
+				</span>
 			),
 		},
 	};
