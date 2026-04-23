@@ -14,9 +14,75 @@ First off, head over to the [PluralBuddy developer portal](/developers/applicati
 
 Some scopes are very similar to ones found on other applications using OAuth 2.1. For example, `offline_access` allows you to get a refresh token in the Token Endpoint below, which allows you to get access to the account for a longer amount of time (which is more useful if you are trying to get data from a system consistently).
 
+## OpenID Configuration
+
+The OpenID Configuration for PluralBuddy is located [here](/.well-known/openid-configuration). (`https://pb.giftedly.dev/.well-known/openid-configuration`)
+
 ## Authorize User
 
 ```
-GET /auth/oauth2/Authorize
+GET /auth/oauth2/authorize
 ```
-?client_id=1481112267222159360&response_type=code&redirect_uri=https://profile.pridebot.xyz&scope=profile%20openid%20offline_access%20alter:read%20system:read&code_challenge=ax9I9jrrhY7lQvfi-lS77lQg9roRB0b6JE8I7YFsEPE&code_challenge_method=S256
+
+| Search Query Value      | Description                                                     | Required |
+|-------------------------|-----------------------------------------------------------------|----------|
+| `client_id`             | Client ID provided in the developer dashboard found above.      | `true`   |
+| `response_type`         | Only `code` according to OAuth 2.1 spec                         | `true`   |
+| `redirect_uri`          | Redirect URL of application. Where do you want your user next?  | `true`   |
+| `scope`                 | Space-separated list of scopes used for the application.        | `true`   |
+| `code_challenge`        | PKCE (Proof Key for Code Exchange) challenge pair.              | `true`   |
+| `code_challenge_method` | Method for PKCE. `plain` not supported. Use `S256`.             | `true`   | 
+
+<Callout type="warning" title="Regarding PKCE challenges">
+    PKCE Challenges are a required safety guard implemented in OAuth 2.1 to get any sort of authorization credentials.
+    For more detail, you can see more information [here](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1#section-4.1.1-9).
+        - [`pkce-challenge`](https://www.npmjs.com/package/pkce-challenge) on NPM (for JavaScript/TypeScript)
+</Callout>
+
+Redirect your users to this URL to get consent or a new token to login with PluralBuddy. For example:
+
+```
+https://pb.giftedly.dev/api/auth/oauth2/authorize
+    ?client_id=123456789
+    &response_type=code
+    &redirect_uri=https://example.com
+    &scope=profile openid offline_access alter:read system:read
+    &code_challenge=xxx
+    &code_challenge_method=S256
+```
+
+## Token Endpoint
+
+```
+POST /auth/oauth2/token
+```
+
+| `application/json`      | Description                                                     | Required                         |
+|-------------------------|-----------------------------------------------------------------|----------------------------------|
+| `grant_type`            | `authorization_code`/`client_credentials`/`refresh_token`       | `true`                           |
+| `code`                  | Code search value from Redirect URI                             | depends on `authorization_code`  |
+| `client_id`             | Client ID provided in the developer dashboard found above.      | `true`                           |
+| `client_secret`         | OAuth2 client secret                                            | `true`                           |
+| `code_verifier`         | Code verifier from PKCE                                         | depends on `authorization_code`  |
+| `resource`              | Always `https://pb.giftedly.dev`.                               | `true`                           |
+| `refresh_token`         | Refresh token (for `refresh_token` grant)                       | depends on `refresh_token`       |
+| `redirect_uri`          | Redirect URI (for `authorization_code` grant)                   | depends on `authorization_code`  |
+
+Used to get back a code to use for PluralBuddy API endpoints. An example response would look like this:
+
+```json
+{
+  "access_token": "...",
+  "token_type": "Bearer",
+  "expires_in": 86400,
+  "refresh_token": "...",
+  "scope": "...",
+  "id_token": "..."
+}
+```
+
+Use this in all PluralBuddy endpoints by attaching the following header to your responses:
+
+```
+Authorization: Bearer <access_token>
+```
