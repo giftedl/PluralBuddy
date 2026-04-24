@@ -29,6 +29,7 @@ export enum GuildFlags {
 	FORCED_NICKNAME_MODE = 1 << 7,
 	LOGGING = 1 << 8,
 	DISABLE_PERMISSION_CHECK = 1 << 9,
+	DISABLE_PROXY_TYPING = 1 << 10
 }
 
 export const PGuildObject = z
@@ -113,6 +114,7 @@ export const PGuildObject = z
 			disabledHelp: (data.flags & GuildFlags.DISABLE_HELP) !== 0,
 			disabledNudging: (data.flags & GuildFlags.DISABLE_NUDGING) !== 0,
 			disabledMessageInfo: (data.flags & GuildFlags.DISABLE_MESSAGE_INFO) !== 0,
+			disabledProxyTyping: (data.flags & GuildFlags.DISABLE_PROXY_TYPING) !== 0,
 			disabledPermissionCheck:
 				(data.flags & GuildFlags.DISABLE_PERMISSION_CHECK) !== 0,
 			logging: (data.flags & GuildFlags.LOGGING) !== 0,
@@ -201,4 +203,8 @@ export const friendlyFeatureIndex: Record<
 		description:
 			"This command shows server administrators and members whether they have permissions to do certain things.",
 	},
+	DISABLE_PROXY_TYPING: {
+		title: "Disable Proxy Typing",
+		description: "By default, PluralBuddy types in the channel after a message is proxied. Enabling this feature will disable proxy typing."
+	}
 };

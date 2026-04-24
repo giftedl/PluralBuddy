@@ -46,7 +46,7 @@ export async function performTagProxy(
 	(async () => {
 		const channel = await message.channel();
 
-		if (channel.isTextable()) channel.typing();
+		if (channel.isTextable() && guild.getFeatures().disabledProxyTyping) channel.typing();
 	})();
 	console.time("pre-proxy");
 	alterCollection.updateOne(

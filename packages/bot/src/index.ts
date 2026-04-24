@@ -16,7 +16,6 @@ import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import { ButtonStyle, ComponentType, MessageFlags } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
 import PluralBuddyHandleCommand from "./handle-command";
-import { LoadingView } from "./views/loading";
 import { PostHog } from "posthog-node";
 import { StatisticResource } from "./cache/statistics";
 import { RedisAdapter } from "@slipher/redis-adapter";
