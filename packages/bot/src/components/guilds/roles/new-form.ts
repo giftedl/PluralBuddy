@@ -40,6 +40,7 @@ export default class NewRolePreferenceForm extends ModalCommand {
 		await guildCollection.updateOne(
 			{ guildId: guild.guildId },
 			{ $push: { rolePreferences: { roleId: roleId.id } } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guild.guildId)
 

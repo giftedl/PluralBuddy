@@ -24,6 +24,7 @@ export default class RemoveCategoryForm extends ModalCommand {
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
 			{ $pull: { blacklistedCategories: categoryId } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 

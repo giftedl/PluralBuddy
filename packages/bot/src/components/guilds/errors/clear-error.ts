@@ -36,6 +36,7 @@ export default class ClearError extends ComponentCommand {
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
 			{ $pull: { errorLog: { id: errorId } } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 

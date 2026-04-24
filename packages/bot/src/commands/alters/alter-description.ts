@@ -14,6 +14,7 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 
 const options = {
 	"alter-name": createStringOption({
@@ -80,6 +81,15 @@ ${alter.description ?? "⛔ Your alter has no description."}
 			{ alterId: alter.alterId },
 			{ $set: { description: alterDescription } },
 		);
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			operationType: "desc",
+			alter: {
+				...alter,
+				description: alterDescription,
+			},
+		});
 
 		return await ctx.editResponse({
 			components: [

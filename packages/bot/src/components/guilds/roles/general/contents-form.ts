@@ -44,6 +44,7 @@ export default class RoleContentsForm extends ModalCommand {
 		await guildCollection.updateOne(
 			{ guildId: guild.guildId, "rolePreferences.roleId": roleId },
 			{ $set: { "rolePreferences.$.containerContents": newContents } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guild.guildId)
 

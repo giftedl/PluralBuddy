@@ -14,6 +14,7 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 
 const options = {
 	"alter-name": createStringOption({
@@ -103,6 +104,8 @@ ${alter.displayName}
 				(nm) => nm.server === ctx.guildId,
 			);
 
+			let finishedNameMap = alter.nameMap;
+
 			if (nameMapHasServer) {
 				// Update the name for this server using $[<identifier>] and pass arrayFilters outside $set
 				await alterCollection.updateOne(
@@ -116,6 +119,11 @@ ${alter.displayName}
 						arrayFilters: [{ "serverEntry.server": ctx.guildId }],
 					},
 				);
+
+				finishedNameMap = [...finishedNameMap.filter(v => ctx.guildId !== v.server), {
+					server: ctx.guildId ?? "",
+					name: alterNewName
+				}]
 			} else {
 				// Append a new mapping to the nameMap array
 				await alterCollection.updateOne(
@@ -129,13 +137,36 @@ ${alter.displayName}
 						}
 					},
 				);
+				
+				finishedNameMap = [...finishedNameMap, {
+					server: ctx.guildId ?? "",
+					name: alterNewName
+				}]
 			}
+
+			w(ctx.author.id, "alter.update", {
+				type: "alter.update",
+				operationType: "se/display-name",
+				alter: {
+					...alter,
+					nameMap: finishedNameMap
+				},
+			});
 		} else {
 			// Not server specific
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
 				{ $set: { displayName: alterNewName } },
 			);
+
+			w(ctx.author.id, "alter.update", {
+				type: "alter.update",
+				operationType: "display-name",
+				alter: {
+					...alter,
+					displayName: alterNewName,
+				},
+			});
 		}
 
 		return await ctx.editResponse({

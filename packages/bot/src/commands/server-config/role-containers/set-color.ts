@@ -73,6 +73,7 @@ export default class ViewRoleContainer extends SubCommand {
 						rolePreferences: { roleId: role.id, containerColor: color },
 					},
 				},
+				{ upsert: true }
 			);
 		ctx.client.cache.pguild.remove(guild.guildId)
 

@@ -24,6 +24,7 @@ export default class AddChannelForm extends ModalCommand {
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
 			{ $push: { blacklistedCategories: newCategory } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 

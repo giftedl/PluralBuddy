@@ -25,6 +25,7 @@ export default class AddRoleForm extends ModalCommand {
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
 			{ $set: { blacklistedRoles: newRoles } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 

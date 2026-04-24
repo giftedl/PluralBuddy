@@ -14,7 +14,7 @@ export async function blacklistedRole(
 ) {
 	if (guild.blacklistedRoles.length !== 0) {
 		if (
-			((await message.member?.roles.list()) ?? []).some((c) =>
+			((await message.member?.roles.list(true)) ?? []).some((c) =>
 				guild.blacklistedRoles.includes(c.id),
 			)
 		) {
