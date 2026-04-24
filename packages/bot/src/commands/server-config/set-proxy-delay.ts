@@ -37,6 +37,7 @@ export default class SetProxyDelay extends SubCommand {
 			{
 				$set: { proxyDelay: proxyDelay * 1000 },
 			},
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guild.guildId)
 

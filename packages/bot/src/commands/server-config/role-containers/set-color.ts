@@ -63,6 +63,7 @@ export default class ViewRoleContainer extends SubCommand {
 			await guildCollection.updateOne(
 				{ guildId: guild.guildId, "rolePreferences.roleId": role.id },
 				{ $set: { "rolePreferences.$.containerColor": color } },
+				{ upsert: true }
 			);
 		else
 			await guildCollection.updateOne(

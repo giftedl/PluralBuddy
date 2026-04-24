@@ -68,6 +68,7 @@ export default class AddBlacklistCategory extends SubCommand {
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
 			{ $push: { blacklistedCategories: category } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId);
 

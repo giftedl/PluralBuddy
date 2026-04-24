@@ -49,6 +49,7 @@ export default class AddPrefixCommand extends SubCommand {
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
 			{ $pull: { blacklistedCategories: category } },
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 

@@ -41,6 +41,7 @@ export default class SetLogChannel extends SubCommand {
 					logChannel: channel.id,
 				},
 			},
+			{ upsert: true }
 		);
 
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)

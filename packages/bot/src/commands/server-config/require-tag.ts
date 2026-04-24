@@ -44,6 +44,7 @@ export default class RequireSystemTags extends SubCommand {
 						.bool(GuildFlags.MANDATORY_GUILD_TAG, option === "on"),
 				},
 			},
+			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)
 		
