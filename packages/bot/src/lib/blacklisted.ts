@@ -45,24 +45,23 @@ export async function blacklistedRole(
 								flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 							});
 						} catch (_) {}
-
 					return false;
 				}
 
-				const guild = await message.guild();
-
-				if (!silent)
-					try {
-						await message.author.write({
-							components: new AlertView(locales).errorViewCustom(
-								locales.BLACKLISTED.replace("{{ guild }}", guild?.name ?? ""),
-							),
-							flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-						});
-					} catch (_) {}
-
-				return false;
 			}
+			const guild = await message.guild();
+
+			if (!silent)
+				try {
+					await message.author.write({
+						components: new AlertView(locales).errorViewCustom(
+							locales.BLACKLISTED.replace("{{ guild }}", guild?.name ?? ""),
+						),
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					});
+				} catch (_) {}
+
+			return false;
 		}
 	}
 	return true;
