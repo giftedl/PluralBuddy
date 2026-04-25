@@ -7,6 +7,7 @@ import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
+import { w } from "@/webhooks";
 
 export default class SetPronounsButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -50,6 +51,14 @@ export default class SetPronounsButton extends ModalCommand {
 				},
 			},
 		);
+		
+		w(ctx.author.id, "tag.update", {
+			type: "tag.update",
+			tag: {
+				...tag,
+				tagDescription: tagDescription
+			},
+		});
 
 		tag =
 			(await tagCollection.findOne({

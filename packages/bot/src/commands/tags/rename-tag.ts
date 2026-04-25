@@ -15,6 +15,7 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
+import { w } from "@/webhooks";
 
 const options = {
 	"tag-name": createStringOption({
@@ -81,6 +82,14 @@ ${tag.tagFriendlyName ?? "⛔ Your tag has no display name."}
 			{ tagId: tag.tagId },
 			{ $set: { tagFriendlyName } },
 		);
+
+		w(ctx.author.id, "tag.update", {
+			type: "tag.update",
+			tag: {
+				...tag,
+				tagFriendlyName
+			},
+		});
 
 		return await ctx.editResponse({
 			components: [

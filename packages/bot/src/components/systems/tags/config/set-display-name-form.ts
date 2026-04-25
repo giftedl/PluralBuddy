@@ -7,6 +7,7 @@ import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
+import { w } from "@/webhooks";
 
 export default class SetUsernameButton extends ModalCommand {
    
@@ -46,6 +47,14 @@ export default class SetUsernameButton extends ModalCommand {
 			},
 		},
 	);
+
+	w(ctx.author.id, "tag.update", {
+		type: "tag.update",
+		tag: {
+			...tag,
+			tagFriendlyName: newTagUsername as string
+		},
+	});
 
 	tag = await tagCollection.findOne({
 		tagId,

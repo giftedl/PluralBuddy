@@ -7,6 +7,7 @@ import { TagView } from "@/views/tags";
 import { tagColorSelection } from "@/lib/selection-options";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { tagColors, tagHexColors } from "@/types/tag";
+import { w } from "@/webhooks";
 
 export default class SetColorComponent extends ComponentCommand {
 	componentType = "StringSelect" as const;
@@ -50,6 +51,14 @@ export default class SetColorComponent extends ComponentCommand {
 				},
 			},
 		);
+		
+		w(ctx.author.id, "tag.update", {
+			type: "tag.update",
+			tag: {
+				...tag,
+				tagColor: newTagColor
+			},
+		});
 
 		tag =
 			(await tagCollection.findOne({

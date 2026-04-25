@@ -9,6 +9,7 @@ import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
 import { TagProtectionFlags } from "@/types/tag";
 import { combine } from "@/lib/privacy-bitmask";
+import { w } from "@/webhooks";
 
 export default class SetUsernameButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -84,6 +85,14 @@ export default class SetUsernameButton extends ModalCommand {
 				},
 			},
 		);
+
+		w(ctx.author.id, "tag.update", {
+			type: "tag.update",
+			tag: {
+				...tag,
+				public: privacyFlag
+			},
+		});
 
 		tag =
 			(await tagCollection.findOne({

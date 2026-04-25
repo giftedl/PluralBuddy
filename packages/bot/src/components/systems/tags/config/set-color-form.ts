@@ -6,6 +6,7 @@ import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { tagCollection } from "@/mongodb";
 import { TagView } from "@/views/tags";
+import { w } from "@/webhooks";
 
 export default class SetUsernameButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -51,6 +52,14 @@ export default class SetUsernameButton extends ModalCommand {
 				},
 			},
 		);
+		
+		w(ctx.author.id, "tag.update", {
+			type: "tag.update",
+			tag: {
+				...tag,
+				tagColor: newTagColor
+			},
+		});
 
 		tag =
 			(await tagCollection.findOne({
