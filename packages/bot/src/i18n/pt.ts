@@ -322,7 +322,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   SET_CONTAINERS_CONTENT: "Successfully set/cleared the role container <@&%role%>'s content. Above is a preview of the new role container.",
   SET_CONTAINERS_COLOR: "Successfully set/cleared the role container <@&%role%>'s color. Above is a preview of the new role container.",
   SET_CONTAINERS_LOCATION: "Successfully set/cleared the role container <@&%role%>'s location. Above is a preview of the new role container.",
-  DISABLED_FEATURE: `Successfully disabled that feature.
+  DISABLED_FEATURE: `Recurso desativado com sucesso.
 
 **%name%**
 > %description%`,
