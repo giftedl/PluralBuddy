@@ -13,7 +13,7 @@ import {
 } from "seyfert";
 import { setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import { ButtonStyle, ComponentType, MessageFlags } from "seyfert/lib/types";
+import { ActivityType, ButtonStyle, ComponentType, MessageFlags, PresenceUpdateStatus } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
 import PluralBuddyHandleCommand from "./handle-command";
 import { PostHog } from "posthog-node";
@@ -123,6 +123,19 @@ client.cache.i18n = new Pi18nCache(client.cache, client);
 
 await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
+
+client.gateway.setPresence({
+	activities: [
+		{
+			name: "PluralBuddy",
+			type: ActivityType.Custom,
+			state: `Building the future of plurality. See gftl.fyi/docs.`,
+		},
+	],
+	status: PresenceUpdateStatus.DoNotDisturb,
+	since: Date.now(),
+	afk: true,
+});
 
 startIndexingCleanupTimer();
 startEmojiCleanupTimer();
