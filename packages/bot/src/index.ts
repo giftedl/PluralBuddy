@@ -153,7 +153,7 @@ client.gateway.setPresence({
 	since: Date.now(),
 	afk: false,
 });
-}, 5000)
+}, 10000)
 
 startIndexingCleanupTimer();
 startEmojiCleanupTimer();
