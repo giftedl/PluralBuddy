@@ -9,6 +9,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
 -# Um von Tupperbox zu importieren, da die Daten von Tupperbox nicht vorhanden sind, du musst das System erstellen und dann \`{{ prefix }}system import\` ausführen.`,
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
+  NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
   BLACKLISTED: "Du wurdest von {{ guild }} in die blacklist gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
   // Does not need to be translated
   BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
@@ -27,22 +28,25 @@ Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens
   CREATING_NEW_SYSTEM_NAME_BUTTON: "Setze Name*",
   CREATING_NEW_SYSTEM_NAME_SET: "Name ist:",
   CREATING_NEW_SYSTEM_TAG_BUTTON: "System Etikett festlegen",
-  CREATING_NEW_SYSTEM_TAG_SET: "System tag is:",
+  CREATING_NEW_SYSTEM_TAG_SET: "System Tag ist:",
   CREATING_NEW_SYSTEM_TAG_MESSAGE: `
-This server requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
-  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Set privacy values",
+Dieser Server benötigt ein **System Tag** für Systeme, die hier proxying. Um hier ein System zu erstellen, benötigen Sie ein System Tag.`,
+  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Datenschutzwerte festlegen",
   CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
-Systems can have **privacy values** which are values that describe who can see what part of your system. By default, your system is completely private besides server automatic moderation and the message that your system sends. However, changing them will change those values.`,
-  CREATING_NEW_SYSTEM_PRIVACY_SET: "Public Privacy values are:",
-  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Select the privacy values you want open to the public.",
-  CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
-### Next Steps
-> - To create a new alter, try using %command1%
-> - To create a new tag, try using %command2%`,
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
-  ERROR_PAGINATION_TOO_OLD: '2g – That alter pagination component is too old, you cannot proceed. Please hit the "Alters" tab at the top of the message to reset the pagination.',
-  ERROR_TAG_PAGINATION_TOO_OLD: '2h – That tag pagination component is too old, you cannot proceed. Please hit the "Tags" tab at the top of the message to reset the pagination.',
+Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer welchen Teil Ihres Systems sehen kann. Standardmäßig ist Ihr System neben der automatischen Moderation des Servers und der Meldung, die Ihr System sendet, komplett privat.`,
+  CREATING_NEW_SYSTEM_PRIVACY_SET: "Werte der öffentlichen Privatsphäre sind:",
+  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Wählen Sie die Datenschutzeinstellungen aus, die öffentlich zugänglich sein sollen.",
+  CREATING_NEW_SYSTEM_SUCCESS: `Neues System erfolgreich erstellt!
+
+### Nächste Schritte
+
+> - Um eine neue Alter zu erstellen, versuchen Sie es mit %command1%
+
+> - Um ein neues Tag zu erstellen, versuchen Sie es mit %command2%`,
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – Sie können kein neues System einrichten, wenn ein System unter Ihrem Konto bereits existiert.",
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "System & Setup erneut entfernen",
+  ERROR_PAGINATION_TOO_OLD: "2g – Die Alter Paginierungs Komponente ist veraltet. Sie können nicht fortfahren. Klicken Sie bitte oben in der Meldung auf den Tab \"Alter\", um die Seiteneinstellungen zurückzusetzen.",
+  ERROR_TAG_PAGINATION_TOO_OLD: "2h – Diese Tag Pagination Komponente ist zu alt, Sie können nicht fortfahren. Bitte klicken Sie auf die Registerkarte \"Tags\" oben in der Nachricht, um die Pagination zurückzusetzen.",
   ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
   ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
   ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
@@ -573,5 +577,12 @@ You can set the language that PluralBuddy uses while using commands. If a string
 {{ languages }}`,
   SET_LANGUAGE_TO: "Successfully set language to **{{ language }}**.",
   ALTER_AP_NAME: "Alter Mode",
-  ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled."
+  ALTER_AP_DESC: "Only proxy this alter until auto-proxy is disabled.",
+  EXPRESS_HERO: `### Introducing PluralBuddy Express
+PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
+ - You create an application in Discord's Developer Portal
+ - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
+ - $0, forever
+
+Hit the button to the right to open this alter in the dashboard.`
 };

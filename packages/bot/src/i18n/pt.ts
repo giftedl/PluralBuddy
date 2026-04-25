@@ -9,6 +9,7 @@ Além disso, você também pode importar dados de outro bot como o PluralKit.
 -# Para importar do Tupperbox, devido à falta de dados de exportação que o Tupperbox export data dá, você deve criar o sistema e então executar o comando \`{{ prefix }}system import\`.`,
   PAGINATION_NEXT_PAGE: "Próxima Página",
   PAGINATION_FINISH: "Concluir",
+  NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
   BLACKLISTED: "Você foi bloqueado na **{{ guild }}**. Você não pode usar o PluralBuddy nesse servidor.",
   // Does not need to be translated
   BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
@@ -93,11 +94,11 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   TAG_SPACE_WARNING: "Como essa tag tem **espaços** nela, alguns comandos podem exigir que você coloque o nome de exibição entre aspas para ser analisado corretamente. Além disso, você pode também usar comandos na aba apps.",
   TAG_ALREADY_EXISTS: "Você já tem uma tag chamada **%display%** no seu sistema.",
   CONFIRMATION_SYSTEM_DELETION: "# :warning: __VOCÊ ESTÁ EXCLUINDO O SEU SISTEM__ :warning:\n**Esta ação __NAO PODERÁ__ ser desfeita pelo suporte PluralBuddy **, ou por você, em qualquer circunstância, ou em QUALQUER data no futuro. __Isso excluirá TODOS os dados do sistema, incluindo tags, alteradores e outros conteúdos do seu sistema__.\n\n> **dica Pro:** Se você precisa simplesmente desativar o proxying para todos os integrantes, pode ser melhor **desativar** o sistema inteiro.",
-  CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
+  CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# Como por meio da [Política de Privacidade do PluralBuddy](https://gftl.fyi/privacy), esta ação apagará todos os dados relacionados ao seu sistema, **exceto** para banners do sistema e fotos de perfil. Esses podem ser excluídos usando o comando de %command%`media-included`.",
   CONFIRMATION_SYSTEM_DELETION_BTN: "Reconheço que isso se trata de uma ação permanente, continuar",
   BACK_TO_SAFETY_BTN: "Não, voltar à segurança",
-  CONFIRMATION_ALTER_DELETION: "Are you sure you'd like to delete @%alter%? **This action cannot be undone.**",
-  SYSTEM_DELETION_FINISHED: "Successfully deleted your system. \n-# Below there is also a followup copy of your system export.",
+  CONFIRMATION_ALTER_DELETION: "Tem certeza que deseja apagar @%alter%? **Essa ação não pode ser desfeita.**",
+  SYSTEM_DELETION_FINISHED: "Sistema deletado com sucesso.\n-# abaixo você verá uma cópia do seu sistema exportado.",
   OPTED_OUT_OF_DMS: "Você foi excluído com sucesso de mensagens diretas. Você não receberá mais DMs por operações relacionadas ao sistema.\n\n> **Por que isso não é recomendado:** Desativar a operação de DMs é uma salvaguarda contra aplicações OAuth potencialmente perigosas que fazem pequenas mudanças no seu sistema. Desabilitar DMs do sistema removerá completamente essa salvaguarda, o que pode não ser o desejado. O suporte PluralBuddy pode não ser capaz de recuperar dados destruídos pelos aplicativos OAuth.",
   OPTED_IN_OF_DMS: "Você optou para receber mensagens diretas com sucesso.",
   SYSTEM_DELETION_MEDIA_FINISHED: "Successfully deleted your system **and your system's media**. \n-# If your DM's are open, you have also been direct messaged a copy of your system export.",
@@ -133,14 +134,14 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   ALTER_SET_SERVER_NAME: "Definir Nome de Exibição Para Servidor",
   ALTER_SET_SERVER_NAME_DESC: `Setting this value will make this alter's display name a different value when fronting in %server%.
 -# Your name in %server% is: %name%`,
-  ALTER_SET_USERNAME_DESC: "Alter usernames cannot have any spaces and can only be less than 20 characters. They are used to identify your system in commands.",
-  ALTER_SET_USERNAME_SPACES: "There cannot be spaces, `@`, `\\` or `/` in usernames.",
+  ALTER_SET_USERNAME_DESC: "Nomes de usuário de integrantes não pode conter espaços e devem ter no máximo 20 caracteres. Eles são usados para identificar seu sistema em comandos.",
+  ALTER_SET_USERNAME_SPACES: "Não pode haver espaços, `@`, `\\` ou `/` em nomes de usuário.",
   ALTER_DISPLAY_NAME_FORM_LABEL: "Nome de Exibição",
   ALTER_SET_PRONOUNS: "Definir Pronomes",
   ALTER_SET_DESCRIPTION: "Definir Descrição",
   ALTER_SET_PFP: "Definir Foto de Perfil",
   ALTER_SET_PFP_SE: "Is server-specific",
-  ALTER_SET_PFP_SE_DESC: "This profile picture will only be specific to this server.",
+  ALTER_SET_PFP_SE_DESC: "Esta foto de perfil será específica para este servidor.",
   ALTER_SET_TAG: "Definir Tag do Sistema",
   ALTER_SET_BANNER: "Definir Banner",
   INVALID_URL: "This is not a valid URL. Make sure you aren't enclosing your URL in `<` or `>`",
@@ -210,23 +211,23 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   DN_SUCCESS: "Atualizado com sucesso o nome de exibição de @%alter% para %new-display%.",
   DN_SUCCESS_SS: "Atualizado com sucesso o nome de exibição para @%alter% para %new-display% **em %server%**.",
   COLOR_SUCCESS: "Atualizado com êxito a cor de @%alter%.",
-  ERROR_MANUAL_PROXY: "2u – There was an error while manually proxying. Please try again later.",
-  SUCCESS_PROXY: "[Your message](<%message-link%>) has been sent!",
-  CONTENT_ERROR_PROXY: "2v – You must either have some text or an attachment to proxy.",
-  ERROR_USER_BLACKLISTED: "2a – This user is blacklisted from using PluralBuddy.",
-  OPERATION_HEADER: "Operation Transcript:",
+  ERROR_MANUAL_PROXY: "2u – Ocorreu um erro ao fazer proxy manualmente. Por favor, tente novamente mais tarde.",
+  SUCCESS_PROXY: "[Sua mensagem](<%message-link%>) foi enviada!",
+  CONTENT_ERROR_PROXY: "2v – Você deve ter algum texto ou um anexo para fazer proxy.",
+  ERROR_USER_BLACKLISTED: "2a – Esse usuário está na lista negra do PluralBuddy.",
+  OPERATION_HEADER: "Transcrição de Operação:",
   OPERATION_DISCORD: "%clock% expira em 30 minutos • %discord% Discord",
   OPERATION_WEB: "%clock% Expira em 30 minutos • %web% Web (via Exchange)",
   OPERATION_WEB_NEXT: "%clock% expira em 30 minutos • %web% Web (via Next)",
-  SERVER_TOO_BIG: "This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
+  SERVER_TOO_BIG: "Este servidor é muito grande para usar o comando /proxy, pois está desativado por razões de segurança para servidores com mais de 30 membros. Em vez disso, use o proxying automático.",
   OPERATION_DISCORD_AP: "Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
-  CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
-  NO_PERMISSIONS_PROXY: "I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
-  NICKNAME_MANUAL_PROXY: "You cannot proxy here since the alter you specified is using the Nickname proxy mode, and you cannot send a normal message when using the manual proxy command. Please use automatic proxying instead.",
+  CLEARED_LATCH: "Sucesso removendo **Integrante do modo trava** em %server_name%.",
+  NO_PERMISSIONS_PROXY: "Eu não posso fazer proxy aqui, uma vez que eu não tenho as permissões `Gerenciar Webhooks` e `Gerenciar mensagens` neste canal.",
+  NICKNAME_MANUAL_PROXY: "Você não pode fazer proxy ja que o integrante especificado está usando o modo proxy de apelido e você não pode enviar uma mensagem normal quando usar o comando proxy manual. Em vez disso, use o proxying automático.",
   OPERATION_ID: "ID da Operação: %id%",
   OPERATION_CHANGE_NAME: "Definir o nome do sistema para `%name%`.",
   OPERATION_CHANGE_NICKNAME_FORMAT: "Set nickname format to `%format%`.",
-  OPERATION_CHANGE_SE_TAG: "Changed server-specific tag in %server% to `%tag%`.",
+  OPERATION_CHANGE_SE_TAG: "Tag específica do servidor alterada em %server% para `%tag%`.",
   OPERATION_CHANGE_DISABLED: "Sistema desabilitado",
   OPERATION_CHANGE_ENABLED: "Sistema habilitado",
   OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",
@@ -251,7 +252,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
 
 -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Atribuir Tag",
-  SET_AUTO_PROXY: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
+  SET_AUTO_PROXY: "O modo proxy foi definido com sucesso para **%mode%** para o seu sistema em **%server_name%**.",
   SET_AUTO_PROXY_DMS: "Successfully set proxy mode to **%mode%** for your system in that server.",
   TAG_ALREADY_ASSIGNED: "**%tag%** já foi atribuído a **@%alter%.",
   ASSIGNED_TAG: "**%tag%** foi atribuído com sucesso a **@%alter%**.",
@@ -321,11 +322,11 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   SET_CONTAINERS_CONTENT: "Successfully set/cleared the role container <@&%role%>'s content. Above is a preview of the new role container.",
   SET_CONTAINERS_COLOR: "Successfully set/cleared the role container <@&%role%>'s color. Above is a preview of the new role container.",
   SET_CONTAINERS_LOCATION: "Successfully set/cleared the role container <@&%role%>'s location. Above is a preview of the new role container.",
-  DISABLED_FEATURE: `Successfully disabled that feature.
+  DISABLED_FEATURE: `Recurso desativado com sucesso.
 
 **%name%**
 > %description%`,
-  ENABLED_FEATURE: `Successfully enabled that feature.
+  ENABLED_FEATURE: `Recurso ativado com sucesso.
 
 **%name%**
 > %description%`,
@@ -344,7 +345,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   OWNED_BY_PROFILE: "**Associado a:** ",
   TAGS_PROFILE: "**Tags atribuídas**: ",
   ID_SMALL_PROFILE: "-# ID: ",
-  LIST_MORE_PROFILE: ", and {{ length }} more...",
+  LIST_MORE_PROFILE: ", e mais {{ length }}...",
   ALT_AVATAR: "foto de perfil de @{{ alter }}",
   ALT_BANNER: "banner de @{{ alter }}",
   CURRENT_PROXY_MODE: "-# Modo atual para @{{ username }} é {{ proxyMode }}",
@@ -359,7 +360,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   LATCH_DESC: "Definir este Integrante como o primeiro integrante no modo de trava.",
   ALTER_NAME: "Modo de Integrante",
   ALTER_DESC: "Faz proxy somente desse integrante até que o auto-proxy seja desativado.",
-  ALTER_DESC_DISABLED: "Esta opção não pode ser selecionada. Você deve entrar em um integrante para poder selecionar essa opção.",
+  ALTER_DESC_DISABLED: "Esta opção não pode ser escolhida. Você deve entrar como um integrante para poder escolher a opção.",
   OFF_NAME: "Desabilitado",
   OFF_DESC: "Desabilitar o auto-proxy do seu sistema.",
   DELETE_DESC: "**Isto não pode ser desfeito.** A exclusão de um Integrante apagará seus dados e integrante.",
@@ -372,7 +373,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   OPTION_NICKNAME: "Nickname (apelido)",
   OPTION_WEBHOOK: "Webhook",
   OPTION_BOTH: "Ambos",
-  PUBLIC_PROFILE_TITLE: `## Public Profile - @{{ alterUsername }}\nYour public profile is what your alter looks like to other users when they identify your messages.`,
+  PUBLIC_PROFILE_TITLE: `## Perfil Público - @{{ alterUsername }}\nSeu perfil público é o como o seu integrante aparece para outros usuários quando eles identificam as suas mensagens.`,
   PUBLIC_PROFILE_DN_DESC: `Nomes de exibição são exibidos em webhooks quando você faz proxy. Estes possuem menos restrições do que nomes de usuários.\n-# Exibir Nome: {{ currentDisplayName }}`,
   PUBLIC_PROFILE_PFP_DESC: "Você pode definir uma **foto de perfil** fazendo o upload de uma imagem usando o modal à direita.",
   PUBLIC_PROFILE_BANNER_DESC: "Você pode definir um **banner** fazendo o upload de uma imagem usando o modal à direita.",
@@ -401,10 +402,10 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   TAGS_LABEL: "Tags",
   CONFIGURE_PROFILE_BTN: "Configurar o Perfil",
   MESSAGE_INFO_CONTENTS: `**ID da mensagem:** {{ messageId }}\n**Enviado por:** <@{{ userId }}> ({{ userId }})\n\n**Cargos da conta ({{ roleCount }})**\n{{ roleList }}`,
-  NUDGE_PREF_TITLE: "## Nudge Preferences",
-  ENABLE_NUDGING: "Enable Nudging",
-  DISABLE_NUDGING: "Disable Nudging",
-  NUDGING_DESC: "Nudging allows other users to ping or nudge you based on your alter. You can toggle this setting at any time. Disabling this setting does not take away your ability to nudge others, it only disables the ability for others to nudge you.",
+  NUDGE_PREF_TITLE: "## Preferências Cutucada",
+  ENABLE_NUDGING: "Ativar Cutucadas",
+  DISABLE_NUDGING: "Desativar Cutucadas",
+  NUDGING_DESC: "As cutucadas permitem que outros usuários mencionem voce ou te cutuquem seu integrante. Você pode ativar esta configuração a qualquer momento. Desativar essa configuração não tira sua capacidade de cutucar os outros, apenas desativa a capacidade de outros te cutucarem.",
   DM_REPLIES_DESC: "DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
   DISABLE_DM: "Desativar respostas de mensagem direta",
   ENABLE_DM: "Habilitar respostas de mensagem direta",
@@ -572,5 +573,12 @@ Você pode definir a linguagem que PluralBuddy usa enquanto usa comandos. Se uma
 {{ languages }}`,
   SET_LANGUAGE_TO: "Idioma definido com sucesso para **{{ language }}**.",
   ALTER_AP_NAME: "Alter Mode",
-  ALTER_AP_DESC: "Faz proxy somente desse integrante até que o auto-proxy seja desativado."
+  ALTER_AP_DESC: "Faz proxy somente desse integrante até que o auto-proxy seja desativado.",
+  EXPRESS_HERO: `### Introducing PluralBuddy Express
+PluralBuddy Express is a way that alters can gain the ability to proxy in DMs, or in other environments where PluralBuddy isn't directly available.
+ - You create an application in Discord's Developer Portal
+ - PluralBuddy gathers the token, encrypts it, and hosts a singular-command bot associated to your alter
+ - $0, forever
+
+Hit the button to the right to open this alter in the dashboard.`
 };
