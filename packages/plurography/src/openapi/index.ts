@@ -69,6 +69,14 @@ registry.registerPath({
 		},
 	},
 });
+
+registry.registerPath({
+	method: "get",
+	path: "/v1/stats",
+	summary: "Get PluralBuddy statistics",
+	description: "Get data of statistical data related to PluralBuddy."
+})
+
 registry.registerPath({
 	method: "get",
 	path: "/v1/messages/{id}",

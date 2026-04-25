@@ -137,8 +137,8 @@ client.gateway.setPresence({
 	afk: false,
 });
 
-setTimeout(() => {
-	const data = client.cache.statistic.get("latest");
+setTimeout(async () => {
+	const data = await client.cache.statistic.get("latest");
 
 	
 client.gateway.setPresence({
