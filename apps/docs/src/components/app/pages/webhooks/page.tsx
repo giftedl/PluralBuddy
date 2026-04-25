@@ -47,10 +47,17 @@ export default function WebhooksAppPage() {
 				<Card className="w-full mb-4">
 					<CardContent>
 						<CardTitle>Webhooks</CardTitle>
-						<CardDescription className="block gap-1">
+						<CardDescription className="inline gap-1">
 							Webhooks allow you to get on-demand data when a user interacts
 							with data in PluralBuddy. PluralBuddy uses{" "}
-							<Link href="https://svix.com" className="text-white underline flex items-center gap-1"><ExternalLink size={12} />Svix</Link> to handle webhooks.
+							<Link
+								href="https://svix.com"
+								className="text-white underline inline-flex items-center gap-1"
+							>
+								<ExternalLink size={12} />
+								Svix
+							</Link>{" "}
+							to handle webhooks.
 						</CardDescription>
 					</CardContent>
 				</Card>
@@ -64,7 +71,7 @@ export default function WebhooksAppPage() {
 const SvixEmbed = () => {
 	const [appPortal, setAppPortal] = React.useState<string | null>(null);
 	const t = useTRPCClient();
-    const { resolvedTheme } = useTheme()
+	const { resolvedTheme } = useTheme();
 
 	React.useEffect(() => {
 		const run = t.getSvixUrl.query();
