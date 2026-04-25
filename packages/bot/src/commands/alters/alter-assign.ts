@@ -5,6 +5,7 @@ import { autocompleteTags } from "@/lib/autocomplete-tags";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
+import { w } from "@/webhooks";
 import {
 	createStringOption,
 	Declare,
@@ -100,6 +101,22 @@ export default class AssignTag extends SubCommand {
 			{ tagId: tag.tagId, systemId },
 			{ $push: { associatedAlters: alter.alterId.toString() } },
 		);
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				tagIds: [...alter.tagIds, tag.tagId],
+			},
+		});
+
+		w(ctx.author.id, "tag.update", {
+			type: "tag.update",
+			tag: {
+				...tag,
+				associatedAlters: [...tag.associatedAlters, alter.alterId.toString()],
+			},
+		});
 
 		return await ctx.ephemeral({
 			components: new AlertView((await ctx.userTranslations())).successViewCustom(

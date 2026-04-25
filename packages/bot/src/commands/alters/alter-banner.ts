@@ -22,6 +22,7 @@ import {
 } from "../../types/operation";
 import { LoadingView } from "../../views/loading";
 import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { w } from "@/webhooks";
 
 const options = {
 	"alter-name": createStringOption({
@@ -89,6 +90,14 @@ export default class EditAlterPictureCommand extends SubCommand {
 				{ alterId: alter.alterId },
 				{ $set: { banner: null } },
 			);
+			
+			w(ctx.author.id, "alter.update", {
+				type: "alter.update",
+				alter: {
+					...alter,
+					banner: null,
+				},
+			});
 
 			return await ctx.editResponse({
 				components: [
@@ -146,6 +155,14 @@ export default class EditAlterPictureCommand extends SubCommand {
 			{ alterId: alter.alterId },
 			{ $set: { banner: publicUrl } },
 		);
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				banner: publicUrl,
+			},
+		});
 
 		return await ctx.editResponse({
 			components: [

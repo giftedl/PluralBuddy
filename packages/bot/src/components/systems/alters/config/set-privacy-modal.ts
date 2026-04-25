@@ -10,6 +10,7 @@ import { TagView } from "@/views/tags";
 import { TagProtectionFlags } from "@/types/tag";
 import { combine } from "@/lib/privacy-bitmask";
 import { AlterProtectionFlags } from "@/types/alter";
+import { w } from "@/webhooks";
 
 export default class SetPrivacyModal extends ModalCommand {
    
@@ -83,6 +84,15 @@ export default class SetPrivacyModal extends ModalCommand {
 			},
 		},
 	);
+
+    w(ctx.author.id, "alter.update", {
+        type: "alter.update",
+        alter: {
+            ...alter,
+            public: privacyFlag
+        },
+    });
+
 
 	alter = await alterCollection.findOne({
 		alterId: Number(alterId),

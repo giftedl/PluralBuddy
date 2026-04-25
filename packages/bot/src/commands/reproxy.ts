@@ -34,6 +34,7 @@ import { getColor } from "colorthief";
 import { emojis } from "@/lib/emojis";
 import { createError } from "@/lib/create-error";
 import { pendingIgnoreDeletion } from "@/events/on-message-delete";
+import { w } from "@/webhooks";
 
 const options = {
 	alter: createStringOption({
@@ -197,14 +198,6 @@ export default class ReproxyCommand extends Command {
 							guildId: message.guildId,
 						},
 					);
-				alterCollection.updateOne(
-					{ alterId: message.alterId, systemId: alter.systemId },
-					{ $inc: { messageCount: -1 } },
-				);
-				alterCollection.updateOne(
-					{ alterId: alter.alterId, systemId: alter.systemId },
-					{ $inc: { messageCount: 1 } },
-				);
 
 				(async () => {
 					const guild = await getGuildFromId(ctx.guildId ?? "");

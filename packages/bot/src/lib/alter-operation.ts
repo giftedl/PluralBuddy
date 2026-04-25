@@ -1,8 +1,19 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, Container, Section, TextDisplay, type DefaultLocale } from "seyfert";
+import {
+	ActionRow,
+	Button,
+	Container,
+	Section,
+	TextDisplay,
+	type DefaultLocale,
+} from "seyfert";
 import { client } from "..";
-import { alterCollection, alterOperationCollection, operationCollection } from "../mongodb";
+import {
+	alterCollection,
+	alterOperationCollection,
+	operationCollection,
+} from "../mongodb";
 import { operationStringGeneration, type POperation } from "../types/operation";
 import type { PAlter } from "../types/alter";
 import type { TranslationString } from "../lang";
@@ -16,6 +27,7 @@ import {
 } from "./privacy-bitmask";
 import convert from "./delay-converter";
 import type { PAlterOperation } from "plurography";
+import { w } from "@/webhooks";
 
 export async function createPartialAlterOperation(
 	changedAlterId: number,
@@ -40,7 +52,9 @@ export async function createPartialAlterOperation(
 	} satisfies PAlterOperation;
 	const listItems = await Promise.all(
 		operationDb.changedOperationStrings
-			.filter((v) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]))
+			.filter(
+				(v) => JSON.stringify(operation[v]) !== JSON.stringify(PartialAlter[v]),
+			)
 			.map(async (c) => {
 				if (c === "username") {
 					return translations.OPERATION_CHANGE_NAME.replace(
@@ -68,10 +82,22 @@ export async function createPartialAlterOperation(
 
 	await alterOperationCollection.insertOne(operationDb);
 
-	if (environment === "discord")
-		await alterCollection.updateOne({ alterId: changedAlterId }, { $set: operation })
+	const user = await getUserById(PartialAlter.systemId);
 
-	const user = await getUserById(PartialAlter.systemId)
+	if (environment === "discord") {
+		await alterCollection.updateOne(
+			{ alterId: changedAlterId },
+			{ $set: operation },
+		);
+
+		w(user.userId, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...PartialAlter,
+				...operation,
+			},
+		});
+	}
 
 	if (!user.system?.systemOperationDM)
 		try {
@@ -127,12 +153,8 @@ export async function createPartialAlterOperation(
 								.setColor("#F9DC00"),
 							new Section()
 								.setComponents(
-									new TextDisplay().setContent(
-										translations.NOTIFIED_1,
-									),
-									new TextDisplay().setContent(
-										translations.NOTIFIED_2,
-									),
+									new TextDisplay().setContent(translations.NOTIFIED_1),
+									new TextDisplay().setContent(translations.NOTIFIED_2),
 								)
 								.setAccessory(
 									new Button()

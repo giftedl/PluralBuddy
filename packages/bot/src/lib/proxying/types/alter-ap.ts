@@ -24,6 +24,7 @@ import type {
 } from "@/events/on-message-create";
 import { CacheFrom } from "seyfert";
 import { createError } from "@/lib/create-error";
+import { w } from "@/webhooks";
 
 export async function performAlterAutoProxy(
 	message: Message,
@@ -47,6 +48,15 @@ export async function performAlterAutoProxy(
 			$set: { lastMessageTimestamp: new Date() },
 		},
 	);
+
+	w(user.userId, "alter.update", {
+		type: "alter.update",
+		alter: {
+			...alter,
+			messageCount: alter.messageCount + 1,
+			lastMessageTimestamp: new Date()
+		},
+	});
 
 	let webhook = null;
 	const userPerms = await client.channels.memberPermissions(

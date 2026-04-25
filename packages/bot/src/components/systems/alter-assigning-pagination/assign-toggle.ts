@@ -7,6 +7,7 @@ import {
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { alterCollection, tagCollection } from "@/mongodb";
+import { w } from "@/webhooks";
 
 export default class ToggleAssignButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -69,6 +70,23 @@ export default class ToggleAssignButton extends ComponentCommand {
                 { $pull: { associatedAlters: corresponding.alter.alterId.toString() } },
             )
 
+			w(ctx.author.id, "alter.update", {
+				type: "alter.update",
+				alter: {
+					...corresponding.alter,
+					tagIds: corresponding.alter.tagIds.filter(v => v !== tagId),
+				},
+			});
+	
+			(async () => {
+				const tag = await tagCollection.findOne({ tagId })
+
+				w(ctx.author.id, "tag.update", {
+					type: "tag.update",
+					tag
+				});
+			})()
+
             // Refresh from database
 			const nextAlter = await alterCollection.findOne({
 				alterId: corresponding.alter.alterId,
@@ -99,6 +117,23 @@ export default class ToggleAssignButton extends ComponentCommand {
                 { tagId, systemId: corresponding.alter.systemId },
                 { $push: { associatedAlters: corresponding.alter.alterId.toString() } },
             )
+
+			w(ctx.author.id, "alter.update", {
+				type: "alter.update",
+				alter: {
+					...corresponding.alter,
+					tagIds: [...corresponding.alter.tagIds, corresponding.alter.alterId.toString() ],
+				},
+			});
+	
+			(async () => {
+				const tag = await tagCollection.findOne({ tagId })
+
+				w(ctx.author.id, "tag.update", {
+					type: "tag.update",
+					tag
+				});
+			})()
             
             // Refresh from database
 			const nextAlter = await alterCollection.findOne({

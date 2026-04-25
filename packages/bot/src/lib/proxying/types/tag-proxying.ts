@@ -20,6 +20,7 @@ import { createProxyError } from "../error";
 import type { PGuild } from "plurography";
 import type { PWebhook } from "@/events/on-message-create";
 import { createError } from "@/lib/create-error";
+import { w } from "@/webhooks";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -56,6 +57,15 @@ export async function performTagProxy(
 			$set: { lastMessageTimestamp: new Date() },
 		},
 	);
+
+	w(user.userId, "alter.update", {
+		type: "alter.update",
+		alter: {
+			...checkAlter,
+			messageCount: checkAlter.messageCount + 1,
+			lastMessageTimestamp: new Date()
+		},
+	});
 
 	let webhook = null;
 	const userPerms = await client.channels.memberPermissions(

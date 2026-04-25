@@ -1,6 +1,6 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
+import { SubCommand } from "seyfert";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -14,6 +14,7 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 
 const options = {
 	"alter-name": createStringOption({
@@ -36,53 +37,72 @@ const options = {
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
-        await ctx.deferReply(true);
-		const {
-			"alter-name": alterName,
-			"alter-pronouns": alterPronouns,
-		} = ctx.options;
+		await ctx.deferReply(true);
+		const { "alter-name": alterName, "alter-pronouns": alterPronouns } =
+			ctx.options;
 
 		const systemId = ctx.author.id;
-        const alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
+		const alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
 
 		if (alter === null) {
-			return await ctx.ephemeral({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			}, undefined, undefined, ctx);
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_ALTER_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
 		}
 
 		if (alterPronouns === undefined) {
-			return await ctx.ephemeral({
-				components: [
-					new Container().setComponents(
-						new TextDisplay().setContent(`\`\`\`
+			return await ctx.ephemeral(
+				{
+					components: [
+						new Container().setComponents(
+							new TextDisplay().setContent(`\`\`\`
 ${alter.pronouns}
 \`\`\``),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			}, true, undefined, ctx);
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				true,
+				undefined,
+				ctx,
+			);
 		}
 
-			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
-				{ $set: { pronouns: alterPronouns } },
-			);
-		
+		await alterCollection.updateOne(
+			{ alterId: alter.alterId },
+			{ $set: { pronouns: alterPronouns } },
+		);
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				pronouns: alterPronouns,
+			},
+		});
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
 					(await ctx.userTranslations()).ALTER_SUCCESS_PRONOUNS.replace(
-							"%alter%",
-							alter.username,
-						)
-						.replace("%new%", alterPronouns),
+						"%alter%",
+						alter.username,
+					).replace("%new%", alterPronouns),
 				),
 			],
 			flags: MessageFlags.IsComponentsV2,

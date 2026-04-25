@@ -146,7 +146,6 @@ ${alter.displayName}
 
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
-				operationType: "se/display-name",
 				alter: {
 					...alter,
 					nameMap: finishedNameMap
@@ -161,7 +160,6 @@ ${alter.displayName}
 
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
-				operationType: "display-name",
 				alter: {
 					...alter,
 					displayName: alterNewName,

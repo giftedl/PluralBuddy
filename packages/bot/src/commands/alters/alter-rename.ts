@@ -8,6 +8,7 @@ import { MessageFlags } from "seyfert/lib/types";
 import { getUserById } from "../../types/user";
 import type { Document } from "mongodb";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
+import { w } from "@/webhooks";
 
 const options = {
     "alter-name": createStringOption({
@@ -54,6 +55,14 @@ export default class EditAlterNameCommand extends SubCommand {
         }
 
         await alterCollection.updateOne({ alterId: alter.alterId }, { $set: { username: alterNewName }})
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				username: alterNewName,
+			},
+		});
 
         return await ctx.editResponse({
             components: [

@@ -7,6 +7,7 @@ import { alterCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
 import { assetStringGeneration } from "@/types/operation";
+import { w } from "@/webhooks";
 
 export default class SetPFPForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -83,6 +84,15 @@ export default class SetPFPForm extends ModalCommand {
 			{ alterId: alter.alterId },
 			{ $set: { avatarUrl: publicUrl } },
 		);
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				avatarUrl: publicUrl
+			},
+		});
+
 
 		return await ctx.interaction.update({
 			components: [

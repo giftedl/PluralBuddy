@@ -6,6 +6,7 @@ import { alterCollection } from "../../../../mongodb";
 import { AlertView } from "../../../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlterView } from "../../../../views/alters";
+import { w } from "@/webhooks";
 
 export default class DeleteProxyTag extends ComponentCommand {
 	componentType = "Button" as const;
@@ -52,6 +53,17 @@ export default class DeleteProxyTag extends ComponentCommand {
 				},
 			},
 		);
+
+		w(context.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				proxyTags: [
+					...alter.proxyTags.filter(v => v.id !== proxyTag),
+				],
+			},
+		});
+
 
 		alter =
 			(await alterCollection.findOne({

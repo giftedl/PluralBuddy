@@ -6,6 +6,7 @@ import { AlertView } from "@/views/alert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { alterCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
+import { w } from "@/webhooks";
 
 export default class SetUsernameButton extends ModalCommand {
    
@@ -53,6 +54,14 @@ export default class SetUsernameButton extends ModalCommand {
 			},
 		},
 	);
+
+	w(ctx.author.id, "alter.update", {
+		type: "alter.update",
+		alter: {
+			...alter,
+			username: newAlterUsername
+		},
+	});
 
 	alter = await alterCollection.findOne({
 		alterId: Number(alterId),

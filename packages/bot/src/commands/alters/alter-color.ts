@@ -75,6 +75,15 @@ export default class EditAlterColorCommand extends SubCommand {
 				{ alterId: alter.alterId },
 				{ $set: { color: null } },
 			);
+			
+			w(ctx.author.id, "alter.update", {
+				type: "alter.update",
+				alter: {
+					...alter,
+					color: null,
+				},
+			});
+
 
 			return await ctx.editResponse({
 				components: [
@@ -96,7 +105,6 @@ export default class EditAlterColorCommand extends SubCommand {
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
-			operationType: "color",
 			alter: {
 				...alter,
 				color,

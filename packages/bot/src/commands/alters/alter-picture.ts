@@ -114,7 +114,6 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
-				operationType: "picture",
 				alter: {
 					...alter,
 					avatarUrlMap: {
@@ -208,7 +207,6 @@ export default class EditAlterPictureCommand extends SubCommand {
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
-			operationType: "picture",
 			alter: {
 				...alter,
 				avatarUrl: publicUrl,

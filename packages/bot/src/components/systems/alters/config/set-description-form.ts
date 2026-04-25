@@ -6,6 +6,7 @@ import { AlertView } from "@/views/alert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { alterCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
+import { w } from "@/webhooks";
 
 export default class SetPronounsButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -49,6 +50,14 @@ export default class SetPronounsButton extends ModalCommand {
 				},
 			},
 		);
+
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				description: newAlterDescription
+			},
+		});
 
 		alter =
 			(await alterCollection.findOne({

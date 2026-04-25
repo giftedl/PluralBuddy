@@ -5,6 +5,7 @@ import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { AlterView } from "@/views/alters";
+import { w } from "@/webhooks";
 
 export default class WebhookButton extends ComponentCommand {
    componentType = 'Button' as const;
@@ -40,6 +41,14 @@ export default class WebhookButton extends ComponentCommand {
                 },
             },
         );
+
+        w(ctx.author.id, "alter.update", {
+            type: "alter.update",
+            alter: {
+                ...alter,
+                alterMode: "both"
+            },
+        });
     
         alter = await alterCollection.findOne({
             alterId: Number(alterId),

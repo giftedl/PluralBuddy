@@ -7,6 +7,7 @@ import { AlertView } from "../../../../views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlterView } from "../../../../views/alters";
+import { w } from "@/webhooks";
 
 export default class CreateProxyTagModal extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -42,7 +43,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 		}
 
 		if (!proxyTag.includes("text")) {
-			console.log("1", proxyTag)
+			console.log("1", proxyTag);
 			return await context.write({
 				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
@@ -66,7 +67,7 @@ export default class CreateProxyTagModal extends ModalCommand {
 		}
 
 		if (prefix === "" && suffix === "") {
-			console.log("2", proxyTag)
+			console.log("2", proxyTag);
 			return await context.write({
 				components: new AlertView(await context.userTranslations()).errorView(
 					"CREATING_NEW_PT_ERROR",
@@ -75,6 +76,8 @@ export default class CreateProxyTagModal extends ModalCommand {
 			});
 		}
 
+		const id = DiscordSnowflake.generate();
+
 		await alterCollection.updateOne(
 			{ alterId: Number(alterId), systemId },
 			{
@@ -82,11 +85,26 @@ export default class CreateProxyTagModal extends ModalCommand {
 					proxyTags: {
 						prefix,
 						suffix,
-						id: String(DiscordSnowflake.generate()),
+						id: String(id),
 					},
 				},
 			},
 		);
+
+		w(context.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				proxyTags: [
+					...alter.proxyTags,
+					{
+						prefix,
+						suffix,
+						id: String(id),
+					},
+				],
+			},
+		});
 
 		alter =
 			(await alterCollection.findOne({
@@ -103,7 +121,9 @@ export default class CreateProxyTagModal extends ModalCommand {
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView(await context.userTranslations()).alterProxyTagsView(alter),
+				...new AlterView(await context.userTranslations()).alterProxyTagsView(
+					alter,
+				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

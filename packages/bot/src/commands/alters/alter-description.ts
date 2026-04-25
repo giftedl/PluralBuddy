@@ -84,7 +84,6 @@ ${alter.description ?? "⛔ Your alter has no description."}
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
-			operationType: "desc",
 			alter: {
 				...alter,
 				description: alterDescription,

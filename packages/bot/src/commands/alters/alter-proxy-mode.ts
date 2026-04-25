@@ -1,90 +1,131 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { SubCommand } from "seyfert"
+import { SubCommand } from "seyfert";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import { LoadingView } from "@/views/loading";
-import { type CommandContext, createStringOption, Declare, Options } from "seyfert";
+import {
+	type CommandContext,
+	createStringOption,
+	Declare,
+	Options,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 
 const options = {
-    "alter-name": createStringOption({
-        description: "The name of the alter.",
-        required: true,
-        autocomplete: autocompleteAlters
-    }),
-    "alter-proxy": createStringOption({
-        description: "The proxy mode to use for the alter",
-        choices: [
-            { name: "webhook", value: "webhook" },
-            { name: "nickname", value: "nickname" },
-            { name: "both", value: "both" }
-        ] as const
-    })
-}
+	"alter-name": createStringOption({
+		description: "The name of the alter.",
+		required: true,
+		autocomplete: autocompleteAlters,
+	}),
+	"alter-proxy": createStringOption({
+		description: "The proxy mode to use for the alter",
+		choices: [
+			{ name: "webhook", value: "webhook" },
+			{ name: "nickname", value: "nickname" },
+			{ name: "both", value: "both" },
+		] as const,
+	}),
+};
 
 @Declare({
 	name: "proxy-mode",
 	description: "Set alter's proxy mode",
-    aliases: ["pm", "proxy"],
-    contexts: ["BotDM", "Guild"]
+	aliases: ["pm", "proxy"],
+	contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class EditAlterProxyModeCommand extends SubCommand {
-
 	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
+		const { "alter-name": alterName, "alter-proxy": alterProxy } = ctx.options;
+		const systemId = ctx.author.id;
+		const guild = await ctx.retrievePGuild();
+		let alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
 
-        await ctx.deferReply(true);
-        const { "alter-name": alterName, "alter-proxy": alterProxy } = ctx.options;
-        const systemId = ctx.author.id;
-        const guild = await ctx.retrievePGuild();
-        let alter = ctx.contextAlter() ?? await (Number.isNaN(Number.parseInt(alterName)) 
-            ? alterCollection.findOne( { $or: [ { username: alterName } ], systemId })
-            : alterCollection.findOne( { $or: [ { username: alterName }, { alterId: Number(alterName) } ], systemId }))
+		if (alter === null) {
+			return await ctx.ephemeral(
+				{
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_ALTER_DOESNT_EXIST",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
+		}
 
-        if (alter === null) {
-            return await ctx.ephemeral({
-                components: new AlertView((await ctx.userTranslations())).errorView("ERROR_ALTER_DOESNT_EXIST"),
-                flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
-            }, undefined, undefined, ctx)
-        }
+		if (alterProxy === undefined) {
+			return await ctx.ephemeral(
+				{
+					components: [
+						...new AlterView(await ctx.userTranslations()).altersSetMode(
+							alter.username,
+							alter.alterId,
+							alter.alterMode,
+							guild,
+						),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				},
+				undefined,
+				undefined,
+				ctx,
+			);
+		}
 
-        if (alterProxy === undefined) {
-            return await ctx.ephemeral({
-                components: [
-                    ...new AlterView((await ctx.userTranslations())).altersSetMode(alter.username, alter.alterId, alter.alterMode, guild)
-                ],
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            }, undefined, undefined, ctx)
-        }
+		await alterCollection.updateOne(
+			{ alterId: Number(alter.alterId), systemId },
+			{
+				$set: {
+					alterMode: alterProxy,
+				},
+			},
+		);
 
+		w(ctx.author.id, "alter.update", {
+			type: "alter.update",
+			alter: {
+				...alter,
+				alterMode: alterProxy,
+			},
+		});
 
-        await alterCollection.updateOne(
-            { alterId: Number(alter.alterId), systemId },
-            {
-                $set: {
-                    alterMode: alterProxy
-                },
-            },
-        );
-    
-        alter = await alterCollection.findOne({
-            alterId: Number(alter.alterId),
-            systemId,
-        }) ?? alter;
-        
-        return await ctx.ephemeral({
-            components: [
-                ...new AlterView((await ctx.userTranslations())).alterTopView(
-                    "general",
-                    alter.alterId.toString(),
-                    alter.username,
-                ),
-                ...await new AlterView((await ctx.userTranslations())).alterGeneralView(alter, ctx.guildId),
-            ],
-            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-        }, undefined, undefined, ctx);
-    }
+		alter =
+			(await alterCollection.findOne({
+				alterId: Number(alter.alterId),
+				systemId,
+			})) ?? alter;
+
+		return await ctx.ephemeral(
+			{
+				components: [
+					...new AlterView(await ctx.userTranslations()).alterTopView(
+						"general",
+						alter.alterId.toString(),
+						alter.username,
+					),
+					...(await new AlterView(
+						await ctx.userTranslations(),
+					).alterGeneralView(alter, ctx.guildId)),
+				],
+				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+			},
+			undefined,
+			undefined,
+			ctx,
+		);
+	}
 }
