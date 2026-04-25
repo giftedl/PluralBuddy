@@ -20,6 +20,7 @@ import "svix-react/style.css";
 import { useTRPCClient } from "@/server/client";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
+import { useTheme } from "next-themes";
 
 export default function WebhooksAppPage() {
 	return (
@@ -46,7 +47,7 @@ export default function WebhooksAppPage() {
 				<Card className="w-full mb-4">
 					<CardContent>
 						<CardTitle>Webhooks</CardTitle>
-						<CardDescription className="flex gap-1">
+						<CardDescription className="block gap-1">
 							Webhooks allow you to get on-demand data when a user interacts
 							with data in PluralBuddy. PluralBuddy uses{" "}
 							<Link href="https://svix.com" className="text-white underline flex items-center gap-1"><ExternalLink size={12} />Svix</Link> to handle webhooks.
@@ -63,6 +64,7 @@ export default function WebhooksAppPage() {
 const SvixEmbed = () => {
 	const [appPortal, setAppPortal] = React.useState<string | null>(null);
 	const t = useTRPCClient();
+    const { resolvedTheme } = useTheme()
 
 	React.useEffect(() => {
 		const run = t.getSvixUrl.query();
@@ -70,5 +72,5 @@ const SvixEmbed = () => {
 		run.then((v) => setAppPortal(v));
 	}, [t]);
 
-	return <AppPortal url={appPortal} />;
+	return <AppPortal url={appPortal} darkMode={resolvedTheme === "dark"} />;
 };
