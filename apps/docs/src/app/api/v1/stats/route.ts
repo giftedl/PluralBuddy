@@ -1,8 +1,9 @@
 import { api } from "@/lib/rpc";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
 	const response = await api.stats.$get();
+	const json = await response.json()
 
-	return response;
+	return NextResponse.json(json);
 }
