@@ -73,7 +73,7 @@ export class PluralBuddyErrorCommand extends PluralBuddyErrorCommandImpl {
             .PLURALBUDDY_OPTIONS_ERROR.replace("%options_errors%", errors)
         ),
       ],
-      flags: MessageFlags.IsComponentsV2,
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
     });
   }
 
