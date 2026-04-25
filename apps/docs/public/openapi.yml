@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info: 
   title: PluralBuddy API
   version: 1.0.0
@@ -70,18 +70,27 @@ components:
           maxLength: 100
         systemDisplayTag: 
           type: string
+        displayTagMap: 
+          type: object
+          additionalProperties: 
+            type: string
+          default: 
+            {}
         systemDescription: 
           type: string
           maxLength: 1000
         systemAvatar: 
-          type: string
-          nullable: true
+          type: 
+            - string
+            - "null"
         systemBanner: 
-          type: string
-          nullable: true
+          type: 
+            - string
+            - "null"
         systemPronouns: 
-          type: string
-          nullable: true
+          type: 
+            - string
+            - "null"
         nicknameFormat: 
           type: string
         alterIds: 
@@ -99,8 +108,9 @@ components:
           default: 
             []
         createdAt: 
-          type: string
-          nullable: true
+          type: 
+            - string
+            - "null"
           format: date-time
         systemAutoproxy: 
           type: array
@@ -118,8 +128,9 @@ components:
               serverId: 
                 type: string
               lastLatchTimestamp: 
-                type: string
-                nullable: true
+                type: 
+                  - string
+                  - "null"
                 format: date-time
             required: 
               - autoproxyMode
@@ -262,6 +273,8 @@ paths:
                         examples: 
                           - "1481859951688159236"
                       referencedMessage: 
+                        type: string
+                      expressUserId: 
                         type: string
                       endpoints: 
                         type: object
@@ -838,3 +851,217 @@ paths:
                 properties: 
                   message: 
                     type: string
+webhooks: 
+  alter.update: 
+    post: 
+      summary: Receive alter updates
+      description: Receive alter updates via Svix Webhooks built into PluralBuddy.
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                userId: 
+                  type: string
+                type: 
+                  type: string
+                  enum: 
+                    - alter.update
+                alter: 
+                  type: object
+                  properties: 
+                    alterId: 
+                      type: number
+                    systemId: 
+                      type: string
+                    username: 
+                      type: string
+                      maxLength: 100
+                      pattern: "^[^\\s@\\\\/]+$"
+                    displayName: 
+                      type: string
+                      maxLength: 100
+                    nameMap: 
+                      type: array
+                      items: 
+                        type: object
+                        properties: 
+                          server: 
+                            type: string
+                            maxLength: 20
+                          name: 
+                            type: string
+                            maxLength: 100
+                        required: 
+                          - server
+                          - name
+                    color: 
+                      type: 
+                        - string
+                        - "null"
+                      pattern: "^#[0-9A-F]{6}$/i"
+                    description: 
+                      type: 
+                        - string
+                        - "null"
+                      maxLength: 1000
+                    created: 
+                      type: 
+                        - string
+                        - "null"
+                      format: date-time
+                    pronouns: 
+                      type: 
+                        - string
+                        - "null"
+                      maxLength: 100
+                    avatarUrl: 
+                      type: 
+                        - string
+                        - "null"
+                    avatarUrlMap: 
+                      type: object
+                      additionalProperties: 
+                        type: string
+                      default: 
+                        {}
+                    webhookAvatarUrl: 
+                      type: 
+                        - string
+                        - "null"
+                    banner: 
+                      type: 
+                        - string
+                        - "null"
+                    lastMessageTimestamp: 
+                      type: 
+                        - string
+                        - "null"
+                      format: date-time
+                    messageCount: 
+                      type: number
+                    alterMode: 
+                      type: string
+                      enum: 
+                        - nickname
+                        - webhook
+                        - both
+                      default: webhook
+                    proxyTags: 
+                      type: array
+                      items: 
+                        type: object
+                        properties: 
+                          prefix: 
+                            type: string
+                            maxLength: 100
+                          suffix: 
+                            type: string
+                            maxLength: 100
+                          id: 
+                            type: string
+                        required: 
+                          - prefix
+                          - suffix
+                          - id
+                      default: 
+                        []
+                    tagIds: 
+                      type: array
+                      items: 
+                        type: string
+                      default: 
+                        []
+                    public: 
+                      type: number
+                  required: 
+                    - alterId
+                    - systemId
+                    - username
+                    - displayName
+                    - nameMap
+                    - color
+                    - description
+                    - created
+                    - pronouns
+                    - avatarUrl
+                    - webhookAvatarUrl
+                    - banner
+                    - lastMessageTimestamp
+                    - messageCount
+                    - public
+              required: 
+                - userId
+                - type
+                - alter
+      responses: 
+        {}
+  tag.update: 
+    post: 
+      summary: Receive tag updates
+      description: Receive tag updates via Svix Webhooks built into PluralBuddy.
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                userId: 
+                  type: string
+                type: 
+                  type: string
+                  enum: 
+                    - tag.update
+                tag: 
+                  type: object
+                  properties: 
+                    tagId: 
+                      type: string
+                    systemId: 
+                      type: string
+                    tagFriendlyName: 
+                      type: string
+                      maxLength: 100
+                    tagDescription: 
+                      type: string
+                      maxLength: 1000
+                    tagColor: 
+                      type: string
+                      enum: 
+                        - red
+                        - orange
+                        - amber
+                        - yellow
+                        - lime
+                        - green
+                        - emerald
+                        - teal
+                        - cyan
+                        - sky
+                        - blue
+                        - indigo
+                        - violet
+                        - purple
+                        - fuchsia
+                        - pink
+                        - rose
+                    associatedAlters: 
+                      type: array
+                      items: 
+                        type: string
+                    public: 
+                      type: number
+                  required: 
+                    - tagId
+                    - systemId
+                    - tagFriendlyName
+                    - tagColor
+                    - associatedAlters
+                    - public
+              required: 
+                - userId
+                - type
+                - tag
+      responses: 
+        {}

@@ -3,11 +3,11 @@ import { openapi } from "@/lib/openapi";
 import { globby } from "globby";
 import { mkdir } from "node:fs/promises";
 
-await mkdir("content/docs/pluralbuddy/api")
+await mkdir("content/docs/en/pluralbuddy/api")
 
 await generateFiles({
 	input: openapi,
-	output: "./content/docs/pluralbuddy/api",
+	output: "./content/docs/en/pluralbuddy/api",
 	// we recommend to enable it
 	// make sure your endpoint description doesn't break MDX syntax.
 	includeDescription: true,
@@ -15,7 +15,7 @@ await generateFiles({
 
 	index: {
 		// for generating `href`
-		url: (file) => `/docs/pluralbuddy/api/${file.replace(".mdx", "")}`,
+		url: (file) => `/docs/en/pluralbuddy/api/${file.replace(".mdx", "")}`,
 		items: [
 			{
 				path: "index.mdx",
@@ -25,12 +25,12 @@ await generateFiles({
 });
 
 Bun.write(
-	"./content/docs/pluralbuddy/api/meta.json",
+	"./content/docs/en/pluralbuddy/api/meta.json",
 	JSON.stringify({
 		title: "API References",
-		pages: (await globby(["./content/docs/pluralbuddy/api/**/*.mdx"])).map(
+		pages: (await globby(["./content/docs/en/pluralbuddy/api/**/*.mdx"])).map(
 			(v) =>
-				v.replace("./content/docs/pluralbuddy/api/", "").replace(".mdx", ""),
+				v.replace("./content/docs/en/pluralbuddy/api/", "").replace(".mdx", ""),
 		).slice(1),
 	}, null, 2),
 );

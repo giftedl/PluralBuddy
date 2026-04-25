@@ -1,6 +1,8 @@
+import { PAlterObject } from "@/pluralbuddy/alter";
 import { PGuildObject } from "@/pluralbuddy/guild";
 import { PMessageObject } from "@/pluralbuddy/message";
 import { PSystemObject } from "@/pluralbuddy/system";
+import { PTagObject } from "@/pluralbuddy/tag";
 import {
 	OpenApiGeneratorV3,
 	OpenApiGeneratorV31,
@@ -790,9 +792,53 @@ registry.registerComponent("securitySchemes", "oAuth2", {
 	},
 });
 
-const generator = new OpenApiGeneratorV3(registry.definitions);
+registry.registerWebhook({
+	method: "post",
+	path: "alter.update",
+	summary: "Receive alter updates",
+	description:
+		"Receive alter updates via Svix Webhooks built into PluralBuddy.",
+	request: {
+		body: {
+			content: {
+				"application/json": {
+					schema: z.object({
+						userId: z.string(),
+						type: z.literal("alter.update"),
+						alter: PAlterObject,
+					}),
+				},
+			},
+		},
+	},
+	responses: {},
+});
+
+registry.registerWebhook({
+	method: "post",
+	path: "tag.update",
+	summary: "Receive tag updates",
+	description: "Receive tag updates via Svix Webhooks built into PluralBuddy.",
+	request: {
+		body: {
+			content: {
+				"application/json": {
+					schema: z.object({
+						userId: z.string(),
+						type: z.literal("tag.update"),
+						tag: PTagObject,
+					}),
+				},
+			},
+		},
+	},
+	responses: {},
+});
+
+console.log(registry.definitions);
+const generator = new OpenApiGeneratorV31(registry.definitions);
 const document = generator.generateDocument({
-	openapi: "3.0.0",
+	openapi: "3.1.0",
 	info: { title: "PluralBuddy API", version: "1.0.0" },
 	servers: [
 		{
@@ -807,6 +853,8 @@ const document = generator.generateDocument({
 		},
 	],
 });
+
+console.log(generator);
 
 Bun.write(
 	"../../apps/docs/./public/openapi.yml",

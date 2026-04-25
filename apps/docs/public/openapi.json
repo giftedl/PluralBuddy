@@ -1,0 +1,1483 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "PluralBuddy API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://pb.giftedly.dev/api"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": [],
+            "apiKeyCookie": [],
+            "oAuth2": []
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "apiKeyCookie": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "apiKeyCookie",
+                "description": "API Key authentication via cookie"
+            },
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "description": "Bearer token authentication"
+            },
+            "oAuth2": {
+                "type": "oauth2",
+                "description": "OAuth 2.1 authentication",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": "https://pb.giftedly.dev/api/auth/oauth2/authorize",
+                        "tokenUrl": "https://pb.giftedly.dev/api/auth/oauth2/token",
+                        "scopes": {
+                            "profile": "Read profile",
+                            "openid": "Read user ID",
+                            "email": "Read (fake) user email",
+                            "offline_access": "Refresh token",
+                            "alter:read": "Read alter data",
+                            "alter:write": "Write alter data",
+                            "tags:read": "Read tag data",
+                            "tags:write": "Write tag data",
+                            "tags:alters": "Assign tags to alters",
+                            "system:read": "Read system data",
+                            "system:write": "Write to system data",
+                            "system:admin": "Read/write to alter, tags & system data."
+                        }
+                    },
+                    "clientCredentials": {
+                        "authorizationUrl": "https://pb.giftedly.dev/api/auth/oauth2/authorize",
+                        "tokenUrl": "https://pb.giftedly.dev/api/auth/oauth2/token",
+                        "scopes": {
+                            "profile": "Read profile",
+                            "openid": "Read user ID",
+                            "email": "Read (fake) user email",
+                            "offline_access": "Refresh token",
+                            "alter:read": "Read alter data",
+                            "alter:write": "Write alter data",
+                            "tags:read": "Read tag data",
+                            "tags:write": "Write tag data",
+                            "tags:alters": "Assign tags to alters",
+                            "system:read": "Read system data",
+                            "system:write": "Write to system data",
+                            "system:admin": "Read/write to alter, tags & system data."
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
+            "system": {
+                "type": "object",
+                "properties": {
+                    "associatedUserId": {
+                        "type": "string"
+                    },
+                    "systemName": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                    },
+                    "systemDisplayTag": {
+                        "type": "string"
+                    },
+                    "displayTagMap": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "default": {}
+                    },
+                    "systemDescription": {
+                        "type": "string",
+                        "maxLength": 1000
+                    },
+                    "systemAvatar": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "systemBanner": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "systemPronouns": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "nicknameFormat": {
+                        "type": "string"
+                    },
+                    "alterIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        },
+                        "maxItems": 2000,
+                        "default": []
+                    },
+                    "tagIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "maxItems": 500,
+                        "default": []
+                    },
+                    "createdAt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "systemAutoproxy": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "autoproxyMode": {
+                                    "type": "string",
+                                    "enum": [
+                                        "off",
+                                        "latch",
+                                        "alter"
+                                    ]
+                                },
+                                "autoproxyAlter": {
+                                    "type": "string"
+                                },
+                                "serverId": {
+                                    "type": "string"
+                                },
+                                "lastLatchTimestamp": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "date-time"
+                                }
+                            },
+                            "required": [
+                                "autoproxyMode",
+                                "serverId"
+                            ]
+                        }
+                    },
+                    "systemOperationDM": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "latchExpiration": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 36000000
+                    },
+                    "public": {
+                        "type": "number"
+                    },
+                    "subAccounts": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "disabled": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "associatedUserId",
+                    "systemName",
+                    "createdAt",
+                    "systemAutoproxy",
+                    "public",
+                    "subAccounts"
+                ]
+            }
+        },
+        "parameters": {}
+    },
+    "paths": {
+        "/v1/users/{user}/system": {
+            "get": {
+                "summary": "Get PluralBuddy system",
+                "description": "Get data of a PluralBuddy system. `{user}` can be `@me` to target the current OAuth user.",
+                "security": [
+                    {
+                        "oAuth2": [
+                            "system:read"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response. Response with the message.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/system"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "@me is the only allowed user for this endpoint.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "not-matching-oauth"
+                                            ]
+                                        },
+                                        "friendly": {
+                                            "type": "string",
+                                            "enum": [
+                                                "This endpoint requires the user currently logged in via OAuth."
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "friendly"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No access token when authenticating.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "no-access-token"
+                                            ]
+                                        },
+                                        "friendly": {
+                                            "type": "string",
+                                            "enum": [
+                                                "no access token"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "friendly"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid scopes while running endpoint.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "invalid-scopes"
+                                            ]
+                                        },
+                                        "friendly": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "friendly"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/messages/{id}": {
+            "get": {
+                "summary": "Get PluralBuddy message",
+                "security": [
+                    {
+                        "oAuth2": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response. Response with the message.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "object",
+                                            "properties": {
+                                                "messageId": {
+                                                    "type": "string",
+                                                    "examples": [
+                                                        "1481859770611666944"
+                                                    ]
+                                                },
+                                                "systemId": {
+                                                    "type": "string",
+                                                    "examples": [
+                                                        "1481859816656736257"
+                                                    ]
+                                                },
+                                                "alterId": {
+                                                    "type": "number",
+                                                    "examples": [
+                                                        "1481859842262962178"
+                                                    ]
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "guildId": {
+                                                    "type": "string",
+                                                    "examples": [
+                                                        "1481859908541353987"
+                                                    ]
+                                                },
+                                                "channelId": {
+                                                    "type": "string",
+                                                    "examples": [
+                                                        "1481859951688159236"
+                                                    ]
+                                                },
+                                                "referencedMessage": {
+                                                    "type": "string"
+                                                },
+                                                "expressUserId": {
+                                                    "type": "string"
+                                                },
+                                                "endpoints": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "system": {
+                                                            "type": "string",
+                                                            "examples": [
+                                                                "api/v1/users/1481859816656736257/system"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "system"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "messageId",
+                                                "systemId",
+                                                "alterId",
+                                                "createdAt",
+                                                "channelId",
+                                                "endpoints"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No access token when authenticating.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "no-access-token"
+                                            ]
+                                        },
+                                        "friendly": {
+                                            "type": "string",
+                                            "enum": [
+                                                "no access token"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "friendly"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid scopes while running endpoint.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "invalid-scopes"
+                                            ]
+                                        },
+                                        "friendly": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "friendly"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/oauth2/authorize": {
+            "get": {
+                "summary": "Authorize an OAuth2 request",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "response_type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "OAuth2 response type (e.g., 'code')"
+                    },
+                    {
+                        "name": "client_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "OAuth2 client ID"
+                    },
+                    {
+                        "name": "redirect_uri",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "description": "OAuth2 redirect URI"
+                    },
+                    {
+                        "name": "scope",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "OAuth2 scopes (space-separated)"
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "OAuth2 state parameter"
+                    },
+                    {
+                        "name": "code_challenge",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "PKCE code challenge"
+                    },
+                    {
+                        "name": "code_challenge_method",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "PKCE code challenge method"
+                    },
+                    {
+                        "name": "nonce",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "OpenID Connect nonce"
+                    },
+                    {
+                        "name": "prompt",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "OAuth2 prompt parameter"
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirect to client with code or error",
+                        "headers": {
+                            "Location": {
+                                "description": "Redirect URI with code or error",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "error_description": {
+                                            "type": "string"
+                                        },
+                                        "state": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Due to missing or invalid authentication.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The requested resource was not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/oauth2/token": {
+            "post": {
+                "summary": "Obtain an OAuth2.1 access token",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "grant_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "authorization_code",
+                                            "client_credentials",
+                                            "refresh_token"
+                                        ],
+                                        "description": "OAuth2 grant type"
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "description": "OAuth2 client ID"
+                                    },
+                                    "client_secret": {
+                                        "type": "string",
+                                        "description": "OAuth2 client secret"
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "description": "Authorization code (for authorization_code grant)"
+                                    },
+                                    "code_verifier": {
+                                        "type": "string",
+                                        "description": "PKCE code verifier (for authorization_code grant)"
+                                    },
+                                    "redirect_uri": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "Redirect URI (for authorization_code grant)"
+                                    },
+                                    "refresh_token": {
+                                        "type": "string",
+                                        "description": "Refresh token (for refresh_token grant)"
+                                    },
+                                    "resource": {
+                                        "type": "string",
+                                        "description": "Requested token resource (ie audience) to obtain a JWT formatted access token",
+                                        "enum": [
+                                            "https://pb.giftedly.dev"
+                                        ]
+                                    },
+                                    "scope": {
+                                        "type": "string",
+                                        "description": "Requested scopes (for client_credentials grant)"
+                                    }
+                                },
+                                "required": [
+                                    "grant_type"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Access token response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "description": "The access token issued by the authorization server"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "description": "The type of the token issued",
+                                            "enum": [
+                                                "Bearer"
+                                            ]
+                                        },
+                                        "expires_in": {
+                                            "type": "number",
+                                            "description": "Lifetime in seconds of the access token"
+                                        },
+                                        "refresh_token": {
+                                            "type": "string",
+                                            "description": "Refresh token, if issued"
+                                        },
+                                        "scope": {
+                                            "type": "string",
+                                            "description": "Scopes granted by the access token"
+                                        },
+                                        "id_token": {
+                                            "type": "string",
+                                            "description": "ID Token (if OpenID Connect)"
+                                        }
+                                    },
+                                    "required": [
+                                        "access_token",
+                                        "token_type",
+                                        "expires_in"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "error_description": {
+                                            "type": "string"
+                                        },
+                                        "error_uri": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Due to missing or invalid authentication.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The requested resource was not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/oauth2/introspect": {
+            "post": {
+                "summary": "Introspect an OAuth2 access or refresh token",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "client_id": {
+                                        "type": "string",
+                                        "description": "OAuth2 client ID"
+                                    },
+                                    "client_secret": {
+                                        "type": "string",
+                                        "description": "OAuth2 client secret"
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "description": "The token to introspect (access or refresh token)"
+                                    },
+                                    "token_type_hint": {
+                                        "type": "string",
+                                        "enum": [
+                                            "access_token",
+                                            "refresh_token"
+                                        ],
+                                        "description": "Hint about the type of the token submitted for introspection"
+                                    },
+                                    "resource": {
+                                        "type": "string",
+                                        "description": "Introspects a token for a specific resource."
+                                    }
+                                },
+                                "required": [
+                                    "token"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token introspection response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "active": {
+                                            "type": "boolean",
+                                            "description": "Whether the token is active"
+                                        },
+                                        "scope": {
+                                            "type": "string",
+                                            "description": "Scopes associated with the token"
+                                        },
+                                        "client_id": {
+                                            "type": "string",
+                                            "description": "Client ID associated with the token"
+                                        },
+                                        "username": {
+                                            "type": "string",
+                                            "description": "Username associated with the token"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "description": "Type of the token"
+                                        },
+                                        "exp": {
+                                            "type": "number",
+                                            "description": "Expiration time of the token (seconds since epoch)"
+                                        },
+                                        "iat": {
+                                            "type": "number",
+                                            "description": "Issued at time (seconds since epoch)"
+                                        },
+                                        "nbf": {
+                                            "type": "number",
+                                            "description": "Not before time (seconds since epoch)"
+                                        },
+                                        "sub": {
+                                            "type": "string",
+                                            "description": "Subject of the token"
+                                        },
+                                        "aud": {
+                                            "type": "string",
+                                            "description": "Audience of the token"
+                                        },
+                                        "iss": {
+                                            "type": "string",
+                                            "description": "Issuer of the token"
+                                        },
+                                        "jti": {
+                                            "type": "string",
+                                            "description": "JWT ID"
+                                        }
+                                    },
+                                    "required": [
+                                        "active"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "error_description": {
+                                            "type": "string"
+                                        },
+                                        "error_uri": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Due to missing or invalid authentication.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The requested resource was not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/oauth2/revoke": {
+            "post": {
+                "summary": "Revoke OAuth2 access or refresh token",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "client_id": {
+                                        "type": "string",
+                                        "description": "OAuth2 client ID"
+                                    },
+                                    "client_secret": {
+                                        "type": "string",
+                                        "description": "OAuth2 client secret"
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "description": "The token to revoke (access or refresh token)"
+                                    },
+                                    "token_type_hint": {
+                                        "type": "string",
+                                        "enum": [
+                                            "access_token",
+                                            "refresh_token"
+                                        ],
+                                        "description": "Hint about the type of the token submitted for revocation"
+                                    }
+                                },
+                                "required": [
+                                    "token"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token revoked successfully. The response body is empty.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Empty object on success"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "error_description": {
+                                            "type": "string"
+                                        },
+                                        "error_uri": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "error"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Due to missing or invalid authentication.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. You do not have permission to access this resource or to perform this action.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The requested resource was not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests. You have exceeded the rate limit. Try again later.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. This is a problem with the server that you cannot fix.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "webhooks": {
+        "alter.update": {
+            "post": {
+                "summary": "Receive alter updates",
+                "description": "Receive alter updates via Svix Webhooks built into PluralBuddy.",
+                "responses": {
+                    "200": {
+                        "description": "Success.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "userId": {
+                                            "type": "string"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "alter.update"
+                                            ]
+                                        },
+                                        "alter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "alterId": {
+                                                    "type": "number"
+                                                },
+                                                "systemId": {
+                                                    "type": "string"
+                                                },
+                                                "username": {
+                                                    "type": "string",
+                                                    "maxLength": 100,
+                                                    "pattern": "^[^\\s@\\\\/]+$"
+                                                },
+                                                "displayName": {
+                                                    "type": "string",
+                                                    "maxLength": 100
+                                                },
+                                                "nameMap": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "server": {
+                                                                "type": "string",
+                                                                "maxLength": 20
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "maxLength": 100
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "server",
+                                                            "name"
+                                                        ]
+                                                    }
+                                                },
+                                                "color": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "pattern": "^#[0-9A-F]{6}$/i"
+                                                },
+                                                "description": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "maxLength": 1000
+                                                },
+                                                "created": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time"
+                                                },
+                                                "pronouns": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "maxLength": 100
+                                                },
+                                                "avatarUrl": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "avatarUrlMap": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "string"
+                                                    },
+                                                    "default": {}
+                                                },
+                                                "webhookAvatarUrl": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "banner": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "lastMessageTimestamp": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date-time"
+                                                },
+                                                "messageCount": {
+                                                    "type": "number"
+                                                },
+                                                "alterMode": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "nickname",
+                                                        "webhook",
+                                                        "both"
+                                                    ],
+                                                    "default": "webhook"
+                                                },
+                                                "proxyTags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "prefix": {
+                                                                "type": "string",
+                                                                "maxLength": 100
+                                                            },
+                                                            "suffix": {
+                                                                "type": "string",
+                                                                "maxLength": 100
+                                                            },
+                                                            "id": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "prefix",
+                                                            "suffix",
+                                                            "id"
+                                                        ]
+                                                    },
+                                                    "default": []
+                                                },
+                                                "tagIds": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "default": []
+                                                },
+                                                "public": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "required": [
+                                                "alterId",
+                                                "systemId",
+                                                "username",
+                                                "displayName",
+                                                "nameMap",
+                                                "color",
+                                                "description",
+                                                "created",
+                                                "pronouns",
+                                                "avatarUrl",
+                                                "webhookAvatarUrl",
+                                                "banner",
+                                                "lastMessageTimestamp",
+                                                "messageCount",
+                                                "public"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "userId",
+                                        "type",
+                                        "alter"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

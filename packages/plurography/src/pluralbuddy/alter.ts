@@ -27,7 +27,7 @@ export const PAlterObject = z.object({
     pronouns: z.string().max(100).nullable(),
 
     avatarUrl: z.string().nullable(),
-    avatarUrlMap: z.record(z.string(), z.string().or(z.undefined())).default({}),
+    avatarUrlMap: z.record(z.string(), z.string().optional()).default({}),
     webhookAvatarUrl: z.string().nullable(),
     banner: z.string().nullable(),
 
@@ -36,8 +36,8 @@ export const PAlterObject = z.object({
     alterMode: z.enum([ "nickname", "webhook", "both" ]).default("webhook"),
     proxyTags: z.object({ prefix: z.string().max(100), suffix: z.string().max(100), id: z.string() }).array().default([]),
 
-    tagIds: z.string().array().catch([]).default([]),
-    public: z.number().catch(0)
+    tagIds: z.string().array().default([]),
+    public: z.number()
 })
 
 export type PAlter = z.infer<typeof PAlterObject>

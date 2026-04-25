@@ -22,12 +22,12 @@ export const PSystemObject = z.object({
 	systemName: z.string().max(100).min(1),
 	systemDisplayTag: z.string().optional(),
 	displayTagMap: z.record(z.string(), z.string()).default({}),
-	systemDescription: z.string().max(1000).optional().catch(""),
-	systemAvatar: z.string().optional().nullable().catch(""),
-	systemBanner: z.string().optional().nullable().catch(""),
-	systemPronouns: z.string().optional().nullable().catch(null),
+	systemDescription: z.string().max(1000).optional(),
+	systemAvatar: z.string().optional().nullable(),
+	systemBanner: z.string().optional().nullable(),
+	systemPronouns: z.string().optional().nullable(),
 
-	nicknameFormat: z.string().optional().catch(undefined),
+	nicknameFormat: z.string().optional(),
 
 	alterIds: z.array(z.number()).max(2000).default([]),
 	tagIds: z.array(z.string()).max(500).default([]),
@@ -40,7 +40,7 @@ export const PSystemObject = z.object({
 
 	public: z.number(),
 	/** WIP */
-	subAccounts: z.array(z.string()).catch([]),
+	subAccounts: z.array(z.string()),
 	disabled: z.boolean().default(false),
 });
 

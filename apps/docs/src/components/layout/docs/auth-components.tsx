@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Discord } from "@/components/ui/svgs/discord";
 import { cn } from "@/lib/cn";
 
-import { BadgeCheck, Clapperboard, Code, LogIn, LogOut, Plug } from "lucide-react";
+import { BadgeCheck, Clapperboard, Code, LogIn, LogOut, Plug, Settings } from "lucide-react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut } from "@/components/auth/signed-in";
@@ -94,20 +94,12 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 						</button>
 					</PopoverTrigger>
 					<PopoverContent className="grid grid-cols-1 gap-2">
-						<Link href="/app/settings/express">
+						<Link href="/app/settings">
 							<button
 								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
 								type="button"
 							>
-								<Clapperboard size={16} /> PluralBuddy Express
-							</button>
-						</Link>
-						<Link href="/app/settings/authorized-apps">
-							<button
-								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
-								type="button"
-							>
-								<Plug size={16} /> Connections
+								<Settings size={16} /> Settings
 							</button>
 						</Link>
 						<Link href="/developers/applications">

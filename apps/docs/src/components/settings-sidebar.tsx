@@ -2,7 +2,7 @@ import { Link, useLocation, useRoutes } from "react-router";
 import { Button } from "./ui/shadcn-button";
 import { Separator } from "./ui/separator";
 import { haptic } from "@/lib/haptic/haptic";
-import { Clapperboard, House, Plug, ShieldCheck, TrainFront } from "lucide-react";
+import { Clapperboard, House, Plug, ShieldCheck, TrainFront, Webhook } from "lucide-react";
 import {
 	Sidebar,
 	SidebarContent,
@@ -50,6 +50,11 @@ export function SettingsSidebar() {
 									<SidebarMenuButton asChild isActive={location.pathname.startsWith("/app/settings/express") ? true : undefined}>
 										<Link to="/app/settings/express">
 											<TrainFront /> PluralBuddy Express
+										</Link>
+									</SidebarMenuButton>
+									<SidebarMenuButton asChild isActive={location.pathname.startsWith("/app/settings/webhooks") ? true : undefined}>
+										<Link to="/app/settings/webhooks">
+											<Webhook /> Webhooks
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>

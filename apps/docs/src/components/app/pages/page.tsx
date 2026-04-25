@@ -8,7 +8,7 @@ import { DynamicPageTitle } from "../dynamic-title";
 import { Card, CardContent } from "@/components/ui/card";
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
 import { Link } from "react-router";
-import { BadgeCheckIcon, ChevronRightIcon, TrainFront } from "lucide-react";
+import { BadgeCheckIcon, ChevronRightIcon, TrainFront, Webhook } from "lucide-react";
 
 export function IndexSettingsAppPage() {
 	return (
@@ -45,6 +45,19 @@ export function IndexSettingsAppPage() {
 					</ItemMedia>
 					<ItemContent>
 						<ItemTitle>PluralBuddy Express</ItemTitle>
+					</ItemContent>
+					<ItemActions>
+						<ChevronRightIcon className="size-4" />
+					</ItemActions>
+				</Link>
+			</Item>
+			<Item variant="outline" size="sm" asChild>
+				<Link to="/app/settings/webhooks">
+					<ItemMedia>
+						<Webhook className="size-5" />
+					</ItemMedia>
+					<ItemContent>
+						<ItemTitle>Webhooks</ItemTitle>
 					</ItemContent>
 					<ItemActions>
 						<ChevronRightIcon className="size-4" />

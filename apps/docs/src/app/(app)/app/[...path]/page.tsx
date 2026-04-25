@@ -33,6 +33,7 @@ import { RemoteSidebarToggle } from "@/components/app/remote-sidebar-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
+import WebhooksAppPage from "@/components/app/pages/webhooks/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
@@ -72,7 +73,7 @@ export default function PluralBuddyApp() {
 	}
 
 	if ("virtualKeyboard" in navigator) {
-		navigator.virtualKeyboard.overlaysContent = false;
+		(navigator.virtualKeyboard as any).overlaysContent = false;
 	}
 
 	return (
@@ -99,6 +100,10 @@ export default function PluralBuddyApp() {
 									<Route
 										path="/app/settings/authorized-apps"
 										element={<AuthorizedAppsPage />}
+									/>
+									<Route
+										path="/app/settings/webhooks"
+										element={<WebhooksAppPage />}
 									/>
 									<Route
 										path="/app/settings/express/alter/:alter"
