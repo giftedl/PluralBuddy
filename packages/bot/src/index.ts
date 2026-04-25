@@ -129,13 +129,31 @@ client.gateway.setPresence({
 		{
 			name: "PluralBuddy",
 			type: ActivityType.Custom,
-			state: `Building the future of plurality. See gftl.fyi/docs.`,
+			state: `Waiting...`,
 		},
 	],
 	status: PresenceUpdateStatus.DoNotDisturb,
 	since: Date.now(),
-	afk: true,
+	afk: false,
 });
+
+setTimeout(() => {
+	const data = client.cache.statistic.get("latest");
+
+	
+client.gateway.setPresence({
+	activities: [
+		{
+			name: "PluralBuddy",
+			type: ActivityType.Custom,
+			state: `pb;help · pb.giftedly.dev · servers: ${data?.guildCount} · proxying: ${data?.userCount}`,
+		},
+	],
+	status: PresenceUpdateStatus.DoNotDisturb,
+	since: Date.now(),
+	afk: false,
+});
+}, 5000)
 
 startIndexingCleanupTimer();
 startEmojiCleanupTimer();
