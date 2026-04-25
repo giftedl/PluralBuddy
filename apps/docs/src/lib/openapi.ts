@@ -1,6 +1,7 @@
 import { createOpenAPI } from 'fumadocs-openapi/server';
+throw new Error(process.cwd())
 
-const schemaPath = process.cwd().includes('/apps/docs')
+const schemaPath = process.cwd().includes('docs')
 	? './public/openapi.yml'
 	: './apps/docs/public/openapi.yml';
 
