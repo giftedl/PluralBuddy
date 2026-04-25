@@ -18,6 +18,8 @@ import { AppPortal } from "svix-react";
 
 import "svix-react/style.css";
 import { useTRPCClient } from "@/server/client";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
 export default function WebhooksAppPage() {
 	return (
@@ -44,11 +46,10 @@ export default function WebhooksAppPage() {
 				<Card className="w-full mb-4">
 					<CardContent>
 						<CardTitle>Webhooks</CardTitle>
-						<CardDescription>
-							PluralBuddy allows developers to interact with your system via the
-							PluralBuddy API, built on OAuth 2.1. If an application is doing
-							something it shouldn't be doing, you can remove any of them at any
-							time.
+						<CardDescription className="flex gap-1">
+							Webhooks allow you to get on-demand data when a user interacts
+							with data in PluralBuddy. PluralBuddy uses{" "}
+							<Link href="https://svix.com" className="text-white underline flex items-center gap-1"><ExternalLink size={12} />Svix</Link> to handle webhooks.
 						</CardDescription>
 					</CardContent>
 				</Card>
