@@ -52,7 +52,7 @@ export default function WebhooksAppPage() {
 							with data in PluralBuddy. PluralBuddy uses{" "}
 							<Link
 								href="https://svix.com"
-								className="text-white underline inline-flex items-center gap-1"
+								className="text-black dark:text-white underline inline-flex items-center gap-1"
 							>
 								<ExternalLink size={12} />
 								Svix
