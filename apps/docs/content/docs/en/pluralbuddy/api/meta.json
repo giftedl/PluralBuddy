@@ -1,5 +1,6 @@
 {
   "title": "API References",
+  "icon": "Notebook",
   "pages": [
     "alter-update/post",
     "tag-update/post",
