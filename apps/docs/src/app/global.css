@@ -237,6 +237,9 @@
 		background-color: var(--background-shad);
 		color: var(--foreground);
 	}
+	[data-state="open"] > div > fieldset >label >span {
+		display: none
+	}
 }
 
 discord-header:first-child:nth-child(2) {

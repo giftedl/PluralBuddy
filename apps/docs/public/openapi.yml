@@ -199,6 +199,169 @@ paths:
                   - type
                   - friendly
         "401": 
+          description: Not properly authenticated.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  type: 
+                    type: string
+                    enum: 
+                      - no-access-token
+                      - invalid-scopes
+                      - unknown-token
+                  friendly: 
+                    type: string
+                required: 
+                  - type
+                  - friendly
+  "/v1/users/{user}/alters/{alter}": 
+    get: 
+      summary: Get a system alter
+      description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
+      security: 
+        - oAuth2: 
+            - alters:read
+      responses: 
+        "200": 
+          description: Success.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  isSelf: 
+                    type: boolean
+                  data: 
+                    type: 
+                      - object
+                      - "null"
+                    properties: 
+                      alterId: 
+                        type: number
+                      systemId: 
+                        type: string
+                      username: 
+                        type: string
+                        maxLength: 100
+                        pattern: "^[^\\s@\\\\/]+$"
+                      displayName: 
+                        type: string
+                        maxLength: 100
+                      nameMap: 
+                        type: array
+                        items: 
+                          type: object
+                          properties: 
+                            server: 
+                              type: string
+                              maxLength: 20
+                            name: 
+                              type: string
+                              maxLength: 100
+                          required: 
+                            - server
+                            - name
+                      color: 
+                        type: 
+                          - string
+                          - "null"
+                        pattern: "^#[0-9A-F]{6}$/i"
+                      description: 
+                        type: 
+                          - string
+                          - "null"
+                        maxLength: 1000
+                      created: 
+                        type: 
+                          - string
+                          - "null"
+                        format: date-time
+                      pronouns: 
+                        type: 
+                          - string
+                          - "null"
+                        maxLength: 100
+                      avatarUrl: 
+                        type: 
+                          - string
+                          - "null"
+                      avatarUrlMap: 
+                        type: object
+                        additionalProperties: 
+                          type: string
+                        default: 
+                          {}
+                      webhookAvatarUrl: 
+                        type: 
+                          - string
+                          - "null"
+                      banner: 
+                        type: 
+                          - string
+                          - "null"
+                      lastMessageTimestamp: 
+                        type: 
+                          - string
+                          - "null"
+                        format: date-time
+                      messageCount: 
+                        type: number
+                      alterMode: 
+                        type: string
+                        enum: 
+                          - nickname
+                          - webhook
+                          - both
+                        default: webhook
+                      proxyTags: 
+                        type: array
+                        items: 
+                          type: object
+                          properties: 
+                            prefix: 
+                              type: string
+                              maxLength: 100
+                            suffix: 
+                              type: string
+                              maxLength: 100
+                            id: 
+                              type: string
+                          required: 
+                            - prefix
+                            - suffix
+                            - id
+                        default: 
+                          []
+                      tagIds: 
+                        type: array
+                        items: 
+                          type: string
+                        default: 
+                          []
+                      public: 
+                        type: number
+                    required: 
+                      - alterId
+                      - systemId
+                      - username
+                      - displayName
+                      - nameMap
+                      - color
+                      - description
+                      - created
+                      - pronouns
+                      - avatarUrl
+                      - webhookAvatarUrl
+                      - banner
+                      - lastMessageTimestamp
+                      - messageCount
+                      - public
+                required: 
+                  - isSelf
+                  - data
+        "401": 
           description: No access token when authenticating.
           content: 
             application/json: 
@@ -209,29 +372,37 @@ paths:
                     type: string
                     enum: 
                       - no-access-token
+                      - invalid-scopes
+                      - unknown-token
                   friendly: 
                     type: string
-                    enum: 
-                      - no access token
                 required: 
                   - type
                   - friendly
-        "403": 
-          description: Invalid scopes while running endpoint.
+  /v1/stats: 
+    get: 
+      summary: Get PluralBuddy statistics
+      security: 
+        []
+      description: Get data of statistical data related to PluralBuddy.
+      responses: 
+        "200": 
+          description: Successful.
           content: 
             application/json: 
               schema: 
                 type: object
                 properties: 
-                  type: 
-                    type: string
-                    enum: 
-                      - invalid-scopes
-                  friendly: 
-                    type: string
+                  guildCount: 
+                    type: number
+                  userCount: 
+                    type: number
+                  lastDrip: 
+                    type: number
                 required: 
-                  - type
-                  - friendly
+                  - guildCount
+                  - userCount
+                  - lastDrip
   "/v1/messages/{id}": 
     get: 
       summary: Get PluralBuddy message
@@ -305,24 +476,8 @@ paths:
                     type: string
                     enum: 
                       - no-access-token
-                  friendly: 
-                    type: string
-                    enum: 
-                      - no access token
-                required: 
-                  - type
-                  - friendly
-        "403": 
-          description: Invalid scopes while running endpoint.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  type: 
-                    type: string
-                    enum: 
                       - invalid-scopes
+                      - unknown-token
                   friendly: 
                     type: string
                 required: 

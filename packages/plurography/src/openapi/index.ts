@@ -1,19 +1,27 @@
 import { PAlterObject } from "@/pluralbuddy/alter";
-import { PGuildObject } from "@/pluralbuddy/guild";
 import { PMessageObject } from "@/pluralbuddy/message";
 import { PSystemObject } from "@/pluralbuddy/system";
 import { PTagObject } from "@/pluralbuddy/tag";
 import {
-	OpenApiGeneratorV3,
 	OpenApiGeneratorV31,
 	OpenAPIRegistry,
 } from "@asteasolutions/zod-to-openapi";
-import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { YAML } from "bun";
 import z from "zod";
 
 const registry = new OpenAPIRegistry();
+const UnauthorizedSchema = z.object({
+	type: z.enum(["no-access-token", "invalid-scopes", "unknown-token"]),
+	friendly: z.string(),
+})
+const UnmatchedOAuthSchema = z.object({
+	type: z.literal("not-matching-oauth"),
+	friendly: z.literal(
+		"This endpoint requires the user currently logged in via OAuth.",
+	),
+});
 
+// /v1/users/{user}/system
 registry.registerPath({
 	method: "get",
 	path: "/v1/users/{user}/system",
@@ -36,34 +44,15 @@ registry.registerPath({
 			description: "@me is the only allowed user for this endpoint.",
 			content: {
 				"application/json": {
-					schema: z.object({
-						type: z.literal("not-matching-oauth"),
-						friendly: z.literal(
-							"This endpoint requires the user currently logged in via OAuth.",
-						),
-					}),
+					schema: UnmatchedOAuthSchema,
 				},
 			},
 		},
 		"401": {
-			description: "No access token when authenticating.",
+			description: "Not properly authenticated.",
 			content: {
 				"application/json": {
-					schema: z.object({
-						type: z.literal("no-access-token"),
-						friendly: z.literal("no access token"),
-					}),
-				},
-			},
-		},
-		"403": {
-			description: "Invalid scopes while running endpoint.",
-			content: {
-				"application/json": {
-					schema: z.object({
-						type: z.literal("invalid-scopes"),
-						friendly: z.string(),
-					}),
+					schema: UnauthorizedSchema,
 				},
 			},
 		},
@@ -72,11 +61,58 @@ registry.registerPath({
 
 registry.registerPath({
 	method: "get",
-	path: "/v1/stats",
-	summary: "Get PluralBuddy statistics",
-	description: "Get data of statistical data related to PluralBuddy."
+	path: "/v1/users/{user}/alters/{alter}",
+	summary: "Get a system alter",
+	description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
+	security: [{ oAuth2: ["alters:read"] }],
+	responses: {
+		"200": {
+			description: "Success.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						isSelf: z.boolean(),
+						data: PAlterObject.nullable()
+					})
+				}
+			}
+		},
+		"401": {
+			description: "No access token when authenticating.",
+			content: {
+				"application/json": {
+					schema: UnauthorizedSchema,
+				},
+			},
+		},
+	}
+
 })
 
+// /v1/stats
+registry.registerPath({
+	method: "get",
+	path: "/v1/stats",
+	summary: "Get PluralBuddy statistics",
+	security: [],
+	description: "Get data of statistical data related to PluralBuddy.",
+	responses: {
+		"200": {
+			description: "Successful.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						guildCount: z.number(),
+						userCount: z.number(),
+						lastDrip: z.number(),
+					})
+				}
+			}
+		}
+	}
+})
+
+// /v1/messages/{id}
 registry.registerPath({
 	method: "get",
 	path: "/v1/messages/{id}",
@@ -103,26 +139,13 @@ registry.registerPath({
 			description: "No access token when authenticating.",
 			content: {
 				"application/json": {
-					schema: z.object({
-						type: z.literal("no-access-token"),
-						friendly: z.literal("no access token"),
-					}),
-				},
-			},
-		},
-		"403": {
-			description: "Invalid scopes while running endpoint.",
-			content: {
-				"application/json": {
-					schema: z.object({
-						type: z.literal("invalid-scopes"),
-						friendly: z.string(),
-					}),
+					schema: UnauthorizedSchema,
 				},
 			},
 		},
 	},
 });
+
 registry.registerPath({
 	method: "get",
 	path: "/auth/oauth2/authorize",
@@ -843,7 +866,6 @@ registry.registerWebhook({
 	responses: {},
 });
 
-console.log(registry.definitions);
 const generator = new OpenApiGeneratorV31(registry.definitions);
 const document = generator.generateDocument({
 	openapi: "3.1.0",
@@ -861,8 +883,6 @@ const document = generator.generateDocument({
 		},
 	],
 });
-
-console.log(generator);
 
 Bun.write(
 	"../../apps/docs/./public/openapi.yml",

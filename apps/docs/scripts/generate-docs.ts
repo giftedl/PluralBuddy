@@ -15,7 +15,7 @@ await generateFiles({
 
 	index: {
 		// for generating `href`
-		url: (file) => `/docs/en/pluralbuddy/api/${file.replace(".mdx", "")}`,
+		url: (file) => `/en/docs/pluralbuddy/api/${file.replace(".mdx", "")}`,
 		items: [
 			{
 				path: "index.mdx",
