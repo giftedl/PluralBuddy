@@ -406,6 +406,7 @@ paths:
   "/v1/messages/{id}": 
     get: 
       summary: Get PluralBuddy message
+      description: Get a PluralBuddy message by Message ID
       security: 
         - oAuth2: 
             []
