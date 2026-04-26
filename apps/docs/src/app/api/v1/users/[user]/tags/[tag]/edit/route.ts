@@ -2,14 +2,23 @@ import { authenticateOAuth } from "@/lib/oauth";
 import { api } from "@/lib/rpc";
 import { waitUntil } from "@vercel/functions";
 import { NextRequest } from "next/server";
-import { PAlter, PAlterObject, PSystemObject, PTag, PTagObject, PUser } from "plurography";
+import {
+	PAlter,
+	PAlterObject,
+	PSystemObject,
+	PTag,
+	PTagObject,
+	PUser,
+} from "plurography";
 import z from "zod";
 
 const TagEditInput = PTagObject.omit({
 	tagId: true,
 	systemId: true,
-	associatedAlters: true
-}).partial().default({});
+	associatedAlters: true,
+})
+	.partial()
+	.default({});
 
 export async function POST(
 	request: NextRequest,
@@ -42,7 +51,10 @@ export async function POST(
 	const input = TagEditInput.safeParse(await request.json());
 
 	if (input.error) {
-		return Response.json({ errors: input.error }, { status: 400 });
+		return Response.json(
+			{ errors: [{ type: "zod", friendly: input.error }] },
+			{ status: 400 },
+		);
 	}
 
 	const { data } = input;
@@ -51,14 +63,14 @@ export async function POST(
 	);
 	const tagCollection = db.collection<PTag>("tags");
 	const tagObj = await tagCollection.findOne({
-		$and: [{ systemId: oauthResponse.accountId,}, { tagId: tag }]
+		$and: [{ systemId: oauthResponse.accountId }, { tagId: tag }],
 	});
 
 	if (!tagObj) {
 		return Response.json(
 			{
 				errors: [
-					{ type: "unknown-alter", friendly: "Couldn't find this alter." },
+					{ type: "unknown-tag", friendly: "Couldn't find this tag." },
 				],
 			},
 			{ status: 404 },
@@ -67,13 +79,16 @@ export async function POST(
 
 	await tagCollection.updateOne(
 		{
-			$and: [{ systemId: oauthResponse.accountId,}, { tagId: tag }]
+			$and: [{ systemId: oauthResponse.accountId }, { tagId: tag }],
 		},
 		{
-			$set: Object.assign({}, ...Object.entries(data).map(([v, c]) => ({
-				// @ts-ignore
-				[v]: c ?? tagObj?.[v],
-			})))
+			$set: Object.assign(
+				{},
+				...Object.entries(data).map(([v, c]) => ({
+					// @ts-ignore
+					[v]: c ?? tagObj?.[v],
+				})),
+			),
 		},
 	);
 
@@ -82,9 +97,12 @@ export async function POST(
 	return Response.json({
 		...tagObj,
 
-		...Object.assign({}, ...Object.entries(data).map(([v, c]) => ({
-			// @ts-ignore
-			[v]: c ?? tagObj?.[v],
-		})))
+		...Object.assign(
+			{},
+			...Object.entries(data).map(([v, c]) => ({
+				// @ts-ignore
+				[v]: c ?? tagObj?.[v],
+			})),
+		),
 	});
 }

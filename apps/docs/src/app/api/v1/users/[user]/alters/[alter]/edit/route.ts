@@ -11,8 +11,10 @@ const AlterEditInput = PAlterObject.omit({
 	systemId: true,
 	created: true,
 	lastMessageTimestamp: true,
-	messageCount: true
-}).partial().default({});
+	messageCount: true,
+})
+	.partial()
+	.default({});
 
 export async function POST(
 	request: NextRequest,
@@ -45,7 +47,10 @@ export async function POST(
 	const input = AlterEditInput.safeParse(await request.json());
 
 	if (input.error) {
-		return Response.json({ errors: input.error }, { status: 400 });
+		return Response.json(
+			{ errors: [{ type: "zod", friendly: input.error }] },
+			{ status: 400 },
+		);
 	}
 
 	const { data } = input;
@@ -54,7 +59,7 @@ export async function POST(
 	);
 	const alterCollection = db.collection<PAlter>("alters");
 	const alterObj = await alterCollection.findOne({
-		$and: [{ systemId: oauthResponse.accountId,}, { alterId: Number(alter) }]
+		$and: [{ systemId: oauthResponse.accountId }, { alterId: Number(alter) }],
 	});
 
 	if (!alterObj) {
@@ -67,16 +72,19 @@ export async function POST(
 			{ status: 404 },
 		);
 	}
-	
+
 	await alterCollection.updateOne(
 		{
-			$and: [{ systemId: oauthResponse.accountId,}, { alterId: Number(alter) }]
+			$and: [{ systemId: oauthResponse.accountId }, { alterId: Number(alter) }],
 		},
 		{
-			$set: Object.assign({}, ...Object.entries(data).map(([v, c]) => ({
-				// @ts-ignore
-				[v]: c ?? alterObj?.[v],
-			})))
+			$set: Object.assign(
+				{},
+				...Object.entries(data).map(([v, c]) => ({
+					// @ts-ignore
+					[v]: c ?? alterObj?.[v],
+				})),
+			),
 		},
 	);
 
@@ -85,9 +93,12 @@ export async function POST(
 	return Response.json({
 		...alterObj,
 
-		...Object.assign({}, ...Object.entries(data).map(([v, c]) => ({
-			// @ts-ignore
-			[v]: c ?? alterObj?.[v],
-		})))
+		...Object.assign(
+			{},
+			...Object.entries(data).map(([v, c]) => ({
+				// @ts-ignore
+				[v]: c ?? alterObj?.[v],
+			})),
+		),
 	});
 }

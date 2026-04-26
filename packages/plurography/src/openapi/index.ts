@@ -13,7 +13,7 @@ const registry = new OpenAPIRegistry();
 const UnauthorizedSchema = z.object({
 	type: z.enum(["no-access-token", "invalid-scopes", "unknown-token"]),
 	friendly: z.string(),
-})
+});
 const UnmatchedOAuthSchema = z.object({
 	type: z.literal("not-matching-oauth"),
 	friendly: z.literal(
@@ -59,11 +59,13 @@ registry.registerPath({
 	},
 });
 
+// /v1/users/{user}/alters/{alter}
 registry.registerPath({
 	method: "get",
 	path: "/v1/users/{user}/alters/{alter}",
 	summary: "Get a system alter",
-	description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
+	description:
+		"Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
 	security: [{ oAuth2: ["alters:read"] }],
 	responses: {
 		"200": {
@@ -72,10 +74,10 @@ registry.registerPath({
 				"application/json": {
 					schema: z.object({
 						isSelf: z.boolean(),
-						data: PAlterObject.nullable()
-					})
-				}
-			}
+						data: PAlterObject.nullable(),
+					}),
+				},
+			},
 		},
 		"401": {
 			description: "No access token when authenticating.",
@@ -85,9 +87,178 @@ registry.registerPath({
 				},
 			},
 		},
-	}
+	},
+});
 
-})
+// /v1/users/{user}/tags/{tag}
+registry.registerPath({
+	method: "get",
+	path: "/v1/users/{user}/tags/{tag}",
+	summary: "Get a system tag",
+	description:
+		"Get data about a specific tag by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
+	security: [{ oAuth2: ["tags:read"] }],
+	responses: {
+		"200": {
+			description: "Success.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						isSelf: z.boolean(),
+						data: PTagObject.nullable(),
+					}),
+				},
+			},
+		},
+		"401": {
+			description: "No access token when authenticating.",
+			content: {
+				"application/json": {
+					schema: UnauthorizedSchema,
+				},
+			},
+		},
+	},
+});
+
+// /v1/users/{user}/tags/{tag}/edit
+registry.registerPath({
+	method: "post",
+	path: "/v1/users/{user}/tags/{tag}/edit",
+	summary: "Edit a system tag",
+	description:
+		"Edit a system tag by its ID. `{user}` can be `@me` to target the current OAuth user.",
+	security: [{ oAuth2: ["tags:write"] }],
+	request: {
+		body: {
+			content: {
+				"application/json": {
+					schema: PTagObject.omit({
+						tagId: true,
+						systemId: true,
+						associatedAlters: true,
+					})
+						.partial()
+						.default({}),
+				},
+			},
+		},
+	},
+	responses: {
+		"200": {
+			description: "Success.",
+			content: {
+				"application/json": {
+					schema: PTagObject,
+				},
+			},
+		},
+		"400": {
+			description: "Client error while processing input.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						errors: z.array(
+							z.object({
+								type: z.enum(["not-matching-oauth", "zod"]),
+								friendly: z.string(),
+							}),
+						),
+					}),
+				},
+			},
+		},
+		"401": {
+			description: "No access token when authenticating.",
+			content: {
+				"application/json": {
+					schema: UnauthorizedSchema,
+				},
+			},
+		},
+		"404": {
+			description: "Couldn't find the tag",
+			content: {
+				"application/json": {
+					schema: z.object({
+						type: z.literal("unknown-tag"),
+						friendly: z.literal("Couldn't find this tag."),
+					}),
+				},
+			},
+		},
+	},
+});
+
+// /v1/users/{user}/alters/{alter}/edit
+registry.registerPath({
+	method: "post",
+	path: "/v1/users/{user}/alters/{tag}/edit",
+	summary: "Edit a system alter",
+	description:
+		"Edit a system alter by its ID. `{user}` can be `@me` to target the current OAuth user.",
+	security: [{ oAuth2: ["alters:write"] }],
+	request: {
+		body: {
+			content: {
+				"application/json": {
+					schema: PAlterObject.omit({
+						tagIds: true,
+						alterId: true,
+						systemId: true,
+						created: true,
+						lastMessageTimestamp: true,
+						messageCount: true
+					}).partial().default({}),
+				},
+			},
+		},
+	},
+	responses: {
+		"200": {
+			description: "Success.",
+			content: {
+				"application/json": {
+					schema: PAlterObject,
+				},
+			},
+		},
+		"400": {
+			description: "Client error while processing input.",
+			content: {
+				"application/json": {
+					schema: z.object({
+						errors: z.array(
+							z.object({
+								type: z.enum(["not-matching-oauth", "zod"]),
+								friendly: z.string(),
+							}),
+						),
+					}),
+				},
+			},
+		},
+		"401": {
+			description: "No access token when authenticating.",
+			content: {
+				"application/json": {
+					schema: UnauthorizedSchema,
+				},
+			},
+		},
+		"404": {
+			description: "Couldn't find the alter",
+			content: {
+				"application/json": {
+					schema: z.object({
+						type: z.literal("unknown-alter"),
+						friendly: z.literal("Couldn't find this alter."),
+					}),
+				},
+			},
+		},
+	},
+});
 
 // /v1/stats
 registry.registerPath({
@@ -105,12 +276,12 @@ registry.registerPath({
 						guildCount: z.number(),
 						userCount: z.number(),
 						lastDrip: z.number(),
-					})
-				}
-			}
-		}
-	}
-})
+					}),
+				},
+			},
+		},
+	},
+});
 
 // /v1/messages/{id}
 registry.registerPath({

@@ -5,11 +5,14 @@
     "tag-update/post",
     "v1/stats/get",
     "v1/messages/id/get",
-    "auth/oauth2/token/post",
     "auth/oauth2/introspect/post",
+    "auth/oauth2/token/post",
     "auth/oauth2/revoke/post",
     "auth/oauth2/authorize/get",
     "v1/users/user/system/get",
-    "v1/users/user/alters/alter/get"
+    "v1/users/user/alters/alter/get",
+    "v1/users/user/tags/tag/get",
+    "v1/users/user/alters/tag/edit/post",
+    "v1/users/user/tags/tag/edit/post"
   ]
 }

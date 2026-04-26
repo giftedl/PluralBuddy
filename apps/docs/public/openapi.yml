@@ -379,6 +379,531 @@ paths:
                 required: 
                   - type
                   - friendly
+  "/v1/users/{user}/tags/{tag}": 
+    get: 
+      summary: Get a system tag
+      description: "Get data about a specific tag by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
+      security: 
+        - oAuth2: 
+            - tags:read
+      responses: 
+        "200": 
+          description: Success.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  isSelf: 
+                    type: boolean
+                  data: 
+                    type: 
+                      - object
+                      - "null"
+                    properties: 
+                      tagId: 
+                        type: string
+                      systemId: 
+                        type: string
+                      tagFriendlyName: 
+                        type: string
+                        maxLength: 100
+                      tagDescription: 
+                        type: string
+                        maxLength: 1000
+                      tagColor: 
+                        type: string
+                        enum: 
+                          - red
+                          - orange
+                          - amber
+                          - yellow
+                          - lime
+                          - green
+                          - emerald
+                          - teal
+                          - cyan
+                          - sky
+                          - blue
+                          - indigo
+                          - violet
+                          - purple
+                          - fuchsia
+                          - pink
+                          - rose
+                      associatedAlters: 
+                        type: array
+                        items: 
+                          type: string
+                      public: 
+                        type: number
+                    required: 
+                      - tagId
+                      - systemId
+                      - tagFriendlyName
+                      - tagColor
+                      - associatedAlters
+                      - public
+                required: 
+                  - isSelf
+                  - data
+        "401": 
+          description: No access token when authenticating.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  type: 
+                    type: string
+                    enum: 
+                      - no-access-token
+                      - invalid-scopes
+                      - unknown-token
+                  friendly: 
+                    type: string
+                required: 
+                  - type
+                  - friendly
+  "/v1/users/{user}/tags/{tag}/edit": 
+    post: 
+      summary: Edit a system tag
+      description: "Edit a system tag by its ID. `{user}` can be `@me` to target the current OAuth user."
+      security: 
+        - oAuth2: 
+            - tags:write
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                tagFriendlyName: 
+                  type: string
+                  maxLength: 100
+                tagDescription: 
+                  type: string
+                  maxLength: 1000
+                tagColor: 
+                  type: string
+                  enum: 
+                    - red
+                    - orange
+                    - amber
+                    - yellow
+                    - lime
+                    - green
+                    - emerald
+                    - teal
+                    - cyan
+                    - sky
+                    - blue
+                    - indigo
+                    - violet
+                    - purple
+                    - fuchsia
+                    - pink
+                    - rose
+                public: 
+                  type: number
+              default: 
+                {}
+      responses: 
+        "200": 
+          description: Success.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  tagId: 
+                    type: string
+                  systemId: 
+                    type: string
+                  tagFriendlyName: 
+                    type: string
+                    maxLength: 100
+                  tagDescription: 
+                    type: string
+                    maxLength: 1000
+                  tagColor: 
+                    type: string
+                    enum: 
+                      - red
+                      - orange
+                      - amber
+                      - yellow
+                      - lime
+                      - green
+                      - emerald
+                      - teal
+                      - cyan
+                      - sky
+                      - blue
+                      - indigo
+                      - violet
+                      - purple
+                      - fuchsia
+                      - pink
+                      - rose
+                  associatedAlters: 
+                    type: array
+                    items: 
+                      type: string
+                  public: 
+                    type: number
+                required: 
+                  - tagId
+                  - systemId
+                  - tagFriendlyName
+                  - tagColor
+                  - associatedAlters
+                  - public
+        "400": 
+          description: Client error while processing input.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - not-matching-oauth
+                            - zod
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
+                required: 
+                  - errors
+        "401": 
+          description: No access token when authenticating.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  type: 
+                    type: string
+                    enum: 
+                      - no-access-token
+                      - invalid-scopes
+                      - unknown-token
+                  friendly: 
+                    type: string
+                required: 
+                  - type
+                  - friendly
+        "404": 
+          description: "Couldn't find the tag"
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  type: 
+                    type: string
+                    enum: 
+                      - unknown-tag
+                  friendly: 
+                    type: string
+                    enum: 
+                      - "Couldn't find this tag."
+                required: 
+                  - type
+                  - friendly
+  "/v1/users/{user}/alters/{tag}/edit": 
+    post: 
+      summary: Edit a system alter
+      description: "Edit a system alter by its ID. `{user}` can be `@me` to target the current OAuth user."
+      security: 
+        - oAuth2: 
+            - alters:write
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                username: 
+                  type: string
+                  maxLength: 100
+                  pattern: "^[^\\s@\\\\/]+$"
+                displayName: 
+                  type: string
+                  maxLength: 100
+                nameMap: 
+                  type: array
+                  items: 
+                    type: object
+                    properties: 
+                      server: 
+                        type: string
+                        maxLength: 20
+                      name: 
+                        type: string
+                        maxLength: 100
+                    required: 
+                      - server
+                      - name
+                color: 
+                  type: 
+                    - string
+                    - "null"
+                  pattern: "^#[0-9A-F]{6}$/i"
+                description: 
+                  type: 
+                    - string
+                    - "null"
+                  maxLength: 1000
+                pronouns: 
+                  type: 
+                    - string
+                    - "null"
+                  maxLength: 100
+                avatarUrl: 
+                  type: 
+                    - string
+                    - "null"
+                avatarUrlMap: 
+                  type: object
+                  additionalProperties: 
+                    type: string
+                  default: 
+                    {}
+                webhookAvatarUrl: 
+                  type: 
+                    - string
+                    - "null"
+                banner: 
+                  type: 
+                    - string
+                    - "null"
+                alterMode: 
+                  type: string
+                  enum: 
+                    - nickname
+                    - webhook
+                    - both
+                  default: webhook
+                proxyTags: 
+                  type: array
+                  items: 
+                    type: object
+                    properties: 
+                      prefix: 
+                        type: string
+                        maxLength: 100
+                      suffix: 
+                        type: string
+                        maxLength: 100
+                      id: 
+                        type: string
+                    required: 
+                      - prefix
+                      - suffix
+                      - id
+                  default: 
+                    []
+                public: 
+                  type: number
+              default: 
+                {}
+      responses: 
+        "200": 
+          description: Success.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  alterId: 
+                    type: number
+                  systemId: 
+                    type: string
+                  username: 
+                    type: string
+                    maxLength: 100
+                    pattern: "^[^\\s@\\\\/]+$"
+                  displayName: 
+                    type: string
+                    maxLength: 100
+                  nameMap: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        server: 
+                          type: string
+                          maxLength: 20
+                        name: 
+                          type: string
+                          maxLength: 100
+                      required: 
+                        - server
+                        - name
+                  color: 
+                    type: 
+                      - string
+                      - "null"
+                    pattern: "^#[0-9A-F]{6}$/i"
+                  description: 
+                    type: 
+                      - string
+                      - "null"
+                    maxLength: 1000
+                  created: 
+                    type: 
+                      - string
+                      - "null"
+                    format: date-time
+                  pronouns: 
+                    type: 
+                      - string
+                      - "null"
+                    maxLength: 100
+                  avatarUrl: 
+                    type: 
+                      - string
+                      - "null"
+                  avatarUrlMap: 
+                    type: object
+                    additionalProperties: 
+                      type: string
+                    default: 
+                      {}
+                  webhookAvatarUrl: 
+                    type: 
+                      - string
+                      - "null"
+                  banner: 
+                    type: 
+                      - string
+                      - "null"
+                  lastMessageTimestamp: 
+                    type: 
+                      - string
+                      - "null"
+                    format: date-time
+                  messageCount: 
+                    type: number
+                  alterMode: 
+                    type: string
+                    enum: 
+                      - nickname
+                      - webhook
+                      - both
+                    default: webhook
+                  proxyTags: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        prefix: 
+                          type: string
+                          maxLength: 100
+                        suffix: 
+                          type: string
+                          maxLength: 100
+                        id: 
+                          type: string
+                      required: 
+                        - prefix
+                        - suffix
+                        - id
+                    default: 
+                      []
+                  tagIds: 
+                    type: array
+                    items: 
+                      type: string
+                    default: 
+                      []
+                  public: 
+                    type: number
+                required: 
+                  - alterId
+                  - systemId
+                  - username
+                  - displayName
+                  - nameMap
+                  - color
+                  - description
+                  - created
+                  - pronouns
+                  - avatarUrl
+                  - webhookAvatarUrl
+                  - banner
+                  - lastMessageTimestamp
+                  - messageCount
+                  - public
+        "400": 
+          description: Client error while processing input.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - not-matching-oauth
+                            - zod
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
+                required: 
+                  - errors
+        "401": 
+          description: No access token when authenticating.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  type: 
+                    type: string
+                    enum: 
+                      - no-access-token
+                      - invalid-scopes
+                      - unknown-token
+                  friendly: 
+                    type: string
+                required: 
+                  - type
+                  - friendly
+        "404": 
+          description: "Couldn't find the alter"
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  type: 
+                    type: string
+                    enum: 
+                      - unknown-alter
+                  friendly: 
+                    type: string
+                    enum: 
+                      - "Couldn't find this alter."
+                required: 
+                  - type
+                  - friendly
   /v1/stats: 
     get: 
       summary: Get PluralBuddy statistics
