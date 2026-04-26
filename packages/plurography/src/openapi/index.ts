@@ -117,6 +117,7 @@ registry.registerPath({
 	method: "get",
 	path: "/v1/messages/{id}",
 	summary: "Get PluralBuddy message",
+	description: "Get a PluralBuddy message by Message ID",
 	security: [{ oAuth2: [] }],
 	responses: {
 		"200": {
