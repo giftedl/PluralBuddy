@@ -67,7 +67,7 @@ export const PSystemObject = z.object({
 
 	latchExpiration: z.number().min(0).max(36000000).optional(),
 
-	public: z.number().positive().meta({ description: publicDescription }),
+	public: z.number().nonnegative().meta({ description: publicDescription }),
 	/** WIP */
 	subAccounts: z.array(z.string()),
 	disabled: z.boolean().default(false),

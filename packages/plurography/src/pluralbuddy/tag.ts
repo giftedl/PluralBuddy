@@ -59,7 +59,7 @@ export const PTagObject = z.object({
 	associatedAlters: z.string().array(),
 
 	/** @see {@link TagProtectionFlags} */
-	public: z.number().positive(),
+	public: z.number().nonnegative(),
 });
 
 export type PTag = z.infer<typeof PTagObject>;
