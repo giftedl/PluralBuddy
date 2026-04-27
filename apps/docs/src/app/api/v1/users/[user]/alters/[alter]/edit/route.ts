@@ -11,7 +11,7 @@ const AlterEditInput = PAlterObject.omit({
 	systemId: true,
 	created: true,
 	lastMessageTimestamp: true,
-	messageCount: true,
+	messageCount: true
 })
 	.partial()
 	.default({});

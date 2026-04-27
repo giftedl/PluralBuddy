@@ -11,6 +11,7 @@ const SystemEditInput = PSystemObject.omit({
 	createdAt: true,
 	associatedUserId: true,
 	systemOperationDM: true,
+	subAccounts: true
 }).partial().default({});
 
 export async function POST(
@@ -63,7 +64,7 @@ export async function POST(
 					{ type: "no-system", friendly: "This user does not have a system." },
 				],
 			},
-			{ status: 400 },
+			{ status: 404 },
 		);
 	}
 

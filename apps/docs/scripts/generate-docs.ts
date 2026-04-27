@@ -32,5 +32,6 @@ Bun.write(
 			(v) =>
 				v.replace("./content/docs/en/pluralbuddy/api/", "").replace(".mdx", ""),
 		).slice(1),
+		icon: "Notebook"
 	}, null, 2),
 );

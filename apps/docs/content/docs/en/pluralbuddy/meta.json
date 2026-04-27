@@ -16,6 +16,7 @@
       "server-commands",
       "---For Developers---",
       "oauth-apps",
+      "objects",
       "api"
     ]
   }

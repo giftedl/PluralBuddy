@@ -19,6 +19,7 @@ const config = {
 			bodySizeLimit: "5mb"
 		}
 	},
+	serverExternalPackages: ["node:fs/promises"],
 	allowedDevOrigins: ['192.168.0.234']
 };
 

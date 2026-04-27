@@ -76,6 +76,10 @@ components:
             type: string
           default: 
             {}
+          description: "This is a map that shows the association between a Discord server ID and a custom display tag.\n\n```js\n{ \n  \"1444187699924963350\": \"string\"\n}\n```"
+          example: 
+            &example
+            "1444187699924963350": string
         systemDescription: 
           type: string
           maxLength: 1000
@@ -144,6 +148,8 @@ components:
           maximum: 36000000
         public: 
           type: number
+          exclusiveMinimum: 0
+          description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
         subAccounts: 
           type: array
           items: 
@@ -187,17 +193,24 @@ paths:
               schema: 
                 type: object
                 properties: 
-                  type: 
-                    type: string
-                    enum: 
-                      - not-matching-oauth
-                  friendly: 
-                    type: string
-                    enum: 
-                      - This endpoint requires the user currently logged in via OAuth.
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - not-matching-oauth
+                        friendly: 
+                          type: string
+                          enum: 
+                            - This endpoint requires the user currently logged in via OAuth.
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - type
-                  - friendly
+                  - errors
         "401": 
           description: Not properly authenticated.
           content: 
@@ -205,17 +218,24 @@ paths:
               schema: 
                 type: object
                 properties: 
-                  type: 
-                    type: string
-                    enum: 
-                      - no-access-token
-                      - invalid-scopes
-                      - unknown-token
-                  friendly: 
-                    type: string
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - type
-                  - friendly
+                  - errors
   "/v1/users/{user}/alters/{alter}": 
     get: 
       summary: Get a system alter
@@ -342,6 +362,7 @@ paths:
                           []
                       public: 
                         type: number
+                        exclusiveMinimum: 0
                     required: 
                       - alterId
                       - systemId
@@ -368,17 +389,24 @@ paths:
               schema: 
                 type: object
                 properties: 
-                  type: 
-                    type: string
-                    enum: 
-                      - no-access-token
-                      - invalid-scopes
-                      - unknown-token
-                  friendly: 
-                    type: string
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - type
-                  - friendly
+                  - errors
   "/v1/users/{user}/tags/{tag}": 
     get: 
       summary: Get a system tag
@@ -437,6 +465,7 @@ paths:
                           type: string
                       public: 
                         type: number
+                        exclusiveMinimum: 0
                     required: 
                       - tagId
                       - systemId
@@ -454,17 +483,24 @@ paths:
               schema: 
                 type: object
                 properties: 
-                  type: 
-                    type: string
-                    enum: 
-                      - no-access-token
-                      - invalid-scopes
-                      - unknown-token
-                  friendly: 
-                    type: string
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - type
-                  - friendly
+                  - errors
   "/v1/users/{user}/tags/{tag}/edit": 
     post: 
       summary: Edit a system tag
@@ -506,6 +542,7 @@ paths:
                     - rose
                 public: 
                   type: number
+                  exclusiveMinimum: 0
               default: 
                 {}
       responses: 
@@ -552,6 +589,7 @@ paths:
                       type: string
                   public: 
                     type: number
+                    exclusiveMinimum: 0
                 required: 
                   - tagId
                   - systemId
@@ -590,17 +628,24 @@ paths:
               schema: 
                 type: object
                 properties: 
-                  type: 
-                    type: string
-                    enum: 
-                      - no-access-token
-                      - invalid-scopes
-                      - unknown-token
-                  friendly: 
-                    type: string
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - type
-                  - friendly
+                  - errors
         "404": 
           description: "Couldn't find the tag"
           content: 
@@ -714,6 +759,7 @@ paths:
                     []
                 public: 
                   type: number
+                  exclusiveMinimum: 0
               default: 
                 {}
       responses: 
@@ -828,6 +874,7 @@ paths:
                       []
                   public: 
                     type: number
+                    exclusiveMinimum: 0
                 required: 
                   - alterId
                   - systemId
@@ -875,17 +922,24 @@ paths:
               schema: 
                 type: object
                 properties: 
-                  type: 
-                    type: string
-                    enum: 
-                      - no-access-token
-                      - invalid-scopes
-                      - unknown-token
-                  friendly: 
-                    type: string
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - type
-                  - friendly
+                  - errors
         "404": 
           description: "Couldn't find the alter"
           content: 
@@ -998,14 +1052,255 @@ paths:
               schema: 
                 type: object
                 properties: 
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
+                required: 
+                  - errors
+  "/v1/users/{user}/system/edit": 
+    post: 
+      summary: Edit system data
+      description: "Edit system data. `{user}` can be `@me` to target the current OAuth user."
+      security: 
+        - oAuth2: 
+            - system:write
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                systemName: 
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                systemDisplayTag: 
+                  type: string
+                displayTagMap: 
+                  type: object
+                  additionalProperties: 
+                    type: string
+                  default: 
+                    {}
+                  description: "This is a map that shows the association between a Discord server ID and a custom display tag.\n\n```js\n{ \n  \"1444187699924963350\": \"string\"\n}\n```"
+                  example: 
+                    *example
+                systemDescription: 
+                  type: string
+                  maxLength: 1000
+                systemAvatar: 
+                  type: 
+                    - string
+                    - "null"
+                systemBanner: 
+                  type: 
+                    - string
+                    - "null"
+                systemPronouns: 
+                  type: 
+                    - string
+                    - "null"
+                nicknameFormat: 
+                  type: string
+                latchExpiration: 
+                  type: number
+                  minimum: 0
+                  maximum: 36000000
+                public: 
+                  type: number
+                  exclusiveMinimum: 0
+                  description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
+                disabled: 
+                  type: boolean
+                  default: false
+              default: 
+                {}
+      responses: 
+        "200": 
+          description: Success.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  associatedUserId: 
+                    type: string
+                  systemName: 
+                    type: string
+                    minLength: 1
+                    maxLength: 100
+                  systemDisplayTag: 
+                    type: string
+                  displayTagMap: 
+                    type: object
+                    additionalProperties: 
+                      type: string
+                    default: 
+                      {}
+                    description: "This is a map that shows the association between a Discord server ID and a custom display tag.\n\n```js\n{ \n  \"1444187699924963350\": \"string\"\n}\n```"
+                    example: 
+                      *example
+                  systemDescription: 
+                    type: string
+                    maxLength: 1000
+                  systemAvatar: 
+                    type: 
+                      - string
+                      - "null"
+                  systemBanner: 
+                    type: 
+                      - string
+                      - "null"
+                  systemPronouns: 
+                    type: 
+                      - string
+                      - "null"
+                  nicknameFormat: 
+                    type: string
+                  alterIds: 
+                    type: array
+                    items: 
+                      type: number
+                    maxItems: 2000
+                    default: 
+                      []
+                  tagIds: 
+                    type: array
+                    items: 
+                      type: string
+                    maxItems: 500
+                    default: 
+                      []
+                  createdAt: 
+                    type: 
+                      - string
+                      - "null"
+                    format: date-time
+                  systemAutoproxy: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        autoproxyMode: 
+                          type: string
+                          enum: 
+                            - "off"
+                            - latch
+                            - alter
+                        autoproxyAlter: 
+                          type: string
+                        serverId: 
+                          type: string
+                        lastLatchTimestamp: 
+                          type: 
+                            - string
+                            - "null"
+                          format: date-time
+                      required: 
+                        - autoproxyMode
+                        - serverId
+                  systemOperationDM: 
+                    type: boolean
+                    default: true
+                  latchExpiration: 
+                    type: number
+                    minimum: 0
+                    maximum: 36000000
+                  public: 
+                    type: number
+                    exclusiveMinimum: 0
+                    description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
+                  subAccounts: 
+                    type: array
+                    items: 
+                      type: string
+                  disabled: 
+                    type: boolean
+                    default: false
+                required: 
+                  - associatedUserId
+                  - systemName
+                  - createdAt
+                  - systemAutoproxy
+                  - public
+                  - subAccounts
+        "400": 
+          description: Client error while processing input.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - not-matching-oauth
+                            - zod
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
+                required: 
+                  - errors
+        "401": 
+          description: No access token when authenticating.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
+                required: 
+                  - errors
+        "404": 
+          description: "Couldn't find the system"
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
                   type: 
                     type: string
                     enum: 
-                      - no-access-token
-                      - invalid-scopes
-                      - unknown-token
+                      - no-system
                   friendly: 
                     type: string
+                    enum: 
+                      - This user does not have a system.
                 required: 
                   - type
                   - friendly
@@ -1656,6 +1951,7 @@ webhooks:
                         []
                     public: 
                       type: number
+                      exclusiveMinimum: 0
                   required: 
                     - alterId
                     - systemId
@@ -1733,6 +2029,7 @@ webhooks:
                         type: string
                     public: 
                       type: number
+                      exclusiveMinimum: 0
                   required: 
                     - tagId
                     - systemId
