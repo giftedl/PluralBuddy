@@ -65,3 +65,42 @@ DM Replies is apart of the PluralBuddy nudging feature. DM Replies is a feature 
 <Callout type="warning" title="Storage Limitations">
   Webhooks on Discord cannot be reply pinged. If you try to, the reply ping is cleared when your message hits the server. This is why DM replies are always on regardless of what the replying user specifies for reply pings, as in reality the user doesn't have a choice.
 </Callout>
+
+## Proxying
+
+PluralBuddy's core feature, **"proxying"**, is the act of indexing, processing, and redistributing user messages as Webhook-based messages made for the purpose of resembling both user messages at it's content and making the message look like it's sent directly by an alter.
+
+However, PluralBuddy isn't _perfect_ at exactly replicating how Discord handles messages, due to just the restrictions of Webhooks. Unlike other plural bots though, PluralBuddy takes a completely different integral approach to rendering messages.
+
+PluralBuddy, uses [Components V2](https://docs.discord.com/developers/components/reference#component-reference) to render messages as opposed to traditional message properties like content or embeds. In simpler terms, this means that PluralBuddy has greater layout freedom, in exchange for giving up some features that naturally exist without using Components V2.
+
+### Differences
+
+| Native Feature  | Notes
+| :-------------: | -----
+| Embedding Links | Embedding links is possible on PluralBuddy, however PluralBuddy has to get link metadata by itself as opposed to Discord getting it from their backend. This means that link embeds may not look exactly correct.
+| Images          | Image rendering might not always look perfect since Discord seems to mess up on image sizing in rare circumstances.
+| Stickers        | Stickers are natively supported since they are automatically converted to images. Again, sticker sizes may not be correct to their normal sticker size counterpart.
+| Emojis          | _All_ external emojis are supported, regardless of if PluralBuddy is in the server that the emoji comes from.
+| Edits           | Due to the overall complexity of Components V2, you are only allowed to edit the message _text_ content, nothing else.
+| Audio Messages  | Due to Discord limitations, audio messages may not be inline playable due to how they are converted to audio files, and sent as a File Display.
+| Replies         | Replies are formatted like: `Replying to (user): (message contents linked to message)`. However, replies are a separate Text Display. Additionally, in rare circumstances, replies may break and the link wont format correctly. Please report this to the support server if this happens.
+
+## System Privacy
+
+PluralBuddy runs on the philosophy that **everything is private, by default.** What this means for you, is if you create an alter, a system, or a tag, all data of it is automatically private by design.
+
+<Callout type="warning">
+  Since PluralKit is public by default, importing from PluralKit will make everything public, unless you've set that differently in your PluralKit settings.
+</Callout>
+
+However, you can easily set settings for your system to make it less or more public.
+
+```
+pb;system config
+pb;edit-alter config <alter>
+pb;edit-tag config <tag>
+```
+
+All of those above commands can help you set privacy settings.
+
