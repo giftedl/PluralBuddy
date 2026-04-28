@@ -2,6 +2,22 @@
 
 import { z } from "zod";
 
+
+const publicDescription = `This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.
+
+| Public Flag     | Value                   | Description |
+|-----------------|-------------------------|-------------|
+| VISIBILITY      | \`1\` \`(1 << 0)\`      | Allows external users to see the alter. |
+| NAME            | \`2\` \`(1 << 1)\`      | Allows external users to see the alter's name. |
+| DESCRIPTION     | \`4\` \`(1 << 2)\`      | Allows external users to see the alter's description. |
+| BANNER          | \`8\` \`(1 << 3)\`      | Allows external users to see the alter's banner. |
+| PRONOUNS        | \`16\` \`(1 << 4)\`     | Allows external users to see the alter's pronouns. |
+| AVATAR          | \`32\` \`(1 << 5)\`     | Allows external users to see the alter's avatar. |
+| TAGS            | \`128\` \`(1 << 7)\`    | Allows external users to see the alter's associated tags. |
+| MESSAGE_COUNT   | \`256\` \`(1 << 8)\`    | Allows external users to see the alter's message count. |
+| USERNAME        | \`512\` \`(1 << 9)\`    | Allows external users to see the alter's username. |`;
+
+
 export enum AlterProtectionFlags {
     VISIBILITY     = 1 << 0,
     NAME           = 1 << 1,
@@ -37,7 +53,7 @@ export const PAlterObject = z.object({
     proxyTags: z.object({ prefix: z.string().max(100), suffix: z.string().max(100), id: z.string() }).array().default([]),
 
     tagIds: z.string().array().default([]),
-    public: z.number().nonnegative()
-})
+    public: z.number().nonnegative().meta({ description: publicDescription })
+}).meta({ id: "PAlter" })
 
 export type PAlter = z.infer<typeof PAlterObject>

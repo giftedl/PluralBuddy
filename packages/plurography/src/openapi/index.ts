@@ -43,7 +43,7 @@ registry.registerPath({
 			content: {
 				"application/json": {
 					schema: z.object({
-						data: PSystemObject.meta({ id: "system" }),
+						data: PSystemObject,
 					}),
 				},
 			},

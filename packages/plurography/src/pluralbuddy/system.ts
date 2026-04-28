@@ -71,6 +71,6 @@ export const PSystemObject = z.object({
 	/** WIP */
 	subAccounts: z.array(z.string()),
 	disabled: z.boolean().default(false),
-});
+}).meta({ id: "PSystem" });
 
 export type PSystem = z.infer<typeof PSystemObject>;

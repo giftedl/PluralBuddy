@@ -53,7 +53,7 @@ These commands run with the syntax as `/<alter-name>`. You then put the text you
 
 ## Usage
 
-Use the slash command that is the username of your alter to send a normal message. You can send text or an attachment, and they will be combined and sent in a message. **You must use a slash command every time you want to proxy due to Discord restrictions.**
+Use the slash command that is the username of your alter (extracted of Unicode symbols, shortened to 30 characters) to send a normal message. You can send text or an attachment, and they will be combined and sent in a message. **You must use a slash command every time you want to proxy due to Discord restrictions.**
 
 Additionally, you can reply to messages by hitting App -> Your Alter Name -> Reply after holding down or right clicking a message. Then, you can input the message contents and attachments.
 
@@ -62,3 +62,9 @@ Additionally, you can reply to messages by hitting App -> Your Alter Name -> Rep
 In the PluralBuddy settings, you can actually set some of the preferences for Express alters that run.
 
 ![Express Preferences](/image/express-preferences.png)
+
+Express has two different modes that you can choose from to format external messages:
+ - **Container Mode:** all messages will be inside of a Components V2 [Container](https://docs.discord.com/developers/components/reference#container) (most similar in appearance to an embed from Components V1), accented with your alter's color.
+ - **Text Display Mode:** the default mode, sending all contents of your message in a Components V2 [Text Display](https://docs.discord.com/developers/components/reference#text-display) (most similar in appearance to default server-based behavior)
+
+You can also set a custom name for your alter. By default, your alter's Express name is the first 30 characters of your alter's display name. However, if you have lots of extra characters you do not want in your alter name, you can shorten it with this option.

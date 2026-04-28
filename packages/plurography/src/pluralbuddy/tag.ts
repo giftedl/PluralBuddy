@@ -60,6 +60,6 @@ export const PTagObject = z.object({
 
 	/** @see {@link TagProtectionFlags} */
 	public: z.number().nonnegative(),
-});
+}).meta({ id: "PTag" });
 
 export type PTag = z.infer<typeof PTagObject>;

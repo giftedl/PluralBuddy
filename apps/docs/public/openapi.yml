@@ -59,7 +59,7 @@ components:
             system:write: Write to system data
             system:admin: "Read/write to alter, tags & system data."
   schemas: 
-    system: 
+    PSystem: 
       type: object
       properties: 
         associatedUserId: 
@@ -148,7 +148,7 @@ components:
           maximum: 36000000
         public: 
           type: number
-          exclusiveMinimum: 0
+          minimum: 0
           description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
         subAccounts: 
           type: array
@@ -164,6 +164,182 @@ components:
         - systemAutoproxy
         - public
         - subAccounts
+    PAlter: 
+      type: 
+        - object
+        - "null"
+      properties: 
+        alterId: 
+          type: number
+        systemId: 
+          type: string
+        username: 
+          type: string
+          maxLength: 100
+          pattern: "^[^\\s@\\\\/]+$"
+        displayName: 
+          type: string
+          maxLength: 100
+        nameMap: 
+          type: array
+          items: 
+            type: object
+            properties: 
+              server: 
+                type: string
+                maxLength: 20
+              name: 
+                type: string
+                maxLength: 100
+            required: 
+              - server
+              - name
+        color: 
+          type: 
+            - string
+            - "null"
+          pattern: "^#[0-9A-F]{6}$/i"
+        description: 
+          type: 
+            - string
+            - "null"
+          maxLength: 1000
+        created: 
+          type: 
+            - string
+            - "null"
+          format: date-time
+        pronouns: 
+          type: 
+            - string
+            - "null"
+          maxLength: 100
+        avatarUrl: 
+          type: 
+            - string
+            - "null"
+        avatarUrlMap: 
+          type: object
+          additionalProperties: 
+            type: string
+          default: 
+            {}
+        webhookAvatarUrl: 
+          type: 
+            - string
+            - "null"
+        banner: 
+          type: 
+            - string
+            - "null"
+        lastMessageTimestamp: 
+          type: 
+            - string
+            - "null"
+          format: date-time
+        messageCount: 
+          type: number
+        alterMode: 
+          type: string
+          enum: 
+            - nickname
+            - webhook
+            - both
+          default: webhook
+        proxyTags: 
+          type: array
+          items: 
+            type: object
+            properties: 
+              prefix: 
+                type: string
+                maxLength: 100
+              suffix: 
+                type: string
+                maxLength: 100
+              id: 
+                type: string
+            required: 
+              - prefix
+              - suffix
+              - id
+          default: 
+            []
+        tagIds: 
+          type: array
+          items: 
+            type: string
+          default: 
+            []
+        public: 
+          type: number
+          minimum: 0
+          description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| VISIBILITY      | `1` `(1 << 0)`      | Allows external users to see the alter. |\n| NAME            | `2` `(1 << 1)`      | Allows external users to see the alter's name. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see the alter's description. |\n| BANNER          | `8` `(1 << 3)`      | Allows external users to see the alter's banner. |\n| PRONOUNS        | `16` `(1 << 4)`     | Allows external users to see the alter's pronouns. |\n| AVATAR          | `32` `(1 << 5)`     | Allows external users to see the alter's avatar. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see the alter's associated tags. |\n| MESSAGE_COUNT   | `256` `(1 << 8)`    | Allows external users to see the alter's message count. |\n| USERNAME        | `512` `(1 << 9)`    | Allows external users to see the alter's username. |"
+      required: 
+        - alterId
+        - systemId
+        - username
+        - displayName
+        - nameMap
+        - color
+        - description
+        - created
+        - pronouns
+        - avatarUrl
+        - webhookAvatarUrl
+        - banner
+        - lastMessageTimestamp
+        - messageCount
+        - public
+    PTag: 
+      type: 
+        - object
+        - "null"
+      properties: 
+        tagId: 
+          type: string
+        systemId: 
+          type: string
+        tagFriendlyName: 
+          type: string
+          maxLength: 100
+        tagDescription: 
+          type: string
+          maxLength: 1000
+        tagColor: 
+          type: string
+          enum: 
+            - red
+            - orange
+            - amber
+            - yellow
+            - lime
+            - green
+            - emerald
+            - teal
+            - cyan
+            - sky
+            - blue
+            - indigo
+            - violet
+            - purple
+            - fuchsia
+            - pink
+            - rose
+        associatedAlters: 
+          type: array
+          items: 
+            type: string
+        public: 
+          type: number
+          minimum: 0
+      required: 
+        - tagId
+        - systemId
+        - tagFriendlyName
+        - tagColor
+        - associatedAlters
+        - public
   parameters: 
     {}
 paths: 
@@ -183,7 +359,7 @@ paths:
                 type: object
                 properties: 
                   data: 
-                    $ref: "#/components/schemas/system"
+                    $ref: "#/components/schemas/PSystem"
                 required: 
                   - data
         "400": 
@@ -254,131 +430,7 @@ paths:
                   isSelf: 
                     type: boolean
                   data: 
-                    type: 
-                      - object
-                      - "null"
-                    properties: 
-                      alterId: 
-                        type: number
-                      systemId: 
-                        type: string
-                      username: 
-                        type: string
-                        maxLength: 100
-                        pattern: "^[^\\s@\\\\/]+$"
-                      displayName: 
-                        type: string
-                        maxLength: 100
-                      nameMap: 
-                        type: array
-                        items: 
-                          type: object
-                          properties: 
-                            server: 
-                              type: string
-                              maxLength: 20
-                            name: 
-                              type: string
-                              maxLength: 100
-                          required: 
-                            - server
-                            - name
-                      color: 
-                        type: 
-                          - string
-                          - "null"
-                        pattern: "^#[0-9A-F]{6}$/i"
-                      description: 
-                        type: 
-                          - string
-                          - "null"
-                        maxLength: 1000
-                      created: 
-                        type: 
-                          - string
-                          - "null"
-                        format: date-time
-                      pronouns: 
-                        type: 
-                          - string
-                          - "null"
-                        maxLength: 100
-                      avatarUrl: 
-                        type: 
-                          - string
-                          - "null"
-                      avatarUrlMap: 
-                        type: object
-                        additionalProperties: 
-                          type: string
-                        default: 
-                          {}
-                      webhookAvatarUrl: 
-                        type: 
-                          - string
-                          - "null"
-                      banner: 
-                        type: 
-                          - string
-                          - "null"
-                      lastMessageTimestamp: 
-                        type: 
-                          - string
-                          - "null"
-                        format: date-time
-                      messageCount: 
-                        type: number
-                      alterMode: 
-                        type: string
-                        enum: 
-                          - nickname
-                          - webhook
-                          - both
-                        default: webhook
-                      proxyTags: 
-                        type: array
-                        items: 
-                          type: object
-                          properties: 
-                            prefix: 
-                              type: string
-                              maxLength: 100
-                            suffix: 
-                              type: string
-                              maxLength: 100
-                            id: 
-                              type: string
-                          required: 
-                            - prefix
-                            - suffix
-                            - id
-                        default: 
-                          []
-                      tagIds: 
-                        type: array
-                        items: 
-                          type: string
-                        default: 
-                          []
-                      public: 
-                        type: number
-                        exclusiveMinimum: 0
-                    required: 
-                      - alterId
-                      - systemId
-                      - username
-                      - displayName
-                      - nameMap
-                      - color
-                      - description
-                      - created
-                      - pronouns
-                      - avatarUrl
-                      - webhookAvatarUrl
-                      - banner
-                      - lastMessageTimestamp
-                      - messageCount
-                      - public
+                    $ref: "#/components/schemas/PAlter"
                 required: 
                   - isSelf
                   - data
@@ -425,54 +477,7 @@ paths:
                   isSelf: 
                     type: boolean
                   data: 
-                    type: 
-                      - object
-                      - "null"
-                    properties: 
-                      tagId: 
-                        type: string
-                      systemId: 
-                        type: string
-                      tagFriendlyName: 
-                        type: string
-                        maxLength: 100
-                      tagDescription: 
-                        type: string
-                        maxLength: 1000
-                      tagColor: 
-                        type: string
-                        enum: 
-                          - red
-                          - orange
-                          - amber
-                          - yellow
-                          - lime
-                          - green
-                          - emerald
-                          - teal
-                          - cyan
-                          - sky
-                          - blue
-                          - indigo
-                          - violet
-                          - purple
-                          - fuchsia
-                          - pink
-                          - rose
-                      associatedAlters: 
-                        type: array
-                        items: 
-                          type: string
-                      public: 
-                        type: number
-                        exclusiveMinimum: 0
-                    required: 
-                      - tagId
-                      - systemId
-                      - tagFriendlyName
-                      - tagColor
-                      - associatedAlters
-                      - public
+                    $ref: "#/components/schemas/PTag"
                 required: 
                   - isSelf
                   - data
@@ -542,7 +547,7 @@ paths:
                     - rose
                 public: 
                   type: number
-                  exclusiveMinimum: 0
+                  minimum: 0
               default: 
                 {}
       responses: 
@@ -551,52 +556,7 @@ paths:
           content: 
             application/json: 
               schema: 
-                type: object
-                properties: 
-                  tagId: 
-                    type: string
-                  systemId: 
-                    type: string
-                  tagFriendlyName: 
-                    type: string
-                    maxLength: 100
-                  tagDescription: 
-                    type: string
-                    maxLength: 1000
-                  tagColor: 
-                    type: string
-                    enum: 
-                      - red
-                      - orange
-                      - amber
-                      - yellow
-                      - lime
-                      - green
-                      - emerald
-                      - teal
-                      - cyan
-                      - sky
-                      - blue
-                      - indigo
-                      - violet
-                      - purple
-                      - fuchsia
-                      - pink
-                      - rose
-                  associatedAlters: 
-                    type: array
-                    items: 
-                      type: string
-                  public: 
-                    type: number
-                    exclusiveMinimum: 0
-                required: 
-                  - tagId
-                  - systemId
-                  - tagFriendlyName
-                  - tagColor
-                  - associatedAlters
-                  - public
+                $ref: "#/components/schemas/PTag"
         "400": 
           description: Client error while processing input.
           content: 
@@ -759,7 +719,8 @@ paths:
                     []
                 public: 
                   type: number
-                  exclusiveMinimum: 0
+                  minimum: 0
+                  description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| VISIBILITY      | `1` `(1 << 0)`      | Allows external users to see the alter. |\n| NAME            | `2` `(1 << 1)`      | Allows external users to see the alter's name. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see the alter's description. |\n| BANNER          | `8` `(1 << 3)`      | Allows external users to see the alter's banner. |\n| PRONOUNS        | `16` `(1 << 4)`     | Allows external users to see the alter's pronouns. |\n| AVATAR          | `32` `(1 << 5)`     | Allows external users to see the alter's avatar. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see the alter's associated tags. |\n| MESSAGE_COUNT   | `256` `(1 << 8)`    | Allows external users to see the alter's message count. |\n| USERNAME        | `512` `(1 << 9)`    | Allows external users to see the alter's username. |"
               default: 
                 {}
       responses: 
@@ -768,129 +729,7 @@ paths:
           content: 
             application/json: 
               schema: 
-                type: object
-                properties: 
-                  alterId: 
-                    type: number
-                  systemId: 
-                    type: string
-                  username: 
-                    type: string
-                    maxLength: 100
-                    pattern: "^[^\\s@\\\\/]+$"
-                  displayName: 
-                    type: string
-                    maxLength: 100
-                  nameMap: 
-                    type: array
-                    items: 
-                      type: object
-                      properties: 
-                        server: 
-                          type: string
-                          maxLength: 20
-                        name: 
-                          type: string
-                          maxLength: 100
-                      required: 
-                        - server
-                        - name
-                  color: 
-                    type: 
-                      - string
-                      - "null"
-                    pattern: "^#[0-9A-F]{6}$/i"
-                  description: 
-                    type: 
-                      - string
-                      - "null"
-                    maxLength: 1000
-                  created: 
-                    type: 
-                      - string
-                      - "null"
-                    format: date-time
-                  pronouns: 
-                    type: 
-                      - string
-                      - "null"
-                    maxLength: 100
-                  avatarUrl: 
-                    type: 
-                      - string
-                      - "null"
-                  avatarUrlMap: 
-                    type: object
-                    additionalProperties: 
-                      type: string
-                    default: 
-                      {}
-                  webhookAvatarUrl: 
-                    type: 
-                      - string
-                      - "null"
-                  banner: 
-                    type: 
-                      - string
-                      - "null"
-                  lastMessageTimestamp: 
-                    type: 
-                      - string
-                      - "null"
-                    format: date-time
-                  messageCount: 
-                    type: number
-                  alterMode: 
-                    type: string
-                    enum: 
-                      - nickname
-                      - webhook
-                      - both
-                    default: webhook
-                  proxyTags: 
-                    type: array
-                    items: 
-                      type: object
-                      properties: 
-                        prefix: 
-                          type: string
-                          maxLength: 100
-                        suffix: 
-                          type: string
-                          maxLength: 100
-                        id: 
-                          type: string
-                      required: 
-                        - prefix
-                        - suffix
-                        - id
-                    default: 
-                      []
-                  tagIds: 
-                    type: array
-                    items: 
-                      type: string
-                    default: 
-                      []
-                  public: 
-                    type: number
-                    exclusiveMinimum: 0
-                required: 
-                  - alterId
-                  - systemId
-                  - username
-                  - displayName
-                  - nameMap
-                  - color
-                  - description
-                  - created
-                  - pronouns
-                  - avatarUrl
-                  - webhookAvatarUrl
-                  - banner
-                  - lastMessageTimestamp
-                  - messageCount
-                  - public
+                $ref: "#/components/schemas/PAlter"
         "400": 
           description: Client error while processing input.
           content: 
@@ -1121,7 +960,7 @@ paths:
                   maximum: 36000000
                 public: 
                   type: number
-                  exclusiveMinimum: 0
+                  minimum: 0
                   description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
                 disabled: 
                   type: boolean
@@ -1134,109 +973,7 @@ paths:
           content: 
             application/json: 
               schema: 
-                type: object
-                properties: 
-                  associatedUserId: 
-                    type: string
-                  systemName: 
-                    type: string
-                    minLength: 1
-                    maxLength: 100
-                  systemDisplayTag: 
-                    type: string
-                  displayTagMap: 
-                    type: object
-                    additionalProperties: 
-                      type: string
-                    default: 
-                      {}
-                    description: "This is a map that shows the association between a Discord server ID and a custom display tag.\n\n```js\n{ \n  \"1444187699924963350\": \"string\"\n}\n```"
-                    example: 
-                      *example
-                  systemDescription: 
-                    type: string
-                    maxLength: 1000
-                  systemAvatar: 
-                    type: 
-                      - string
-                      - "null"
-                  systemBanner: 
-                    type: 
-                      - string
-                      - "null"
-                  systemPronouns: 
-                    type: 
-                      - string
-                      - "null"
-                  nicknameFormat: 
-                    type: string
-                  alterIds: 
-                    type: array
-                    items: 
-                      type: number
-                    maxItems: 2000
-                    default: 
-                      []
-                  tagIds: 
-                    type: array
-                    items: 
-                      type: string
-                    maxItems: 500
-                    default: 
-                      []
-                  createdAt: 
-                    type: 
-                      - string
-                      - "null"
-                    format: date-time
-                  systemAutoproxy: 
-                    type: array
-                    items: 
-                      type: object
-                      properties: 
-                        autoproxyMode: 
-                          type: string
-                          enum: 
-                            - "off"
-                            - latch
-                            - alter
-                        autoproxyAlter: 
-                          type: string
-                        serverId: 
-                          type: string
-                        lastLatchTimestamp: 
-                          type: 
-                            - string
-                            - "null"
-                          format: date-time
-                      required: 
-                        - autoproxyMode
-                        - serverId
-                  systemOperationDM: 
-                    type: boolean
-                    default: true
-                  latchExpiration: 
-                    type: number
-                    minimum: 0
-                    maximum: 36000000
-                  public: 
-                    type: number
-                    exclusiveMinimum: 0
-                    description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
-                  subAccounts: 
-                    type: array
-                    items: 
-                      type: string
-                  disabled: 
-                    type: boolean
-                    default: false
-                required: 
-                  - associatedUserId
-                  - systemName
-                  - createdAt
-                  - systemAutoproxy
-                  - public
-                  - subAccounts
+                $ref: "#/components/schemas/PSystem"
         "400": 
           description: Client error while processing input.
           content: 
@@ -1845,129 +1582,7 @@ webhooks:
                   enum: 
                     - alter.update
                 alter: 
-                  type: object
-                  properties: 
-                    alterId: 
-                      type: number
-                    systemId: 
-                      type: string
-                    username: 
-                      type: string
-                      maxLength: 100
-                      pattern: "^[^\\s@\\\\/]+$"
-                    displayName: 
-                      type: string
-                      maxLength: 100
-                    nameMap: 
-                      type: array
-                      items: 
-                        type: object
-                        properties: 
-                          server: 
-                            type: string
-                            maxLength: 20
-                          name: 
-                            type: string
-                            maxLength: 100
-                        required: 
-                          - server
-                          - name
-                    color: 
-                      type: 
-                        - string
-                        - "null"
-                      pattern: "^#[0-9A-F]{6}$/i"
-                    description: 
-                      type: 
-                        - string
-                        - "null"
-                      maxLength: 1000
-                    created: 
-                      type: 
-                        - string
-                        - "null"
-                      format: date-time
-                    pronouns: 
-                      type: 
-                        - string
-                        - "null"
-                      maxLength: 100
-                    avatarUrl: 
-                      type: 
-                        - string
-                        - "null"
-                    avatarUrlMap: 
-                      type: object
-                      additionalProperties: 
-                        type: string
-                      default: 
-                        {}
-                    webhookAvatarUrl: 
-                      type: 
-                        - string
-                        - "null"
-                    banner: 
-                      type: 
-                        - string
-                        - "null"
-                    lastMessageTimestamp: 
-                      type: 
-                        - string
-                        - "null"
-                      format: date-time
-                    messageCount: 
-                      type: number
-                    alterMode: 
-                      type: string
-                      enum: 
-                        - nickname
-                        - webhook
-                        - both
-                      default: webhook
-                    proxyTags: 
-                      type: array
-                      items: 
-                        type: object
-                        properties: 
-                          prefix: 
-                            type: string
-                            maxLength: 100
-                          suffix: 
-                            type: string
-                            maxLength: 100
-                          id: 
-                            type: string
-                        required: 
-                          - prefix
-                          - suffix
-                          - id
-                      default: 
-                        []
-                    tagIds: 
-                      type: array
-                      items: 
-                        type: string
-                      default: 
-                        []
-                    public: 
-                      type: number
-                      exclusiveMinimum: 0
-                  required: 
-                    - alterId
-                    - systemId
-                    - username
-                    - displayName
-                    - nameMap
-                    - color
-                    - description
-                    - created
-                    - pronouns
-                    - avatarUrl
-                    - webhookAvatarUrl
-                    - banner
-                    - lastMessageTimestamp
-                    - messageCount
-                    - public
+                  $ref: "#/components/schemas/PAlter"
               required: 
                 - userId
                 - type
@@ -1991,52 +1606,7 @@ webhooks:
                   enum: 
                     - tag.update
                 tag: 
-                  type: object
-                  properties: 
-                    tagId: 
-                      type: string
-                    systemId: 
-                      type: string
-                    tagFriendlyName: 
-                      type: string
-                      maxLength: 100
-                    tagDescription: 
-                      type: string
-                      maxLength: 1000
-                    tagColor: 
-                      type: string
-                      enum: 
-                        - red
-                        - orange
-                        - amber
-                        - yellow
-                        - lime
-                        - green
-                        - emerald
-                        - teal
-                        - cyan
-                        - sky
-                        - blue
-                        - indigo
-                        - violet
-                        - purple
-                        - fuchsia
-                        - pink
-                        - rose
-                    associatedAlters: 
-                      type: array
-                      items: 
-                        type: string
-                    public: 
-                      type: number
-                      exclusiveMinimum: 0
-                  required: 
-                    - tagId
-                    - systemId
-                    - tagFriendlyName
-                    - tagColor
-                    - associatedAlters
-                    - public
+                  $ref: "#/components/schemas/PTag"
               required: 
                 - userId
                 - type

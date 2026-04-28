@@ -169,8 +169,8 @@ export async function PUT(
 
 	await discordClient.postApplicationCommands(application, [
 		new SlashCommandBuilder()
-			.setName(alterObject.username.toLocaleLowerCase().substring(0, 30))
-			.setDescription(`Proxy as ${alterObject.displayName.substring(0, 30)}`)
+			.setName((applicationObj.profileName ?? alterObject.username).toLocaleLowerCase().split('').filter(char => /[a-zA-Z ]/.test(char)).join('').substring(0, 30))
+			.setDescription(`Proxy as ${(applicationObj.profileName ?? alterObject.displayName).substring(0, 30)}`)
 			.setIntegrationTypes(
 				ApplicationIntegrationType.UserInstall,
 				ApplicationIntegrationType.GuildInstall,
@@ -226,7 +226,7 @@ export async function PUT(
 	}
 
 	await discordClient.editCurrentUser({
-		username: (applicationObj.profileName ?? alterObject.displayName).split('').filter(char => /[a-zA-Z ]/.test(char)).join(''),
+		username: (applicationObj.profileName ?? alterObject.displayName).substring(0, 30),
 		avatar: finalAvatarData,
 		banner: finalBannerData,
 	});
