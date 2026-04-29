@@ -1,44 +1,12 @@
-import { Double, MongoClient } from "mongodb";
-import { after, NextRequest, NextResponse } from "next/server";
-import { PAlter, PExpressApplication, PMessage } from "plurography";
+import { MongoClient } from "mongodb";
 import { verifyKey } from "discord-interactions";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { waitUntil } from "@vercel/functions";
-import {
+import type {
 	APIApplicationCommand,
-	APIApplicationCommandInteraction,
-	APIApplicationCommandInteractionDataAttachmentOption,
-	APIApplicationCommandInteractionDataBasicOption,
-	APIApplicationCommandInteractionDataStringOption,
-	APIApplicationCommandPermissionsConstant,
-	APIAttachment,
-	APIChatInputApplicationCommandInteractionData,
-	APIInteraction,
-	APIInteractionResponse,
-	APIInteractionResponsePong,
-	APIMessage,
-	ApplicationCommandOptionType,
-	ApplicationCommandType,
-	ApplicationIntegrationType,
-	ApplicationWebhookType,
-	InteractionContextType,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags,
-	RESTGetAPIInteractionOriginalResponseResult,
-	RESTPatchAPICurrentUserJSONBody,
-	RESTPatchCurrentApplicationJSONBody,
 } from "discord-api-types/v10";
-import {
-	ContainerBuilder,
-	ContextMenuCommandBuilder,
-	MediaGalleryBuilder,
-	MediaGalleryItemBuilder,
-	SlashCommandBuilder,
-	TextDisplayBuilder,
-} from "@discordjs/builders";
 import { decryptExpressToken } from "@/lib/express-token-encryption";
 import { DiscordClient } from "@/lib/express-proxying";
 
@@ -113,7 +81,7 @@ export async function POST(
 }
 
 export async function PUT(
-	request: NextRequest,
+	_: NextRequest,
 	{ params }: { params: Promise<{ application: string }> },
 ) {
 	const { application } = await params;
@@ -207,10 +175,10 @@ export async function PUT(
 			),
 	] as Array<APIApplicationCommand>);
 
-	let avatarData = alterObject.avatarUrl
+	const avatarData = alterObject.avatarUrl
 		? await fetch(`https://wsrv.nl/?url=${alterObject.avatarUrl}`)
 		: null;
-	let bannerData = alterObject.banner
+	const bannerData = alterObject.banner
 		? await fetch(`https://wsrv.nl/?url=${alterObject.banner}`)
 		: null;
 
@@ -239,7 +207,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-	request: NextRequest,
+	_: NextRequest,
 	{ params }: { params: Promise<{ application: string }> },
 ) {
 	const { application } = await params;

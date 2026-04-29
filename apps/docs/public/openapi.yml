@@ -59,115 +59,57 @@ components:
             system:write: Write to system data
             system:admin: "Read/write to alter, tags & system data."
   schemas: 
-    PSystem: 
-      type: object
-      properties: 
-        associatedUserId: 
-          type: string
-        systemName: 
-          type: string
-          minLength: 1
-          maxLength: 100
-        systemDisplayTag: 
-          type: string
-        displayTagMap: 
-          type: object
-          additionalProperties: 
-            type: string
-          default: 
-            {}
-          description: "This is a map that shows the association between a Discord server ID and a custom display tag.\n\n```js\n{ \n  \"1444187699924963350\": \"string\"\n}\n```"
-          example: 
-            &example
-            "1444187699924963350": string
-        systemDescription: 
-          type: string
-          maxLength: 1000
-        systemAvatar: 
-          type: 
-            - string
-            - "null"
-        systemBanner: 
-          type: 
-            - string
-            - "null"
-        systemPronouns: 
-          type: 
-            - string
-            - "null"
-        nicknameFormat: 
-          type: string
-        alterIds: 
-          type: array
-          items: 
-            type: number
-          maxItems: 2000
-          default: 
-            []
-        tagIds: 
-          type: array
-          items: 
-            type: string
-          maxItems: 500
-          default: 
-            []
-        createdAt: 
-          type: 
-            - string
-            - "null"
-          format: date-time
-        systemAutoproxy: 
-          type: array
-          items: 
-            type: object
-            properties: 
-              autoproxyMode: 
-                type: string
-                enum: 
-                  - "off"
-                  - latch
-                  - alter
-              autoproxyAlter: 
-                type: string
-              serverId: 
-                type: string
-              lastLatchTimestamp: 
-                type: 
-                  - string
-                  - "null"
-                format: date-time
-            required: 
-              - autoproxyMode
-              - serverId
-        systemOperationDM: 
-          type: boolean
-          default: true
-        latchExpiration: 
-          type: number
-          minimum: 0
-          maximum: 36000000
-        public: 
-          type: number
-          minimum: 0
-          description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
-        subAccounts: 
-          type: array
-          items: 
-            type: string
-        disabled: 
-          type: boolean
-          default: false
-      required: 
-        - associatedUserId
-        - systemName
-        - createdAt
-        - systemAutoproxy
-        - public
-        - subAccounts
-    PAlter: 
+    PTag: 
       type: 
         - object
         - "null"
+      properties: 
+        tagId: 
+          type: string
+        systemId: 
+          type: string
+        tagFriendlyName: 
+          type: string
+          maxLength: 100
+        tagDescription: 
+          type: string
+          maxLength: 1000
+        tagColor: 
+          type: string
+          enum: 
+            - red
+            - orange
+            - amber
+            - yellow
+            - lime
+            - green
+            - emerald
+            - teal
+            - cyan
+            - sky
+            - blue
+            - indigo
+            - violet
+            - purple
+            - fuchsia
+            - pink
+            - rose
+        associatedAlters: 
+          type: array
+          items: 
+            type: string
+        public: 
+          type: number
+          minimum: 0
+      required: 
+        - tagId
+        - systemId
+        - tagFriendlyName
+        - tagColor
+        - associatedAlters
+        - public
+    PAlter: 
+      type: object
       properties: 
         alterId: 
           type: number
@@ -291,65 +233,668 @@ components:
         - lastMessageTimestamp
         - messageCount
         - public
-    PTag: 
-      type: 
-        - object
-        - "null"
+    PSystem: 
+      type: object
       properties: 
-        tagId: 
+        associatedUserId: 
           type: string
-        systemId: 
+        systemName: 
           type: string
-        tagFriendlyName: 
-          type: string
+          minLength: 1
           maxLength: 100
-        tagDescription: 
+        systemDisplayTag: 
+          type: string
+        displayTagMap: 
+          type: object
+          additionalProperties: 
+            type: string
+          default: 
+            {}
+          description: "This is a map that shows the association between a Discord server ID and a custom display tag.\n\n```js\n{ \n  \"1444187699924963350\": \"string\"\n}\n```"
+          example: 
+            &example
+            "1444187699924963350": string
+        systemDescription: 
           type: string
           maxLength: 1000
-        tagColor: 
+        systemAvatar: 
+          type: 
+            - string
+            - "null"
+        systemBanner: 
+          type: 
+            - string
+            - "null"
+        systemPronouns: 
+          type: 
+            - string
+            - "null"
+        nicknameFormat: 
           type: string
-          enum: 
-            - red
-            - orange
-            - amber
-            - yellow
-            - lime
-            - green
-            - emerald
-            - teal
-            - cyan
-            - sky
-            - blue
-            - indigo
-            - violet
-            - purple
-            - fuchsia
-            - pink
-            - rose
-        associatedAlters: 
+        alterIds: 
+          type: array
+          items: 
+            type: number
+          maxItems: 2000
+          default: 
+            []
+        tagIds: 
           type: array
           items: 
             type: string
+          maxItems: 500
+          default: 
+            []
+        createdAt: 
+          type: 
+            - string
+            - "null"
+          format: date-time
+        systemAutoproxy: 
+          type: array
+          items: 
+            type: object
+            properties: 
+              autoproxyMode: 
+                type: string
+                enum: 
+                  - "off"
+                  - latch
+                  - alter
+              autoproxyAlter: 
+                type: string
+              serverId: 
+                type: string
+              lastLatchTimestamp: 
+                type: 
+                  - string
+                  - "null"
+                format: date-time
+            required: 
+              - autoproxyMode
+              - serverId
+        systemOperationDM: 
+          type: boolean
+          default: true
+        latchExpiration: 
+          type: number
+          minimum: 0
+          maximum: 36000000
         public: 
           type: number
           minimum: 0
+          description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see system name. |\n| DISPLAY_TAG     | `2` `(1 << 1)`      | Allows external users to see system display tag. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see system description. |\n| AVATAR          | `8` `(1 << 3)`      | Allows external users to see system avatar. |\n| BANNER          | `16` `(1 << 4)`     | Allows external users to see system banner. |\n| PRONOUNS        | `32` `(1 << 5)`     | Allows external users to see system pronouns. |\n| ALTERS          | `64` `(1 << 6)`     | Allows external users to see alters inside of the system. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see tags inside of the system. |"
+        subAccounts: 
+          type: array
+          items: 
+            type: string
+        disabled: 
+          type: boolean
+          default: false
       required: 
-        - tagId
-        - systemId
-        - tagFriendlyName
-        - tagColor
-        - associatedAlters
+        - associatedUserId
+        - systemName
+        - createdAt
+        - systemAutoproxy
         - public
+        - subAccounts
   parameters: 
     {}
 paths: 
-  "/v1/users/{user}/system": 
+  /v1/stats: 
     get: 
-      summary: Get PluralBuddy system
-      description: "Get data of a PluralBuddy system. `{user}` can be `@me` to target the current OAuth user."
+      summary: Get PluralBuddy statistics
+      security: 
+        []
+      description: Get data of statistical data related to PluralBuddy.
+      responses: 
+        "200": 
+          description: Successful.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  guildCount: 
+                    type: number
+                  userCount: 
+                    type: number
+                  lastDrip: 
+                    type: number
+                required: 
+                  - guildCount
+                  - userCount
+                  - lastDrip
+  /auth/oauth2/token: 
+    post: 
+      summary: Obtain an OAuth2.1 access token
+      security: 
+        - bearerAuth: 
+            []
+      parameters: 
+        []
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                grant_type: 
+                  type: string
+                  enum: 
+                    - authorization_code
+                    - client_credentials
+                    - refresh_token
+                  description: OAuth2 grant type
+                client_id: 
+                  type: string
+                  description: OAuth2 client ID
+                client_secret: 
+                  type: string
+                  description: OAuth2 client secret
+                code: 
+                  type: string
+                  description: Authorization code (for authorization_code grant)
+                code_verifier: 
+                  type: string
+                  description: PKCE code verifier (for authorization_code grant)
+                redirect_uri: 
+                  type: string
+                  format: uri
+                  description: Redirect URI (for authorization_code grant)
+                refresh_token: 
+                  type: string
+                  description: Refresh token (for refresh_token grant)
+                resource: 
+                  type: string
+                  description: Requested token resource (ie audience) to obtain a JWT formatted access token
+                  enum: 
+                    - https://pb.giftedly.dev
+                scope: 
+                  type: string
+                  description: Requested scopes (for client_credentials grant)
+              required: 
+                - grant_type
+      responses: 
+        "200": 
+          description: Access token response
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  access_token: 
+                    type: string
+                    description: The access token issued by the authorization server
+                  token_type: 
+                    type: string
+                    description: The type of the token issued
+                    enum: 
+                      - Bearer
+                  expires_in: 
+                    type: number
+                    description: Lifetime in seconds of the access token
+                  refresh_token: 
+                    type: string
+                    description: "Refresh token, if issued"
+                  scope: 
+                    type: string
+                    description: Scopes granted by the access token
+                  id_token: 
+                    type: string
+                    description: ID Token (if OpenID Connect)
+                required: 
+                  - access_token
+                  - token_type
+                  - expires_in
+        "400": 
+          description: Invalid request or error response
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  error: 
+                    type: string
+                  error_description: 
+                    type: string
+                  error_uri: 
+                    type: string
+                required: 
+                  - error
+        "401": 
+          description: Unauthorized. Due to missing or invalid authentication.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                required: 
+                  - message
+        "403": 
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "404": 
+          description: Not Found. The requested resource was not found.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "429": 
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "500": 
+          description: Internal Server Error. This is a problem with the server that you cannot fix.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+  /auth/oauth2/authorize: 
+    get: 
+      summary: Authorize an OAuth2 request
+      security: 
+        - bearerAuth: 
+            []
+      parameters: 
+        - name: response_type
+          in: query
+          required: true
+          schema: 
+            type: string
+          description: "OAuth2 response type (e.g., 'code')"
+        - name: client_id
+          in: query
+          required: true
+          schema: 
+            type: string
+          description: OAuth2 client ID
+        - name: redirect_uri
+          in: query
+          required: false
+          schema: 
+            type: string
+            format: uri
+          description: OAuth2 redirect URI
+        - name: scope
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OAuth2 scopes (space-separated)
+        - name: state
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OAuth2 state parameter
+        - name: code_challenge
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: PKCE code challenge
+        - name: code_challenge_method
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: PKCE code challenge method
+        - name: nonce
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OpenID Connect nonce
+        - name: prompt
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OAuth2 prompt parameter
+      responses: 
+        "302": 
+          description: Redirect to client with code or error
+          headers: 
+            Location: 
+              description: Redirect URI with code or error
+              schema: 
+                type: string
+                format: uri
+        "400": 
+          description: Invalid request
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  error: 
+                    type: string
+                  error_description: 
+                    type: string
+                  state: 
+                    type: string
+                required: 
+                  - error
+        "401": 
+          description: Unauthorized. Due to missing or invalid authentication.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                required: 
+                  - message
+        "403": 
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "404": 
+          description: Not Found. The requested resource was not found.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "429": 
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "500": 
+          description: Internal Server Error. This is a problem with the server that you cannot fix.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+  /auth/oauth2/revoke: 
+    post: 
+      summary: Revoke OAuth2 access or refresh token
+      security: 
+        - bearerAuth: 
+            []
+      parameters: 
+        []
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                client_id: 
+                  type: string
+                  description: OAuth2 client ID
+                client_secret: 
+                  type: string
+                  description: OAuth2 client secret
+                token: 
+                  type: string
+                  description: The token to revoke (access or refresh token)
+                token_type_hint: 
+                  type: string
+                  enum: 
+                    - access_token
+                    - refresh_token
+                  description: Hint about the type of the token submitted for revocation
+              required: 
+                - token
+      responses: 
+        "200": 
+          description: Token revoked successfully. The response body is empty.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                description: Empty object on success
+        "400": 
+          description: Invalid request or error response
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  error: 
+                    type: string
+                  error_description: 
+                    type: string
+                  error_uri: 
+                    type: string
+                required: 
+                  - error
+        "401": 
+          description: Unauthorized. Due to missing or invalid authentication.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                required: 
+                  - message
+        "403": 
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "404": 
+          description: Not Found. The requested resource was not found.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "429": 
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "500": 
+          description: Internal Server Error. This is a problem with the server that you cannot fix.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+  /auth/oauth2/introspect: 
+    post: 
+      summary: Introspect an OAuth2 access or refresh token
+      security: 
+        - bearerAuth: 
+            []
+      parameters: 
+        []
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                client_id: 
+                  type: string
+                  description: OAuth2 client ID
+                client_secret: 
+                  type: string
+                  description: OAuth2 client secret
+                token: 
+                  type: string
+                  description: The token to introspect (access or refresh token)
+                token_type_hint: 
+                  type: string
+                  enum: 
+                    - access_token
+                    - refresh_token
+                  description: Hint about the type of the token submitted for introspection
+                resource: 
+                  type: string
+                  description: Introspects a token for a specific resource.
+              required: 
+                - token
+      responses: 
+        "200": 
+          description: Token introspection response
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  active: 
+                    type: boolean
+                    description: Whether the token is active
+                  scope: 
+                    type: string
+                    description: Scopes associated with the token
+                  client_id: 
+                    type: string
+                    description: Client ID associated with the token
+                  username: 
+                    type: string
+                    description: Username associated with the token
+                  token_type: 
+                    type: string
+                    description: Type of the token
+                  exp: 
+                    type: number
+                    description: Expiration time of the token (seconds since epoch)
+                  iat: 
+                    type: number
+                    description: Issued at time (seconds since epoch)
+                  nbf: 
+                    type: number
+                    description: Not before time (seconds since epoch)
+                  sub: 
+                    type: string
+                    description: Subject of the token
+                  aud: 
+                    type: string
+                    description: Audience of the token
+                  iss: 
+                    type: string
+                    description: Issuer of the token
+                  jti: 
+                    type: string
+                    description: JWT ID
+                required: 
+                  - active
+        "400": 
+          description: Invalid request or error response
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  error: 
+                    type: string
+                  error_description: 
+                    type: string
+                  error_uri: 
+                    type: string
+                required: 
+                  - error
+        "401": 
+          description: Unauthorized. Due to missing or invalid authentication.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                required: 
+                  - message
+        "403": 
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "404": 
+          description: Not Found. The requested resource was not found.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "429": 
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "500": 
+          description: Internal Server Error. This is a problem with the server that you cannot fix.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+  "/v1/messages/{id}": 
+    get: 
+      summary: Get PluralBuddy message
+      description: Get a PluralBuddy message by Message ID
       security: 
         - oAuth2: 
-            - system:read
+            []
       responses: 
         "200": 
           description: Success response. Response with the message.
@@ -358,82 +903,54 @@ paths:
               schema: 
                 type: object
                 properties: 
-                  data: 
-                    $ref: "#/components/schemas/PSystem"
+                  message: 
+                    type: object
+                    properties: 
+                      messageId: 
+                        type: string
+                        examples: 
+                          - "1481859770611666944"
+                      systemId: 
+                        type: string
+                        examples: 
+                          - "1481859816656736257"
+                      alterId: 
+                        type: number
+                        examples: 
+                          - "1481859842262962178"
+                      createdAt: 
+                        type: string
+                        format: date-time
+                      guildId: 
+                        type: string
+                        examples: 
+                          - "1481859908541353987"
+                      channelId: 
+                        type: string
+                        examples: 
+                          - "1481859951688159236"
+                      referencedMessage: 
+                        type: string
+                      expressUserId: 
+                        type: string
+                      endpoints: 
+                        type: object
+                        properties: 
+                          system: 
+                            type: string
+                            examples: 
+                              - api/v1/users/1481859816656736257/system
+                        required: 
+                          - system
+                    required: 
+                      - messageId
+                      - systemId
+                      - alterId
+                      - createdAt
+                      - channelId
+                      - endpoints
                 required: 
-                  - data
-        "400": 
-          description: "@me is the only allowed user for this endpoint."
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  errors: 
-                    type: array
-                    items: 
-                      type: object
-                      properties: 
-                        type: 
-                          type: string
-                          enum: 
-                            - not-matching-oauth
-                        friendly: 
-                          type: string
-                          enum: 
-                            - This endpoint requires the user currently logged in via OAuth.
-                      required: 
-                        - type
-                        - friendly
-                required: 
-                  - errors
-        "401": 
-          description: Not properly authenticated.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  errors: 
-                    type: array
-                    items: 
-                      type: object
-                      properties: 
-                        type: 
-                          type: string
-                          enum: 
-                            - no-access-token
-                            - invalid-scopes
-                            - unknown-token
-                        friendly: 
-                          type: string
-                      required: 
-                        - type
-                        - friendly
-                required: 
-                  - errors
-  "/v1/users/{user}/alters/{alter}": 
-    get: 
-      summary: Get a system alter
-      description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
-      security: 
-        - oAuth2: 
-            - alters:read
-      responses: 
-        "200": 
-          description: Success.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  isSelf: 
-                    type: boolean
-                  data: 
-                    $ref: "#/components/schemas/PAlter"
-                required: 
-                  - isSelf
-                  - data
+                  - message
         "401": 
           description: No access token when authenticating.
           content: 
@@ -461,26 +978,56 @@ paths:
                   - errors
   "/v1/users/{user}/tags/{tag}": 
     get: 
-      summary: Get a system tag
+      summary: List system tags
       description: "Get data about a specific tag by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
       security: 
         - oAuth2: 
-            - tags:read
+            - alters:read
+      parameters: 
+        - description: How many entries to show at most if in a pagination. Can only be at most 30 alters.
+          name: max
+          in: query
+          schema: 
+            type: number
+            maximum: 30
+        - description: How many entries to skip if in a pagination.
+          name: skip
+          in: query
+          schema: 
+            type: number
       responses: 
         "200": 
           description: Success.
           content: 
             application/json: 
               schema: 
+                type: array
+                items: 
+                  $ref: "#/components/schemas/PAlter"
+        "400": 
+          description: "You can only show at most 30 alters in a current pagination or you aren't using the current OAuth user."
+          content: 
+            application/json: 
+              schema: 
                 type: object
                 properties: 
-                  isSelf: 
-                    type: boolean
-                  data: 
-                    $ref: "#/components/schemas/PTag"
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - not-matching-oauth
+                            - max-too-high
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - isSelf
-                  - data
+                  - errors
         "401": 
           description: No access token when authenticating.
           content: 
@@ -797,93 +1344,32 @@ paths:
                 required: 
                   - type
                   - friendly
-  /v1/stats: 
+  "/v1/users/{user}/alters/{alter}": 
     get: 
-      summary: Get PluralBuddy statistics
-      security: 
-        []
-      description: Get data of statistical data related to PluralBuddy.
-      responses: 
-        "200": 
-          description: Successful.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  guildCount: 
-                    type: number
-                  userCount: 
-                    type: number
-                  lastDrip: 
-                    type: number
-                required: 
-                  - guildCount
-                  - userCount
-                  - lastDrip
-  "/v1/messages/{id}": 
-    get: 
-      summary: Get PluralBuddy message
-      description: Get a PluralBuddy message by Message ID
+      summary: Get a system alter
+      description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
       security: 
         - oAuth2: 
-            []
+            - alters:read
       responses: 
         "200": 
-          description: Success response. Response with the message.
+          description: Success.
           content: 
             application/json: 
               schema: 
                 type: object
                 properties: 
-                  message: 
-                    type: object
-                    properties: 
-                      messageId: 
-                        type: string
-                        examples: 
-                          - "1481859770611666944"
-                      systemId: 
-                        type: string
-                        examples: 
-                          - "1481859816656736257"
-                      alterId: 
-                        type: number
-                        examples: 
-                          - "1481859842262962178"
-                      createdAt: 
-                        type: string
-                        format: date-time
-                      guildId: 
-                        type: string
-                        examples: 
-                          - "1481859908541353987"
-                      channelId: 
-                        type: string
-                        examples: 
-                          - "1481859951688159236"
-                      referencedMessage: 
-                        type: string
-                      expressUserId: 
-                        type: string
-                      endpoints: 
-                        type: object
-                        properties: 
-                          system: 
-                            type: string
-                            examples: 
-                              - api/v1/users/1481859816656736257/system
-                        required: 
-                          - system
-                    required: 
-                      - messageId
-                      - systemId
-                      - alterId
-                      - createdAt
-                      - channelId
-                      - endpoints
+                  isSelf: 
+                    type: boolean
+                  data: 
+                    allOf: 
+                      - $ref: "#/components/schemas/PAlter"
+                      - type: 
+                          - object
+                          - "null"
                 required: 
-                  - message
+                  - isSelf
+                  - data
         "401": 
           description: No access token when authenticating.
           content: 
@@ -1041,554 +1527,76 @@ paths:
                 required: 
                   - type
                   - friendly
-  /auth/oauth2/authorize: 
+  "/v1/users/{user}/system": 
     get: 
-      summary: Authorize an OAuth2 request
+      summary: Get PluralBuddy system
+      description: "Get data of a PluralBuddy system. `{user}` can be `@me` to target the current OAuth user."
       security: 
-        - bearerAuth: 
-            []
-      parameters: 
-        - name: response_type
-          in: query
-          required: true
-          schema: 
-            type: string
-          description: "OAuth2 response type (e.g., 'code')"
-        - name: client_id
-          in: query
-          required: true
-          schema: 
-            type: string
-          description: OAuth2 client ID
-        - name: redirect_uri
-          in: query
-          required: false
-          schema: 
-            type: string
-            format: uri
-          description: OAuth2 redirect URI
-        - name: scope
-          in: query
-          required: false
-          schema: 
-            type: string
-          description: OAuth2 scopes (space-separated)
-        - name: state
-          in: query
-          required: false
-          schema: 
-            type: string
-          description: OAuth2 state parameter
-        - name: code_challenge
-          in: query
-          required: false
-          schema: 
-            type: string
-          description: PKCE code challenge
-        - name: code_challenge_method
-          in: query
-          required: false
-          schema: 
-            type: string
-          description: PKCE code challenge method
-        - name: nonce
-          in: query
-          required: false
-          schema: 
-            type: string
-          description: OpenID Connect nonce
-        - name: prompt
-          in: query
-          required: false
-          schema: 
-            type: string
-          description: OAuth2 prompt parameter
-      responses: 
-        "302": 
-          description: Redirect to client with code or error
-          headers: 
-            Location: 
-              description: Redirect URI with code or error
-              schema: 
-                type: string
-                format: uri
-        "400": 
-          description: Invalid request
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  error: 
-                    type: string
-                  error_description: 
-                    type: string
-                  state: 
-                    type: string
-                required: 
-                  - error
-        "401": 
-          description: Unauthorized. Due to missing or invalid authentication.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-                required: 
-                  - message
-        "403": 
-          description: Forbidden. You do not have permission to access this resource or to perform this action.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "404": 
-          description: Not Found. The requested resource was not found.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "429": 
-          description: Too Many Requests. You have exceeded the rate limit. Try again later.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "500": 
-          description: Internal Server Error. This is a problem with the server that you cannot fix.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-  /auth/oauth2/token: 
-    post: 
-      summary: Obtain an OAuth2.1 access token
-      security: 
-        - bearerAuth: 
-            []
-      parameters: 
-        []
-      requestBody: 
-        required: true
-        content: 
-          application/json: 
-            schema: 
-              type: object
-              properties: 
-                grant_type: 
-                  type: string
-                  enum: 
-                    - authorization_code
-                    - client_credentials
-                    - refresh_token
-                  description: OAuth2 grant type
-                client_id: 
-                  type: string
-                  description: OAuth2 client ID
-                client_secret: 
-                  type: string
-                  description: OAuth2 client secret
-                code: 
-                  type: string
-                  description: Authorization code (for authorization_code grant)
-                code_verifier: 
-                  type: string
-                  description: PKCE code verifier (for authorization_code grant)
-                redirect_uri: 
-                  type: string
-                  format: uri
-                  description: Redirect URI (for authorization_code grant)
-                refresh_token: 
-                  type: string
-                  description: Refresh token (for refresh_token grant)
-                resource: 
-                  type: string
-                  description: Requested token resource (ie audience) to obtain a JWT formatted access token
-                  enum: 
-                    - https://pb.giftedly.dev
-                scope: 
-                  type: string
-                  description: Requested scopes (for client_credentials grant)
-              required: 
-                - grant_type
+        - oAuth2: 
+            - system:read
       responses: 
         "200": 
-          description: Access token response
+          description: Success response. Response with the message.
           content: 
             application/json: 
               schema: 
                 type: object
                 properties: 
-                  access_token: 
-                    type: string
-                    description: The access token issued by the authorization server
-                  token_type: 
-                    type: string
-                    description: The type of the token issued
-                    enum: 
-                      - Bearer
-                  expires_in: 
-                    type: number
-                    description: Lifetime in seconds of the access token
-                  refresh_token: 
-                    type: string
-                    description: "Refresh token, if issued"
-                  scope: 
-                    type: string
-                    description: Scopes granted by the access token
-                  id_token: 
-                    type: string
-                    description: ID Token (if OpenID Connect)
+                  data: 
+                    $ref: "#/components/schemas/PSystem"
                 required: 
-                  - access_token
-                  - token_type
-                  - expires_in
+                  - data
         "400": 
-          description: Invalid request or error response
+          description: "@me is the only allowed user for this endpoint."
           content: 
             application/json: 
               schema: 
                 type: object
                 properties: 
-                  error: 
-                    type: string
-                  error_description: 
-                    type: string
-                  error_uri: 
-                    type: string
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - not-matching-oauth
+                        friendly: 
+                          type: string
+                          enum: 
+                            - This endpoint requires the user currently logged in via OAuth.
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - error
+                  - errors
         "401": 
-          description: Unauthorized. Due to missing or invalid authentication.
+          description: Not properly authenticated.
           content: 
             application/json: 
               schema: 
                 type: object
                 properties: 
-                  message: 
-                    type: string
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
                 required: 
-                  - message
-        "403": 
-          description: Forbidden. You do not have permission to access this resource or to perform this action.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "404": 
-          description: Not Found. The requested resource was not found.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "429": 
-          description: Too Many Requests. You have exceeded the rate limit. Try again later.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "500": 
-          description: Internal Server Error. This is a problem with the server that you cannot fix.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-  /auth/oauth2/introspect: 
-    post: 
-      summary: Introspect an OAuth2 access or refresh token
-      security: 
-        - bearerAuth: 
-            []
-      parameters: 
-        []
-      requestBody: 
-        required: true
-        content: 
-          application/json: 
-            schema: 
-              type: object
-              properties: 
-                client_id: 
-                  type: string
-                  description: OAuth2 client ID
-                client_secret: 
-                  type: string
-                  description: OAuth2 client secret
-                token: 
-                  type: string
-                  description: The token to introspect (access or refresh token)
-                token_type_hint: 
-                  type: string
-                  enum: 
-                    - access_token
-                    - refresh_token
-                  description: Hint about the type of the token submitted for introspection
-                resource: 
-                  type: string
-                  description: Introspects a token for a specific resource.
-              required: 
-                - token
-      responses: 
-        "200": 
-          description: Token introspection response
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  active: 
-                    type: boolean
-                    description: Whether the token is active
-                  scope: 
-                    type: string
-                    description: Scopes associated with the token
-                  client_id: 
-                    type: string
-                    description: Client ID associated with the token
-                  username: 
-                    type: string
-                    description: Username associated with the token
-                  token_type: 
-                    type: string
-                    description: Type of the token
-                  exp: 
-                    type: number
-                    description: Expiration time of the token (seconds since epoch)
-                  iat: 
-                    type: number
-                    description: Issued at time (seconds since epoch)
-                  nbf: 
-                    type: number
-                    description: Not before time (seconds since epoch)
-                  sub: 
-                    type: string
-                    description: Subject of the token
-                  aud: 
-                    type: string
-                    description: Audience of the token
-                  iss: 
-                    type: string
-                    description: Issuer of the token
-                  jti: 
-                    type: string
-                    description: JWT ID
-                required: 
-                  - active
-        "400": 
-          description: Invalid request or error response
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  error: 
-                    type: string
-                  error_description: 
-                    type: string
-                  error_uri: 
-                    type: string
-                required: 
-                  - error
-        "401": 
-          description: Unauthorized. Due to missing or invalid authentication.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-                required: 
-                  - message
-        "403": 
-          description: Forbidden. You do not have permission to access this resource or to perform this action.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "404": 
-          description: Not Found. The requested resource was not found.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "429": 
-          description: Too Many Requests. You have exceeded the rate limit. Try again later.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "500": 
-          description: Internal Server Error. This is a problem with the server that you cannot fix.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-  /auth/oauth2/revoke: 
-    post: 
-      summary: Revoke OAuth2 access or refresh token
-      security: 
-        - bearerAuth: 
-            []
-      parameters: 
-        []
-      requestBody: 
-        required: true
-        content: 
-          application/json: 
-            schema: 
-              type: object
-              properties: 
-                client_id: 
-                  type: string
-                  description: OAuth2 client ID
-                client_secret: 
-                  type: string
-                  description: OAuth2 client secret
-                token: 
-                  type: string
-                  description: The token to revoke (access or refresh token)
-                token_type_hint: 
-                  type: string
-                  enum: 
-                    - access_token
-                    - refresh_token
-                  description: Hint about the type of the token submitted for revocation
-              required: 
-                - token
-      responses: 
-        "200": 
-          description: Token revoked successfully. The response body is empty.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                description: Empty object on success
-        "400": 
-          description: Invalid request or error response
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  error: 
-                    type: string
-                  error_description: 
-                    type: string
-                  error_uri: 
-                    type: string
-                required: 
-                  - error
-        "401": 
-          description: Unauthorized. Due to missing or invalid authentication.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-                required: 
-                  - message
-        "403": 
-          description: Forbidden. You do not have permission to access this resource or to perform this action.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "404": 
-          description: Not Found. The requested resource was not found.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "429": 
-          description: Too Many Requests. You have exceeded the rate limit. Try again later.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
-        "500": 
-          description: Internal Server Error. This is a problem with the server that you cannot fix.
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                properties: 
-                  message: 
-                    type: string
+                  - errors
 webhooks: 
-  alter.update: 
-    post: 
-      summary: Receive alter updates
-      description: Receive alter updates via Svix Webhooks built into PluralBuddy.
-      requestBody: 
-        content: 
-          application/json: 
-            schema: 
-              type: object
-              properties: 
-                userId: 
-                  type: string
-                type: 
-                  type: string
-                  enum: 
-                    - alter.update
-                alter: 
-                  $ref: "#/components/schemas/PAlter"
-              required: 
-                - userId
-                - type
-                - alter
-      responses: 
-        {}
   tag.update: 
     post: 
       summary: Receive tag updates
@@ -1611,5 +1619,29 @@ webhooks:
                 - userId
                 - type
                 - tag
+      responses: 
+        {}
+  alter.update: 
+    post: 
+      summary: Receive alter updates
+      description: Receive alter updates via Svix Webhooks built into PluralBuddy.
+      requestBody: 
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                userId: 
+                  type: string
+                type: 
+                  type: string
+                  enum: 
+                    - alter.update
+                alter: 
+                  $ref: "#/components/schemas/PAlter"
+              required: 
+                - userId
+                - type
+                - alter
       responses: 
         {}

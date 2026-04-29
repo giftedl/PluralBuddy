@@ -1,15 +1,15 @@
 {
   "title": "API References",
   "pages": [
-    "alter-update/post",
     "tag-update/post",
+    "alter-update/post",
     "v1/stats/get",
     "v1/messages/id/get",
-    "auth/oauth2/token/post",
     "auth/oauth2/authorize/get",
     "auth/oauth2/revoke/post",
-    "v1/users/user/system/get",
     "auth/oauth2/introspect/post",
+    "auth/oauth2/token/post",
+    "v1/users/user/system/get",
     "v1/users/user/alters/alter/get",
     "v1/users/user/tags/tag/get",
     "v1/users/user/system/edit/post",
