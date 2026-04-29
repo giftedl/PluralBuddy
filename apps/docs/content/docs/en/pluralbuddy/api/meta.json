@@ -1,22 +1,19 @@
 {
   "title": "API References",
   "pages": [
-    "alter-update/post",
+    "auth",
     "tag-update/post",
-    "auth/oauth2/token/post",
     "v1/stats/get",
-    "auth/oauth2/introspect/post",
+    "alter-update/post",
     "v1/messages/id/get",
-    "auth/oauth2/authorize/get",
-    "auth/oauth2/revoke/post",
     "v1/users/user/system/get",
     "v1/users/user/alters/alter/get",
-    "v1/users/user/system/edit/post",
-    "v1/users/user/system/list-tags/get",
     "v1/users/user/tags/tag/get",
-    "v1/users/user/tags/tag/edit/post",
+    "v1/users/user/system/list-tags/get",
+    "v1/users/user/system/edit/post",
+    "v1/users/user/system/list-alters/get",
     "v1/users/user/alters/tag/edit/post",
-    "v1/users/user/system/list-alters/get"
+    "v1/users/user/tags/tag/edit/post"
   ],
   "icon": "Notebook"
 }

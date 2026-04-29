@@ -2,6 +2,16 @@
 
 import z from "zod";
 
+const publicDescription = `This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.
+
+| Public Flag     | Value                   | Description |
+|-----------------|-------------------------|-------------|
+| NAME            | \`1\` \`(1 << 0)\`      | Allows external users to see the tag's name. |
+| DESCRIPTION     | \`2\` \`(1 << 1)\`      | Allows external users to see the tag's description. |
+| ALTERS          | \`32\` \`(1 << 5)\`     | Allows external users to see the tag's associated alters. |
+| COLOR           | \`64\` \`(1 << 6)\`     | Allows external users to see the tag's banner. |`;
+
+
 export enum TagProtectionFlags {
 	NAME = 1 << 0,
 	DESCRIPTION = 1 << 1,
@@ -59,7 +69,7 @@ export const PTagObject = z.object({
 	associatedAlters: z.string().array(),
 
 	/** @see {@link TagProtectionFlags} */
-	public: z.number().nonnegative(),
+	public: z.number().nonnegative().meta({ description: publicDescription, example: 0 }),
 }).meta({ id: "PTag" });
 
 export type PTag = z.infer<typeof PTagObject>;
