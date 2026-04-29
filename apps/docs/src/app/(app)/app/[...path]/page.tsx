@@ -34,6 +34,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import WebhooksAppPage from "@/components/app/pages/webhooks/page";
+import OnboardingPage from "@/components/app/pages/onboarding/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
@@ -92,6 +93,7 @@ export default function PluralBuddyApp() {
 						</div>
 						<div className="h-screen w-screen overflow-hidden">
 							<Routes>
+								<Route path="/app/onboarding" element={<OnboardingPage />} />
 								<Route path="/app/settings" element={<SettingsLayout />}>
 									<Route
 										index
