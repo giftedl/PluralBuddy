@@ -1,4 +1,4 @@
-import { SettingsSidebar } from "@/components/settings-sidebar";
+import { SettingsSidebar } from "@/components/app/settings-sidebar";
 import {
 	SidebarInset,
 	SidebarProvider,

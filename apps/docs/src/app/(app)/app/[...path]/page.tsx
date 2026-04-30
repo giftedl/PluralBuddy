@@ -7,7 +7,7 @@ import NotFoundPage from "@/components/app/pages/not-found";
 import { SettingsLayout } from "@/components/app/pages/settings-layout";
 import { DiscordLoginComponent } from "@/components/discord-login";
 import { ExpressList } from "@/components/app/pages/express/express-page.client";
-import { SettingsSidebar } from "@/components/settings-sidebar";
+import { SettingsSidebar } from "@/components/app/settings-sidebar";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { TRPCProvider } from "@/server/client";
@@ -35,6 +35,7 @@ import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import WebhooksAppPage from "@/components/app/pages/webhooks/page";
 import OnboardingPage from "@/components/app/pages/onboarding/page";
+import { SystemLayout } from "@/components/app/pages/system-layout";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
@@ -94,6 +95,9 @@ export default function PluralBuddyApp() {
 						<div className="h-screen w-screen overflow-hidden">
 							<Routes>
 								<Route path="/app/onboarding" element={<OnboardingPage />} />
+								<Route path="/app/system" element={<SystemLayout />}>
+
+								</Route>
 								<Route path="/app/settings" element={<SettingsLayout />}>
 									<Route
 										index

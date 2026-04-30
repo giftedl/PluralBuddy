@@ -12,7 +12,7 @@ import {
 } from "../../../ui/card";
 import { Button } from "../../../ui/shadcn-button";
 import { Separator } from "../../../ui/separator";
-import { SettingsSidebar } from "../../../settings-sidebar";
+import { SettingsSidebar } from "../../settings-sidebar";
 import { CreateExpressModal } from "../../create-express-modal";
 import { cn } from "@/lib/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";

@@ -1,7 +1,7 @@
 "use client";
 
 import { PAlter, PExpressApplication } from "plurography";
-import { SettingsSidebar } from "../../../settings-sidebar";
+import { SettingsSidebar } from "../../settings-sidebar";
 import { AlterView } from "../../alter-view";
 import {
 	Card,

@@ -27,6 +27,7 @@
     "@animate-ui": "https://animate-ui.com/r/{name}.json",
     "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
     "@jalco": "https://ui.justinlevine.me/r/{name}.json",
-    "@ncdai": "https://chanhdai.com/r/{name}.json"
+    "@ncdai": "https://chanhdai.com/r/{name}.json",
+    "@intentui": "https://intentui.com/r/{name}"
   }
 }
