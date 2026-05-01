@@ -38,6 +38,7 @@ import { emojis } from "./lib/emojis";
 import { Pi18nCache } from "./cache/i18n";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 
+console.log("?")
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
