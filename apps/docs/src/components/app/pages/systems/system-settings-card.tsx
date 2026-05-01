@@ -53,9 +53,9 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 	return (
 		<Card className="mb-3">
 			<CardContent>
-				<CardTitle>System Settings</CardTitle>
+				<CardTitle>System Profile</CardTitle>
 				<CardDescription>
-					Configure preferences related to just your system.
+					Configure preferences related to just your system profile.
 				</CardDescription>
 				<div className="md:flex pt-6 pb-10">
 					<div className="rounded-xl md:min-w-89 max-w-89 h-full border p-4 grid gap-2">
@@ -84,7 +84,7 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 							</h1>
 							{data.systemPronouns && (
 								<span className="text-wrap wrap-anywhere">
-									{data.systemPronouns}
+									{currentPronouns ?? data.systemPronouns}
 								</span>
 							)}
 							<Separator className="h-px my-1" />
