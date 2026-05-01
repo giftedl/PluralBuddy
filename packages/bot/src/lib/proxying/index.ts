@@ -60,7 +60,6 @@ export async function proxy(
 	guild: PGuild,
 	picture?: string,
 ) {
-	console.time("proxy");
 	// Process file attachments before sending the message
 	const { fileAttachments } = await processFileAttachments(
 		client,
@@ -299,8 +298,6 @@ export async function proxy(
 			client.cache.similarWebhookResource.remove(message.channelId);
 		}
 
-		console.time("post-proxy");
 		await message.delete();
-		console.timeEnd("post-proxy");
 	}
 }

@@ -194,7 +194,6 @@ export default createEvent({
 		const parent =
 			"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
-		console.time("proxy tag parse");
 		const similarWebhooks =
 			(
 				await client.cache.similarWebhookResource.fetch(
@@ -298,9 +297,8 @@ export default createEvent({
 			// Only find the alters that we need
 			for (let i = 0; i < user.system.alterIds.length; i++) {
 				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
-				console.time(`alter number #${i}`)
 				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
-				console.timeEnd(`alter number #${i}`)
+				
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 
 				if (i % 20 === 0 && indexingMessage) {
