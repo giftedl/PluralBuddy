@@ -36,6 +36,7 @@ import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import WebhooksAppPage from "@/components/app/pages/webhooks/page";
 import OnboardingPage from "@/components/app/pages/onboarding/page";
 import { SystemLayout } from "@/components/app/pages/system-layout";
+import SystemIndexPage from "@/components/app/pages/systems/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>
@@ -96,7 +97,10 @@ export default function PluralBuddyApp() {
 							<Routes>
 								<Route path="/app/onboarding" element={<OnboardingPage />} />
 								<Route path="/app/system" element={<SystemLayout />}>
-
+									<Route
+										index
+										element={<SystemIndexPage />}
+									/>
 								</Route>
 								<Route path="/app/settings" element={<SettingsLayout />}>
 									<Route

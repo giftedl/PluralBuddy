@@ -17,13 +17,13 @@ import { redirect, useNavigate } from "react-router";
 export default function OnboardingPage() {
 	const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(0));
 	const { data: authData } = authClient.useSession();
-	const route = useNavigate()
+	const route = useNavigate();
 
 	useEffect(() => {
 		(async () => {
 			const existingSystem = await db.systems.get("@me");
 
-			if (existingSystem !== undefined) route("/app/system")
+			if (existingSystem !== undefined) route("/app/system");
 		})();
 	}, []);
 
@@ -65,6 +65,7 @@ export default function OnboardingPage() {
 									className="min-w-50"
 									onClick={() => setPage(1)}
 									variant="outline"
+									autoFocus
 								>
 									Get Started
 									<Kbd data-icon="inline-end" className="translate-x-0.5">
@@ -159,7 +160,7 @@ export default function OnboardingPage() {
 				)}
 				{page === 2 && (
 					<motion.div
-						key="page1"
+						key="page2"
 						className="relative md:min-w-125 md:h-full"
 						{...pageAnimationProps}
 					>
@@ -170,6 +171,22 @@ export default function OnboardingPage() {
 							<p className="text-2xl text-gray-400">
 								PluralBuddy is setup! What will you do next?
 							</p>
+						</div>
+
+						<div className="md:absolute bottom-0 max-md:pt-5">
+							<div className="sm:flex items-center gap-2">
+								<Button
+									className="min-w-50"
+									onClick={() => route("/app/system")}
+									variant="outline"
+									autoFocus
+								>
+									Open System Config
+									<Kbd data-icon="inline-end" className="translate-x-0.5">
+										⏎
+									</Kbd>
+								</Button>
+							</div>
 						</div>
 					</motion.div>
 				)}

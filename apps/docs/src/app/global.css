@@ -6,6 +6,8 @@
 @import "fumadocs-openapi/css/preset.css";
 @plugin "tailwindcss-animate";
 
+@plugin "tailwind-scrollbar-hide";
+
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
@@ -89,6 +91,8 @@
 	--radius-2xl: calc(var(--radius) * 1.8);
 	--radius-3xl: calc(var(--radius) * 2.2);
 	--radius-4xl: calc(var(--radius) * 2.6);
+	--color-brand: var(--brand);
+	--color-highlight: var(--highlight);
 }
 
 .pluralbuddy {
@@ -138,6 +142,8 @@
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
 	--background: oklch(1 0 0);
+	--brand: oklch(0.623 0.214 259.815);
+	--highlight: oklch(0.852 0.199 91.936);
 }
 
 .dark {
@@ -180,6 +186,8 @@
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
 	--background: oklch(0.145 0 0);
+	--brand: oklch(0.707 0.165 254.624);
+	--highlight: oklch(0.852 0.199 91.936);
 }
 
 .pluralbuddy.dark,
@@ -257,4 +265,28 @@ discord-header:first-child:nth-child(2) {
 
 .discord-left-border {
 	width: 8px !important;
+}
+
+
+.slate-editor {
+	padding-inline: 16px !important;
+}
+
+blockquote {
+    box-sizing: border-box;
+    padding-block: 0;
+    padding-inline: 12px 8px;
+    text-indent: 0;
+	color: var(--muted-foreground) !important;
+	quotes: " " !important;
+	font-style: normal;
+}
+
+* {
+	quotes: none !important;
+}
+
+.prose :where(*):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+	margin-top: 0;
+	margin-bottom: 0;
 }
