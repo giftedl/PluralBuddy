@@ -1,11 +1,18 @@
-import { MongoClient } from "mongodb";
+import { Double, MongoClient } from "mongodb";
 import { verifyKey } from "discord-interactions";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { waitUntil } from "@vercel/functions";
-import type {
-	APIApplicationCommand,
+import {
+	APIInteraction,
+	ApplicationCommandType,
+	ApplicationIntegrationType,
+	InteractionContextType,
+	InteractionResponseType,
+	InteractionType,
+	type APIApplicationCommand,
+	type APIInteractionResponse,
 } from "discord-api-types/v10";
 import { decryptExpressToken } from "@/lib/express-token-encryption";
 import { DiscordClient } from "@/lib/express-proxying";
@@ -13,6 +20,9 @@ import { DiscordClient } from "@/lib/express-proxying";
 import * as alterCommand from "@/server/express/alter-command";
 import * as replyCommand from "@/server/express/reply-command";
 import * as replyModal from "@/server/express/reply-modal";
+import { NextRequest, NextResponse } from "next/server";
+import { PAlter, PExpressApplication, PMessage } from "plurography";
+import { ContextMenuCommandBuilder, SlashCommandBuilder } from "@discordjs/builders";
 
 export async function POST(
 	request: NextRequest,
