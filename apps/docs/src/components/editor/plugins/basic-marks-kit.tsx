@@ -40,7 +40,6 @@ export const BasicMarksKit = [
   ItalicPlugin.configure({
     inputRules: [
       ItalicRules.markdown({ variant: '*' }),
-      ItalicRules.markdown({ variant: '_' }),
     ],
   }),
   CodePlugin.configure({

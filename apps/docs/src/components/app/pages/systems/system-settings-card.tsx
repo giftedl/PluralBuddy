@@ -21,11 +21,23 @@ import { useTranslations } from "next-intl";
 import type { PSystem } from "plurography";
 import { useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
-import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldLabel,
+} from "@/components/ui/field";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Input } from "@/components/ui/input";
-import {findAndReplace} from "mdast-util-find-and-replace";
+import { findAndReplace } from "mdast-util-find-and-replace";
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupInput,
+	InputGroupText,
+} from "@/components/ui/input-group";
+import { cn } from "@/lib/cn";
 
 export function SystemSettingsCard({ data }: { data: PSystem }) {
 	const t = useTranslations();
@@ -34,6 +46,9 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 		data.systemDescription ?? "",
 	);
 	const [currentName, setCurrentName] = useState(data.systemName ?? "");
+	const [currentPronouns, setCurrentPronouns] = useState(
+		data.systemPronouns ?? "",
+	);
 
 	return (
 		<Card className="mb-3">
@@ -74,25 +89,38 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 							)}
 							<Separator className="h-px my-1" />
 							{(
-								(currentDescription ?? data.systemDescription).replace(
-									" ",
-									"",
-								) !== ""
+								(currentDescription ?? data.systemDescription)
+									.replace(" ", "")
+									.replace("\n", "") !== ""
 									? (currentDescription ?? data.systemDescription)
 									: undefined
 							) ? (
 								<span className="text-wrap wrap-anywhere prose text-sm">
-									<Markdown remarkPlugins={[remarkGfm, () => {
-										return (tree) => {
-											findAndReplace(tree, [
-												/__(.*)__/g,
-												 (_, $1) => {
-													return { type: "mdxJsxTextElement", value: <u>{$1}</u>, name: "underlined-text", attributes: [], children: []}
-												}
-											])
-										}
-									}]} disallowedElements={["hr"]}>
-										{(data.systemDescription ?? currentDescription).replaceAll("\n", "\n\n")}
+									<Markdown
+										remarkPlugins={[
+											remarkGfm,
+											() => {
+												return (tree) => {
+													findAndReplace(tree, [
+														/__(.*)__/g,
+														(_, $1) => {
+															return {
+																type: "mdxJsxTextElement",
+																value: <u>{$1}</u>,
+																name: "underlined-text",
+																attributes: [],
+																children: [],
+															};
+														},
+													]);
+												};
+											},
+										]}
+									>
+										{(data.systemDescription ?? currentDescription).replaceAll(
+											"\n",
+											"\n\n",
+										)}
 									</Markdown>
 								</span>
 							) : (
@@ -110,16 +138,48 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 					<div className="px-4 max-md:py-4 max-w-full gap-3">
 						<Field className="mb-6">
 							<FieldLabel htmlFor="name">System Name</FieldLabel>
-							<Input
-								id="name"
-								value={currentName}
-								onChange={(e) => setCurrentName(e.target.value)}
-							/>
 
+							<InputGroup>
+								<InputGroupInput
+									id="name"
+									value={currentName}
+									onChange={(e) => setCurrentName(e.target.value)}
+								/>
+								<InputGroupAddon align="block-end">
+									<InputGroupText className={cn("text-xs", currentPronouns.length > 100 ? "text-red-400" : "text-muted-foreground")}>
+										{100 - currentName.length} characters left
+									</InputGroupText>
+								</InputGroupAddon>
+							</InputGroup>
 							<FieldDescription>
 								The name of your system is how your system as a collective will
 								be referred to.
 							</FieldDescription>
+						</Field>
+						<Field className="mb-6">
+							<FieldLabel htmlFor="description">System Pronouns</FieldLabel>
+							<InputGroup>
+								<InputGroupInput
+									id="pronouns"
+									value={currentPronouns}
+									onChange={(e) => setCurrentPronouns(e.target.value)}
+								/>
+								<InputGroupAddon align="block-end">
+									<InputGroupText className={cn("text-xs", currentPronouns.length > 100 ? "text-red-400" : "text-muted-foreground")}>
+										{100 - currentPronouns.length} characters left
+									</InputGroupText>
+								</InputGroupAddon>
+							</InputGroup>
+							<FieldDescription>
+								Express your inner identity 🎀
+							</FieldDescription>
+							{currentPronouns.length > 100 ? (
+								<FieldError>
+									Too many characters. Pronouns can only be {"<100"} characters.
+								</FieldError>
+							) : (
+								""
+							)}
 						</Field>
 						<Field>
 							<FieldLabel htmlFor="description">System Description</FieldLabel>
@@ -130,7 +190,14 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 							<FieldDescription>
 								This appears in public environments in PluralBuddy.
 							</FieldDescription>
-							{currentDescription.length > 1000 ? <FieldError>Too many characters. Descriptions can only be {"<1000"} characters.</FieldError> : ""}
+							{currentDescription.length > 1000 ? (
+								<FieldError>
+									Too many characters. Descriptions can only be {"<1000"}{" "}
+									characters.
+								</FieldError>
+							) : (
+								""
+							)}
 						</Field>
 					</div>
 				</div>
@@ -138,8 +205,14 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 			<CardFooter>
 				<Button
 					disabled={
-						currentDescription.replace(" ", "").replace("\n", "").replace("​", "") ===
-							(data.systemDescription ?? "") && currentName === data.systemName
+						(currentDescription
+							.replace(" ", "")
+							.replace("\n", "")
+							.replace("​", "") === (data.systemDescription ?? "") &&
+							currentName === data.systemName &&
+							currentPronouns === (data.systemPronouns ?? "")) ||
+						currentDescription.length > 1000 ||
+						currentPronouns.length > 100
 					}
 				>
 					Submit

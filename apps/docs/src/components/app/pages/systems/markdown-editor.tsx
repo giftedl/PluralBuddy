@@ -36,7 +36,6 @@ export function MarkdownEditor({
 			...BasicMarksKit,
 			MarkdownPlugin.configure({
 				options: {
-					plainMarks: [KEYS.bold],
 					remarkPlugins: [remarkGfm]
 				}
 			}),
