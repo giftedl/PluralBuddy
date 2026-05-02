@@ -7,6 +7,8 @@ import {
 import React from "react";
 import { Outlet } from "react-router";
 import { SidebarHookRemote } from "../hook-remote";
+import { DiscordLoginComponent } from "@/components/discord-login";
+import { authClient } from "@/lib/auth-client";
 
 export function SettingsLayout() {
 	return (

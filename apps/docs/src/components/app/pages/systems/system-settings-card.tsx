@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/shadcn-button";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { PSystem } from "plurography";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MarkdownEditor } from "./markdown-editor";
 import {
 	Field,
@@ -38,6 +38,8 @@ import {
 	InputGroupText,
 } from "@/components/ui/input-group";
 import { cn } from "@/lib/cn";
+import { db } from "@/lib/app/dexie";
+import { Spinner } from "@/components/ui/spinner";
 
 export function SystemSettingsCard({ data }: { data: PSystem }) {
 	const t = useTranslations();
@@ -49,6 +51,28 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 	const [currentPronouns, setCurrentPronouns] = useState(
 		data.systemPronouns ?? "",
 	);
+
+	const reload = async () => {
+		const descChanged =
+			currentDescription.replace(" ", "").replace("\n", "").replace("​", "") !==
+			(data.systemDescription ?? "");
+		const pnChanged = currentPronouns !== (data.systemPronouns ?? "");
+		const nameChanged = currentName !== data.systemName;
+
+		await db.systems.update("@me", {
+			...(descChanged
+				? {
+						systemDescription: currentDescription,
+					}
+				: {}),
+			...(nameChanged ? { systemName: currentName } : {}),
+			...(pnChanged ? { systemPronouns: currentPronouns } : {}),
+		});
+	};
+
+	useEffect(() => {
+		reload();
+	}, [currentDescription, currentName, currentPronouns]);
 
 	return (
 		<Card className="mb-3">
@@ -82,7 +106,7 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 							<h1 className="text-[20px] font-bold text-wrap wrap-anywhere">
 								{currentName ?? data.systemName}
 							</h1>
-							{data.systemPronouns && (
+							{(currentPronouns ?? data.systemPronouns) && (
 								<span className="text-wrap wrap-anywhere">
 									{currentPronouns ?? data.systemPronouns}
 								</span>
@@ -100,7 +124,7 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 										remarkPlugins={[
 											remarkGfm,
 											() => {
-												return (tree) => {
+												return (tree: any) => {
 													findAndReplace(tree, [
 														/__(.*)__/g,
 														(_, $1) => {
@@ -146,7 +170,14 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 									onChange={(e) => setCurrentName(e.target.value)}
 								/>
 								<InputGroupAddon align="block-end">
-									<InputGroupText className={cn("text-xs", currentPronouns.length > 100 ? "text-red-400" : "text-muted-foreground")}>
+									<InputGroupText
+										className={cn(
+											"text-xs",
+											currentName.length > 100
+												? "text-red-400"
+												: "text-muted-foreground",
+										)}
+									>
 										{100 - currentName.length} characters left
 									</InputGroupText>
 								</InputGroupAddon>
@@ -155,6 +186,14 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 								The name of your system is how your system as a collective will
 								be referred to.
 							</FieldDescription>
+							{currentName.length > 100 ? (
+								<FieldError>
+									Too many characters. System name can only be {"<100"}{" "}
+									characters.
+								</FieldError>
+							) : (
+								""
+							)}
 						</Field>
 						<Field className="mb-6">
 							<FieldLabel htmlFor="description">System Pronouns</FieldLabel>
@@ -165,7 +204,14 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 									onChange={(e) => setCurrentPronouns(e.target.value)}
 								/>
 								<InputGroupAddon align="block-end">
-									<InputGroupText className={cn("text-xs", currentPronouns.length > 100 ? "text-red-400" : "text-muted-foreground")}>
+									<InputGroupText
+										className={cn(
+											"text-xs",
+											currentPronouns.length > 100
+												? "text-red-400"
+												: "text-muted-foreground",
+										)}
+									>
 										{100 - currentPronouns.length} characters left
 									</InputGroupText>
 								</InputGroupAddon>
@@ -202,22 +248,6 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 					</div>
 				</div>
 			</CardContent>
-			<CardFooter>
-				<Button
-					disabled={
-						(currentDescription
-							.replace(" ", "")
-							.replace("\n", "")
-							.replace("​", "") === (data.systemDescription ?? "") &&
-							currentName === data.systemName &&
-							currentPronouns === (data.systemPronouns ?? "")) ||
-						currentDescription.length > 1000 ||
-						currentPronouns.length > 100
-					}
-				>
-					Submit
-				</Button>
-			</CardFooter>
 		</Card>
 	);
 }
