@@ -14,7 +14,7 @@ export const PPrivacyGroupObject = z.object({
         tag: z.number().nonnegative(),
         system: z.number().nonnegative(),
     }),
-    color: z.string(),
+    color: z.string().optional(),
 
     fields: PField.array()
 })
