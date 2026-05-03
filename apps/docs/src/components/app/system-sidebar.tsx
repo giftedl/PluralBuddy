@@ -42,9 +42,20 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { motion } from "motion/react";
 
+const sidebarPages = [{
+	pages: [
+		{
+			name: "Home",
+			icon: <House />,
+			path: "/app/system"
+		}
+	]
+}]
+
 export function SystemSidebar() {
 	const location = useLocation();
 	const user = authClient.useSession();
+	const sidebar = useSidebar();
 
 	const pageSidebarProps = {
 		initial: { opacity: 0, x: -40 },
@@ -54,52 +65,54 @@ export function SystemSidebar() {
 	};
 
 	return (
-		<Sidebar className="h-full mt-[50px] pb-[50px]" variant="inset">
+		<Sidebar collapsible="icon" className="h-full mt-[50px] pb-[50px]" variant="inset" >
 			<SidebarHeader />
 			<SidebarContent>
 				<motion.span {...pageSidebarProps} transition={{ type: "keyframes" }}>
-					<SidebarGroup>
+					{sidebarPages.map((page, index) => <SidebarGroup>
 						<SidebarGroupContent>
-							<SidebarMenu>
-								<SidebarMenuItem>
-									<SidebarMenuButton
-										asChild
-										onClick={() => haptic()}
-										isActive={
-											location.pathname === "/app/system" ? true : undefined
-										}
-									>
-										<Link to="/app/system">
-											<House /> Home
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							</SidebarMenu>
+							{page.pages.map(page =>
+								<SidebarMenu>
+									<SidebarMenuItem>
+										<SidebarMenuButton
+											asChild
+											onClick={() => haptic()}
+											isActive={
+												location.pathname === page.path ? true : undefined
+											}
+										>
+											<Link to="/app/system">
+												{page.icon} {page.name}
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								</SidebarMenu>)}
 						</SidebarGroupContent>
-					</SidebarGroup>
+					</SidebarGroup>)}
 				</motion.span>
 			</SidebarContent>
-			<SidebarFooter>
-				<motion.span {...pageSidebarProps} transition={{ type: "tween" }}>
-					<SidebarMenu>
-						<SidebarMenuItem>
-							<SidebarMenuButton
-								asChild
-								onClick={() => haptic()}
-								isActive={
-									location.pathname === "/app/settings" ? true : undefined
-								}
-							>
-								<Link to="/app/settings">
-									<Settings />
-									Settings
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					</SidebarMenu>
-					{user.data && <NavUser user={user.data.user} />}
-				</motion.span>
-			</SidebarFooter>
+			{sidebar.open &&
+				<SidebarFooter>
+					<motion.span {...pageSidebarProps} transition={{ type: "tween" }}>
+						<SidebarMenu>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									asChild
+									onClick={() => haptic()}
+									isActive={
+										location.pathname === "/app/settings" ? true : undefined
+									}
+								>
+									<Link to="/app/settings">
+										<Settings />
+										Settings
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						</SidebarMenu>
+						{user.data && <NavUser user={user.data.user} />}
+					</motion.span>
+				</SidebarFooter>}
 		</Sidebar>
 	);
 }
