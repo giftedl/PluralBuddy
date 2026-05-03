@@ -1,6 +1,6 @@
 import {PSystemObject} from "@/pluralbuddy/system.ts";
 import z from "zod";
-import {PField} from "@/pluralbuddy/field.ts";
+import {PField} from "./field.ts";
 
 export const PPrivacyGroupObject = z.object({
     id: z.string(),
@@ -8,6 +8,11 @@ export const PPrivacyGroupObject = z.object({
 
     name: z.string(),
     attachedUsers: z.string().array(),
+
+    permissions: z.object({
+        alter: z.number().nonnegative(),
+        tag: z.number().nonnegative()
+    }),
 
     fields: PField.array()
 })

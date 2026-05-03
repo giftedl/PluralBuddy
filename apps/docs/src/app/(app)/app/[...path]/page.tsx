@@ -41,6 +41,7 @@ import { LoginBoundary } from "@/components/app/pages/login-boundary";
 import EditProfileSystemPage from "@/components/app/pages/systems/edit-profile/page";
 import EditPrivacySystemPage from "@/components/app/pages/systems/edit-privacy/page";
 import SystemPage from "@/components/app/pages/systems/system/page";
+import {PrivacyGroupsSettingsAppPage} from "@/components/app/pages/systems/privacy-groups/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>;
@@ -49,93 +50,95 @@ declare global {
 const queryClient = new QueryClient();
 
 export default function PluralBuddyApp() {
-	const { data: session, isPending } = authClient.useSession();
-	const [trpcClient] = useState(() =>
-		trpc.createClient({
-			links: [
-				httpBatchLink({
-					url: "/api/trpc",
-					transformer: superjson,
-				}),
-			],
-		}),
-	);
+    const {data: session, isPending} = authClient.useSession();
+    const [trpcClient] = useState(() =>
+        trpc.createClient({
+            links: [
+                httpBatchLink({
+                    url: "/api/trpc",
+                    transformer: superjson,
+                }),
+            ],
+        }),
+    );
 
-	if (!globalThis.trpcClient) globalThis.trpcClient = trpcClient;
+    if (!globalThis.trpcClient) globalThis.trpcClient = trpcClient;
 
-	if (isPending)
-		return (
-			<div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 block justify-center text-center gap-2">
+    if (isPending)
+        return (
+            <div
+                className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 block justify-center text-center gap-2">
 				<span className="w-full flex justify-center">
-					<Spinner />
+					<Spinner/>
 				</span>
 
-				<span className="text-sm pt-2">Loading app...</span>
-			</div>
-		);
+                <span className="text-sm pt-2">Loading app...</span>
+            </div>
+        );
 
-	if ("virtualKeyboard" in navigator) {
-		(navigator.virtualKeyboard as any).overlaysContent = false;
-	}
+    if ("virtualKeyboard" in navigator) {
+        (navigator.virtualKeyboard as any).overlaysContent = false;
+    }
 
-	return (
-		<main className="router-boundrary overflow-hidden">
-			<QueryClientProvider client={queryClient}>
-				<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-					<BrowserRouter>
-						<div className="p-2 h-14 w-full bg-sidebar flex justify-between items-center px-4 fixed z-50">
-							<div className="flex flex-row items-center float-left flex-wrap gap-1">
-								<RemoteSidebarToggle />
-							</div>
-							<div className="flex flex-row items-center float-right flex-wrap gap-1">
-								<ThemeToggle />
-								<AppSettings />
-							</div>
-						</div>
-						<div className="h-screen w-screen overflow-hidden">
-							<Routes>
-								<Route path="/app/onboarding" element={<OnboardingPage />} />
-								<Route path="/app/system" element={<SystemLayout />}>
-									<Route index element={<SystemIndexPage />} />
-                                    <Route path="/app/system/system" element={<SystemPage />} />
-                                    <Route path="/app/system/edit-profile" element={<EditProfileSystemPage />} />
-                                    <Route path="/app/system/edit-privacy" element={<EditPrivacySystemPage />} />
-								</Route>
-								<Route element={<LoginBoundary />}>
-									<Route path="/app/settings" element={<SettingsLayout />}>
-										<Route index element={<IndexSettingsAppPage />} />
-										<Route
-											path="/app/settings/authorized-apps"
-											element={<AuthorizedAppsPage />}
-										/>
-										<Route
-											path="/app/settings/webhooks"
-											element={<WebhooksAppPage />}
-										/>
-										<Route
-											path="/app/settings/express/alter/:alter"
-											element={<ExpressSpecificAlterPage />}
-										/>
-										<Route
-											path="/app/settings/express"
-											element={<ExpressList />}
-										/>
-									</Route>
-									<Route
-										path="/app/import-staging"
-										element={<ImportStagingPage />}
-									/>
-									<Route
-										path="/app/import-staging/done"
-										element={<ImportStagingDonePage />}
-									/>
-								</Route>
-								<Route path="*" element={<NotFoundPage />} />
-							</Routes>
-						</div>
-					</BrowserRouter>
-				</TRPCProvider>
-			</QueryClientProvider>
-		</main>
-	);
+    return (
+        <main className="router-boundrary overflow-hidden">
+            <QueryClientProvider client={queryClient}>
+                <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+                    <BrowserRouter>
+                        <div className="p-2 h-14 w-full bg-sidebar flex justify-between items-center px-4 fixed z-50">
+                            <div className="flex flex-row items-center float-left flex-wrap gap-1">
+                                <RemoteSidebarToggle/>
+                            </div>
+                            <div className="flex flex-row items-center float-right flex-wrap gap-1">
+                                <ThemeToggle/>
+                                <AppSettings/>
+                            </div>
+                        </div>
+                        <div className="h-screen w-screen overflow-hidden">
+                            <Routes>
+                                <Route path="/app/onboarding" element={<OnboardingPage/>}/>
+                                <Route path="/app/system" element={<SystemLayout/>}>
+                                    <Route index element={<SystemIndexPage/>}/>
+                                    <Route path="/app/system/system" element={<SystemPage/>}/>
+                                    <Route path="/app/system/edit-profile" element={<EditProfileSystemPage/>}/>
+                                    <Route path="/app/system/edit-privacy" element={<EditPrivacySystemPage/>}/>
+                                    <Route path="/app/system/privacy-groups" element={<PrivacyGroupsSettingsAppPage/>}/>
+                                </Route>
+                                <Route element={<LoginBoundary/>}>
+                                    <Route path="/app/settings" element={<SettingsLayout/>}>
+                                        <Route index element={<IndexSettingsAppPage/>}/>
+                                        <Route
+                                            path="/app/settings/authorized-apps"
+                                            element={<AuthorizedAppsPage/>}
+                                        />
+                                        <Route
+                                            path="/app/settings/webhooks"
+                                            element={<WebhooksAppPage/>}
+                                        />
+                                        <Route
+                                            path="/app/settings/express/alter/:alter"
+                                            element={<ExpressSpecificAlterPage/>}
+                                        />
+                                        <Route
+                                            path="/app/settings/express"
+                                            element={<ExpressList/>}
+                                        />
+                                    </Route>
+                                    <Route
+                                        path="/app/import-staging"
+                                        element={<ImportStagingPage/>}
+                                    />
+                                    <Route
+                                        path="/app/import-staging/done"
+                                        element={<ImportStagingDonePage/>}
+                                    />
+                                </Route>
+                                <Route path="*" element={<NotFoundPage/>}/>
+                            </Routes>
+                        </div>
+                    </BrowserRouter>
+                </TRPCProvider>
+            </QueryClientProvider>
+        </main>
+    );
 }

@@ -4,7 +4,7 @@ import {haptic} from "@/lib/haptic/haptic";
 import {
     Boxes,
     Clapperboard,
-    EllipsisVertical, FolderDot,
+    EllipsisVertical, EyeOff, FolderDot,
     House,
     Plug,
     Settings, Shield,
@@ -72,6 +72,12 @@ export const sidebarPages = [
                         path: "/app/system/edit-privacy"
                     }
                 ]
+            },
+            {
+                name: "Privacy Groups",
+                icon: EyeOff,
+                path: "/app/system/privacy-groups",
+                sub: []
             },
             {
                 name: "Alters",

@@ -26,6 +26,8 @@ export * from "./pluralbuddy/message";
 export * from "./pluralbuddy/operation";
 export * from "./pluralbuddy/system";
 export * from "./pluralbuddy/tag";
+export * from "./pluralbuddy/privacy-group.ts"
+export * from "./pluralbuddy/field.ts";
 export * from "./pluralbuddy/user";
 export * from "./pluralbuddy/util";
 export * from "./pluralbuddy/import-staging";
