@@ -8,8 +8,7 @@ import { PAlter, PExpressApplication } from "plurography";
 export function filter(interaction: APIInteraction, alter: PAlter) {
 	return (
 		interaction.type === InteractionType.ApplicationCommand &&
-		interaction.data.type === ApplicationCommandType.Message &&
-        interaction.data.name === `Reply`
+		interaction.data.type === ApplicationCommandType.Message
 	);
 }
 
