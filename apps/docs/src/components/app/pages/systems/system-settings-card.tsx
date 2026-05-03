@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/shadcn-button";
 import { Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { PSystem } from "plurography";
-import { useEffect, useState } from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import { MarkdownEditor } from "./markdown-editor";
 import {
 	Field,
@@ -41,6 +41,9 @@ import { cn } from "@/lib/cn";
 import { db } from "@/lib/app/dexie";
 import { Spinner } from "@/components/ui/spinner";
 import { motion } from "motion/react";
+import {toast} from "sonner";
+import {ColorPicker} from "@/components/ui/color-picker";
+import {FullColorPicker} from "@/components/app/pages/systems/full-color-picker";
 
 export function SystemSettingsCard({ data }: { data: PSystem }) {
 	const t = useTranslations();
@@ -52,6 +55,10 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 	const [currentPronouns, setCurrentPronouns] = useState(
 		data.systemPronouns ?? "",
 	);
+    const [currentAvatar, setCurrentAvatar] = useState(data.systemAvatar ?? "");
+    const [currentBanner, setCurrentBanner] = useState(data.systemBanner ?? "");
+
+    const [loadingImages, setLoadingImages] = useState(false);
 
 	const reload = async () => {
 		const descChanged =
@@ -59,6 +66,8 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 			(data.systemDescription ?? "");
 		const pnChanged = currentPronouns !== (data.systemPronouns ?? "");
 		const nameChanged = currentName !== data.systemName;
+        const avatarChanged = currentAvatar !== data.systemAvatar;
+        const bannerChanged = currentBanner !== data.systemBanner;
 
 		await db.systems.update("@me", {
 			...(descChanged
@@ -68,12 +77,43 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 				: {}),
 			...(nameChanged ? { systemName: currentName } : {}),
 			...(pnChanged ? { systemPronouns: currentPronouns } : {}),
+            ...(avatarChanged ? { systemAvatar: currentAvatar } : {}),
+            ...(bannerChanged ? { systemBanner: currentBanner } : {}),
 		});
 	};
 
+    const processChangeEvent = async (c: ChangeEvent<HTMLInputElement>) => {
+        const file = c.target.files?.[0];
+        const validImages = [ "image/jpg", "image/jpeg", "image/png" ];
+
+        if (!file) return { data: "", type: "" };
+
+        if (!validImages.includes(file.type)) {
+            c.target.value = "";
+            setLoadingImages(false)
+            toast.error("Invalid image type. Only .jpg, .jpeg, and .png are allowed.");
+            return { data: "", type: "" };
+        }
+
+        const reader = new FileReader();
+        const data = await new Promise((y,n) => {
+
+            reader.addEventListener("load", async () => {
+                const base64String = (reader.result as string).split(',')[1]; // Extract Base64 part
+                y(base64String);
+            })
+            reader.onerror = () => n(new Error('Failed to get data URL'));
+            reader.readAsDataURL(file);
+        })
+
+        c.target.value = "";
+
+        return {data, type: file.type};
+    }
+
 	useEffect(() => {
 		reload();
-	}, [currentDescription, currentName, currentPronouns]);
+	}, [currentDescription, currentName, currentPronouns, currentAvatar, currentBanner]);
 
 	return (
 		<Card className="mb-3">
@@ -96,7 +136,7 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 						<div className="relative h-37.5">
 							{data?.systemBanner ? (
 								<img
-									src={data?.systemBanner}
+									src={currentBanner ?? data?.systemBanner}
 									className="w-[320px] h-[120px] rounded-xl z-0 object-cover"
 									alt={t("alt_banner")}
 								/>
@@ -105,7 +145,7 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 							)}
 
 							<Avatar className="w-20 h-20 absolute bottom-0 left-2.5 border-6 border-card">
-								<AvatarImage src={data?.systemAvatar ?? ""} />
+								<AvatarImage src={currentAvatar ?? data?.systemAvatar ?? ""} />
 								<AvatarFallback className="bg-[#5865F2] text-white text-2xl">
 									{data.systemName[0]}
 								</AvatarFallback>
@@ -150,6 +190,7 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 												};
 											},
 										]}
+                                        disallowedElements={["hr"]}
 									>
 										{(data.systemDescription ?? currentDescription).replaceAll(
 											"\n",
@@ -173,6 +214,45 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
                                 initial={{opacity: 0, y: -10}}
                                 animate={{opacity: 100, y: 0}}
                                 transition={{type: "tween", delay: 0.6}}>
+                        <Field className="mb-6">
+                            <FieldLabel htmlFor="picture">System Banner</FieldLabel>
+                            <div className="flex gap-2 items-center">
+                                {loadingImages && <Spinner />}
+                            <Input id="picture" type="file"
+                                   disabled={loadingImages}
+                                   accept=".jpg, .jpeg, .png" onChange={async (v) => {
+                                setLoadingImages(true)
+                                const {data, type} = await processChangeEvent(v);
+
+
+                                if (data === "") return;
+
+                                setCurrentBanner(`data:${type};base64,${data}`);
+                                setLoadingImages(false)
+                            }}/>
+                                <Button onClick={() => setCurrentBanner("")} disabled={loadingImages}>Clear</Button>
+                            </div>
+                            <FieldDescription>Select a picture to upload.</FieldDescription>
+                        </Field>
+                        <Field className="mb-6">
+                            <FieldLabel htmlFor="picture">System Avatar</FieldLabel>
+                            <div className="flex gap-2 items-center">
+                                {loadingImages && <Spinner />}
+                            <Input id="picture" type="file"
+                                   disabled={loadingImages}
+                                   accept=".jpg, .jpeg, .png" onChange={async (v) => {
+                                setLoadingImages(true);
+                                const {data, type} = await processChangeEvent(v);
+
+                                if (data === "") return;
+
+                                setCurrentAvatar(`data:${type};base64,${data}`);
+                                setLoadingImages(false)
+                            }}/>
+                                <Button onClick={() => setCurrentAvatar("")} disabled={loadingImages}>Clear</Button>
+                            </div>
+                            <FieldDescription>Select a picture to upload.</FieldDescription>
+                        </Field>
 						<Field className="mb-6">
 							<FieldLabel htmlFor="name">System Name</FieldLabel>
 

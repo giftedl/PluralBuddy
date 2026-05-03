@@ -1,6 +1,10 @@
 import { auth } from "@/lib/auth";
 import { initTRPC } from "@trpc/server";
 import superjson from 'superjson';
+import {getDiscordIdBySessionId} from "@/lib/discord-id";
+import {MongoClient} from "mongodb";
+import {waitUntil} from "@vercel/functions";
+import {after} from "next/server";
 
 /**
  * This context creator accepts `headers` so it can be reused in both
@@ -9,7 +13,11 @@ import superjson from 'superjson';
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
 	const session = await auth.api.getSession({ headers: opts.headers });
-	return { session };
+    const mongo = await new MongoClient(process.env.MONGO ?? "").connect();
+    const userId = session ? await getDiscordIdBySessionId(session.user.id, mongo) : null;
+
+    after(async () => { await mongo.close() })
+	return { session, userId, mongo };
 };
 
 // Avoid exporting the entire t-object

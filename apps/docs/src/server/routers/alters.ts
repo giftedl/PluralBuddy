@@ -1,8 +1,6 @@
 import z from "zod";
 import { baseProcedure } from "../init";
 import { router } from "../trpc";
-import { MongoClient } from "mongodb";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { PAlter, PExpressApplication } from "plurography";
 import { APIApplication, APIUser } from "discord-api-types/v10";
 import { decryptExpressToken } from "@/lib/express-token-encryption";
@@ -22,18 +20,14 @@ export const AlterRouter = router({
 
 			if (!session) throw new Error("Session error.");
 
-			const client = new MongoClient(process.env.MONGO ?? "");
-			await client.connect();
-
-			const db = client.db(
+			const db = ctx.mongo.db(
 				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 			);
 			const alters = db.collection<PAlter>("alters");
 			const applications = db.collection<PAlter>("applications");
-			const owner = await getDiscordIdBySessionId(session.user.id);
 			const altersList = await alters
 				.find({
-					systemId: owner,
+					systemId: ctx.userId,
 					...(input.search
 						? {
 								$or: [
@@ -63,22 +57,18 @@ export const AlterRouter = router({
         const session = ctx.session;
 
         if (!session) throw new Error("Session error.");
-
-        const client = new MongoClient(process.env.MONGO ?? "");
-        await client.connect();
     
-        const db = client.db(
+        const db = ctx.mongo.db(
             `pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
         );
         const alters = db.collection<PAlter>("alters");
         const applications = db.collection<PExpressApplication>("applications");
-        const owner = await getDiscordIdBySessionId(session.user.id);
-        const alter = await alters.findOne({ alterId: Number(input.id), systemId: owner });
+        const alter = await alters.findOne({ alterId: Number(input.id), systemId: ctx.userId });
     
         if (!alter) return null;
     
         const expressData =
-            (await applications.findOne({ alterId: Number(input.id), owner: owner })) ?? null;
+            (await applications.findOne({ alterId: Number(input.id), owner: ctx.userId })) ?? null;
     
         let discordUser: APIUser | undefined;
         let discordApp: APIApplication | undefined;

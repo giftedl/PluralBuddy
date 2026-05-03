@@ -5,6 +5,7 @@
 @import "@fontsource-variable/atkinson-hyperlegible-mono";
 @import "fumadocs-openapi/css/preset.css";
 @plugin "tailwindcss-animate";
+@plugin "tailwindcss-react-aria-components";
 
 @plugin "tailwind-scrollbar-hide";
 

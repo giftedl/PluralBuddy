@@ -6,6 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import {tv} from "tailwind-variants";
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -51,7 +52,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-const fieldVariants = cva(
+export const fieldVariants = cva(
   "group/field flex w-full gap-2 data-[invalid=true]:text-destructive",
   {
     variants: {
@@ -68,6 +69,20 @@ const fieldVariants = cva(
     },
   }
 )
+
+export const fieldStyles = tv({
+    base: [
+        "w-full",
+        "[&>[data-slot=control]+[data-slot=control]]:mt-2",
+        "[&>[data-slot=label]+[data-slot=control]]:mt-2",
+        "[&>[data-slot=label]+[slot='description']]:mt-1",
+        "[&>[slot=description]+[data-slot=control]]:mt-2",
+        "[&>[data-slot=control]+[slot=description]]:mt-2",
+        "[&>[data-slot=control]+[slot=errorMessage]]:mt-2",
+        "*:data-[slot=label]:font-medium",
+        "in-disabled:opacity-50 disabled:opacity-50",
+    ],
+})
 
 function Field({
   className,

@@ -1,8 +1,6 @@
 import z from "zod";
 import { baseProcedure } from "../init";
 import { router } from "../trpc";
-import { Double, MongoClient } from "mongodb";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { PAlter, PExpressApplication } from "plurography";
 import {
 	APIApplication,
@@ -23,24 +21,20 @@ export const ExpressRouter = router({
 
 			if (!session) throw new Error("Session error.");
 
-			const client = new MongoClient(process.env.MONGO ?? "");
-			await client.connect();
-
-			const db = client.db(
+			const db = ctx.mongo.db(
 				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 			);
 			const applications = db.collection<PExpressApplication>("applications");
 			const alters = db.collection<PAlter>("alters");
-			const owner = await getDiscordIdBySessionId(session.user.id);
 			const applicationsList = await applications
-				.find({ owner })
+				.find({ owner: ctx.userId })
 				.skip(input.skip ?? 0)
 				.limit(input.max ?? 0)
 				.toArray();
 			const alterList = await alters
 				.find({
 					alterId: { $in: applicationsList.map((v) => v.alterId) },
-					systemId: owner,
+					systemId: ctx.userId,
 				})
 				.toArray();
 
@@ -70,28 +64,23 @@ export const ExpressRouter = router({
 				alterId: z.string(),
 			}),
 		)
-		.query(async ({ input, ctx }) => {
+		.mutation(async ({ input, ctx }) => {
 			const session = ctx.session;
 
 			if (!session) throw new Error("Session error.");
 
-			const client = new MongoClient(process.env.MONGO ?? "");
-			await client.connect();
-
-			const db = client.db(
+			const db = ctx.mongo.db(
 				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 			);
 			const applications = db.collection<PExpressApplication>("applications");
 			const alters = db.collection<PAlter>("alters");
 
-			const owner = await getDiscordIdBySessionId(session.user.id);
-
 			const alter = await alters.findOne({
 				alterId: Number(input.alterId),
-				systemId: owner,
+				systemId: ctx.userId,
 			});
 			const existingApplication = await applications.findOne({
-				owner,
+				owner: ctx.userId,
 				alterId: Number(input.alterId),
 			});
 
@@ -135,7 +124,7 @@ export const ExpressRouter = router({
 					value: Buffer.from(encrypted).toString("hex"),
 				},
 				publicKey: discordData.verify_key,
-				owner,
+				owner: ctx.userId,
 				alterId: Number(input.alterId),
 				usesContainer: false,
 			});
@@ -178,21 +167,17 @@ export const ExpressRouter = router({
 				}),
 			}),
 		)
-		.query(async ({ input, ctx }) => {
+		.mutation(async ({ input, ctx }) => {
 			const session = ctx.session;
 
 			if (!session) throw new Error("Session error.");
 
-			const client = new MongoClient(process.env.MONGO ?? "");
-			await client.connect();
-
-			const db = client.db(
+			const db = ctx.mongo.db(
 				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 			);
 			const applications = db.collection<PExpressApplication>("applications");
-			const owner = await getDiscordIdBySessionId(session.user.id);
 			const application = await applications
-				.find({ owner, alterId: Number(input.alter_id) })
+				.find({ owner: ctx.userId, alterId: Number(input.alter_id) })
 				.toArray();
 
 			if (!application) throw new Error("Doesn't exist");
@@ -202,7 +187,7 @@ export const ExpressRouter = router({
 
 			await applications.updateOne(
 				{
-					owner,
+                    owner: ctx.userId,
 					alterId: Number(input.alter_id),
 				},
 				{

@@ -40,6 +40,7 @@ import SystemIndexPage from "@/components/app/pages/systems/page";
 import { LoginBoundary } from "@/components/app/pages/login-boundary";
 import EditProfileSystemPage from "@/components/app/pages/systems/edit-profile/page";
 import EditPrivacySystemPage from "@/components/app/pages/systems/edit-privacy/page";
+import SystemPage from "@/components/app/pages/systems/system/page";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>;
@@ -96,6 +97,7 @@ export default function PluralBuddyApp() {
 								<Route path="/app/onboarding" element={<OnboardingPage />} />
 								<Route path="/app/system" element={<SystemLayout />}>
 									<Route index element={<SystemIndexPage />} />
+                                    <Route path="/app/system/system" element={<SystemPage />} />
                                     <Route path="/app/system/edit-profile" element={<EditProfileSystemPage />} />
                                     <Route path="/app/system/edit-privacy" element={<EditPrivacySystemPage />} />
 								</Route>

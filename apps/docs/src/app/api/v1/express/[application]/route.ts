@@ -119,7 +119,7 @@ export async function PUT(
 		);
 
 	if (
-		applicationObj.owner !== (await getDiscordIdBySessionId(session.user.id))
+		applicationObj.owner !== (await getDiscordIdBySessionId(session.user.id, client))
 	) {
 		return Response.json(
 			{ error: "Must be owner of application" },
@@ -245,7 +245,7 @@ export async function DELETE(
 		);
 
 	if (
-		applicationObj.owner !== (await getDiscordIdBySessionId(session.user.id))
+		applicationObj.owner !== (await getDiscordIdBySessionId(session.user.id, client))
 	) {
 		return Response.json(
 			{ error: "Must be owner of application" },

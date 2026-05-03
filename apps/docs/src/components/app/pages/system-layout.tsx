@@ -10,17 +10,12 @@ import { SidebarHookRemote } from "../hook-remote";
 import { SystemSidebar } from "../system-sidebar";
 import { db } from "@/lib/app/dexie";
 import { Button } from "@/components/ui/shadcn-button";
+import pako from "pako";
 import {
 	ButtonGroup,
 	ButtonGroupSeparator,
-	ButtonGroupText,
 } from "@/components/ui/button-group";
-import { Check, ChevronDown } from "lucide-react";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+import { ChevronDown } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -30,12 +25,35 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Discord } from "@/components/ui/svgs/discord";
+import {useTRPCClient} from "@/server/client";
+import {useMutation} from "@tanstack/react-query";
+import {PAlterObject, PSystemObject, PTagObject} from "plurography";
+import z from "zod";
+
+const importSyntax = z.object({
+    system: PSystemObject.or(z.null()),
+    alters: PAlterObject.array().max(2000),
+    tags: PTagObject.array().max(2000)
+})
 
 export function SystemLayout() {
 	const route = useNavigate();
-    const [loading, setLoading] = useState(false);
+    const t = useTRPCClient()
+    const syncMutation = useMutation({
+        mutationFn: async (data: {data: z.infer<typeof importSyntax>, prefer: "local" | "remote"}) => {
 
+            const text = pako.deflate(JSON.stringify(data))
+
+            const r = await t.system_apps.sync.mutate({
+                data: text.toBase64(),
+                prefer: "local"
+            })
+
+            const response = pako.inflate(Uint8Array.fromBase64(r.data));
+
+            console.log(response);
+        }
+    })
 
 	useEffect(() => {
 		(async () => {
@@ -51,7 +69,15 @@ export function SystemLayout() {
 			<SidebarInset>
 				<div className="fixed border-b w-full p-2 bg-background rounded-t-xl">
 					<ButtonGroup>
-						<Button variant="secondary">Sync</Button>
+						<Button variant="secondary" onClick={async () => {
+                            const data = {
+                                system: (await db.systems.get("@me")) ?? null,
+                                alters: [],
+                                tags: []
+                            }
+
+                            syncMutation.mutate({ data, prefer: "local" })
+                        }}>Sync</Button>
 						<ButtonGroupSeparator />
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>

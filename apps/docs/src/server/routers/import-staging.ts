@@ -9,10 +9,7 @@ import {
 } from "plurography";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { MongoClient } from "mongodb";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { api } from "@/lib/rpc";
-import { waitUntil } from "@vercel/functions";
 
 export const ImportStagingRouter = router({
 	markImportStagingDone: baseProcedure
@@ -76,8 +73,7 @@ export const ImportStagingRouter = router({
 
 			if (!session) throw new Error("Session error.");
 
-			const mongo = new MongoClient(process.env.MONGO ?? "");
-			const staging = await mongo
+			const staging = await ctx.mongo
 				.db(`${process.env.ENV}-pluralbuddy-app`)
 				.collection<ImportStage>("import-staging")
 				.findOne(
@@ -87,12 +83,12 @@ export const ImportStagingRouter = router({
 
 			if (
 				staging?.originatingSystemId !==
-				(await getDiscordIdBySessionId(session.user.id))
+                 ctx.userId
 			) {
 				throw new Error("Session doesn't match staging.");
 			}
 
-			await mongo
+			await ctx.mongo
 				.db(`${process.env.ENV}-pluralbuddy-app`)
 				.collection<ImportStage>("import-staging")
 				.updateOne(
@@ -117,8 +113,7 @@ export const ImportStagingRouter = router({
 	getImportData: baseProcedure
 		.input(z.object({ id: z.string() }))
 		.query(async ({ ctx, input }) => {
-			const mongoClient = new MongoClient(process.env.MONGO ?? "");
-			const mongoDb = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
+			const mongoDb = ctx.mongo.db(`${process.env.ENV}-pluralbuddy-app`);
 
 			let result = (await mongoDb
 				.collection<ImportStage>("import-staging")
@@ -131,8 +126,6 @@ export const ImportStagingRouter = router({
 					webhook: { id: input.id, token: "redacted" },
 				} as ImportStage;
 			}
-
-			waitUntil(mongoClient.close());
 
 			return result;
 		}),

@@ -1,11 +1,11 @@
 import {useQuery} from "@tanstack/react-query";
 import {db} from "@/lib/app/dexie";
+import { useLiveQuery } from "dexie-react-hooks"
 
 export function useSystem() {
-    const data = useQuery({
-        queryKey: ["system/@me"],
-        queryFn: async () => await db.systems.get("@me"),
+    const data = useLiveQuery(async () => {
+        return await db.systems.get("@me");
     });
 
-    return data;
+    return {data, isPending: false, isLoading: false};
 }

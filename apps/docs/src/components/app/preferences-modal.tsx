@@ -61,7 +61,7 @@ export function PreferencesModal({
 
 	const submit = useMutation({
 		mutationFn: async () =>
-			trpc.express.edit.query({
+			trpc.express.edit.mutate({
 				alter_id: alter.alterId.toString(),
 				options: {
 					usesContainer: displayMode === "container",

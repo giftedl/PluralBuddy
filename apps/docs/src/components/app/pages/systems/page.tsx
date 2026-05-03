@@ -86,8 +86,11 @@ export default function SystemIndexPage() {
                             className="uppercase text-xs mt-6 font-bold text-muted-foreground pb-6">All pages</span>
                         <div
                             className="grid gap-3 pt-1">
-                            {sidebarPages.map(v => v.pages.map(c =>
-                                <Fragment key={c.name}><Item variant="outline" size="sm" asChild>
+                            {sidebarPages.map((v, i) => v.pages.map(c =>
+                                <motion.div
+                                    initial={{opacity: 0, y: -30}}
+                                    animate={{opacity: 100, y: 0}}
+                                    transition={{type: "tween", duration: 0.5, delay: 0.6 + (i * 0.2)}} key={c.name} className="grid gap-3"><Item variant="outline" size="sm" asChild>
                                     <Link to="/app/system/system">
                                         <ItemMedia>
                                             <c.icon className="size-5"/>
@@ -99,7 +102,10 @@ export default function SystemIndexPage() {
                                             <ChevronRightIcon className="size-4"/>
                                         </ItemActions>
                                     </Link>
-                                </Item>{c.sub.map(p => <Item variant="outline" className="ml-6 w-[calc(100%-1.5rem)]"
+                                </Item>{c.sub.map((p, ind) => <motion.div
+                                    initial={{opacity: 0, y: -30}}
+                                    animate={{opacity: 100, y: 0}}
+                                    transition={{type: "tween", duration: 0.5, delay: 0.6 + ((i + ind) * 0.2)}} key={c.name} className="grid gap-3"><Item variant="outline" className="ml-6 w-[calc(100%-1.5rem)]"
                                                              size="sm" asChild key={p.name}>
                                     <Link to={p.path}>
                                         <ItemMedia>
@@ -112,7 +118,7 @@ export default function SystemIndexPage() {
                                             <ChevronRightIcon className="size-4"/>
                                         </ItemActions>
                                     </Link>
-                                </Item>)}</Fragment>))}
+                                </Item></motion.div>)}</motion.div>))}
                             <Item variant="outline" size="sm" asChild>
                                 <Link to="/app/settings">
                                     <ItemMedia>

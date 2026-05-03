@@ -202,7 +202,7 @@ function DialogContents({
 									let err = false;
 
 									await trpc.express.createExpressApplication
-										.query({
+                                        .mutate({
 											token,
 											alterId: selectedAlter ?? "",
 										})

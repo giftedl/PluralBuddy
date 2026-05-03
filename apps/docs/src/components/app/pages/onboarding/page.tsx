@@ -117,7 +117,7 @@ export default function OnboardingPage() {
 							</p>
 							<Card className="mt-14 min-h-full overflow-auto max-h-[300px]">
 								<CardContent>
-									<Tabs aria-label="Recipe App" defaultSelectedKey="f">
+									<Tabs aria-label="Pick a system creation mode" defaultSelectedKey="f">
 										<TabList>
 											<Tab
 												id="b"
