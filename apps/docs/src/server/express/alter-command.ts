@@ -58,9 +58,12 @@ export async function interaction(
 	const data =
 		interaction.data as APIChatInputApplicationCommandInteractionData;
 	const options = data.options ?? [];
-	const textOption = options.find(
+    const altTextOption = options.find(
+        (v) => v.name === "message" && v.type === ApplicationCommandOptionType.String,
+    ) as APIApplicationCommandInteractionDataStringOption
+	const textOption = (options.find(
 		(v) => v.name === "text" && v.type === ApplicationCommandOptionType.String,
-	) as APIApplicationCommandInteractionDataStringOption;
+	) ?? altTextOption) as APIApplicationCommandInteractionDataStringOption;
 	const attachmentOption = options.find(
 		(v) =>
 			v.name === "attachment" &&
