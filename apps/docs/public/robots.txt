@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://pb.giftedly.dev
+
+# Sitemaps
+Sitemap: https://pb.giftedly.dev/sitemap.xml

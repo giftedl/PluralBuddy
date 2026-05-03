@@ -8,7 +8,8 @@
 		"start": "next start",
 		"types:check": "fumadocs-mdx && tsc --noEmit",
 		"lint": "biome check",
-		"format": "biome format --write"
+		"format": "biome format --write",
+		"postbuild": "next-sitemap"
 	},
 	"dependencies": {
 		"@better-auth/infra": "0.2.5",
@@ -60,6 +61,7 @@
 		"motion": "^12.38.0",
 		"next": "^16.2.1",
 		"next-intl": "^4.8.3",
+		"next-sitemap": "^4.2.3",
 		"next-themes": "^0.4.6",
 		"nextjs-toploader": "^3.9.17",
 		"nuqs": "^2.8.9",
