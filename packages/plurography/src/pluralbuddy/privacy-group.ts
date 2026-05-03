@@ -11,8 +11,10 @@ export const PPrivacyGroupObject = z.object({
 
     permissions: z.object({
         alter: z.number().nonnegative(),
-        tag: z.number().nonnegative()
+        tag: z.number().nonnegative(),
+        system: z.number().nonnegative(),
     }),
+    color: z.string(),
 
     fields: PField.array()
 })
