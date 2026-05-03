@@ -1,4 +1,4 @@
-import { SettingsSidebar } from "@/components/settings-sidebar";
+import { SettingsSidebar } from "@/components/app/settings-sidebar";
 import {
 	SidebarInset,
 	SidebarProvider,
@@ -7,6 +7,8 @@ import {
 import React from "react";
 import { Outlet } from "react-router";
 import { SidebarHookRemote } from "../hook-remote";
+import { DiscordLoginComponent } from "@/components/discord-login";
+import { authClient } from "@/lib/auth-client";
 
 export function SettingsLayout() {
 	return (

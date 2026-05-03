@@ -3,7 +3,7 @@
 import { ImportDataForm } from "@/components/app/import-data-form";
 import { AuthorizedAppsCard } from "@/components/authorized-apps";
 import { DiscordLoginComponent } from "@/components/discord-login";
-import { SettingsSidebar } from "@/components/settings-sidebar";
+import { SettingsSidebar } from "@/components/app/settings-sidebar";
 import {
 	Card,
 	CardContent,

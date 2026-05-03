@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/empty";
 import { useParams } from "react-router";
 import React from "react";
-import { SettingsSidebar } from "@/components/settings-sidebar";
+import { SettingsSidebar } from "@/components/app/settings-sidebar";
 import { GroupIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useTRPCClient } from "@/server/client";

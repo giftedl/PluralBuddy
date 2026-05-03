@@ -7,7 +7,7 @@ import NotFoundPage from "@/components/app/pages/not-found";
 import { SettingsLayout } from "@/components/app/pages/settings-layout";
 import { DiscordLoginComponent } from "@/components/discord-login";
 import { ExpressList } from "@/components/app/pages/express/express-page.client";
-import { SettingsSidebar } from "@/components/settings-sidebar";
+import { SettingsSidebar } from "@/components/app/settings-sidebar";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { TRPCProvider } from "@/server/client";
@@ -34,9 +34,13 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AppSettings } from "@/components/app/app-settings";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import WebhooksAppPage from "@/components/app/pages/webhooks/page";
+import OnboardingPage from "@/components/app/pages/onboarding/page";
+import { SystemLayout } from "@/components/app/pages/system-layout";
+import SystemIndexPage from "@/components/app/pages/systems/page";
+import { LoginBoundary } from "@/components/app/pages/login-boundary";
 
 declare global {
-	var trpcClient: ReturnType<typeof trpc.createClient>
+	var trpcClient: ReturnType<typeof trpc.createClient>;
 }
 
 const queryClient = new QueryClient();
@@ -54,9 +58,8 @@ export default function PluralBuddyApp() {
 		}),
 	);
 
-	if (!globalThis.trpcClient)
-		globalThis.trpcClient = trpcClient;
-	
+	if (!globalThis.trpcClient) globalThis.trpcClient = trpcClient;
+
 	if (isPending)
 		return (
 			<div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 block justify-center text-center gap-2">
@@ -67,10 +70,6 @@ export default function PluralBuddyApp() {
 				<span className="text-sm pt-2">Loading app...</span>
 			</div>
 		);
-
-	if (!isPending && session === null) {
-		return <DiscordLoginComponent />;
-	}
 
 	if ("virtualKeyboard" in navigator) {
 		(navigator.virtualKeyboard as any).overlaysContent = false;
@@ -92,36 +91,39 @@ export default function PluralBuddyApp() {
 						</div>
 						<div className="h-screen w-screen overflow-hidden">
 							<Routes>
-								<Route path="/app/settings" element={<SettingsLayout />}>
+								<Route path="/app/onboarding" element={<OnboardingPage />} />
+								<Route path="/app/system" element={<SystemLayout />}>
+									<Route index element={<SystemIndexPage />} />
+								</Route>
+								<Route element={<LoginBoundary />}>
+									<Route path="/app/settings" element={<SettingsLayout />}>
+										<Route index element={<IndexSettingsAppPage />} />
+										<Route
+											path="/app/settings/authorized-apps"
+											element={<AuthorizedAppsPage />}
+										/>
+										<Route
+											path="/app/settings/webhooks"
+											element={<WebhooksAppPage />}
+										/>
+										<Route
+											path="/app/settings/express/alter/:alter"
+											element={<ExpressSpecificAlterPage />}
+										/>
+										<Route
+											path="/app/settings/express"
+											element={<ExpressList />}
+										/>
+									</Route>
 									<Route
-										index
-										element={<IndexSettingsAppPage />}
+										path="/app/import-staging"
+										element={<ImportStagingPage />}
 									/>
 									<Route
-										path="/app/settings/authorized-apps"
-										element={<AuthorizedAppsPage />}
-									/>
-									<Route
-										path="/app/settings/webhooks"
-										element={<WebhooksAppPage />}
-									/>
-									<Route
-										path="/app/settings/express/alter/:alter"
-										element={<ExpressSpecificAlterPage />}
-									/>
-									<Route
-										path="/app/settings/express"
-										element={<ExpressList />}
+										path="/app/import-staging/done"
+										element={<ImportStagingDonePage />}
 									/>
 								</Route>
-								<Route
-									path="/app/import-staging"
-									element={<ImportStagingPage />}
-								/>
-								<Route
-									path="/app/import-staging/done"
-									element={<ImportStagingDonePage />}
-								/>
 								<Route path="*" element={<NotFoundPage />} />
 							</Routes>
 						</div>

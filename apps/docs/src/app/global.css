@@ -3,34 +3,36 @@
 @import "fumadocs-ui/css/preset.css";
 @import "tw-animate-css";
 @import "@fontsource-variable/atkinson-hyperlegible-mono";
-@import 'fumadocs-openapi/css/preset.css';
+@import "fumadocs-openapi/css/preset.css";
 @plugin "tailwindcss-animate";
+
+@plugin "tailwind-scrollbar-hide";
 
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-	font-family: 'gg sans';
-	src: url('/font/gg-sans.ttf') format('truetype');
+	font-family: "gg sans";
+	src: url("/font/gg-sans.ttf") format("truetype");
 	font-weight: 400;
-  }
+}
 
-  @font-face {
-	font-family: 'gg sans';
-	src: url('/font/gg-sans-medium.ttf') format('truetype');
+@font-face {
+	font-family: "gg sans";
+	src: url("/font/gg-sans-medium.ttf") format("truetype");
 	font-weight: 500;
-  }
+}
 
-  @font-face {
-	font-family: 'gg sans';
-	src: url('/font/gg-sans-semibold.ttf') format('truetype');
+@font-face {
+	font-family: "gg sans";
+	src: url("/font/gg-sans-semibold.ttf") format("truetype");
 	font-weight: 600;
-  }
+}
 
-  @font-face {
-	font-family: 'gg sans';
-	src: url('/font/gg-sans-bold.ttf') format('truetype');
+@font-face {
+	font-family: "gg sans";
+	src: url("/font/gg-sans-bold.ttf") format("truetype");
 	font-weight: 700;
-  }
+}
 
 @theme inline {
 	--font-sans: var(--font-sans);
@@ -63,6 +65,9 @@
 	--color-secondary: var(--secondary);
 	--color-primary-foreground: var(--primary-foreground);
 	--color-primary: var(--primary);
+	--color-primary-fg: var(--primary-fg);
+	--color-primary-subtle: var(--primary-subtle);
+	--color-primary-subtle-fg: var(--primary-subtle-fg);
 	--color-popover-foreground: var(--popover-foreground);
 	--color-popover: var(--popover);
 	--color-card-foreground: var(--card-foreground);
@@ -85,7 +90,9 @@
 	}
 	--radius-2xl: calc(var(--radius) * 1.8);
 	--radius-3xl: calc(var(--radius) * 2.2);
-	--radius-4xl: calc(var(--radius) * 2.6)
+	--radius-4xl: calc(var(--radius) * 2.6);
+	--color-brand: var(--brand);
+	--color-highlight: var(--highlight);
 }
 
 .pluralbuddy {
@@ -105,6 +112,9 @@
 	--card-foreground: oklch(0.145 0 0);
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.145 0 0);
+	--primary-fg: oklch(1 0 0);
+	--primary-subtle: oklch(0.656 0.241 354.308 / 0.15);
+	--primary-subtle-fg: oklch(0.525 0.223 3.958);
 	--primary: oklch(0.59 0.22 1);
 	--primary-foreground: oklch(0.97 0.01 343);
 	--secondary: oklch(0.967 0.001 286.375);
@@ -132,6 +142,8 @@
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
 	--background: oklch(1 0 0);
+	--brand: oklch(0.623 0.214 259.815);
+	--highlight: oklch(0.852 0.199 91.936);
 }
 
 .dark {
@@ -147,6 +159,9 @@
 	--popover-foreground: oklch(0.985 0 0);
 	--primary: oklch(0.66 0.21 354);
 	--primary-foreground: oklch(0.97 0.01 343);
+	--primary-fg: oklch(1 0 0);
+	--primary-subtle: oklch(0.656 0.241 354.308 / 0.1);
+	--primary-subtle-fg: oklch(0.718 0.202 349.761);
 	--secondary: oklch(0.274 0.006 286.033);
 	--secondary-foreground: oklch(0.985 0 0);
 	--muted: oklch(0.269 0 0);
@@ -171,6 +186,8 @@
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
 	--background: oklch(0.145 0 0);
+	--brand: oklch(0.707 0.165 254.624);
+	--highlight: oklch(0.852 0.199 91.936);
 }
 
 .pluralbuddy.dark,
@@ -187,12 +204,12 @@
 	* {
 		border-color: var(--border);
 		outline-color: var(--ring);
-    @apply border-border outline-ring/50;
+		@apply border-border outline-ring/50;
 	}
 	body {
 		background-color: var(--color-background);
 		color: var(--text-base);
-    @apply bg-background text-foreground;
+		@apply bg-background text-foreground;
 	}
 
 	/* Scrollbar styles for Firefox */
@@ -220,8 +237,8 @@
 	html#policies.light {
 		scrollbar-color: #cc8b00 var(--background-shad);
 	}
-  html {
-    @apply font-sans;
+	html {
+		@apply font-sans;
 	}
 }
 
@@ -237,8 +254,8 @@
 		background-color: var(--background-shad);
 		color: var(--foreground);
 	}
-	[data-state="open"] > div > fieldset >label >span {
-		display: none
+	[data-state="open"] > div > fieldset > label > span {
+		display: none;
 	}
 }
 
@@ -248,4 +265,28 @@ discord-header:first-child:nth-child(2) {
 
 .discord-left-border {
 	width: 8px !important;
+}
+
+
+.slate-editor {
+	padding-inline: 16px !important;
+}
+
+blockquote {
+    box-sizing: border-box;
+    padding-block: 0;
+    padding-inline: 12px 8px;
+    text-indent: 0;
+	color: var(--muted-foreground) !important;
+	quotes: " " !important;
+	font-style: normal;
+}
+
+* {
+	quotes: none !important;
+}
+
+.prose :where(*):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+	margin-top: 0;
+	margin-bottom: 0;
 }
