@@ -11,5 +11,5 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
 }
  
 export const config = {
-  matcher: ['/oauth2/authorize', '/((?!api|image|openapi.yml|sitemap.xml|sitemap-(.*).xml|robots.txt|og|app|.well-known|font|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/oauth2/authorize', '/((?!api|image|openapi.yml|sitemap.xml|sitemap-0.xml|robots.txt|og|app|.well-known|font|_next/static|_next/image|favicon.ico).*)'],
 }
