@@ -25,7 +25,7 @@ import reactStringReplace from "react-string-replace";
 
 export const metadata: Metadata = {
 	title: "PluralBuddy",
-	description: "The new age of plurality data storage.",
+	description: "The new age of plurality data storage for Discord and beyond. Create alters & tags to spice up your system for those who are plural.",
 	applicationName: "PluralBuddy",
 };
 
