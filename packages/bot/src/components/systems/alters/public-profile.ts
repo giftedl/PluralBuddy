@@ -9,6 +9,7 @@ import { AlterView } from "@/views/alters";
 export default class PublicProfileButton extends ComponentCommand {
 	componentType = "Button" as const;
 
+	
 	override filter(context: ComponentContext<typeof this.componentType>) {
 		return InteractionIdentifier.Systems.Configuration.Alters.PublicProfileSettings.startsWith(
 			context.customId,
