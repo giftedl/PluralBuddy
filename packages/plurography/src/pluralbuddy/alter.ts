@@ -53,7 +53,7 @@ export const PAlterObject = z.object({
     proxyTags: z.object({ prefix: z.string().max(100), suffix: z.string().max(100), id: z.string() }).array().default([]),
 
     tagIds: z.string().array().default([]),
-    public: z.number().nonnegative().catch(0).meta({ description: publicDescription })
+    public: z.number().nonnegative().default(0).meta({ description: publicDescription })
 }).meta({ id: "PAlter" })
 
 export type PAlter = z.infer<typeof PAlterObject>
