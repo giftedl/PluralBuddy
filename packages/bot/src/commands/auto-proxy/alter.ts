@@ -105,6 +105,7 @@ export default class AlterProxyMode extends SubCommand {
 			(await ctx.userTranslations()),
 			"discord",
 			"alter",
+			alter ? Number(alter.alterId) : undefined,
 		);
 
 		return await ctx.editResponse({

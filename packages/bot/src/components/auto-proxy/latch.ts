@@ -112,6 +112,7 @@ export default class LatchAutoProxySelectMenu extends ComponentCommand {
 			(await ctx.userTranslations()),
 			"discord",
 			"latch",
+			initalAlterId ? Number(initalAlterId) : undefined,
 		);
 
 		return await ctx.write({

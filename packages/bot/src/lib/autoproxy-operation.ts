@@ -9,6 +9,7 @@ import type { TranslationString } from "@/lang";
 import { emojis } from "./emojis";
 import { InteractionIdentifier } from "./interaction-ids";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { w } from "@/webhooks";
 
 export async function sendAutoproxyOperationDM(
 	system: PSystem,
@@ -16,7 +17,24 @@ export async function sendAutoproxyOperationDM(
 	translations: TranslationString,
 	environment: "discord" | "web",
 	mode: "off" | "latch" | "alter",
+	proxyAlter?: number,
 ) {
+	w(system.associatedUserId, "system.update", {
+		system: {
+			...system,
+			systemAutoproxy: [
+				...system.systemAutoproxy.filter(
+					(v) => v.serverId !== changedServer.id,
+				),
+				{
+					serverId: changedServer.id,
+					autoproxyMode: mode,
+					autoproxyAlter: proxyAlter ? proxyAlter?.toString() : undefined,
+				},
+			],
+		} satisfies PSystem,
+	});
+
 	if (system.systemOperationDM)
 		try {
 			await client.users
@@ -59,22 +77,22 @@ export async function sendAutoproxyOperationDM(
 								),
 							)
 							.setColor("#F9DC00"),
-							new Section()
-								.setComponents(
-									new TextDisplay().setContent(
-										"-# You were notified of this action due to your association with your PluralBuddy system's auto-proxy settings.",
-									),
-									new TextDisplay().setContent(
-										"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
-									),
-								)
-								.setAccessory(
-									new Button()
-										.setCustomId(InteractionIdentifier.SnoozeDMs.create())
-										.setStyle(ButtonStyle.Danger)
-										.setLabel("Opt-out of DMs")
-										.setEmoji(emojis.xWhite),
+						new Section()
+							.setComponents(
+								new TextDisplay().setContent(
+									"-# You were notified of this action due to your association with your PluralBuddy system's auto-proxy settings.",
 								),
+								new TextDisplay().setContent(
+									"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+								),
+							)
+							.setAccessory(
+								new Button()
+									.setCustomId(InteractionIdentifier.SnoozeDMs.create())
+									.setStyle(ButtonStyle.Danger)
+									.setLabel("Opt-out of DMs")
+									.setEmoji(emojis.xWhite),
+							),
 					],
 				})
 				.catch(() => null);

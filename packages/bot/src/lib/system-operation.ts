@@ -15,6 +15,7 @@ import {
 	listFromMaskSystems,
 } from "./privacy-bitmask";
 import convert from "./delay-converter";
+import { svix, w } from "@/webhooks";
 
 export async function createSystemOperation(
 	system: PSystem,
@@ -148,6 +149,13 @@ export async function createSystemOperation(
 	if (listItems.length === 0) return;
 
 	await operationCollection.insertOne(operationDb);
+
+	w(system.associatedUserId, "system.update", {
+		system: {
+			...system,
+			...operation,
+		}
+	})
 
 	if (environment === "discord")
 		await writeUserById(system.associatedUserId, {

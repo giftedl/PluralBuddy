@@ -98,6 +98,7 @@ export default class AlterAutoProxySelectMenu extends ComponentCommand {
 			(await ctx.userTranslations()),
 			"discord",
 			"alter",
+			alterId ? Number(alterId) : undefined,
 		);
 
 		return await ctx.write({
