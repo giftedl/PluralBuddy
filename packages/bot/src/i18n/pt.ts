@@ -236,21 +236,28 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   ROLE_USAGE: "Cargo",
   UNABLE_TO_BE_FUNNY: "Você não tem permissão para usar os comandos engraçados.",
   DISABLED_DM_REPLIES: "Resposta de mensagem direta desabilitada com sucesso. Use `pb;nudge-preferences` para reativá-las.",
-  ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
-%github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+  ABOUT_PB: `-# **DEVELOPMENT INFO**
+> PluralBuddy Build #%version% · \`%branch%\`
 
+-# **ABOUT PLURALBUDDY**
 > PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
-> **Credits:**
-> %linein% Programmed w/ :heart_hands: by @giftedly 
-> %linein% Art by %catjamming% @raincloudzy
-> **Translations:**
-> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
-> %lineright% 🇧🇷 Portuguese translations by @lemon_piece.
+-# **CREDITS**
+**Programmed w/ :heart_hands: by @giftedly**
+-# Developed all major parts of PluralBuddy
 
--# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+**Art by %catjamming% @raincloudzy**
+-# Created the banner, profile picture and overall brand of PluralBuddy
+
+**Translated on Crowdin**
+-# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇧🇷 Portuguese translations by @lemon_piece.
+
+-# **LINKS**
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Atribuir Tag",
   SET_AUTO_PROXY: "O modo proxy foi definido com sucesso para **%mode%** para o seu sistema em **%server_name%**.",
   SET_AUTO_PROXY_DMS: "Successfully set proxy mode to **%mode%** for your system in that server.",

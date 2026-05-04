@@ -2,8 +2,8 @@
   "title": "Authentication",
   "pages": [
     "oauth2/token/post",
-    "oauth2/revoke/post",
     "oauth2/introspect/post",
+    "oauth2/revoke/post",
     "oauth2/authorize/get"
   ],
   "icon": "Key"

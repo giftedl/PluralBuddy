@@ -1,0 +1,30 @@
+name: auto-process-openapi
+on: push
+jobs:
+  process-openapi:
+    name: Process OpenAPI documentation
+    runs-on: ubuntu-latest
+    steps:
+      # ...
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      # run any `bun` or `bunx` command
+      - run: bun install
+      - run: bun run docs:openapi
+      
+      # Commit and Push Changes
+      - name: Commit and Push Changes
+        run: |
+          # configure user
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+      
+          # stage any file changes to be committed
+          git add .
+      
+          # make commit with staged changes
+          git commit -m 'Automatically create OpenAPI documentation from Plurography'
+      
+          # push the commit back up to source GitHub repository
+          git push
