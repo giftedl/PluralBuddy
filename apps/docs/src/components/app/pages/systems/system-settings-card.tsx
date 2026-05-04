@@ -44,6 +44,7 @@ import { motion } from "motion/react";
 import {toast} from "sonner";
 import {ColorPicker} from "@/components/ui/color-picker";
 import {FullColorPicker} from "@/components/app/pages/systems/full-color-picker";
+import { useQuickSync } from "@/lib/app/use-sync";
 
 export function SystemSettingsCard({ data }: { data: PSystem }) {
 	const t = useTranslations();
@@ -59,13 +60,14 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
     const [currentBanner, setCurrentBanner] = useState(data.systemBanner ?? "");
 
     const [loadingImages, setLoadingImages] = useState(false);
+	const sync = useQuickSync();
 
 	const reload = async () => {
 		const descChanged =
 			currentDescription.replace(" ", "").replace("\n", "").replace("​", "") !==
 			(data.systemDescription ?? "");
 		const pnChanged = currentPronouns !== (data.systemPronouns ?? "");
-		const nameChanged = currentName !== data.systemName;
+		const nameChanged = currentName !== data.systemName && currentName.trim() !== "";
         const avatarChanged = currentAvatar !== data.systemAvatar;
         const bannerChanged = currentBanner !== data.systemBanner;
 
@@ -80,6 +82,8 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
             ...(avatarChanged ? { systemAvatar: currentAvatar } : {}),
             ...(bannerChanged ? { systemBanner: currentBanner } : {}),
 		});
+
+        await sync();
 	};
 
     const processChangeEvent = async (c: ChangeEvent<HTMLInputElement>) => {
@@ -285,7 +289,7 @@ export function SystemSettingsCard({ data }: { data: PSystem }) {
 									characters.
 								</FieldError>
 							) : (
-								""
+								currentName.trim() === "" && <FieldError>System name cannot be empty.</FieldError>
 							)}
 						</Field>
 						<Field className="mb-6">

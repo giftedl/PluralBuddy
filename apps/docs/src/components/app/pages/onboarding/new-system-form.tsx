@@ -32,12 +32,14 @@ import { PAlterObject, PSystemObject } from "plurography";
 import { Kbd } from "@/components/ui/kbd";
 import Link from "next/link";
 import { db } from "@/lib/app/dexie";
+import { useQuickSync } from "@/lib/app/use-sync";
 
 const formSchema = z.object({
 	title: PSystemObject._zod.def.shape.systemName,
 });
 
 export function NewSystemForm({finished}: { finished: () => void}) {
+	const sync = useQuickSync();
 	const form = useForm({
 		defaultValues: {
 			title: "",
@@ -61,6 +63,7 @@ export function NewSystemForm({finished}: { finished: () => void}) {
 			}))
 			
 			finished()
+        	await sync();
 		},
 	});
 

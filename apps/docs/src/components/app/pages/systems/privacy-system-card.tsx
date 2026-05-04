@@ -6,6 +6,7 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import {useEffect, useMemo, useState} from "react";
 import {db} from "@/lib/app/dexie";
 import {Button} from "@/components/ui/shadcn-button";
+import { useQuickSync } from "@/lib/app/use-sync";
 
 const flags = [
     {
@@ -47,6 +48,7 @@ const flags = [
 export function PrivacySystemSettingsCard({data}: { data: PSystem }) {
 
     const [values, setValues] = useState<{ name: string,value: string }[]>(flags.map(v => ({name: v.name, value: data.public & v.value ? "public" : "private"})))
+    const sync = useQuickSync();
 
     const reload = async (values: { name: string, value: string }[]) => {
         let num = 0;
@@ -57,6 +59,7 @@ export function PrivacySystemSettingsCard({data}: { data: PSystem }) {
         await db.systems.update("@me", {
             public: num
         })
+        await sync();
     }
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: ...
@@ -112,6 +115,7 @@ export function PrivacySystemSettingsCard({data}: { data: PSystem }) {
                         public: 0
                     })
 
+                    await sync();
                     setValues(flags.map(v => ({name: v.name, value: "private"})));
                 }}>Reset</Button>
             </CardFooter>

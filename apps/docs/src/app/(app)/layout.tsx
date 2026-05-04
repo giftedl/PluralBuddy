@@ -15,6 +15,7 @@ import { AuthComponents } from "@/components/layout/docs/auth-components";
 import { Button } from "@/components/ui/shadcn-button";
 import { Cog, PanelRightOpen } from "lucide-react";
 import { AppSettings } from "@/components/app/app-settings";
+import { SerwistProvider } from "@serwist/turbopack/react";
 import {
 	SidebarInset,
 	SidebarProvider,
@@ -23,10 +24,46 @@ import {
 import { RemoteSidebarToggle } from "@/components/app/remote-sidebar-toggle";
 import { Metadata } from "next";
 
-export const metadata = {
-	title: "PluralBuddy App",
-	description: "PluralBuddy app"
-} satisfies Metadata
+
+const APP_NAME = "PluralBuddy App";
+const APP_DEFAULT_TITLE = "PluralBuddy App";
+const APP_TITLE_TEMPLATE = "%s - PluralBuddy App";
+const APP_DESCRIPTION = "PluralBuddy App";
+
+export const metadata: Metadata = {
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
+};
 
 export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 	const messages = (await import(`../../../messages/en.json`)).default;
@@ -34,6 +71,7 @@ export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 	return (
 		<Html>
 			<Body>
+				<SerwistProvider swUrl="/serwist/sw.js">
 				<TooltipProvider>
 					<ThemeProvider
 						attribute="class"
@@ -48,6 +86,7 @@ export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 						</NextIntlClientProvider>
 					</ThemeProvider>
 				</TooltipProvider>
+				</SerwistProvider>
 			</Body>
 		</Html>
 	);

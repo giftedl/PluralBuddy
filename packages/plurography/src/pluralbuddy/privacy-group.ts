@@ -6,7 +6,7 @@ export const PPrivacyGroupObject = z.object({
     id: z.string(),
     system: z.string(),
 
-    name: z.string(),
+    name: z.string().min(1).max(100),
     attachedUsers: z.string().array(),
 
     permissions: z.object({

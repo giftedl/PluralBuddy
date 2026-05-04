@@ -11,14 +11,14 @@ import { ColorSwatch } from "@/components/ui/color-swatch"
 import { ColorThumb } from "@/components/ui/color-thumb"
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 import {Input} from "@/components/ui/intent-input";
+import {Color} from "react-aria-components";
 
-export function FullColorPicker() {
-    const [color, setColor] = useState(parseColor("#0d6efd"))
+export function FullColorPicker({color, setColor}: {color: Color, setColor: (color: Color) => void}) {
     return (
         <ColorPicker value={color} onChange={setColor} defaultValue="rgb(120,140,200)">
             <Popover>
                 <PopoverTrigger asChild>
-                <Button variant="ghost" data-slot="control">
+                <Button variant="ghost" data-slot="control" className="w-full">
                     <ColorSwatch className="max-w-5 max-h-5"/>
                     Select color
                 </Button></PopoverTrigger>
