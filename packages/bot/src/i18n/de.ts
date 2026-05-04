@@ -240,28 +240,21 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   ROLE_USAGE: "Role",
   UNABLE_TO_BE_FUNNY: "You are not permitted to use the funny commands.",
   DISABLED_DM_REPLIES: "Successfully toggled DM replies off. Use `pb;nudge-preferences` to re-enable them.",
-  ABOUT_PB: `-# **DEVELOPMENT INFO**
-> PluralBuddy Build #%version% · \`%branch%\`
+  ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
+%github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
 
--# **ABOUT PLURALBUDDY**
 > PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
--# **CREDITS**
-**Programmed w/ :heart_hands: by @giftedly**
--# Developed all major parts of PluralBuddy
+> **Credits:**
+> %linein% Programmed w/ :heart_hands: by @giftedly 
+> %linein% Art by %catjamming% @raincloudzy
+> **Translations:**
+> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+> %lineright% 🇧🇷 Portuguese translations by @lemon_piece.
 
-**Art by %catjamming% @raincloudzy**
--# Created the banner, profile picture and overall brand of PluralBuddy
-
-**Translated on Crowdin**
--# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
--# 🇧🇷 Portuguese translations by @lemon_piece.
-
--# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
-> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+-# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
   SET_AUTO_PROXY: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_DMS: "Successfully set proxy mode to **%mode%** for your system in that server.",
