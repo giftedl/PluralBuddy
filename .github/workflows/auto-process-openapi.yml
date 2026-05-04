@@ -1,0 +1,14 @@
+name: auto-process-openapi
+on: push
+jobs:
+  process-openapi:
+    name: Process OpenAPI documentation
+    runs-on: ubuntu-latest
+    steps:
+      # ...
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+
+      # run any `bun` or `bunx` command
+      - run: bun install
+      - run: bun run docs:openapi
