@@ -79,7 +79,7 @@ const serwist = new Serwist({
 	},
 });
 
-const urlsToCache = ["/manifest.json"] as const;
+const urlsToCache = ["/app/onboarding", "/manifest.json"] as const;
 
 self.addEventListener("install", (event) => {
 	event.waitUntil(
