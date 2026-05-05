@@ -8,6 +8,7 @@ import {
 	ExpirationPlugin,
 	NetworkFirst,
 	Serwist,
+    StaleWhileRevalidate,
 } from "serwist";
 
 // This declares the value of `injectionPoint` to TypeScript.
@@ -27,22 +28,35 @@ const serwist = new Serwist({
 	skipWaiting: true,
 	clientsClaim: true,
 	navigationPreload: true,
+	precacheOptions: {
+		ignoreURLParametersMatching: [/.*/],
+        fallbackToNetwork: true
+	},
 	runtimeCaching: [
 		{
 			matcher: ({ url }) => url.pathname.startsWith("/app"),
 			handler: new NetworkFirst({
 				cacheName: "app-pages",
-				plugins: [new ExpirationPlugin({ maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 30 })],
-				networkTimeoutSeconds: 5,
+				plugins: [
+				],
 			}),
 		},
 		{
 			matcher: ({ url }) => url.pathname.startsWith("/_next/"),
-			handler: new CacheFirst({
+			handler: new NetworkFirst({
 				cacheName: "next-assets",
-				plugins: [new ExpirationPlugin({ maxEntries: 100, maxAgeSeconds: 24 * 60 * 60 })],
+				plugins: [
+				],
 			}),
 		},
+        {
+			matcher: ({ url }) => url.pathname === "/favicon.ico",
+			handler: new NetworkFirst({
+				cacheName: "next-assets",
+				plugins: [
+				],
+			}),
+        },
 		...defaultCache,
 	],
 	fallbacks: {
@@ -65,7 +79,7 @@ const serwist = new Serwist({
 	},
 });
 
-const urlsToCache = ["/_next/", "/app/onboarding", "/manifest.json"] as const;
+const urlsToCache = ["/app/onboarding", "/manifest.json"] as const;
 
 self.addEventListener("install", (event) => {
 	event.waitUntil(
@@ -81,12 +95,31 @@ self.addEventListener("install", (event) => {
 	);
 });
 
-self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
 
-  if (url.pathname.startsWith("/api/") && url.origin === location.origin) {
-    return Response.json(null);
-  }
-})
+self.addEventListener("fetch", async (event) => {
+	const url = new URL(event.request.url);
+    const cache = await caches.open(serwist.precacheStrategy.cacheName);
+
+    if (url.pathname.startsWith("/app/"))
+	console.log("hello", url);
+    console.log(cache)
+
+	if (url.pathname.startsWith("/api/") && event && url.origin === location.origin) {
+		const tryReq = await fetch(event.request);
+
+        if (!tryReq.ok)
+            event.respondWith(Response.json(null))
+        
+	}
+	if (url.origin === location.origin && url.pathname.startsWith("/app")) {
+        const cacheKey = serwist.getPrecacheKeyForUrl("/app/onboarding");
+        console.log(cacheKey)
+		if (cacheKey) {
+			event.respondWith(
+				(async () => (await cache.match(cacheKey)) ?? Response.error())(),
+			);
+		}
+	}
+});
 
 serwist.addEventListeners();
