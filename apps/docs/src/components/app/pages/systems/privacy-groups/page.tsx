@@ -71,10 +71,10 @@ export function PrivacyGroupsSettingsAppPage() {
 								>
 									<ResizablePanelGroup
 										orientation="horizontal"
-										className="h-max w-full mt-4 border rounded-lg"
+										className="h-max w-full mt-4 border rounded-lg "
 									>
 										<ResizablePanel
-											className="p-4 grid gap-2"
+											className="p-4 grid gap-2 grid-cols-1 self-start"
 											minSize={300}
 											defaultSize={300}
 											maxSize={400}

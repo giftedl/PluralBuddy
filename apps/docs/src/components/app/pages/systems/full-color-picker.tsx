@@ -15,7 +15,7 @@ import {Color} from "react-aria-components";
 
 export function FullColorPicker({color, setColor}: {color: Color, setColor: (color: Color) => void}) {
     return (
-        <ColorPicker value={color} onChange={setColor} defaultValue="rgb(120,140,200)">
+        <ColorPicker value={color} onChange={setColor} defaultValue="rgb(120,140,200)" className="max-w-min">
             <Popover>
                 <PopoverTrigger asChild>
                 <Button variant="ghost" data-slot="control" className="w-full">

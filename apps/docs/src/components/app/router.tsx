@@ -4,11 +4,7 @@ import AuthorizedAppsPage from "@/components/app/pages/authorized-apps/page";
 import ExpressSpecificAlterPage from "@/components/app/pages/express/page";
 import NotFoundPage from "@/components/app/pages/not-found";
 import { SettingsLayout } from "@/components/app/pages/settings-layout";
-import { DiscordLoginComponent } from "@/components/discord-login";
 import { ExpressList } from "@/components/app/pages/express/express-page.client";
-import { SettingsSidebar } from "@/components/app/settings-sidebar";
-import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth-client";
 import { TRPCProvider } from "@/server/client";
 import { trpc } from "@/server/client-trpc";
 import {
@@ -49,6 +45,8 @@ import EditPrivacySystemPage from "@/components/app/pages/systems/edit-privacy/p
 import SystemPage from "@/components/app/pages/systems/system/page";
 import { PrivacyGroupsSettingsAppPage } from "@/components/app/pages/systems/privacy-groups/page";
 import { gatherPayload, useSyncMutation } from "@/lib/app/use-sync";
+import { authClient } from "@/lib/auth-client";
+import { Spinner } from "../ui/spinner";
 
 declare global {
 	var trpcClient: ReturnType<typeof trpc.createClient>;
@@ -57,7 +55,7 @@ declare global {
 const queryClient = new QueryClient();
 
 export default function PluralBuddyRouter() {
-	// const { data: session, isPending } = authClient.useSession();
+	const { data: session, isPending } = authClient.useSession();
 	const [trpcClient] = useState(() =>
 		trpc.createClient({
 			links: [
@@ -70,33 +68,33 @@ export default function PluralBuddyRouter() {
 	);
 
 
-	// const syncMutation = useSyncMutation(trpcClient);
-	// const { isPending: isSyncPending } = useQuery({
-	// 	queryKey: ["sync"],
-	// 	queryFn: async () =>
-	// 		await syncMutation.mutate({
-	// 			data: await gatherPayload(),
-	// 			prefer: "remote",
-	// 		}),
-	// });
+	const syncMutation = useSyncMutation(trpcClient);
+	const { isPending: isSyncPending } = useQuery({
+		queryKey: ["sync"],
+		queryFn: async () =>
+			await syncMutation.mutate({
+				data: await gatherPayload(),
+				prefer: "remote",
+			}),
+	});
 
 	if (!globalThis.trpcClient) globalThis.trpcClient = trpcClient;
 
-	// if (isPending || isSyncPending)
-	// 	return (
-	// 		<div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 block justify-center text-center gap-2">
-	// 			<span className="w-full flex justify-center">
-	// 				<Spinner />
-	// 			</span>
+	if (isPending || isSyncPending)
+		return (
+			<div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 block justify-center text-center gap-2">
+				<span className="w-full flex justify-center">
+					<Spinner />
+				</span>
 
-	// 			<span className="grid">
-	// 				<span className="text-sm pt-2">{isPending && "Logging in..."}</span>
-	// 				<span className="text-sm pt-2">
-	// 					{isSyncPending && "Syncing with remote..."}
-	// 				</span>
-	// 			</span>
-	// 		</div>
-	// 	);
+				<span className="grid">
+					<span className="text-sm pt-2">{isPending && "Logging in..."}</span>
+					<span className="text-sm pt-2">
+						{isSyncPending && "Syncing with remote..."}
+					</span>
+				</span>
+			</div>
+		);
 
 	if ("virtualKeyboard" in navigator) {
 		(navigator.virtualKeyboard as any).overlaysContent = false;
