@@ -71,7 +71,6 @@ export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 	return (
 		<Html>
 			<Body>
-				<SerwistProvider swUrl="/serwist/sw.js">
 				<TooltipProvider>
 					<ThemeProvider
 						attribute="class"
@@ -86,7 +85,6 @@ export default async function Layout({ children }: LayoutProps<"/[lang]">) {
 						</NextIntlClientProvider>
 					</ThemeProvider>
 				</TooltipProvider>
-				</SerwistProvider>
 			</Body>
 		</Html>
 	);
