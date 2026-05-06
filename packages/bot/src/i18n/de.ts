@@ -12,7 +12,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
   BLACKLISTED: "Du wurdest von {{ guild }} in die blacklist gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
   // Does not need to be translated
-  BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
+  BLACKLISTED_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
@@ -218,7 +218,7 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   ERROR_MANUAL_PROXY: "2u – There was an error while manually proxying. Please try again later.",
   SUCCESS_PROXY: "[Your message](<%message-link%>) has been sent!",
   CONTENT_ERROR_PROXY: "2v – You must either have some text or an attachment to proxy.",
-  ERROR_USER_BLACKLISTED: "2a – This user is blacklisted from using PluralBuddy.",
+  ERROR_USER_BLACKLISTED: "2a – This user is blocked from using PluralBuddy.",
   OPERATION_HEADER: "Operation Transcript:",
   OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
   OPERATION_WEB: "%clock% Expires in 30 minutes • %web% Web (via Exchange)",
@@ -455,8 +455,8 @@ Please download the JSON file sent to you and use the button to upload the attac
 > Prefixes can be configured and set. You can have unlimited possible prefixes, comma separated.
 > Your current prefixes are {{ prefixList }}`,
   SRV_CFG_PREFIXES_BTN: "Set Prefixes",
-  SRV_CFG_BLACKLISTS_DESC: `**Configure Blacklist**
-> Roles and channels can be blacklisted from proxying or using commands from PluralBuddy.`,
+  SRV_CFG_BLACKLISTS_DESC: `**Configure Block**
+> Roles and channels can be blocked from proxying or using commands from PluralBuddy.`,
   SRV_CFG_BLACKLISTS_ITEMS: `> Currently, the guild's blacklist items are: {{ list }}`,
   SRV_CFG_BLACKLISTS_ITEMS_EMPTY: "> - _There are no blacklist items._",
   SRV_CFG_BLACKLISTS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blacklist items.`,

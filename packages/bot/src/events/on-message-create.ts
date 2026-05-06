@@ -47,7 +47,7 @@ import { helpPages } from "@/commands/help";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
-import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
+import { blockedChannel, blockedRole } from "@/lib/blocked";
 import { latencyDataPoints } from "@/analytics";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
 import { getLanguageByUserId } from "@/lib/lang";
@@ -207,7 +207,7 @@ export default createEvent({
 		);
 
 		if (user.system === undefined) return;
-		if (user.blacklisted) return;
+		if (user.blocked) return;
 		if (user.system.disabled) return;
 		if (
 			user.system.systemAutoproxy.some(
@@ -233,8 +233,8 @@ export default createEvent({
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
 					
-					if (!(await blacklistedRole(guild, locale, message))) return;
-					if (!(await blacklistedChannel(guild, locale, message))) return;
+					if (!(await blockedRole(guild, locale, message))) return;
+					if (!(await blockedChannel(guild, locale, message))) return;
 
 					performAlterAutoProxy(
 						message,
@@ -408,11 +408,11 @@ export default createEvent({
 
 						console.timeEnd("proxy tag parse");
 
-						if (!(await blacklistedRole(guild, locale, message))) {
+						if (!(await blockedRole(guild, locale, message))) {
 							removeFromMap();
 							return;
 						}
-						if (!(await blacklistedChannel(guild, locale, message))) {
+						if (!(await blockedChannel(guild, locale, message))) {
 							removeFromMap();
 							return;
 						}
@@ -476,8 +476,8 @@ export default createEvent({
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
 
-					if (!(await blacklistedRole(guild, locale, message, true))) return;
-					if (!(await blacklistedChannel(guild, locale, message, true))) return;
+					if (!(await blockedRole(guild, locale, message, true))) return;
+					if (!(await blockedChannel(guild, locale, message, true))) return;
 
 					performAlterAutoProxy(
 						message,

@@ -22,7 +22,7 @@ const options = {
 
 @Declare({
 	name: "remove-category",
-	description: "Remove a server blacklist category.",
+	description: "Remove a server blocked category.",
 	aliases: ["rct"],
 })
 @Middlewares(["ensureGuildPermissions"])
@@ -44,11 +44,11 @@ export default class AddPrefixCommand extends SubCommand {
 			})
         }
 
-		guildObj.blacklistedCategories = guildObj.blacklistedCategories.filter((c) => c !== category);
+		guildObj.blockedCategories = guildObj.blockedCategories.filter((c) => c !== category);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
-			{ $pull: { blacklistedCategories: category } },
+			{ $pull: { blockedCategories: category } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId)
@@ -58,13 +58,13 @@ export default class AddPrefixCommand extends SubCommand {
 				.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 					"%blacklist_items%",
 					[
-						...guildObj.blacklistedChannels.map((c) => {
+						...guildObj.blockedChannels.map((c) => {
 							return { id: c, type: "channel" };
 						}),
-						...guildObj.blacklistedRoles.map((c) => {
+						...guildObj.blockedRoles.map((c) => {
 							return { id: c, type: "role" };
 						}),
-						...(await Promise.all(guildObj.blacklistedCategories.map(async (c) => {
+						...(await Promise.all(guildObj.blockedCategories.map(async (c) => {
 							const category = await ctx.client.channels.fetch(c).catch(() => null);
 
 							if (!category || !category.isCategory()) {

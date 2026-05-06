@@ -15,7 +15,7 @@ export default class AddChannelButton extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Guilds.GeneralTab.AddBlacklistChannel.startsWith(
+		return InteractionIdentifier.Guilds.GeneralTab.AddBlockChannel.startsWith(
 			context.customId,
 		);
 	}
@@ -31,19 +31,19 @@ export default class AddChannelButton extends ComponentCommand {
 							new ChannelSelectMenu({
 								...new ChannelSelectMenu()
 									.setCustomId(
-										InteractionIdentifier.Guilds.FormSelection.AddBlacklistChannelSelection.create(),
+										InteractionIdentifier.Guilds.FormSelection.AddBlockChannelSelection.create(),
 									)
-									.setDefaultChannels(guild.blacklistedChannels)
+									.setDefaultChannels(guild.blockedChannels)
 									.setValuesLength({ min: 0, max: 25 }).data,
 								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
 								required: false,
 							}),
 						)
-						.setLabel("Blacklist Channels")
+						.setLabel("Block Channels")
 						.setDescription("Set all applicable blacklist channels."),
 				])
 				.setCustomId(
-					InteractionIdentifier.Guilds.FormSelection.AddBlacklistChannelForm.create(),
+					InteractionIdentifier.Guilds.FormSelection.AddBlockChannelForm.create(),
 				)
 				.setTitle("Updating Guild"),
 		);

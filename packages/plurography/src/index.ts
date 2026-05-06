@@ -32,4 +32,4 @@ export * from "./pluralbuddy/import-staging";
 export * from "./pluralbuddy/import-notation";
 export * from "./pluralbuddy/express-application";
 
-export * from "./supportbuddy/blacklist-note";
+export * from "./supportbuddy/blocked-note";

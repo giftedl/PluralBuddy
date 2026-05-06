@@ -44,7 +44,7 @@ const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
 	"noWebhookMiddleware",
 	"blacklistUserMiddleware",
-	"serverBlacklist",
+	"serverBlock",
 ];
 
 export const posthogClient =

@@ -6,16 +6,16 @@ import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "./emojis";
 import { client } from "..";
 
-export async function blacklistedRole(
+export async function blockedRole(
 	guild: PGuild,
 	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
-	if (guild.blacklistedRoles.length !== 0) {
+	if (guild.blockedRoles.length !== 0) {
 		if (
 			((await message.member?.roles.list(true)) ?? []).some((c) =>
-				guild.blacklistedRoles.includes(c.id),
+				guild.blockedRoles.includes(c.id),
 			)
 		) {
 			if (
@@ -67,13 +67,13 @@ export async function blacklistedRole(
 	return true;
 }
 
-export async function blacklistedChannel(
+export async function blockedChannel(
 	guild: PGuild,
 	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
-	if (guild.blacklistedChannels.includes(message.channelId)) {
+	if (guild.blockedChannels.includes(message.channelId)) {
 		if (!silent)
 			try {
 				await message.author.write({
@@ -85,10 +85,10 @@ export async function blacklistedChannel(
 			} catch (_) {}
 		return false;
 	}
-	if (guild.blacklistedCategories.length !== 0) {
+	if (guild.blockedCategories.length !== 0) {
 		const channel = await message.channel();
 		if ("parentId" in channel && !channel.isThread())
-			if (guild.blacklistedCategories.includes(channel.parentId ?? "")) {
+			if (guild.blockedCategories.includes(channel.parentId ?? "")) {
 				if (!silent)
 					try {
 						await message.author.write({
@@ -104,7 +104,7 @@ export async function blacklistedChannel(
 			const parent = await client.channels.fetch(channel.parentId);
 
 			if ("parentId" in parent && !parent.isThread())
-				if (guild.blacklistedCategories.includes(parent.parentId ?? "")) {
+				if (guild.blockedCategories.includes(parent.parentId ?? "")) {
 					if (!silent)
 						try {
 							await message.author.write({

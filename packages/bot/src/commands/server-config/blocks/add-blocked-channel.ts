@@ -14,14 +14,14 @@ import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	channel: createChannelOption({
-		description: "Channel to add to blacklist.",
+		description: "Channel to add to the block list.",
 		required: true,
 	}),
 };
 
 @Declare({
 	name: "add-channel",
-	description: "Add a new server blacklist channel.",
+	description: "Add a new server blocked channel.",
 	aliases: ["ac"],
 })
 @Middlewares(["ensureGuildPermissions"])
@@ -33,7 +33,7 @@ export default class AddPrefixCommand extends SubCommand {
 		const guildObj = await ctx.retrievePGuild();
 		const { channel } = ctx.options;
 
-		if (guildObj.blacklistedChannels.includes(channel.id)) {
+		if (guildObj.blockedChannels.includes(channel.id)) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"BLACKLIST_ALREADY_EXISTS",
@@ -42,7 +42,7 @@ export default class AddPrefixCommand extends SubCommand {
 			});
 		}
 
-		if (guildObj.blacklistedChannels.length >= 25) {
+		if (guildObj.blockedChannels.length >= 25) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"TOO_MANY_BLACKLIST_ITEMS",
@@ -51,11 +51,11 @@ export default class AddPrefixCommand extends SubCommand {
 			});
 		}
 
-		guildObj.blacklistedChannels.push(channel.id);
+		guildObj.blockedChannels.push(channel.id);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
-			{ $push: { blacklistedChannels: channel.id } },
+			{ $push: { blockedChannels: channel.id } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId);
@@ -66,15 +66,15 @@ export default class AddPrefixCommand extends SubCommand {
 					.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 						"%blacklist_items%",
 						[
-							...guildObj.blacklistedCategories.map((c) => {
+							...guildObj.blockedCategories.map((c) => {
 								return { id: c, type: "channel" };
 							}),
-							...guildObj.blacklistedRoles.map((c) => {
+							...guildObj.blockedRoles.map((c) => {
 								return { id: c, type: "role" };
 							}),
 							...(
 								await Promise.all(
-									guildObj.blacklistedCategories.map(async (c) => {
+									guildObj.blockedCategories.map(async (c) => {
 										const category = await ctx.client.channels
 											.fetch(c)
 											.catch(() => null);

@@ -11,10 +11,10 @@ Additionally, you can also import data from another bot like PluralKit.
 	PAGINATION_FINISH: "Finish",
 	NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
 	BLACKLISTED:
-		"You have been blacklisted from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
+		"You have been blocked from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
 	
 	// Does not need to be translated
-	BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
+	BLACKLISTED_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
@@ -304,7 +304,7 @@ Systems can have **privacy values** which are values that describe who can see w
 		"2v – You must either have some text or an attachment to proxy.",
 
 	ERROR_USER_BLACKLISTED:
-		"2a – This user is blacklisted from using PluralBuddy.",
+		"2a – This user is blocked from using PluralBuddy.",
 
 	OPERATION_HEADER: "Operation Transcript:",
 	OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
@@ -429,7 +429,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	BLACKLIST_ALREADY_EXISTS: "That role or channel is already on the blacklist.",
 	SUCCESS_ADD_MANAGER_ROLE:
 		"%item% has been added to the manager role list successfully.",
-	SUCCESS_CHANGED_MANAGER_BLACKLIST:
+	SUCCESS_CHANGED_MANAGER_BLOCKS:
 		"This server now has the following manager role configuration: \n%manager_roles%",
 	LATCH_DELAY_INVALID:
 		"Latch delays cannot be longer than 10 hours, or be an invalid input. ",
@@ -605,8 +605,8 @@ Please download the JSON file sent to you and use the button to upload the attac
 > Prefixes can be configured and set. You can have unlimited possible prefixes, comma separated.
 > Your current prefixes are {{ prefixList }}`,
 	SRV_CFG_PREFIXES_BTN: "Set Prefixes",
-	SRV_CFG_BLACKLISTS_DESC: `**Configure Blacklist**
-> Roles and channels can be blacklisted from proxying or using commands from PluralBuddy.`,
+	SRV_CFG_BLACKLISTS_DESC: `**Configure Block**
+> Roles and channels can be blocked from proxying or using commands from PluralBuddy.`,
 	SRV_CFG_BLACKLISTS_ITEMS: `> Currently, the guild's blacklist items are: {{ list }}`,
 	SRV_CFG_BLACKLISTS_ITEMS_EMPTY: "> - _There are no blacklist items._",
 	SRV_CFG_BLACKLISTS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blacklist items.`,

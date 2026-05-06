@@ -22,7 +22,7 @@ export function RoleContainerExample() {
 
 	if (!mounted) return null;
 	return (
-		<MDXFeedbackBlock id="app-card" body="Blacklisted Channel Card (#response)">
+		<MDXFeedbackBlock id="app-card" body="Blocked Channel Card (#response)">
 			<DiscordMessages
 				className="py-4 font-[gg_sans] rounded-[8px] border"
 				lightTheme={resolvedTheme === "light"}

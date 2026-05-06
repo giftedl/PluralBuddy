@@ -27,7 +27,7 @@ export async function getApplicableCase(userId: string) {
 		}>("blacklists");
 	const blacklist = await blacklists?.findOne({
 		targetId: userId,
-		blacklistSelection: { $in: server.blacklistedRoles },
+		blacklistSelection: { $in: server.blockedRoles },
 	});
 
 	return blacklist;

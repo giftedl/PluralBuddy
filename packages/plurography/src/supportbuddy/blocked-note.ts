@@ -2,11 +2,11 @@
 
 import z from "zod";
 
-export const PBlacklistNoteObj = z.object({
+export const PBlockNoteObj = z.object({
     note: z.string(),
     associatedUserId: z.string(),
     date: z.coerce.date(),
     moderatorId: z.string(),
 })
 
-export type PBlacklistNote = z.infer<typeof PBlacklistNoteObj>
+export type PBlockNote = z.infer<typeof PBlockNoteObj>

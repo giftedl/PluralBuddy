@@ -119,10 +119,10 @@ export const InteractionIdentifier = {
 			SetLoggingChannel: createStatic("guilds/general/set-logging-channel"),
 			SetProxyDelay: createStatic("guilds/general/set-proxy-delay"),
 
-			AddBlacklistRole: createStatic("guilds/general/blacklist/add-role"),
-			AddBlacklistChannel: createStatic("guilds/general/blacklist/add-channel"),
-			AddBlacklistCategory: createStatic("guilds/general/blacklist/add-category"),
-			RemoveBlacklistCategory: createStatic("guilds/general/blacklist/remove-category"),
+			AddBlockRole: createStatic("guilds/general/blocked/add-role"),
+			AddBlockChannel: createStatic("guilds/general/blocked/add-channel"),
+			AddBlockCategory: createStatic("guilds/general/blocked/add-category"),
+			RemoveBlockCategory: createStatic("guilds/general/blocked/remove-category"),
 			AddManagers: createStatic("guilds/general/add-manager"),
 			ToggleSystemTagRequirement: createStatic(
 				"guilds/general/toggle-system-tag",
@@ -162,27 +162,27 @@ export const InteractionIdentifier = {
 			SetPrefixesForm: createStatic("guilds/form/prefixes-form"),
 			SetPrefixesSelection: createStatic("guilds/form/prefixes-selection"),
 
-			AddBlacklistRoleForm: createStatic("guilds/form/add-blacklist-role-form"),
-			AddBlacklistRoleSelection: createStatic("guilds/form/add-blacklist-role"),
+			AddBlockRoleForm: createStatic("guilds/form/add-blacklist-role-form"),
+			AddBlockRoleSelection: createStatic("guilds/form/add-blacklist-role"),
 
-			AddBlacklistChannelForm: createStatic(
+			AddBlockChannelForm: createStatic(
 				"guilds/form/add-blacklist-channel-form",
 			),
-			AddBlacklistChannelSelection: createStatic(
+			AddBlockChannelSelection: createStatic(
 				"guilds/form/add-blacklist-channel",
 			),
 			
-			AddBlacklistCategoryForm: createStatic(
+			AddBlockCategoryForm: createStatic(
 				"guilds/form/add-blacklist-category-form",
 			),
-			AddBlacklistCategorySelection: createStatic(
+			AddBlockCategorySelection: createStatic(
 				"guilds/form/add-blacklist-category",
 			),
 			
-			RemoveBlacklistCategoryForm: createStatic(
+			RemoveBlockCategoryForm: createStatic(
 				"guilds/form/remove-blacklist-category-form",
 			),
-			RemoveBlacklistCategorySelection: createStatic(
+			RemoveBlockCategorySelection: createStatic(
 				"guilds/form/remove-blacklist-category",
 			),
 

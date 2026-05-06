@@ -47,12 +47,12 @@ export const PGuildObject = z
 			),
 
 		/** users allowed to use, channels allowed to proxy */
-		blacklistedRoles: z.string().array().max(25).default([]),
-		blacklistedChannels: z.string().array().max(25).default([]),
-		blacklistedCategories: z.string().array().max(25).default([]).catch([]),
+		blockedRoles: z.string().array().max(25).default([]),
+		blockedChannels: z.string().array().max(25).default([]),
+		blockedCategories: z.string().array().max(25).default([]).catch([]),
 
 		// whitelistedNicknameRoles: z.string().array().default([]),
-		// blacklistedNicknameRoles: z.string().array().default([]),
+		// blockedNicknameRoles: z.string().array().default([]),
 
 		managerRoles: z.string().array().max(25).default([]),
 		allowedAlterModes: z.enum(["webhook", "nickname", "both"]).default("both"),

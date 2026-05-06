@@ -41,7 +41,7 @@ export default class AddManagerRole extends SubCommand {
 			});
 		}
 
-		if (pluralGuild.blacklistedRoles.length >= 25) {
+		if (pluralGuild.blockedRoles.length >= 25) {
 			return await ctx.editResponse({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"TOO_MANY_MANAGER_ITEMS",
@@ -63,7 +63,7 @@ export default class AddManagerRole extends SubCommand {
 			components: new AlertView(await ctx.userTranslations()).successViewCustom(
 				`${(await ctx.userTranslations()).SUCCESS_ADD_MANAGER_ROLE.replace("%item%", `<@&${ctx.options.role.id}>`)} ${(
 					await ctx.userTranslations()
-				).SUCCESS_CHANGED_MANAGER_BLACKLIST.replace(
+				).SUCCESS_CHANGED_MANAGER_BLOCKS.replace(
 					"%manager_roles%",
 					pluralGuild.managerRoles.map((c) => `> - <@&${c}>`).join("\n"),
 				)}`,

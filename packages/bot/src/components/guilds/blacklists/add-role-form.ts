@@ -7,7 +7,7 @@ import { MessageFlags } from "seyfert/lib/types";
 @Middlewares(["ensureGuildPermissions"])
 export default class AddRoleForm extends ModalCommand {
 	override filter(context: ModalContext) {
-		return InteractionIdentifier.Guilds.FormSelection.AddBlacklistRoleForm.startsWith(
+		return InteractionIdentifier.Guilds.FormSelection.AddBlockRoleForm.startsWith(
 			context.customId,
 		);
 	}
@@ -20,11 +20,11 @@ export default class AddRoleForm extends ModalCommand {
 			) as GuildRole[]).map(v => v.id) ?? [];
 		const pluralGuild = await ctx.retrievePGuild();
 
-		pluralGuild.blacklistedRoles = newRoles;
+		pluralGuild.blockedRoles = newRoles;
 
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
-			{ $set: { blacklistedRoles: newRoles } },
+			{ $set: { blockedRoles: newRoles } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)

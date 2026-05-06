@@ -12,7 +12,7 @@ Além disso, você também pode importar dados de outro bot como o PluralKit.
   NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
   BLACKLISTED: "Você foi bloqueado na **{{ guild }}**. Você não pode usar o PluralBuddy nesse servidor.",
   // Does not need to be translated
-  BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
+  BLACKLISTED_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
@@ -21,7 +21,7 @@ Além disso, você também pode importar dados de outro bot como o PluralKit.
   CREATING_NEW_SYSTEM_HEADER: "## Criando um novo sistema",
   ERROR_DISABLED_SYSTEM: "2f – Seu sistema está desativado. Não é possível usar proxy.",
   OPTION_DISABLED: "Esta opção não pode ser selecionada. Esta opção está desativada.",
-  TOO_MANY_BLACKLIST_ITEMS: "Existem muitos itens na Blacklist. Você pode ter apenas 25 cargos na lista negra, e 25 canais na lista negra por vez devido a limitações modais do Discord.",
+  TOO_MANY_BLACKLIST_ITEMS: "Existem muitos itens na Block. Você pode ter apenas 25 cargos na lista negra, e 25 canais na lista negra por vez devido a limitações modais do Discord.",
   TOO_MANY_MANAGER_ITEMS: "Existem muitos cargos de gerenciamento. Você pode ter apenas 25 cargos de gerenciamento por vez, devido a limitações modais do Discord.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Os sistemas no PluralBuddy requerem um **nome do sistema**. O nome deve ter pelo menos 3 caracteres e podem ter até 20 caracteres. Os nomes do sistema serão exibidos quando alguém identificar uma mensagem do seu sistema.`,

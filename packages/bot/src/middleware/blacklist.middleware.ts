@@ -52,7 +52,7 @@ export const blacklistUserMiddleware = createMiddleware<void>(
 			ctx.setContextAlter(alter);
 		}
 
-		if (pluralUser.blacklisted) {
+		if (pluralUser.blocked) {
 			return middlewareIssue("ERROR_USER_BLACKLISTED", middle);
 		}
 

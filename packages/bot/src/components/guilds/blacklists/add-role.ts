@@ -14,7 +14,7 @@ export default class AddRoleButton extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Guilds.GeneralTab.AddBlacklistRole.startsWith(
+		return InteractionIdentifier.Guilds.GeneralTab.AddBlockRole.startsWith(
 			context.customId,
 		);
 	}
@@ -30,19 +30,19 @@ export default class AddRoleButton extends ComponentCommand {
 							new RoleSelectMenu({
 								...new RoleSelectMenu()
 									.setCustomId(
-										InteractionIdentifier.Guilds.FormSelection.AddBlacklistRoleSelection.create(),
+										InteractionIdentifier.Guilds.FormSelection.AddBlockRoleSelection.create(),
 									)
-									.setDefaultRoles(guild.blacklistedRoles)
+									.setDefaultRoles(guild.blockedRoles)
 									.setValuesLength({ min: 0, max: 25 }).data,
 								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
 								required: false,
 							}),
 						)
-						.setLabel("Blacklist Roles")
+						.setLabel("Block Roles")
 						.setDescription("Set all applicable blacklist roles."),
 				])
 				.setCustomId(
-					InteractionIdentifier.Guilds.FormSelection.AddBlacklistRoleForm.create(),
+					InteractionIdentifier.Guilds.FormSelection.AddBlockRoleForm.create(),
 				)
 				.setTitle("Updating Guild"),
 		);

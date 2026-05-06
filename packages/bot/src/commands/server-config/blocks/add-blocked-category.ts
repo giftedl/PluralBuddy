@@ -14,20 +14,20 @@ import { ChannelType, MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	category: createStringOption({
-		description: "Category ID to add to blacklist.",
+		description: "Category ID to add to the block list.",
 		required: true,
 	}),
 };
 
 @Declare({
 	name: "add-category",
-	description: "Add a new server blacklist category.",
+	description: "Add a new server blocked category.",
 	aliases: ["act"],
 })
 @Middlewares(["ensureGuildPermissions"])
 @Group("blacklist")
 @Options(options)
-export default class AddBlacklistCategory extends SubCommand {
+export default class AddBlockCategory extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
@@ -45,7 +45,7 @@ export default class AddBlacklistCategory extends SubCommand {
 			});
 		}
 
-		if (guildObj.blacklistedCategories.includes(category)) {
+		if (guildObj.blockedCategories.includes(category)) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"BLACKLIST_ALREADY_EXISTS",
@@ -54,7 +54,7 @@ export default class AddBlacklistCategory extends SubCommand {
 			});
 		}
 
-		if (guildObj.blacklistedCategories.length >= 25) {
+		if (guildObj.blockedCategories.length >= 25) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
 					"TOO_MANY_BLACKLIST_ITEMS",
@@ -63,11 +63,11 @@ export default class AddBlacklistCategory extends SubCommand {
 			});
 		}
 
-		guildObj.blacklistedCategories.push(category);
+		guildObj.blockedCategories.push(category);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
-			{ $push: { blacklistedCategories: category } },
+			{ $push: { blockedCategories: category } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId);
@@ -78,15 +78,15 @@ export default class AddBlacklistCategory extends SubCommand {
 					.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
 						"%blacklist_items%",
 						[
-							...guildObj.blacklistedCategories.map((c) => {
+							...guildObj.blockedCategories.map((c) => {
 								return { id: c, type: "channel" };
 							}),
-							...guildObj.blacklistedRoles.map((c) => {
+							...guildObj.blockedRoles.map((c) => {
 								return { id: c, type: "role" };
 							}),
 							...(
 								await Promise.all(
-									guildObj.blacklistedCategories.map(async (c) => {
+									guildObj.blockedCategories.map(async (c) => {
 										const category = await ctx.client.channels
 											.fetch(c)
 											.catch(() => null);

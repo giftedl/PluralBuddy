@@ -3,11 +3,11 @@ import type { MDXComponents } from "mdx/types";
 import { ImageZoom } from "./components/image-zoom";
 import { SystemCardExample } from "@/components/cards/system-card";
 import { FeedbackBlock } from "./components/feedback/client";
-import { BlacklistedRoleExample } from "./components/cards/blacklisted-role";
+import { BlockedRoleExample } from "./components/cards/blocked-role";
 import { AppCardExample } from "./components/cards/app-card";
 import { CheckPermsCardExample } from "./components/cards/check-perms-card";
 import { onSendFeedback } from "./app/actions";
-import { BlacklistedChannelExample } from "./components/cards/blacklisted-channel";
+import { BlockedChannelExample } from "./components/cards/blocked-channel";
 import { RoleContainerExample } from "./components/cards/role-container-card";
 import { DMRepliesExample } from "./components/cards/dm-replies-card";
 import { APIPage } from "./components/api-page";
@@ -31,8 +31,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
 		SystemCardExample,
 		AppCardExample,
 		CheckPermsCardExample,
-		BlacklistedRoleExample,
-		BlacklistedChannelExample,
+		BlockedRoleExample,
+		BlockedChannelExample,
 		DMRepliesExample,
 		RoleContainerExample,
 		APIPage,

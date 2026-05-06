@@ -13,8 +13,8 @@ import { MessageFlags } from "seyfert/lib/types";
 		defaultDescription: "Guild prefixes.",
 		aliases: ["prf", "prx"],
 	},
-	blacklist: {
-		defaultDescription: "Guild blacklist.",
+	blocks: {
+		defaultDescription: "Guild blocked items.",
 		aliases: ["blist", "b"],
 	},
 	"manager-roles": {

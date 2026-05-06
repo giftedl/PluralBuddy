@@ -8,7 +8,7 @@ import {
 	type POperation,
 	type PMessage,
 	defaultUserStructure,
-    type PBlacklistNote,
+    type PBlockNote,
 } from "plurography";
 import { type Collection, type Db, MongoClient } from "mongodb";
 
@@ -23,7 +23,7 @@ export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let messagesCollection: Collection<PMessage>;
 
-export let noteCollection: Collection<PBlacklistNote>
+export let noteCollection: Collection<PBlockNote>
 
 export async function setupMongoDB() {
 	mongoClient = new MongoClient(process.env.MONGO ?? "");
