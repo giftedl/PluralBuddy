@@ -16,9 +16,6 @@ jobs:
       # Commit and Push Changes
       - name: Commit and Push Changes
         run: |
-          # configure user
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
       
           # stage any file changes to be committed
           git add .
