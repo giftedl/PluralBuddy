@@ -51,9 +51,6 @@ export const PGuildObject = z
 		blockedChannels: z.string().array().max(25).default([]),
 		blockedCategories: z.string().array().max(25).default([]).catch([]),
 
-		// whitelistedNicknameRoles: z.string().array().default([]),
-		// blockedNicknameRoles: z.string().array().default([]),
-
 		managerRoles: z.string().array().max(25).default([]),
 		allowedAlterModes: z.enum(["webhook", "nickname", "both"]).default("both"),
 		flags: z.number().optional().default(0).catch(0),
