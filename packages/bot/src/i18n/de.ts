@@ -307,7 +307,7 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   SUCCESS_REMOVE_ITEM_BLACKLIST: "%item% has been removed from the blacklist successfully.",
   SUCCESS_CHANGED_SERVER_BLACKLIST: "This server now has the following blacklist configuration: \n%blacklist_items%",
   PREFIX_ALREADY_EXISTS: "That prefix already exists or there is a duplicate in the array.",
-  BLACKLIST_ALREADY_EXISTS: "That role or channel is already on the blacklist.",
+  BLOCK_ALREADY_EXISTS: "That role or channel is already blocked.",
   SUCCESS_ADD_MANAGER_ROLE: "%item% has been added to the manager role list successfully.",
   SUCCESS_CHANGED_MANAGER_BLACKLIST: "This server now has the following manager role configuration: \n%manager_roles%",
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",

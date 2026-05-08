@@ -426,7 +426,7 @@ Systems can have **privacy values** which are values that describe who can see w
 		"This server now has the following blacklist configuration: \n%blacklist_items%",
 	PREFIX_ALREADY_EXISTS:
 		"That prefix already exists or there is a duplicate in the array.",
-	BLACKLIST_ALREADY_EXISTS: "That role or channel is already on the blacklist.",
+	BLOCK_ALREADY_EXISTS: "That role or channel is already blocked.",
 	SUCCESS_ADD_MANAGER_ROLE:
 		"%item% has been added to the manager role list successfully.",
 	SUCCESS_CHANGED_MANAGER_BLOCKS:

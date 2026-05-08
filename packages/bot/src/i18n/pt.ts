@@ -303,7 +303,7 @@ Os sistemas podem ter **configurações de privacidade** que determinam quem pod
   SUCCESS_REMOVE_ITEM_BLACKLIST: "%item% foi removido da lista negra com sucesso.",
   SUCCESS_CHANGED_SERVER_BLACKLIST: "Este servidor agora tem a seguinte configuração de lista negra: \n%blacklist_items%",
   PREFIX_ALREADY_EXISTS: "Esse prefixo já existe ou há uma duplicata na matriz.",
-  BLACKLIST_ALREADY_EXISTS: "Esse cargo ou canal já está na lista negra.",
+  BLOCK_ALREADY_EXISTS: "Esse cargo ou canal já está na lista negra.",
   SUCCESS_ADD_MANAGER_ROLE: "%item% foi adicionado à lista de cargo gerenciador com sucesso.",
   SUCCESS_CHANGED_MANAGER_BLACKLIST: "Este servidor agora tem a seguinte configuração de cargo gerenciador: \n%manager_roles%",
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",

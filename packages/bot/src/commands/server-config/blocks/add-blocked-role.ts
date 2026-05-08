@@ -37,7 +37,7 @@ export default class AddPrefixCommand extends SubCommand {
 		if (guildObj.blockedRoles.includes(role.id)) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
-					"BLACKLIST_ALREADY_EXISTS",
+					"BLOCK_ALREADY_EXISTS",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
