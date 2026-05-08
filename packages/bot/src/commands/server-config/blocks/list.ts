@@ -18,7 +18,7 @@ import { Shortcut } from "yunaforseyfert";
 	aliases: ["l"],
 })
 @Middlewares(["ensureGuildPermissions"])
-@Group("blacklist")
+@Group("blocks")
 export default class ListPrefixesCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
 		await ctx.deferReply(true);

@@ -25,7 +25,7 @@ const options = {
 	aliases: ["act"],
 })
 @Middlewares(["ensureGuildPermissions"])
-@Group("blacklist")
+@Group("blocks")
 @Options(options)
 export default class AddBlockCategory extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {

@@ -27,7 +27,7 @@ const options = {
 	aliases: ["rr"],
 })
 @Middlewares(["ensureGuildPermissions"])
-@Group("blacklist")
+@Group("blocks")
 @Options(options)
 export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {

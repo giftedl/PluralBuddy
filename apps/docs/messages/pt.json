@@ -3,7 +3,7 @@
         "title": "The <headline>faster</headline> age of plurality bots",
         "desc": "PluralBuddy is the <highlight>next generation plurality bot</highlight> for Discord – built on<br></br>principals of <accent>speed</accent>, <accent>accessibility</accent> & <accent>data convenience.</accent>",
         "proxy_time_headline": "<600ms proxy time",
-        "blacklist_headline": "Blocks, manager roles, proxy delays",
+        "blocks_headline": "Blocks, manager roles, proxy delays",
         "developer_headline": "Built with developers in mind",
         "add_discord_btn": "Add to Discord",
         "docs_btn": "Documentation",
