@@ -5,7 +5,7 @@ import { globalBlockUserMiddleware } from "./global-block.middleware";
 import { ensureGuildPermissions } from "./ensure-guild-permissions.middleware";
 import { latency } from "./latency.middleware";
 import { noWebhookMiddleware } from "./no-webhook.middleware";
-import { serverBlock } from "./server-blacklist.middleware";
+import { serverBlock } from "./server-block.middleware";
 
 export const middlewares = {
     latency,

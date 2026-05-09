@@ -15,14 +15,14 @@ import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	category: createStringOption({
-		description: "Category to remove from blacklist.",
+		description: "Category to unblock.",
 		required: true,
 	}),
 };
 
 @Declare({
 	name: "remove-category",
-	description: "Remove a server blocked category.",
+	description: "Unblock a server blocked category.",
 	aliases: ["rct"],
 })
 @Middlewares(["ensureGuildPermissions"])
@@ -54,9 +54,9 @@ export default class AddPrefixCommand extends SubCommand {
 		ctx.client.cache.pguild.remove(guildObj.guildId)
 
 		return await ctx.editResponse({
-			components: new AlertView((await ctx.userTranslations())).successViewCustom(`${(await ctx.userTranslations()).SUCCESS_REMOVE_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${(await ctx.userTranslations())
-				.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
-					"%blacklist_items%",
+			components: new AlertView((await ctx.userTranslations())).successViewCustom(`${(await ctx.userTranslations()).SUCCESS_REMOVE_ITEM_BLOCKED.replace("%item%", categoryObj.name)} ${(await ctx.userTranslations())
+				.SUCCESS_CHANGED_SERVER_BLOCKS.replace(
+					"%block_items%",
 					[
 						...guildObj.blockedChannels.map((c) => {
 							return { id: c, type: "channel" };

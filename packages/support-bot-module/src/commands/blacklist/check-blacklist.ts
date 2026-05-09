@@ -16,14 +16,14 @@ import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	"user-id": createUserOption({
-		description: "User to query blacklist",
+		description: "User to query global block",
 		required: true,
 	})
 };
 
 @Declare({
 	name: "check",
-	description: "Check for a blacklist",
+	description: "Check for a global block",
 	contexts: ["Guild"],
 	guildId: ["1444187699924963350"],
 })
@@ -44,11 +44,11 @@ export default class CreateBlockCommand extends SubCommand {
             })
         }
 
-        const blacklistNote = await noteCollection.findOne({ associatedUserId: user.userId })
+        const blockNote = await noteCollection.findOne({ associatedUserId: user.userId })
 
-        if (!blacklistNote) {
+        if (!blockNote) {
             return await ctx.write({
-                content: "This user **has been blocked**, however has no blacklist note :thinking:.\n-# This could have happened if a developer manually blocked a user.",
+                content: "This user **has been blocked**, however has no global block note :thinking:.\n-# This could have happened if a developer manually blocked a user.",
                 components: [
                     new ActionRow()
                         .setComponents(
@@ -63,7 +63,7 @@ export default class CreateBlockCommand extends SubCommand {
         }
 
 		return await ctx.write({
-			content: `That user was blocked by <@${blacklistNote.moderatorId}> at <t:${Math.floor(blacklistNote.date.getTime() / 1000)}>. They have a provided note as \`${blacklistNote.note}\`.`,
+			content: `That user was blocked by <@${blockNote.moderatorId}> at <t:${Math.floor(blockNote.date.getTime() / 1000)}>. They have a provided note as \`${blockNote.note}\`.`,
             components: [
                 new ActionRow()
                     .setComponents(

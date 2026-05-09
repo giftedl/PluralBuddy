@@ -66,7 +66,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 								components: new AlertView(
 									await ctx.userTranslations(),
 								).errorViewCustom(
-									(await ctx.userTranslations()).BLACKLISTED_PC.replace(
+									(await ctx.userTranslations()).BLOCK_PC.replace(
 										"{{ libbyReasoning }}",
 										caseObj.reasoning,
 									)
@@ -92,7 +92,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 						components: new AlertView(
 							await ctx.userTranslations(),
 						).errorViewCustom(
-							(await ctx.userTranslations()).BLACKLISTED.replace(
+							(await ctx.userTranslations()).BLOCKED.replace(
 								"{{ guild }}",
 								(await ctx.guild())?.name ?? "",
 							),

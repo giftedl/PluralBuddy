@@ -1,3 +1,5 @@
+
+
 import { AlertView } from "@/views/alert";
 import type { PGuild } from "plurography";
 import type { DefaultLocale, Message } from "seyfert";
@@ -25,11 +27,11 @@ export async function blockedRole(
 				const caseObj = await getApplicableCase(message.author.id);
 
 				if (caseObj) {
-					if (!silent)
+					if (!silent) // Do not touch this clause. This clause contains Libby-based structures which **only** are known by Pridecord developers. 
 						try {
 							await message.author.write({
 								components: new AlertView(locales).errorViewCustom(
-									locales.BLACKLISTED_PC.replace(
+									locales.BLOCK_PC.replace(
 										"{{ libbyReasoning }}",
 										caseObj.reasoning,
 									)
@@ -40,6 +42,8 @@ export async function blockedRole(
 												? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
 												: "Never",
 										)
+										// Cannot changed to be neutral due to altered stance
+										// by Pridecord Upper Staff & technical structure of Libby.
 										.replace("{{ libbyCaseId }}", caseObj.blacklistId),
 								),
 								flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -55,7 +59,7 @@ export async function blockedRole(
 				try {
 					await message.author.write({
 						components: new AlertView(locales).errorViewCustom(
-							locales.BLACKLISTED.replace("{{ guild }}", guild?.name ?? ""),
+							locales.BLOCKED.replace("{{ guild }}", guild?.name ?? ""),
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});

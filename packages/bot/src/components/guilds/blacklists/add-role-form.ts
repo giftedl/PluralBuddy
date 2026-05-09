@@ -16,7 +16,7 @@ export default class AddRoleForm extends ModalCommand {
 
 		const newRoles =
 			(ctx.interaction.getRoles(
-				"guilds/form/add-blacklist-role"
+				"guilds/form/add-blocked-role"
 			) as GuildRole[]).map(v => v.id) ?? [];
 		const pluralGuild = await ctx.retrievePGuild();
 

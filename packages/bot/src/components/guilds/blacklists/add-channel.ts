@@ -40,7 +40,7 @@ export default class AddChannelButton extends ComponentCommand {
 							}),
 						)
 						.setLabel("Block Channels")
-						.setDescription("Set all applicable blacklist channels."),
+						.setDescription("Set all applicable blocked channels."),
 				])
 				.setCustomId(
 					InteractionIdentifier.Guilds.FormSelection.AddBlockChannelForm.create(),

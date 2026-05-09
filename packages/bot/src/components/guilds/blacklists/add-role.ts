@@ -39,7 +39,7 @@ export default class AddRoleButton extends ComponentCommand {
 							}),
 						)
 						.setLabel("Block Roles")
-						.setDescription("Set all applicable blacklist roles."),
+						.setDescription("Set all applicable blocked roles."),
 				])
 				.setCustomId(
 					InteractionIdentifier.Guilds.FormSelection.AddBlockRoleForm.create(),

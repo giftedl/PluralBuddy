@@ -131,16 +131,16 @@ export class ServerConfigView extends TranslatedView {
 							.setLabel(this.translations.SRV_CFG_PREFIXES_BTN)
 							.setStyle(ButtonStyle.Primary),
 					),
-				new TextDisplay().setContent(this.translations.SRV_CFG_BLACKLISTS_DESC),
+				new TextDisplay().setContent(this.translations.SRV_CFG_BLOCKS_DESC),
 				new TextDisplay().setContent(
-					this.translations.SRV_CFG_BLACKLISTS_ITEMS.replace(
+					this.translations.SRV_CFG_BLOCKS_ITEMS.replace(
 						"{{ list }}",
 						"\n" +
 							(guild.blockedChannels.length +
 								guild.blockedRoles.length +
 								guild.blockedCategories.length ===
 							0
-								? this.translations.SRV_CFG_BLACKLISTS_ITEMS_EMPTY
+								? this.translations.SRV_CFG_BLOCKS_ITEMS_EMPTY
 								: [
 										...guild.blockedChannels.map((c) => {
 											return { id: c, type: "channel" };
@@ -175,7 +175,7 @@ export class ServerConfigView extends TranslatedView {
 								guild.blockedRoles.length +
 								guild.blockedCategories.length >
 							5
-								? this.translations.SRV_CFG_BLACKLISTS_ITEMS_MORE.replace(
+								? this.translations.SRV_CFG_BLOCKS_ITEMS_MORE.replace(
 										"{{ count }}",
 										String(
 											guild.blockedChannels.length +
@@ -187,7 +187,7 @@ export class ServerConfigView extends TranslatedView {
 										"{{ commandMention }}",
 										mentionCommand(
 											prefix,
-											"server-config blacklist list",
+											"server-config blocks list",
 											isApplication,
 										),
 									)

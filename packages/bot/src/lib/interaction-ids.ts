@@ -162,28 +162,28 @@ export const InteractionIdentifier = {
 			SetPrefixesForm: createStatic("guilds/form/prefixes-form"),
 			SetPrefixesSelection: createStatic("guilds/form/prefixes-selection"),
 
-			AddBlockRoleForm: createStatic("guilds/form/add-blacklist-role-form"),
-			AddBlockRoleSelection: createStatic("guilds/form/add-blacklist-role"),
+			AddBlockRoleForm: createStatic("guilds/form/add-blocked-role-form"),
+			AddBlockRoleSelection: createStatic("guilds/form/add-blocked-role"),
 
 			AddBlockChannelForm: createStatic(
-				"guilds/form/add-blacklist-channel-form",
+				"guilds/form/add-blocked-channel-form",
 			),
 			AddBlockChannelSelection: createStatic(
-				"guilds/form/add-blacklist-channel",
+				"guilds/form/add-blocked-channel",
 			),
 			
 			AddBlockCategoryForm: createStatic(
-				"guilds/form/add-blacklist-category-form",
+				"guilds/form/add-blocked-category-form",
 			),
 			AddBlockCategorySelection: createStatic(
-				"guilds/form/add-blacklist-category",
+				"guilds/form/add-blocked-category",
 			),
 			
 			RemoveBlockCategoryForm: createStatic(
-				"guilds/form/remove-blacklist-category-form",
+				"guilds/form/remove-blocked-category-form",
 			),
 			RemoveBlockCategorySelection: createStatic(
-				"guilds/form/remove-blacklist-category",
+				"guilds/form/remove-blocked-category",
 			),
 
 

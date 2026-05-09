@@ -45,7 +45,7 @@ export default class AddPrefixCommand extends SubCommand {
 
         if (guildObj.blockedRoles.length >= 25) {
             return await ctx.editResponse({
-                components: new AlertView((await ctx.userTranslations())).errorView("TOO_MANY_BLACKLIST_ITEMS"),
+                components: new AlertView((await ctx.userTranslations())).errorView("TOO_MANY_BLOCKED_ITEMS"),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
             })
         }
@@ -61,9 +61,9 @@ export default class AddPrefixCommand extends SubCommand {
 
 		return await ctx.editResponse({
 			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				`${(await ctx.userTranslations()).SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", `<@&${role.id}>`)} ${((await ctx.userTranslations()))
-					.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
-						"%blacklist_items%",
+				`${(await ctx.userTranslations()).SUCCESS_ADD_ITEM_BLOCKED.replace("%item%", `<@&${role.id}>`)} ${((await ctx.userTranslations()))
+					.SUCCESS_CHANGED_SERVER_BLOCKS.replace(
+						"%block_items%",
 						[
 							...guildObj.blockedCategories.map((c) => {
 								return { id: c, type: "channel" };

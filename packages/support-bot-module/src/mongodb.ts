@@ -43,7 +43,7 @@ export async function setupDatabases() {
 	messagesCollection = mainDb.collection("messages");
 	tagCollection = mainDb.collection("tags");
 
-    noteCollection = supportDb.collection("blacklist-notes");
+    noteCollection = supportDb.collection("block-notes");
 }
 
 export async function getUserById(id: string): Promise<PUser> {

@@ -27,7 +27,7 @@ const options = {
 
 @Declare({
 	name: "create",
-	description: "Create a blacklist",
+	description: "Create a block",
 	contexts: ["Guild"],
 	guildId: ["1444187699924963350"],
 })
