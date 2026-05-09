@@ -218,7 +218,7 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   ERROR_MANUAL_PROXY: "2u – There was an error while manually proxying. Please try again later.",
   SUCCESS_PROXY: "[Your message](<%message-link%>) has been sent!",
   CONTENT_ERROR_PROXY: "2v – You must either have some text or an attachment to proxy.",
-  ERROR_USER_BLACKLISTED: "2a – This user is blocked from using PluralBuddy.",
+  ERROR_USER_BLOCKED: "2a – This user is blocked from using PluralBuddy.",
   OPERATION_HEADER: "Operation Transcript:",
   OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
   OPERATION_WEB: "%clock% Expires in 30 minutes • %web% Web (via Exchange)",

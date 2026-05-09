@@ -303,7 +303,7 @@ Systems can have **privacy values** which are values that describe who can see w
 	CONTENT_ERROR_PROXY:
 		"2v – You must either have some text or an attachment to proxy.",
 
-	ERROR_USER_BLACKLISTED:
+	ERROR_USER_BLOCKED:
 		"2a – This user is blocked from using PluralBuddy.",
 
 	OPERATION_HEADER: "Operation Transcript:",

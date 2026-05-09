@@ -6,7 +6,7 @@ import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 
-export const blacklistUserMiddleware = createMiddleware<void>(
+export const globalBlockUserMiddleware = createMiddleware<void>(
 	async (middle) => {
 		const pluralUser = await middle.context.retrievePUser();
 
@@ -53,7 +53,7 @@ export const blacklistUserMiddleware = createMiddleware<void>(
 		}
 
 		if (pluralUser.blocked) {
-			return middlewareIssue("ERROR_USER_BLACKLISTED", middle);
+			return middlewareIssue("ERROR_USER_BLOCKED", middle);
 		}
 
 		middle.next();
