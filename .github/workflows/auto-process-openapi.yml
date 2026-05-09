@@ -26,5 +26,4 @@ jobs:
           # make commit with staged changes
           git commit -m 'Automatically create OpenAPI documentation from Plurography'
       
-
           git push
