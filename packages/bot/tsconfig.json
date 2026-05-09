@@ -31,6 +31,8 @@
     "experimentalDecorators": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    "types": ["bun"]
   }
 }
