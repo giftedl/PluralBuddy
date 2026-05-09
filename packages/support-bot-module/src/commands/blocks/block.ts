@@ -3,7 +3,7 @@
 import { Command, AutoLoad, Declare, CommandContext } from "seyfert";
 
 @Declare({
-	name: "block",
+	name: "blocks",
 	description: "block command",
     contexts: ["Guild"],
     guildId: ["1444187699924963350"]
