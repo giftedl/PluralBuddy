@@ -24,4 +24,9 @@ jobs:
           git commit -m 'Automatically create OpenAPI documentation from Plurography'
       
           # push the commit back up to source GitHub repository
+
+
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
           git push
