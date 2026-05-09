@@ -16,6 +16,9 @@ jobs:
       # Commit and Push Changes
       - name: Commit and Push Changes
         run: |
+          # push the commit back up to source GitHub repository
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
       
           # stage any file changes to be committed
           git add .
@@ -23,10 +26,5 @@ jobs:
           # make commit with staged changes
           git commit -m 'Automatically create OpenAPI documentation from Plurography'
       
-          # push the commit back up to source GitHub repository
-
-
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
 
           git push
