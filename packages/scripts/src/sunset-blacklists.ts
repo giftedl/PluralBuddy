@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import ora from "ora";
-import { PGuild, type PAlter, type PTag, type PUser } from "plurography";
+import { PUser, type PGuild } from "plurography";
 import { parseArgs } from "util";
 
 const { values } = parseArgs({
@@ -20,11 +20,17 @@ const mongodb = new MongoClient(process.env.MONGO as string);
 const canaryDb = mongodb.db(values.dbName);
 
 await canaryDb.collection<PGuild>("guilds")
-    .updateMany({ $or: [{ blacklistedCategories: { $exists: true } }, { blacklistedRoles: { $exists: true } }, { blacklistedChannels: { $exists: true } } ] }, {
+    .updateMany({ $or: [{ blacklistedCategories: { $exists: true } }, { blacklistedRoles: { $exists: true } }, { blacklistedChannels: { $exists: true } }] }, {
         $rename: {
             "blacklistedCategories": "blockedCategories",
             "blacklistedRoles": "blockedRoles",
             "blacklistedChannels": "blockedChannels",
+        }
+    })
+await canaryDb.collection<PUser>("users")
+    .updateMany({ $or: [{ blacklisted: { $exists: true } }]}, {
+        $rename: {
+            "blacklisted": "blocked"
         }
     })
 

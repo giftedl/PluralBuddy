@@ -14,7 +14,7 @@ import { Shortcut } from "yunaforseyfert";
 
 @Declare({
 	name: "list",
-	description: "List server blocked.",
+	description: "List servers blocked.",
 	aliases: ["l"],
 })
 @Middlewares(["ensureGuildPermissions"])
