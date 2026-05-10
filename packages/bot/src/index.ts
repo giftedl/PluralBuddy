@@ -116,7 +116,7 @@ export const client = new Client({
 
 if (logger)
 	/* @ts-ignore */
-	client.logger = {... logger, fatal: (text: any) => logger.error(text)};
+	client.logger = logger;
 
 if (logger)
 logger.info(
