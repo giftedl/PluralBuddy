@@ -11,7 +11,7 @@ import {
 	Container,
 	MemoryAdapter,
 } from "seyfert";
-import { setupDatabases, setupMongoDB } from "./mongodb";
+import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 import { ActivityType, ButtonStyle, ComponentType, MessageFlags, PresenceUpdateStatus } from "seyfert/lib/types";
 import { middlewares } from "./middleware";
@@ -38,7 +38,32 @@ import { emojis } from "./lib/emojis";
 import { Pi18nCache } from "./cache/i18n";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 
-console.log("?")
+import winston from 'winston';
+import { SeqTransport } from '@datalust/winston-seq';
+
+export const logger = winston.createLogger({
+	level: 'info',
+	format: winston.format.combine(  /* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
+		winston.format.errors({ stack: true }),
+		winston.format.json(),
+	),
+	defaultMeta: { application: "pluralbuddy" },
+	transports: [
+		new winston.transports.Console({
+			format: winston.format.simple(),
+		}),
+		new SeqTransport({
+			serverUrl: process.env.SEQ_HOST,
+			apiKey: process.env.SEQ_KEY,
+			onError: (e => { console.error(e) }),
+			handleExceptions: true,
+			handleRejections: true,
+		})
+	]
+});
+
+logger.info("PluralBuddy is online")
+
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
@@ -51,9 +76,9 @@ export const posthogClient =
 	process.env.POSTHOG_API_KEY === undefined
 		? null
 		: new PostHog(process.env.POSTHOG_API_KEY ?? "", {
-				host: "https://us.i.posthog.com",
-				enableExceptionAutocapture: true,
-			});
+			host: "https://us.i.posthog.com",
+			enableExceptionAutocapture: true,
+		});
 
 export const client = new Client({
 	commands: {
@@ -88,13 +113,19 @@ export const client = new Client({
 	globalMiddlewares,
 });
 
-client.logger.info(
-	"the branch is:",
-	process.env.BRANCH ?? "unknown",
-	"- so, default prefixes are:",
-	defaultPrefixes[
-		(process.env.BRANCH as "production" | "canary") ?? "production"
-	],
+/* @ts-ignore */
+client.logger = logger;
+
+logger.info(
+	"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
+	{
+		branch:
+			process.env.BRANCH ?? "unknown",
+		prefix:
+			defaultPrefixes[
+			(process.env.BRANCH as "production" | "canary") ?? "production"
+			],
+	}
 );
 
 client.setServices({
@@ -112,6 +143,8 @@ client.setServices({
 
 await setupMongoDB();
 await setupDatabases();
+
+logger.info("MongoDB is loaded.")
 
 client.cache.statistic = new StatisticResource(client.cache, client);
 client.cache.alterProxy = new ProxyResource(client.cache, client);
@@ -141,19 +174,19 @@ client.gateway.setPresence({
 setInterval(async () => {
 	const data = await client.cache.statistic.get("latest");
 
-	
-client.gateway.setPresence({
-	activities: [
-		{
-			name: "PluralBuddy",
-			type: ActivityType.Custom,
-			state: `pb;help · pb.giftedly.dev · servers: ${data?.guildCount} · proxying: ${data?.userCount}`,
-		},
-	],
-	status: PresenceUpdateStatus.DoNotDisturb,
-	since: Date.now(),
-	afk: false,
-});
+
+	client.gateway.setPresence({
+		activities: [
+			{
+				name: "PluralBuddy",
+				type: ActivityType.Custom,
+				state: `pb;help · pb.giftedly.dev · servers: ${data?.guildCount} · proxying: ${data?.userCount}`,
+			},
+		],
+		status: PresenceUpdateStatus.DoNotDisturb,
+		since: Date.now(),
+		afk: false,
+	});
 }, 10000)
 
 startIndexingCleanupTimer();

@@ -120,7 +120,7 @@ export async function proxy(
 
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
-		console.timeEnd("proxy");
+		
 		try {
 			webhook.messages
 				.write({
