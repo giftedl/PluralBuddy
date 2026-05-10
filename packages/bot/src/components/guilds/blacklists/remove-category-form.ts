@@ -7,7 +7,7 @@ import { MessageFlags } from "seyfert/lib/types";
 @Middlewares(["ensureGuildPermissions"])
 export default class RemoveCategoryForm extends ModalCommand {
 	override filter(context: ModalContext) {
-		return InteractionIdentifier.Guilds.FormSelection.RemoveBlacklistCategoryForm.startsWith(
+		return InteractionIdentifier.Guilds.FormSelection.RemoveBlockCategoryForm.startsWith(
 			context.customId,
 		);
 	}
@@ -15,15 +15,15 @@ export default class RemoveCategoryForm extends ModalCommand {
 	override async run(ctx: ModalContext) {
 		const categoryId =
 			(ctx.interaction.getInputValue(
-				InteractionIdentifier.Guilds.FormSelection.RemoveBlacklistCategorySelection.create(),
+				InteractionIdentifier.Guilds.FormSelection.RemoveBlockCategorySelection.create(),
 			) as string);
 		const pluralGuild = await ctx.retrievePGuild();
 
-		pluralGuild.blacklistedCategories = pluralGuild.blacklistedCategories.filter((c) => c !== categoryId);
+		pluralGuild.blockedCategories = pluralGuild.blockedCategories.filter((c) => c !== categoryId);
 
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
-			{ $pull: { blacklistedCategories: categoryId } },
+			{ $pull: { blockedCategories: categoryId } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)

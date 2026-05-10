@@ -10,9 +10,9 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
   NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
-  BLACKLISTED: "Du wurdest von {{ guild }} in die blacklist gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
+  BLOCKED: "Du wurdest von {{ guild }} in die blocks gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
   // Does not need to be translated
-  BLACKLISTED_PC: `You have been blacklisted from **Pridecord**. You cannot use PluralBuddy in this guild.
+  BLOCK_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
@@ -21,7 +21,7 @@ Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importier
   CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
   ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
   OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
-  TOO_MANY_BLACKLIST_ITEMS: "Es gibt zu viele blacklist Artikel. Du kannst nur 25 blacklist Rollen und 25 blacklist Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
+  TOO_MANY_BLOCKED_ITEMS: "Es gibt zu viele blocks Artikel. Du kannst nur 25 blocks Rollen und 25 blocks Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
   TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
 Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
@@ -218,7 +218,7 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   ERROR_MANUAL_PROXY: "2u – There was an error while manually proxying. Please try again later.",
   SUCCESS_PROXY: "[Your message](<%message-link%>) has been sent!",
   CONTENT_ERROR_PROXY: "2v – You must either have some text or an attachment to proxy.",
-  ERROR_USER_BLACKLISTED: "2a – This user is blacklisted from using PluralBuddy.",
+  ERROR_USER_BLOCKED: "2a – This user is blocked from using PluralBuddy.",
   OPERATION_HEADER: "Operation Transcript:",
   OPERATION_DISCORD: "%clock% Expires in 30 minutes • %discord% Discord",
   OPERATION_WEB: "%clock% Expires in 30 minutes • %web% Web (via Exchange)",
@@ -303,13 +303,13 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   INSUFFICIENT_DATA_SIZE: "2ad – There is not a sufficient amount of resources under your user context to continue with this operation.",
   INSUFFICIENT_USER_PERMISSIONS: "2ag – You do not have permission to edit this information.",
   SUCCESS_CHANGED_SERVER_PREFIXES: "This server now has the following prefixes: \n%prefixes%",
-  SUCCESS_ADD_ITEM_BLACKLIST: "%item% has been added to the blacklist successfully.",
-  SUCCESS_REMOVE_ITEM_BLACKLIST: "%item% has been removed from the blacklist successfully.",
-  SUCCESS_CHANGED_SERVER_BLACKLIST: "This server now has the following blacklist configuration: \n%blacklist_items%",
+  SUCCESS_ADD_ITEM_blocks: "%item% has been added to the blocks successfully.",
+  SUCCESS_REMOVE_ITEM_blocks: "%item% has been removed from the blocks successfully.",
+  SUCCESS_CHANGED_SERVER_blocks: "This server now has the following blocks configuration: \n%blocks_items%",
   PREFIX_ALREADY_EXISTS: "That prefix already exists or there is a duplicate in the array.",
-  BLACKLIST_ALREADY_EXISTS: "That role or channel is already on the blacklist.",
+  BLOCK_ALREADY_EXISTS: "That role or channel is already blocked.",
   SUCCESS_ADD_MANAGER_ROLE: "%item% has been added to the manager role list successfully.",
-  SUCCESS_CHANGED_MANAGER_BLACKLIST: "This server now has the following manager role configuration: \n%manager_roles%",
+  SUCCESS_CHANGED_MANAGER_blocks: "This server now has the following manager role configuration: \n%manager_roles%",
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",
   MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
   SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
@@ -455,11 +455,11 @@ Please download the JSON file sent to you and use the button to upload the attac
 > Prefixes can be configured and set. You can have unlimited possible prefixes, comma separated.
 > Your current prefixes are {{ prefixList }}`,
   SRV_CFG_PREFIXES_BTN: "Set Prefixes",
-  SRV_CFG_BLACKLISTS_DESC: `**Configure Blacklist**
-> Roles and channels can be blacklisted from proxying or using commands from PluralBuddy.`,
-  SRV_CFG_BLACKLISTS_ITEMS: `> Currently, the guild's blacklist items are: {{ list }}`,
-  SRV_CFG_BLACKLISTS_ITEMS_EMPTY: "> - _There are no blacklist items._",
-  SRV_CFG_BLACKLISTS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blacklist items.`,
+  SRV_CFG_BLOCKS_DESC: `**Configure Block**
+> Roles and channels can be blocked from proxying or using commands from PluralBuddy.`,
+  SRV_CFG_blocksS_ITEMS: `> Currently, the guild's blocks items are: {{ list }}`,
+  SRV_CFG_blocksS_ITEMS_EMPTY: "> - _There are no blocks items._",
+  SRV_CFG_blocksS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blocks items.`,
   SRV_CFG_ADD_CHANNELS: "Add Channels",
   SRV_CFG_ADD_CATEGORIES: "Add Category",
   SRV_CFG_ADD_ROLES: "Add Roles",

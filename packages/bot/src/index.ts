@@ -69,8 +69,8 @@ export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
 	"noWebhookMiddleware",
-	"blacklistUserMiddleware",
-	"serverBlacklist",
+	"globalBlockUserMiddleware",
+	"serverBlock",
 ];
 
 export const posthogClient =

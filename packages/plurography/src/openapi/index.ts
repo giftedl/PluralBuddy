@@ -17,7 +17,7 @@ await Promise.all(modules.map(async (m) => (await m).register(registry)))
 const generator = new OpenApiGeneratorV31(registry.definitions);
 const document = generator.generateDocument({
 	openapi: "3.1.0",
-	info: { title: "PluralBuddy API", version: "1.0.0" },
+	info: { title: "PluralBuddy API", version: "1.0.1" },
 	servers: [
 		{
 			url: "https://pb.giftedly.dev/api",

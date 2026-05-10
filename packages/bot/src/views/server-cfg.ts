@@ -131,27 +131,27 @@ export class ServerConfigView extends TranslatedView {
 							.setLabel(this.translations.SRV_CFG_PREFIXES_BTN)
 							.setStyle(ButtonStyle.Primary),
 					),
-				new TextDisplay().setContent(this.translations.SRV_CFG_BLACKLISTS_DESC),
+				new TextDisplay().setContent(this.translations.SRV_CFG_BLOCKS_DESC),
 				new TextDisplay().setContent(
-					this.translations.SRV_CFG_BLACKLISTS_ITEMS.replace(
+					this.translations.SRV_CFG_BLOCKS_ITEMS.replace(
 						"{{ list }}",
 						"\n" +
-							(guild.blacklistedChannels.length +
-								guild.blacklistedRoles.length +
-								guild.blacklistedCategories.length ===
+							(guild.blockedChannels.length +
+								guild.blockedRoles.length +
+								guild.blockedCategories.length ===
 							0
-								? this.translations.SRV_CFG_BLACKLISTS_ITEMS_EMPTY
+								? this.translations.SRV_CFG_BLOCKS_ITEMS_EMPTY
 								: [
-										...guild.blacklistedChannels.map((c) => {
+										...guild.blockedChannels.map((c) => {
 											return { id: c, type: "channel" };
 										}),
-										...guild.blacklistedRoles.map((c) => {
+										...guild.blockedRoles.map((c) => {
 											return { id: c, type: "role" };
 										}),
 
 										...(
 											await Promise.all(
-												guild.blacklistedCategories.map(async (c) => {
+												guild.blockedCategories.map(async (c) => {
 													const category = await client.channels
 														.fetch(c)
 														.catch(() => null);
@@ -171,23 +171,23 @@ export class ServerConfigView extends TranslatedView {
 												`> - ${c.type === "channel" ? "<#" : c.type === "category" ? "" : "<@&"}${c.id}${c.type !== "category" ? ">" : ""}`,
 										)
 										.join("\n")) +
-							(guild.blacklistedChannels.length +
-								guild.blacklistedRoles.length +
-								guild.blacklistedCategories.length >
+							(guild.blockedChannels.length +
+								guild.blockedRoles.length +
+								guild.blockedCategories.length >
 							5
-								? this.translations.SRV_CFG_BLACKLISTS_ITEMS_MORE.replace(
+								? this.translations.SRV_CFG_BLOCKS_ITEMS_MORE.replace(
 										"{{ count }}",
 										String(
-											guild.blacklistedChannels.length +
-												guild.blacklistedRoles.length +
-												guild.blacklistedCategories.length -
+											guild.blockedChannels.length +
+												guild.blockedRoles.length +
+												guild.blockedCategories.length -
 												5,
 										),
 									).replace(
 										"{{ commandMention }}",
 										mentionCommand(
 											prefix,
-											"server-config blacklist list",
+											"server-config blocks list",
 											isApplication,
 										),
 									)
@@ -198,25 +198,25 @@ export class ServerConfigView extends TranslatedView {
 				new ActionRow().setComponents(
 					new Button()
 						.setCustomId(
-							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistChannel.create(),
+							InteractionIdentifier.Guilds.GeneralTab.AddBlockChannel.create(),
 						)
 						.setLabel(this.translations.SRV_CFG_ADD_CHANNELS)
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
 						.setCustomId(
-							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistCategory.create(),
+							InteractionIdentifier.Guilds.GeneralTab.AddBlockCategory.create(),
 						)
 						.setLabel(this.translations.SRV_CFG_ADD_CATEGORIES)
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
 						.setCustomId(
-							InteractionIdentifier.Guilds.GeneralTab.AddBlacklistRole.create(),
+							InteractionIdentifier.Guilds.GeneralTab.AddBlockRole.create(),
 						)
 						.setLabel(this.translations.SRV_CFG_ADD_ROLES)
 						.setStyle(ButtonStyle.Secondary),
 					new Button()
 						.setCustomId(
-							InteractionIdentifier.Guilds.GeneralTab.RemoveBlacklistCategory.create(),
+							InteractionIdentifier.Guilds.GeneralTab.RemoveBlockCategory.create(),
 						)
 						.setLabel(this.translations.SRV_CFG_REMOVE_CATEGORY)
 						.setStyle(ButtonStyle.Danger),

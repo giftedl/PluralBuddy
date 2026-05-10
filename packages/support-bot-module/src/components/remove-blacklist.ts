@@ -2,7 +2,7 @@ import { getUserById, noteCollection, writeUserById } from "@/mongodb";
 import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
-export default class RemoveBlacklist extends ComponentCommand {
+export default class RemoveBlock extends ComponentCommand {
     componentType = 'Button' as const;
 
     override filter(context: ComponentContext<typeof this.componentType>) {
@@ -17,23 +17,23 @@ export default class RemoveBlacklist extends ComponentCommand {
         const userId = ctx.customId.substring("close-".length);
         const user = await getUserById(userId)
 
-        if (!user.blacklisted) {
+        if (!user.blocked) {
             return await ctx.update({
-                content: "This user has not been blacklisted.",
+                content: "This user has not been blocked.",
                 flags: MessageFlags.Ephemeral
             })
         }
 
         await writeUserById(user.userId, {
             ...user,
-            blacklisted: false
+            blocked: false
         })
 
         await noteCollection.deleteOne({ associatedUserId: user.userId })
 
         
         return await ctx.update({
-			content: "Okay, that user was un-blacklisted.",
+			content: "Okay, that user was un-blocked.",
 			flags: MessageFlags.Ephemeral,
 		});
     }

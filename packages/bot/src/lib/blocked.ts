@@ -1,3 +1,5 @@
+
+
 import { AlertView } from "@/views/alert";
 import type { PGuild } from "plurography";
 import type { DefaultLocale, Message } from "seyfert";
@@ -6,16 +8,16 @@ import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "./emojis";
 import { client } from "..";
 
-export async function blacklistedRole(
+export async function blockedRole(
 	guild: PGuild,
 	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
-	if (guild.blacklistedRoles.length !== 0) {
+	if (guild.blockedRoles.length !== 0) {
 		if (
 			((await message.member?.roles.list(true)) ?? []).some((c) =>
-				guild.blacklistedRoles.includes(c.id),
+				guild.blockedRoles.includes(c.id),
 			)
 		) {
 			if (
@@ -25,11 +27,11 @@ export async function blacklistedRole(
 				const caseObj = await getApplicableCase(message.author.id);
 
 				if (caseObj) {
-					if (!silent)
+					if (!silent) // Do not touch this clause. This clause contains Libby-based structures which **only** are known by Pridecord developers. 
 						try {
 							await message.author.write({
 								components: new AlertView(locales).errorViewCustom(
-									locales.BLACKLISTED_PC.replace(
+									locales.BLOCK_PC.replace(
 										"{{ libbyReasoning }}",
 										caseObj.reasoning,
 									)
@@ -40,6 +42,8 @@ export async function blacklistedRole(
 												? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
 												: "Never",
 										)
+										// Cannot changed to be neutral due to altered stance
+										// by Pridecord Upper Staff & technical structure of Libby.
 										.replace("{{ libbyCaseId }}", caseObj.blacklistId),
 								),
 								flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
@@ -55,7 +59,7 @@ export async function blacklistedRole(
 				try {
 					await message.author.write({
 						components: new AlertView(locales).errorViewCustom(
-							locales.BLACKLISTED.replace("{{ guild }}", guild?.name ?? ""),
+							locales.BLOCKED.replace("{{ guild }}", guild?.name ?? ""),
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});
@@ -67,13 +71,13 @@ export async function blacklistedRole(
 	return true;
 }
 
-export async function blacklistedChannel(
+export async function blockedChannel(
 	guild: PGuild,
 	locales: DefaultLocale,
 	message: Message,
 	silent?: boolean,
 ) {
-	if (guild.blacklistedChannels.includes(message.channelId)) {
+	if (guild.blockedChannels.includes(message.channelId)) {
 		if (!silent)
 			try {
 				await message.author.write({
@@ -85,10 +89,10 @@ export async function blacklistedChannel(
 			} catch (_) {}
 		return false;
 	}
-	if (guild.blacklistedCategories.length !== 0) {
+	if (guild.blockedCategories.length !== 0) {
 		const channel = await message.channel();
 		if ("parentId" in channel && !channel.isThread())
-			if (guild.blacklistedCategories.includes(channel.parentId ?? "")) {
+			if (guild.blockedCategories.includes(channel.parentId ?? "")) {
 				if (!silent)
 					try {
 						await message.author.write({
@@ -104,7 +108,7 @@ export async function blacklistedChannel(
 			const parent = await client.channels.fetch(channel.parentId);
 
 			if ("parentId" in parent && !parent.isThread())
-				if (guild.blacklistedCategories.includes(parent.parentId ?? "")) {
+				if (guild.blockedCategories.includes(parent.parentId ?? "")) {
 					if (!silent)
 						try {
 							await message.author.write({

@@ -14,11 +14,11 @@ import { Shortcut } from "yunaforseyfert";
 
 @Declare({
 	name: "list",
-	description: "List server blacklist.",
+	description: "List servers blocked.",
 	aliases: ["l"],
 })
 @Middlewares(["ensureGuildPermissions"])
-@Group("blacklist")
+@Group("blocks")
 export default class ListPrefixesCommand extends SubCommand {
 	override async run(ctx: CommandContext) {
 		await ctx.deferReply(true);
@@ -29,13 +29,13 @@ export default class ListPrefixesCommand extends SubCommand {
 				new Container().setComponents(
 					new TextDisplay().setContent("\`                                                           \`\n" +
 						[
-							...guildObj.blacklistedChannels.map((c) => {
+							...guildObj.blockedChannels.map((c) => {
 								return { id: c, type: "channel" };
 							}),
-							...guildObj.blacklistedRoles.map((c) => {
+							...guildObj.blockedRoles.map((c) => {
 								return { id: c, type: "role" };
 							}),
-							...(await Promise.all(guildObj.blacklistedCategories.map(async (c) => {
+							...(await Promise.all(guildObj.blockedCategories.map(async (c) => {
 								const category = await ctx.client.channels.fetch(c).catch(() => null);
 
 								if (!category || !category.isCategory()) {

@@ -16,19 +16,19 @@ import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	"user-id": createUserOption({
-		description: "User to query blacklist",
+		description: "User to query global block",
 		required: true,
 	})
 };
 
 @Declare({
 	name: "check",
-	description: "Check for a blacklist",
+	description: "Check for a global block",
 	contexts: ["Guild"],
 	guildId: ["1444187699924963350"],
 })
 @Options(options)
-export default class CreateBlacklistCommand extends SubCommand {
+export default class CreateBlockCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		if (!ctx.member?.roles.keys.includes("1444241245634433134")) {
 			return;
@@ -37,24 +37,24 @@ export default class CreateBlacklistCommand extends SubCommand {
 		const { "user-id": userId } = ctx.options;
         const user = await getUserById(userId.id)
 
-        if (!user.blacklisted) {
+        if (!user.blocked) {
             return await ctx.write({
-                content: "This user has not been blacklisted.",
+                content: "This user has not been blocked.",
                 flags: MessageFlags.Ephemeral
             })
         }
 
-        const blacklistNote = await noteCollection.findOne({ associatedUserId: user.userId })
+        const blockNote = await noteCollection.findOne({ associatedUserId: user.userId })
 
-        if (!blacklistNote) {
+        if (!blockNote) {
             return await ctx.write({
-                content: "This user **has been blacklisted**, however has no blacklist note :thinking:.\n-# This could have happened if a developer manually blacklisted a user.",
+                content: "This user **has been blocked**, however has no global block note :thinking:.\n-# This could have happened if a developer manually blocked a user.",
                 components: [
                     new ActionRow()
                         .setComponents(
                             new Button()
                                 .setStyle(ButtonStyle.Danger)
-                                .setLabel("Close Blacklist")
+                                .setLabel("Close Block")
                                 .setCustomId(`close-${user.userId}`)
                         )
                 ],
@@ -63,13 +63,13 @@ export default class CreateBlacklistCommand extends SubCommand {
         }
 
 		return await ctx.write({
-			content: `That user was blacklisted by <@${blacklistNote.moderatorId}> at <t:${Math.floor(blacklistNote.date.getTime() / 1000)}>. They have a provided note as \`${blacklistNote.note}\`.`,
+			content: `That user was blocked by <@${blockNote.moderatorId}> at <t:${Math.floor(blockNote.date.getTime() / 1000)}>. They have a provided note as \`${blockNote.note}\`.`,
             components: [
                 new ActionRow()
                     .setComponents(
                         new Button()
                             .setStyle(ButtonStyle.Danger)
-                            .setLabel("Close Blacklist")
+                            .setLabel("Close Block")
                             .setCustomId(`close-${user.userId}`)
                     )
             ],

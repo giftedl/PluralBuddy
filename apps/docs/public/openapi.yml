@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info: 
   title: PluralBuddy API
-  version: 1.0.0
+  version: 1.0.1
 servers: 
   - url: https://pb.giftedly.dev/api
 security: 
@@ -109,9 +109,7 @@ components:
         - associatedAlters
         - public
     PAlter: 
-      type: 
-        - object
-        - "null"
+      type: object
       properties: 
         alterId: 
           type: number
@@ -367,9 +365,15 @@ paths:
                   - guildCount
                   - userCount
                   - lastDrip
+<<<<<<< HEAD
   /auth/oauth2/revoke: 
     post: 
       summary: Revoke OAuth2 access or refresh token
+=======
+  /auth/oauth2/introspect: 
+    post: 
+      summary: Introspect an OAuth2 access or refresh token
+>>>>>>> ca7b2bd3db8fec5552c586e1d6195a9ec6698e7a
       security: 
         - bearerAuth: 
             []
@@ -390,23 +394,80 @@ paths:
                   description: OAuth2 client secret
                 token: 
                   type: string
+<<<<<<< HEAD
                   description: The token to revoke (access or refresh token)
+=======
+                  description: The token to introspect (access or refresh token)
+>>>>>>> ca7b2bd3db8fec5552c586e1d6195a9ec6698e7a
                 token_type_hint: 
                   type: string
                   enum: 
                     - access_token
                     - refresh_token
+<<<<<<< HEAD
                   description: Hint about the type of the token submitted for revocation
+=======
+                  description: Hint about the type of the token submitted for introspection
+                resource: 
+                  type: string
+                  description: Introspects a token for a specific resource.
+>>>>>>> ca7b2bd3db8fec5552c586e1d6195a9ec6698e7a
               required: 
                 - token
       responses: 
         "200": 
+<<<<<<< HEAD
           description: Token revoked successfully. The response body is empty.
+=======
+          description: Token introspection response
+>>>>>>> ca7b2bd3db8fec5552c586e1d6195a9ec6698e7a
           content: 
             application/json: 
               schema: 
                 type: object
+<<<<<<< HEAD
                 description: Empty object on success
+=======
+                properties: 
+                  active: 
+                    type: boolean
+                    description: Whether the token is active
+                  scope: 
+                    type: string
+                    description: Scopes associated with the token
+                  client_id: 
+                    type: string
+                    description: Client ID associated with the token
+                  username: 
+                    type: string
+                    description: Username associated with the token
+                  token_type: 
+                    type: string
+                    description: Type of the token
+                  exp: 
+                    type: number
+                    description: Expiration time of the token (seconds since epoch)
+                  iat: 
+                    type: number
+                    description: Issued at time (seconds since epoch)
+                  nbf: 
+                    type: number
+                    description: Not before time (seconds since epoch)
+                  sub: 
+                    type: string
+                    description: Subject of the token
+                  aud: 
+                    type: string
+                    description: Audience of the token
+                  iss: 
+                    type: string
+                    description: Issuer of the token
+                  jti: 
+                    type: string
+                    description: JWT ID
+                required: 
+                  - active
+>>>>>>> ca7b2bd3db8fec5552c586e1d6195a9ec6698e7a
         "400": 
           description: Invalid request or error response
           content: 
@@ -890,6 +951,227 @@ paths:
                 properties: 
                   message: 
                     type: string
+  /auth/oauth2/authorize: 
+    get: 
+      summary: Authorize an OAuth2 request
+      security: 
+        - bearerAuth: 
+            []
+      parameters: 
+        - name: response_type
+          in: query
+          required: true
+          schema: 
+            type: string
+          description: "OAuth2 response type (e.g., 'code')"
+        - name: client_id
+          in: query
+          required: true
+          schema: 
+            type: string
+          description: OAuth2 client ID
+        - name: redirect_uri
+          in: query
+          required: false
+          schema: 
+            type: string
+            format: uri
+          description: OAuth2 redirect URI
+        - name: scope
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OAuth2 scopes (space-separated)
+        - name: state
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OAuth2 state parameter
+        - name: code_challenge
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: PKCE code challenge
+        - name: code_challenge_method
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: PKCE code challenge method
+        - name: nonce
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OpenID Connect nonce
+        - name: prompt
+          in: query
+          required: false
+          schema: 
+            type: string
+          description: OAuth2 prompt parameter
+      responses: 
+        "302": 
+          description: Redirect to client with code or error
+          headers: 
+            Location: 
+              description: Redirect URI with code or error
+              schema: 
+                type: string
+                format: uri
+        "400": 
+          description: Invalid request
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  error: 
+                    type: string
+                  error_description: 
+                    type: string
+                  state: 
+                    type: string
+                required: 
+                  - error
+        "401": 
+          description: Unauthorized. Due to missing or invalid authentication.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                required: 
+                  - message
+        "403": 
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "404": 
+          description: Not Found. The requested resource was not found.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "429": 
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+        "500": 
+          description: Internal Server Error. This is a problem with the server that you cannot fix.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+  "/v1/messages/{id}": 
+    get: 
+      summary: Get PluralBuddy message
+      description: Get a PluralBuddy message by Message ID
+      security: 
+        - oAuth2: 
+            []
+      responses: 
+        "200": 
+          description: Success response. Response with the message.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: object
+                    properties: 
+                      messageId: 
+                        type: string
+                        examples: 
+                          - "1481859770611666944"
+                      systemId: 
+                        type: string
+                        examples: 
+                          - "1481859816656736257"
+                      alterId: 
+                        type: number
+                        examples: 
+                          - "1481859842262962178"
+                      createdAt: 
+                        type: string
+                        format: date-time
+                      guildId: 
+                        type: string
+                        examples: 
+                          - "1481859908541353987"
+                      channelId: 
+                        type: string
+                        examples: 
+                          - "1481859951688159236"
+                      referencedMessage: 
+                        type: string
+                      expressUserId: 
+                        type: string
+                      endpoints: 
+                        type: object
+                        properties: 
+                          system: 
+                            type: string
+                            examples: 
+                              - api/v1/users/1481859816656736257/system
+                        required: 
+                          - system
+                    required: 
+                      - messageId
+                      - systemId
+                      - alterId
+                      - createdAt
+                      - channelId
+                      - endpoints
+                required: 
+                  - message
+        "401": 
+          description: No access token when authenticating.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                properties: 
+                  errors: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        type: 
+                          type: string
+                          enum: 
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly: 
+                          type: string
+                      required: 
+                        - type
+                        - friendly
+                required: 
+                  - errors
   "/v1/users/{user}/system/list-tags": 
     get: 
       summary: List system tags
@@ -1138,6 +1420,7 @@ paths:
                         - friendly
                 required: 
                   - errors
+<<<<<<< HEAD
   "/v1/users/{user}/alters/{alter}": 
     get: 
       summary: Get a system alter
@@ -1185,6 +1468,8 @@ paths:
                         - friendly
                 required: 
                   - errors
+=======
+>>>>>>> ca7b2bd3db8fec5552c586e1d6195a9ec6698e7a
   "/v1/users/{user}/alters/{tag}/edit": 
     post: 
       summary: Edit a system alter
@@ -1436,69 +1721,32 @@ paths:
                         - friendly
                 required: 
                   - errors
-  "/v1/messages/{id}": 
+  "/v1/users/{user}/alters/{alter}": 
     get: 
-      summary: Get PluralBuddy message
-      description: Get a PluralBuddy message by Message ID
+      summary: Get a system alter
+      description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
       security: 
         - oAuth2: 
-            []
+            - alters:read
       responses: 
         "200": 
-          description: Success response. Response with the message.
+          description: Success.
           content: 
             application/json: 
               schema: 
                 type: object
                 properties: 
-                  message: 
-                    type: object
-                    properties: 
-                      messageId: 
-                        type: string
-                        examples: 
-                          - "1481859770611666944"
-                      systemId: 
-                        type: string
-                        examples: 
-                          - "1481859816656736257"
-                      alterId: 
-                        type: number
-                        examples: 
-                          - "1481859842262962178"
-                      createdAt: 
-                        type: string
-                        format: date-time
-                      guildId: 
-                        type: string
-                        examples: 
-                          - "1481859908541353987"
-                      channelId: 
-                        type: string
-                        examples: 
-                          - "1481859951688159236"
-                      referencedMessage: 
-                        type: string
-                      expressUserId: 
-                        type: string
-                      endpoints: 
-                        type: object
-                        properties: 
-                          system: 
-                            type: string
-                            examples: 
-                              - api/v1/users/1481859816656736257/system
-                        required: 
-                          - system
-                    required: 
-                      - messageId
-                      - systemId
-                      - alterId
-                      - createdAt
-                      - channelId
-                      - endpoints
+                  isSelf: 
+                    type: boolean
+                  data: 
+                    allOf: 
+                      - $ref: "#/components/schemas/PAlter"
+                      - type: 
+                          - object
+                          - "null"
                 required: 
-                  - message
+                  - isSelf
+                  - data
         "401": 
           description: No access token when authenticating.
           content: 

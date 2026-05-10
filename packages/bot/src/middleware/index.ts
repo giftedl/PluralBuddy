@@ -1,17 +1,17 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { administrativeGuildPermissions } from "./administrative-guild-permissions.middleware";
-import { blacklistUserMiddleware } from "./blacklist.middleware";
+import { globalBlockUserMiddleware } from "./global-block.middleware";
 import { ensureGuildPermissions } from "./ensure-guild-permissions.middleware";
 import { latency } from "./latency.middleware";
 import { noWebhookMiddleware } from "./no-webhook.middleware";
-import { serverBlacklist } from "./server-blacklist.middleware";
+import { serverBlock } from "./server-block.middleware";
 
 export const middlewares = {
     latency,
-    blacklistUserMiddleware,
+    globalBlockUserMiddleware,
     noWebhookMiddleware,
     ensureGuildPermissions,
     administrativeGuildPermissions,
-    serverBlacklist
+    serverBlock
 }

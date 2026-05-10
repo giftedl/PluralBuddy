@@ -12,6 +12,7 @@
     "v1/users/user/system/edit/post",
     "v1/users/user/system/list-alters/get",
     "v1/users/user/system/list-tags/get",
+    "v1/users/user/system/list-alters/get",
     "v1/users/user/alters/tag/edit/post",
     "v1/users/user/tags/tag/edit/post"
   ],

@@ -7,7 +7,7 @@ import { MessageFlags } from "seyfert/lib/types";
 @Middlewares(["ensureGuildPermissions"])
 export default class AddChannelForm extends ModalCommand {
 	override filter(context: ModalContext) {
-		return InteractionIdentifier.Guilds.FormSelection.AddBlacklistChannelForm.startsWith(
+		return InteractionIdentifier.Guilds.FormSelection.AddBlockChannelForm.startsWith(
 			context.customId,
 		);
 	}
@@ -15,15 +15,15 @@ export default class AddChannelForm extends ModalCommand {
 	override async run(ctx: ModalContext) {
 		const newChannels =
 			(ctx.interaction.getChannels(
-				InteractionIdentifier.Guilds.FormSelection.AddBlacklistChannelSelection.create(),
+				InteractionIdentifier.Guilds.FormSelection.AddBlockChannelSelection.create(),
 			) as AllChannels[]).map(v => v.id) ?? [];
 		const pluralGuild = await ctx.retrievePGuild();
 
-		pluralGuild.blacklistedChannels = newChannels;
+		pluralGuild.blockedChannels = newChannels;
 
 		await guildCollection.updateOne(
 			{ guildId: pluralGuild.guildId },
-			{ $set: { blacklistedChannels: newChannels } },
+			{ $set: { blockedChannels: newChannels } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(pluralGuild.guildId)

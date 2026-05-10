@@ -8,29 +8,29 @@ import { friendlyFeatureIndex } from "plurography";
 
 PluralBuddy has many features that are cattered directly towards server administrators, moderators, and managers. Many of them elevate the experience of users on your server, or employ a strategy which makes PluralBuddy align with your server outline.
 
-## Blacklisted Channels/Roles
+## Blocked Channels/Roles
 
-PluralBuddy allows both the blacklist of channels in your server and the blacklist of specific roles.
- - Blacklisted channels doesn't allow users to proxy when in a specific channel.
- - Blacklisted roles doesn't allow users to proxy if their host account contains a specific role.
+PluralBuddy allows both the blocking of channels in your server and the blocking of specific roles.
+ - Blocked channels doesn't allow users to proxy when in a specific channel.
+ - Blocked roles doesn't allow users to proxy if their host account contains a specific role.
 
-Blacklisted roles will see the following message in DMs when attempting to proxy or use a command:
+Blocked roles will see the following message in DMs when attempting to proxy or use a command:
 
-<BlacklistedRoleExample />
+<BlockedRoleExample />
 
-Blacklisted channels will see the following messages in DMs when attempting to proxy or use a command:
+Blocked channels will see the following messages in DMs when attempting to proxy or use a command:
 
-<BlacklistedChannelExample />
+<BlockedChannelExample />
 
 ### Commands
 
 They can be enabled with the following commands:
 
-- `pb;server-config blacklist add-channel <channel>` - Add channel where PluralBuddy will not work.
-- `pb;server-config blacklist add-role <role id or mention>` - Add role where having this role will disallow users from proxying.
-- `pb;server-config blacklist list` - List all blacklist items.
-- `pb;server-config blacklist remove-channel <channel>` - Remove channel where PluralBuddy will not work.
-- `pb;server-config blacklist remove-role <role id or mention>` - Remove role where having this role will disallow users from proxying.
+- `pb;server-config blocks add-channel <channel>` - Add channel where PluralBuddy will not work.
+- `pb;server-config blocks add-role <role id or mention>` - Add role where having this role will disallow users from proxying.
+- `pb;server-config blocks list` - List all blocked items.
+- `pb;server-config blocks remove-channel <channel>` - Remove channel where PluralBuddy will not work.
+- `pb;server-config blocks remove-role <role id or mention>` - Remove role where having this role will disallow users from proxying.
 
 ## Role Containers
 
@@ -95,7 +95,7 @@ PluralBuddy allows you to set custom prefixes besides `pb;` and `pb!`, which are
 
 ## Enforce System Tag
 
-Enforcing system tag will enforce system prefixes/tags for all users proxying with PluralBuddy. Commands will not require system tags to be used unlike blacklists.
+Enforcing system tag will enforce system prefixes/tags for all users proxying with PluralBuddy. Commands will not require system tags to be used unlike blocks.
 
 ### Commands
 

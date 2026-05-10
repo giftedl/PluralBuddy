@@ -52,7 +52,7 @@ export default class NameCNS extends ComponentCommand {
 
 		await writeUserById(ctx.author.id, {
 			userId: ctx.author.id,
-			blacklisted: false,
+			blocked: false,
 			storagePrefix: user.storagePrefix,
 			// @ts-ignore
 			system: {
