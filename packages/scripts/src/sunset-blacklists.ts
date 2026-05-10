@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 import ora from "ora";
-import { PUser, type PGuild } from "plurography";
+import { type PUser, type PGuild } from "plurography";
 import { parseArgs } from "util";
 
 const { values } = parseArgs({
