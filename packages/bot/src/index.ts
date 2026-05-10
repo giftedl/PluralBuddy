@@ -114,9 +114,10 @@ export const client = new Client({
 	globalMiddlewares,
 });
 
+const oldLogger = client.logger
+
 if (logger)
-	/* @ts-ignore */
-	client.logger = logger;
+	client.logger = {...logger, fatal: (text: any) => logger.error(text), info: (text: any) => logger.info(text), debug: (text: any) => logger.debug(text)};
 
 if (logger)
 logger.info(
@@ -130,6 +131,8 @@ logger.info(
 			],
 	}
 );
+
+
 
 client.setServices({
 	middlewares: middlewares,
