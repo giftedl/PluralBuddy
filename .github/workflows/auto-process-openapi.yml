@@ -4,6 +4,7 @@ jobs:
   process-openapi:
     name: Process OpenAPI documentation
     runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'OpenAPI')
     steps:
       # ...
       - uses: actions/checkout@v4
