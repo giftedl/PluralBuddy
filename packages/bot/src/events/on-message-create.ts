@@ -315,9 +315,7 @@ export default createEvent({
 			// Only find the alters that we need
 			for (let i = 0; i < user.system.alterIds.length; i++) {
 				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
-				startTimer(`proxy: alter #${i} (${message.id})`)
 				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
-				endTimer(`proxy: alter #${i} (${message.id})`)
 
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 

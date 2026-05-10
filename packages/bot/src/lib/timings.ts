@@ -9,7 +9,7 @@ export function startTimer(key: string) {
 }
 
 export function endTimer(key: string) {
-    client.logger.debug("Timings: {key} done in {time}ms", {
+    client.logger.info("Timings: {key} done in {time}ms", {
         key,
         time: new Date().getTime() - (timingMap[key]?.getTime() ?? Date.now())
     })
