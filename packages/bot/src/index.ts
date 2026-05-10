@@ -41,7 +41,7 @@ import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import winston from 'winston';
 import { SeqTransport } from '@datalust/winston-seq';
 
-export const logger = winston.createLogger({
+export const logger = process.env.SEQ_HOST ? winston.createLogger({
 	level: 'info',
 	format: winston.format.combine(  /* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
 		winston.format.errors({ stack: true }),
@@ -60,9 +60,10 @@ export const logger = winston.createLogger({
 			handleRejections: true,
 		})
 	]
-});
+}) : null;
 
-logger.info("PluralBuddy is online")
+if (logger)
+	logger.info("PluralBuddy is online")
 
 export const buildNumber = 2789;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
@@ -113,9 +114,11 @@ export const client = new Client({
 	globalMiddlewares,
 });
 
-/* @ts-ignore */
-client.logger = logger;
+if (logger)
+	/* @ts-ignore */
+	client.logger = logger;
 
+if (logger)
 logger.info(
 	"The loaded branch is {branch}; loading PluralBuddy with default prefix(es) {prefix}",
 	{
@@ -144,7 +147,8 @@ client.setServices({
 await setupMongoDB();
 await setupDatabases();
 
-logger.info("MongoDB is loaded.")
+if (logger)
+	logger.info("MongoDB is loaded.")
 
 client.cache.statistic = new StatisticResource(client.cache, client);
 client.cache.alterProxy = new ProxyResource(client.cache, client);
