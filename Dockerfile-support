@@ -7,27 +7,29 @@ WORKDIR /usr/pluralbuddy
 # this will cache them and speed up future builds
 FROM base AS install
 RUN mkdir -p /temp/dev
-RUN mkdir -p /temp/dev/packages/support-bot-module
 RUN mkdir -p /temp/dev/packages/bot
 RUN mkdir -p /temp/dev/packages/plurography
-COPY package.json bun.lock /temp/dev/
-COPY packages/support-bot-module/package.json /temp/dev/packages/support-bot-module
-COPY packages/plurography/package.json /temp/dev/packages/plurography
+RUN mkdir -p /temp/dev/packages/support-bot-module
+COPY package.json /temp/dev/
 COPY packages/bot/package.json /temp/dev/packages/bot
-RUN cd /temp/dev && bun install
-RUN cd /temp/dev/packages/support-bot-module && bun install
+COPY packages/plurography/package.json /temp/dev/packages/plurography
+COPY packages/support-bot-module/package.json /temp/dev/packages/support-bot-module
+RUN cd /temp/dev && bun install --force
+RUN cd /temp/dev/packages/bot && bun install --force
+RUN cd /temp/dev/packages/support-bot-module && bun install --force
 
 # install with --production (exclude devDependencies)
-RUN mkdir -p /temp/prod
-RUN mkdir -p /temp/prod/packages/support-bot-module
-RUN mkdir -p /temp/prod/packages/plurography
-RUN mkdir -p /temp/prod/packages/bot
-COPY package.json bun.lock /temp/prod/
-COPY packages/support-bot-module/package.json /temp/prod/packages/support-bot-module
-COPY packages/plurography/package.json /temp/prod/packages/plurography
-COPY packages/bot/package.json /temp/prod/packages/bot
-RUN cd /temp/prod && bun install
-RUN cd /temp/prod/packages/support-bot-module && bun install
+RUN mkdir -p /usr/pluralbuddy/
+RUN mkdir -p /usr/pluralbuddy/packages/bot
+RUN mkdir -p /usr/pluralbuddy/packages/plurography
+RUN mkdir -p /usr/pluralbuddy/packages/support-bot-module
+COPY package.json /usr/pluralbuddy/
+COPY packages/bot/package.json /usr/pluralbuddy/packages/bot
+COPY packages/plurography/package.json /usr/pluralbuddy/packages/plurography
+COPY packages/support-bot-module/package.json /usr/pluralbuddy/packages/support-bot-module
+RUN cd /usr/pluralbuddy/ && bun install --force
+RUN cd /usr/pluralbuddy/packages/bot && bun install --force
+RUN cd /usr/pluralbuddy/packages/support-bot-module && bun install --force
 
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
@@ -37,8 +39,13 @@ COPY . .
 
 # copy production dependencies and source code into final image
 FROM base AS release
-COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=install /usr/pluralbuddy/node_modules node_modules
 COPY --from=prerelease /usr/pluralbuddy/packages ./packages
+
+# Bun keeps deps under root node_modules/.bun and symlinks from each workspace package; COPY ./packages above would omit these, breaking imports (e.g. seyfert).
+COPY --from=install /usr/pluralbuddy/packages/bot/node_modules ./packages/bot/node_modules
+COPY --from=install /usr/pluralbuddy/packages/plurography/node_modules ./packages/plurography/node_modules
+COPY --from=install /usr/pluralbuddy/packages/support-bot-module/node_modules ./packages/support-bot-module/node_modules
 COPY --from=prerelease /usr/pluralbuddy/package.json .
 COPY --from=prerelease /usr/pluralbuddy/tsconfig.json .
 
