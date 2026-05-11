@@ -10,10 +10,10 @@
 	"private": true,
 	"type": "module",
 	"dependencies": {
+		"bot": "workspace:*",
 		"mongodb": "^7.0.0",
 		"plurography": "workspace:*",
-		"bot": "workspace:*",
-		"seyfert": "^4.0.1-dev-19573177583.0",
+		"seyfert": "^4.3.0",
 		"yunaforseyfert": "^1.1.3"
 	},
 	"scripts": {

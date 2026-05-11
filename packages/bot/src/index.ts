@@ -114,8 +114,6 @@ export const client = new Client({
 	globalMiddlewares,
 });
 
-const oldLogger = client.logger
-
 if (logger)
 	client.logger = {...logger, fatal: (text: any) => logger.error(text), info: (message: string, ...meta: any[]) => logger.info(message, ...meta), debug: (message: string, ...meta: any[]) => logger.debug(message, ...meta)};
 
