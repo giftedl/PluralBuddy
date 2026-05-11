@@ -14,9 +14,9 @@ COPY package.json /temp/dev/
 COPY packages/bot/package.json /temp/dev/packages/bot
 COPY packages/plurography/package.json /temp/dev/packages/plurography
 COPY packages/support-bot-module/package.json /temp/dev/packages/support-bot-module
-RUN cd /temp/dev && bun install --force
-RUN cd /temp/dev/packages/bot && bun install --force
-RUN cd /temp/dev/packages/support-bot-module && bun install --force
+RUN cd /temp/dev && bun install 
+RUN cd /temp/dev/packages/bot && bun install 
+RUN cd /temp/dev/packages/support-bot-module && bun install 
 
 # install with --production (exclude devDependencies)
 RUN mkdir -p /usr/pluralbuddy/
@@ -27,9 +27,9 @@ COPY package.json /usr/pluralbuddy/
 COPY packages/bot/package.json /usr/pluralbuddy/packages/bot
 COPY packages/plurography/package.json /usr/pluralbuddy/packages/plurography
 COPY packages/support-bot-module/package.json /usr/pluralbuddy/packages/support-bot-module
-RUN cd /usr/pluralbuddy/ && bun install --force
-RUN cd /usr/pluralbuddy/packages/bot && bun install --force
-RUN cd /usr/pluralbuddy/packages/support-bot-module && bun install --force
+RUN cd /usr/pluralbuddy/ && bun install 
+RUN cd /usr/pluralbuddy/packages/bot && bun install 
+RUN cd /usr/pluralbuddy/packages/support-bot-module && bun install 
 
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
