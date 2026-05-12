@@ -338,7 +338,7 @@ Systems can have **privacy values** which are values that describe who can see w
 > PluralBuddy Build #%version% · \`%branch%\`
 
 -# **ABOUT PLURALBUDDY**
-> PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
+> PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
