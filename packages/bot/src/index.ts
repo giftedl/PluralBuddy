@@ -133,11 +133,7 @@ client.setServices({
 	middlewares: middlewares,
 	handleCommand: PluralBuddyHandleCommand,
 	cache: {
-		disabledCache: { messages: true },
-		adapter:
-			process.env.REDIS === undefined
-				? new MemoryAdapter()
-				: new RedisAdapter({ redisOptions: { url: process.env.REDIS } }),
+		disabledCache: { messages: true }
 	},
 	langs: { default: "en" },
 });
