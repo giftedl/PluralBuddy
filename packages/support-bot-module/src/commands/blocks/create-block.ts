@@ -14,7 +14,7 @@ import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	"user-id": createStringOption({
-		description: "User to blacklist",
+		description: "User to the block list",
 		required: true,
 	}),
 	note: createStringOption({
@@ -27,12 +27,12 @@ const options = {
 
 @Declare({
 	name: "create",
-	description: "Create a blacklist",
+	description: "Create a block",
 	contexts: ["Guild"],
 	guildId: ["1444187699924963350"],
 })
 @Options(options)
-export default class CreateBlacklistCommand extends SubCommand {
+export default class CreateBlockCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		if (!ctx.member?.roles.keys.includes("1444241245634433134")) {
 			return;
@@ -41,9 +41,9 @@ export default class CreateBlacklistCommand extends SubCommand {
 		const { "user-id": userId, note: note } = ctx.options;
         const user = await getUserById(userId)
 
-        if (user.blacklisted) {
+        if (user.blocked) {
             return await ctx.write({
-                content: "That user was already blacklisted.",
+                content: "That user was already blocked.",
                 flags: MessageFlags.Ephemeral,
 
             })
@@ -58,11 +58,11 @@ export default class CreateBlacklistCommand extends SubCommand {
 
         await writeUserById(userId, {
             ...(await getUserById(userId)),
-            blacklisted: true
+            blocked: true
         })
 
 		return await ctx.write({
-			content: `Okay, that user has been **blacklisted**. (${note}) (${userId})`,
+			content: `Okay, that user has been **blocked**. (${note}) (${userId})`,
 			flags: MessageFlags.Ephemeral,
 		});
 	}

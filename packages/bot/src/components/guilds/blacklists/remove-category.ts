@@ -18,7 +18,7 @@ export default class AddChannelButton extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Guilds.GeneralTab.RemoveBlacklistCategory.startsWith(
+		return InteractionIdentifier.Guilds.GeneralTab.RemoveBlockCategory.startsWith(
 			context.customId,
 		);
 	}
@@ -33,7 +33,7 @@ export default class AddChannelButton extends ComponentCommand {
 						.setComponent(
 							new TextInput()
 								.setCustomId(
-									InteractionIdentifier.Guilds.FormSelection.RemoveBlacklistCategorySelection.create(),
+									InteractionIdentifier.Guilds.FormSelection.RemoveBlockCategorySelection.create(),
 								)
 								.setStyle(TextInputStyle.Short)
 								.setRequired(true),
@@ -42,7 +42,7 @@ export default class AddChannelButton extends ComponentCommand {
 						.setDescription("Get ID of category: https://dis.gd/findmyid"),
 				])
 				.setCustomId(
-					InteractionIdentifier.Guilds.FormSelection.RemoveBlacklistCategoryForm.create(),
+					InteractionIdentifier.Guilds.FormSelection.RemoveBlockCategoryForm.create(),
 				)
 				.setTitle("Updating Guild"),
 		);

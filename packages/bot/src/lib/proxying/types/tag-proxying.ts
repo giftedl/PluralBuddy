@@ -49,7 +49,7 @@ export async function performTagProxy(
 
 		if (channel.isTextable() && !guild.getFeatures().disabledProxyTyping) channel.typing();
 	})();
-	console.time("pre-proxy");
+	
 	alterCollection.updateOne(
 		{ alterId: checkAlter?.alterId, systemId: checkAlter?.systemId },
 		{
@@ -312,7 +312,7 @@ export async function performTagProxy(
 						...roleAfterComponents,
 					];
 
-		console.timeEnd("pre-proxy");
+		
 		if (message.guildId)
 			proxy(
 				webhook,

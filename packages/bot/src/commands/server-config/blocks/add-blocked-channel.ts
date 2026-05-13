@@ -2,91 +2,79 @@ import { guildCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	CommandContext,
+	Container,
 	createChannelOption,
-	createStringOption,
 	Declare,
 	Group,
 	Middlewares,
 	Options,
 	SubCommand,
 } from "seyfert";
-import { ChannelType, MessageFlags } from "seyfert/lib/types";
+import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
-	category: createStringOption({
-		description: "Category ID to add to blacklist.",
+	channel: createChannelOption({
+		description: "Channel to add to the block list.",
 		required: true,
 	}),
 };
 
 @Declare({
-	name: "add-category",
-	description: "Add a new server blacklist category.",
-	aliases: ["act"],
+	name: "add-channel",
+	description: "Add a new server blocked channel.",
+	aliases: ["ac"],
 })
 @Middlewares(["ensureGuildPermissions"])
-@Group("blacklist")
+@Group("blocks")
 @Options(options)
-export default class AddBlacklistCategory extends SubCommand {
+export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
-		const { category } = ctx.options;
-		const categoryObj = await (await ctx.guild())?.channels
-			.fetch(category)
-			.catch(() => null);
+		const { channel } = ctx.options;
 
-		if (!categoryObj || !categoryObj.isCategory()) {
+		if (guildObj.blockedChannels.includes(channel.id)) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
-					"NOT_A_CATEGORY",
+					"BLOCK_ALREADY_EXISTS",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
 
-		if (guildObj.blacklistedCategories.includes(category)) {
+		if (guildObj.blockedChannels.length >= 25) {
 			return await ctx.editResponse({
 				components: new AlertView((await ctx.userTranslations())).errorView(
-					"BLACKLIST_ALREADY_EXISTS",
+					"TOO_MANY_BLOCKED_ITEMS",
 				),
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 			});
 		}
 
-		if (guildObj.blacklistedCategories.length >= 25) {
-			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
-					"TOO_MANY_BLACKLIST_ITEMS",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
-
-		guildObj.blacklistedCategories.push(category);
+		guildObj.blockedChannels.push(channel.id);
 
 		await guildCollection.updateOne(
 			{ guildId: guildObj.guildId },
-			{ $push: { blacklistedCategories: category } },
+			{ $push: { blockedChannels: channel.id } },
 			{ upsert: true }
 		);
 		ctx.client.cache.pguild.remove(guildObj.guildId);
 
 		return await ctx.editResponse({
 			components: new AlertView((await ctx.userTranslations())).successViewCustom(
-				`${(await ctx.userTranslations()).SUCCESS_ADD_ITEM_BLACKLIST.replace("%item%", categoryObj.name)} ${((await ctx.userTranslations()))
-					.SUCCESS_CHANGED_SERVER_BLACKLIST.replace(
-						"%blacklist_items%",
+				`${(await ctx.userTranslations()).SUCCESS_ADD_ITEM_BLOCKED.replace("%item%", `<#${channel.id}>`)} ${((await ctx.userTranslations()))
+					.SUCCESS_CHANGED_SERVER_BLOCKS.replace(
+						"%block_items%",
 						[
-							...guildObj.blacklistedCategories.map((c) => {
+							...guildObj.blockedCategories.map((c) => {
 								return { id: c, type: "channel" };
 							}),
-							...guildObj.blacklistedRoles.map((c) => {
+							...guildObj.blockedRoles.map((c) => {
 								return { id: c, type: "role" };
 							}),
 							...(
 								await Promise.all(
-									guildObj.blacklistedCategories.map(async (c) => {
+									guildObj.blockedCategories.map(async (c) => {
 										const category = await ctx.client.channels
 											.fetch(c)
 											.catch(() => null);

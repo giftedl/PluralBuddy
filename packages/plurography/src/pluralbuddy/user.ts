@@ -10,7 +10,7 @@ export const PUserObject = z.object({
     userLang: z.string().optional().default("en"),
     system: PSystemObject.optional(),
     storagePrefix: z.string(),
-    blacklisted: z.boolean().default(false),
+    blocked: z.boolean().default(false),
     nudging: z.object({
         blockedUsers: z.string().array(),
         currentlyEnabled: z.boolean(),
@@ -27,7 +27,7 @@ export type PUser = z.infer<typeof PUserObject>
 export const defaultUserStructure = (userId: string) => {
     return {
         userId,
-        blacklisted: false,
+        blocked: false,
         userLang: "en",
         storagePrefix: assetStringGeneration(8),
         nudging: {

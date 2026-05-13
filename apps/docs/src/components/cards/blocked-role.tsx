@@ -12,7 +12,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { CorrectHeaderFixer } from "../correct-header-fixer";
 
-export function BlacklistedRoleExample() {
+export function BlockedRoleExample() {
 	const { resolvedTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 
@@ -20,7 +20,7 @@ export function BlacklistedRoleExample() {
 
 	if (!mounted) return null;
 	return (
-		<MDXFeedbackBlock id="app-card" body="Blacklisted Role Card (#response)">
+		<MDXFeedbackBlock id="app-card" body="Blocked Role Card (#response)">
 			<DiscordMessages
 				className="py-4 font-[gg_sans] rounded-[8px] border"
 				lightTheme={resolvedTheme === "light"}
@@ -36,7 +36,7 @@ export function BlacklistedRoleExample() {
 				>
 					<DiscordContainer accentColor="#B70000">
 						<DiscordTextDisplay className="block">
-							<DiscordCustomEmoji url="https://cdn.discordapp.com/emojis/1436973282304725083.webp?size=60" name="x_" className="mr-1"/>You have been blacklisted from{" "}
+							<DiscordCustomEmoji url="https://cdn.discordapp.com/emojis/1436973282304725083.webp?size=60" name="x_" className="mr-1"/>You have been blocked from{" "}
 							<DiscordBold>PluralBuddy Support</DiscordBold>. You cannot use
 							PluralBuddy in this guild.
 						</DiscordTextDisplay>

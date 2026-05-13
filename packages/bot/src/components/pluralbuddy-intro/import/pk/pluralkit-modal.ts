@@ -215,9 +215,9 @@ export default class PluralBuddyImportModal extends ModalCommand {
 								: []),
 							...(member.privacy.metadata_privacy === "public"
 								? [
-										AlterProtectionFlags.MESSAGE_COUNT,
-										AlterProtectionFlags.TAGS,
-									]
+									AlterProtectionFlags.MESSAGE_COUNT,
+									AlterProtectionFlags.TAGS,
+								]
 								: []),
 							...(member.privacy.name_privacy === "public"
 								? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
@@ -303,8 +303,10 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			system: systemData,
 		});
 
-		console.log(parsedSafe
-			.filter((v) => v.zodData.error !== undefined).map(v => v.zodData.error))
+		ctx.client.logger.info("Possible PK errors (Zod): {errors}", {
+			errors: parsedSafe
+				.filter((v) => v.zodData.error !== undefined).map(v => v.zodData.error)
+		})
 
 		return await ctx.editResponse({
 			components: [
@@ -313,38 +315,36 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				).successViewCustom(`Successfully imported your PluralKit system!
 
 > **Disclaimer:** You may feel your system might not be completely identical to PluralKit. This is because the core data structure of some resources are different from PluralKit's and as a result may not be identical.
-${
-	systemData.alterIds.length !== data.members.length
-		? `> - **Alters (members)**: ${parsedSafe
-				.filter((v) => v.zodData.error !== undefined)
-				.map((_, i) => `\`${data.members[i]?.id}\``)
-				.join(
-					", ",
-				)} were unable to be added to the system due to validation issues.`
-		: ""
-}${
-	systemData.tagIds.length !== data.groups.length
-		? `> - **Tags (groups)**: ${parsedGroupsSafe
-				.filter((v) => v.error !== undefined)
-				.map((_, i) => `\`${data.groups[i]?.id}\``)
-				.join(
-					", ",
-				)} were unable to be added to the system due to validation issues.`
-		: ""
-}
+${systemData.alterIds.length !== data.members.length
+						? `> - **Alters (members)**: ${parsedSafe
+							.filter((v) => v.zodData.error !== undefined)
+							.map((_, i) => `\`${data.members[i]?.id}\``)
+							.join(
+								", ",
+							)} were unable to be added to the system due to validation issues.`
+						: ""
+					}${systemData.tagIds.length !== data.groups.length
+						? `> - **Tags (groups)**: ${parsedGroupsSafe
+							.filter((v) => v.error !== undefined)
+							.map((_, i) => `\`${data.groups[i]?.id}\``)
+							.join(
+								", ",
+							)} were unable to be added to the system due to validation issues.`
+						: ""
+					}
 ### Next Steps
 > - To create a new alter, try using ${mentionCommand(
-					(await ctx.getDefaultPrefix()) ?? "",
-					"system create-alter",
-					ctx.interaction?.message?.messageReference === undefined,
-					"%username% %display name%",
-				)}
+						(await ctx.getDefaultPrefix()) ?? "",
+						"system create-alter",
+						ctx.interaction?.message?.messageReference === undefined,
+						"%username% %display name%",
+					)}
 > - To create a new tag, try using ${mentionCommand(
-					(await ctx.getDefaultPrefix()) ?? "",
-					"system create-tag",
-					ctx.interaction?.message?.messageReference === undefined,
-					"%name%",
-				)}
+						(await ctx.getDefaultPrefix()) ?? "",
+						"system create-tag",
+						ctx.interaction?.message?.messageReference === undefined,
+						"%name%",
+					)}
 `),
 				new ActionRow().setComponents(
 					new Button()

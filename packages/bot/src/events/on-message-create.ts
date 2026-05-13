@@ -47,10 +47,11 @@ import { helpPages } from "@/commands/help";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { buildNumber, client } from "..";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
-import { blacklistedChannel, blacklistedRole } from "@/lib/blacklisted";
+import { blockedChannel, blockedRole } from "@/lib/blocked";
 import { latencyDataPoints } from "@/analytics";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
 import { getLanguageByUserId } from "@/lib/lang";
+import { endTimer, startTimer } from "@/lib/timings";
 
 export const indexingMap: Record<string, NodeJS.Timeout> = {};
 export const indexingMessageMap: Record<string, Message> = {};
@@ -60,7 +61,7 @@ export type ApplicableWebhookWritePayload = {
 		RESTPostAPIWebhookWithTokenJSONBody,
 		"components" | "embeds" | "poll" | "content"
 	> &
-		SendResolverProps;
+	SendResolverProps;
 	query?: RESTPostAPIWebhookWithTokenQuery | undefined;
 };
 export type ApplicableWebhookEditPayload = {
@@ -68,7 +69,7 @@ export type ApplicableWebhookEditPayload = {
 		RESTPatchAPIWebhookWithTokenMessageJSONBody,
 		"components" | "content" | "embeds" | "poll"
 	> &
-		ResolverProps;
+	ResolverProps;
 	messageId: string;
 	query?: RESTPatchAPIWebhookWithTokenMessageQuery | undefined;
 };
@@ -90,13 +91,15 @@ export default createEvent({
 
 		latencyDataPoints.push(
 			Date.now() -
-				// @ts-ignore
-				message.createdTimestamp,
+			// @ts-ignore
+			message.createdTimestamp,
 		);
 		handleDMReply(message);
+
+
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
-		
+
 		if (message.content === `<@${message.client.applicationId}>`) {
 			const locale = await getLanguageByUserId(message.author.id);
 			const guild = await getGuildFromId(message.guildId ?? "");
@@ -111,12 +114,14 @@ export default createEvent({
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});
-				} catch (_) {}
+				} catch (_) { }
 				return;
 			}
 
 			const currentPage = helpPages[0];
 			const contents = await Bun.file(`content/${currentPage?.file}`).text();
+
+			client.logger.info("User requested help page: {contents}", { contents })
 
 			return await message.reply({
 				components: [
@@ -190,6 +195,8 @@ export default createEvent({
 
 		if (await notValidPermissions(message)) return;
 
+		startTimer(`proxy: data-gathering (${message.id})`)
+
 		const channel = await message.channel();
 		const parent =
 			"parentId" in channel && channel.isThread() ? channel.parentId : null;
@@ -203,17 +210,22 @@ export default createEvent({
 		const user = await getUserById(message.author.id);
 		const guild = PGuildObject.parse(
 			(await client.cache.pguild.get(message.guildId ?? ""))?.g ??
-				(await getGuildFromId(message.guildId ?? "")),
+			(await getGuildFromId(message.guildId ?? "")),
 		);
 
 		if (user.system === undefined) return;
-		if (user.blacklisted) return;
+		if (user.blocked) { client.logger.info(`${message.id} ended because user was blocked`); return };
 		if (user.system.disabled) return;
+
+		endTimer(`proxy: data-gathering (${message.id})`)
+
 		if (
 			user.system.systemAutoproxy.some(
 				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
 			)
 		) {
+			startTimer(`proxy: pre-system autoproxy (${message.id})`)
+
 			const alter = user.system.systemAutoproxy.find(
 				(ap) => ap.autoproxyMode === "alter" && ap.serverId === message.guildId,
 			)?.autoproxyAlter;
@@ -228,13 +240,15 @@ export default createEvent({
 					systemId: message.author.id,
 				});
 
-				console.timeEnd("proxy tag parse");
+
 
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
-					
-					if (!(await blacklistedRole(guild, locale, message))) return;
-					if (!(await blacklistedChannel(guild, locale, message))) return;
+
+					if (!(await blockedRole(guild, locale, message))) return;
+					if (!(await blockedChannel(guild, locale, message))) return;
+
+					endTimer(`proxy: pre-system autoproxy (${message.id})`)
 
 					performAlterAutoProxy(
 						message,
@@ -251,6 +265,8 @@ export default createEvent({
 		if (user.system.alterIds.length === 0) return;
 
 		if (!indexingMap[message.author.id]) {
+			startTimer(`proxy: bruteforce proxy (${message.id})`)
+
 			let indexingMessage: MessageStructure | null =
 				null as MessageStructure | null;
 			let eligibleToProcess = false;
@@ -261,35 +277,37 @@ export default createEvent({
 					locale = await getLanguageByUserId(message.author.id);
 				const channel = message.channelId;
 
-				if (eligibleToProcess && process.env.REDIS)
-				try {
-					indexingMessage = await message.client.messages.write(channel, {
-						components: [
-							new Container()
-								.setComponents(
-									new TextDisplay().setContent(
-										`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
-											"{{ alterCount }}",
-											(user.system?.alterIds.length ?? 0).toString(),
-										)
-											.replace("{{ alters }}", "0")
-											.replace("{{ percentage }}", "0%")}`,
-									),
-								)
-								.setColor("#5450fe"),
-						],
-						flags: MessageFlags.IsComponentsV2,
-					});
+				client.logger.warn("{message} is taking too long. shoved into the processing queue ({alterCount} alters)", { message: message.id, alterCount: user.system?.alterIds.length })
 
-					indexingMessageMap[message.author.id] = indexingMessage;
-				} catch (_) {}
+				if (eligibleToProcess && process.env.REDIS)
+					try {
+						indexingMessage = await message.client.messages.write(channel, {
+							components: [
+								new Container()
+									.setComponents(
+										new TextDisplay().setContent(
+											`  ${emojis.loading}   ${locale.WAITING_INDEXING.replaceAll(
+												"{{ alterCount }}",
+												(user.system?.alterIds.length ?? 0).toString(),
+											)
+												.replace("{{ alters }}", "0")
+												.replace("{{ percentage }}", "0%")}`,
+										),
+									)
+									.setColor("#5450fe"),
+							],
+							flags: MessageFlags.IsComponentsV2,
+						});
+
+						indexingMessageMap[message.author.id] = indexingMessage;
+					} catch (_) { }
 			}, 2000);
 			indexingMap[message.author.id] = indexingTimeout;
 
 			const removeFromMap = () => {
 				delete indexingMap[message.author.id];
 				delete indexingMessageMap[message.author.id];
-	
+
 				clearTimeout(indexingTimeout);
 				if (indexingMessage !== null) indexingMessage.delete();
 			}
@@ -298,11 +316,13 @@ export default createEvent({
 			for (let i = 0; i < user.system.alterIds.length; i++) {
 				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
 				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
-				
+
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 
 				if (i % 20 === 0 && indexingMessage) {
 					const locale = await getLanguageByUserId(message.author.id);
+
+					client.logger.debug("processing {message} ({alterCount} alters), {percentage}% done", { message: message.id, alterCount: user.system?.alterIds.length, percentage: `${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%` })
 
 					await indexingMessage?.edit({
 						components: [
@@ -325,7 +345,7 @@ export default createEvent({
 						flags: MessageFlags.IsComponentsV2,
 					});
 				}
-				
+
 
 				// If cache miss or cache stale, fetch from DB and set cache
 				if (!proxyObject || !proxyObject.pt) {
@@ -374,12 +394,12 @@ export default createEvent({
 						proxyObject && proxyObject.pt
 							? null // Data came from cache so don't fetch here unless we need further fields
 							: await alterCollection.findOne({
-									alterId: Number(user.system.alterIds[i]),
-								});
+								alterId: Number(user.system.alterIds[i]),
+							});
 
 					if (proxyTagValid(proxyTag, message)) {
-						console.log("Attempted to proxy: ", proxyTag)
-				const locale = await getLanguageByUserId(message.author.id);
+						message.client.logger.info("Attempted to proxy: {proxyTag}", { proxyTag })
+						const locale = await getLanguageByUserId(message.author.id);
 						// Check for system tag policy
 						if (
 							message.guildId &&
@@ -389,6 +409,7 @@ export default createEvent({
 								((user.system?.displayTagMap ?? {})[message.guildId] ??
 									user.system.systemDisplayTag) === null)
 						) {
+			endTimer(`proxy: bruteforce proxy (${message.id})`)
 							createProxyError(user, message, {
 								title: locale.DISPLAY_TAG_ENFORCE,
 								description: locale.DISPLAY_TAG_ENFORCE_DESC,
@@ -406,13 +427,15 @@ export default createEvent({
 							});
 						}
 
-						console.timeEnd("proxy tag parse");
 
-						if (!(await blacklistedRole(guild, locale, message))) {
+
+						if (!(await blockedRole(guild, locale, message))) {
+			endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
-						if (!(await blacklistedChannel(guild, locale, message))) {
+						if (!(await blockedChannel(guild, locale, message))) {
+			endTimer(`proxy: bruteforce proxy (${message.id})`)
 							removeFromMap();
 							return;
 						}
@@ -441,7 +464,8 @@ export default createEvent({
 				(ap) => ap.autoproxyMode === "latch" && ap.serverId === message.guildId,
 			)
 		) {
-			
+			startTimer(`proxy: latch proxy (${message.id})`)
+
 			if (message.content.startsWith("\\")) {
 				setLastLatchAlter(guild.guildId, user.system);
 				return;
@@ -457,7 +481,7 @@ export default createEvent({
 				if (
 					(currentAutoProxyPolicy?.lastLatchTimestamp?.getTime() ??
 						Date.now()) +
-						user.system.latchExpiration <
+					user.system.latchExpiration <
 					Date.now()
 				) {
 					setLastLatchAlter(guild.guildId, user.system);
@@ -471,14 +495,15 @@ export default createEvent({
 					alterId: Number(alter),
 					systemId: message.author.id,
 				});
-				console.timeEnd("proxy tag parse");
+
 
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
 
-					if (!(await blacklistedRole(guild, locale, message, true))) return;
-					if (!(await blacklistedChannel(guild, locale, message, true))) return;
+					if (!(await blockedRole(guild, locale, message, true))) return;
+					if (!(await blockedChannel(guild, locale, message, true))) return;
 
+			endTimer(`proxy: latch proxy (${message.id})`)
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,
@@ -490,6 +515,6 @@ export default createEvent({
 				}
 			}
 		}
-		console.timeEnd("proxy tag parse");
+
 	},
 });

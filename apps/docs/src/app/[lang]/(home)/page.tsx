@@ -100,7 +100,7 @@ export default async function HomePage() {
 							</span>
 							<span>
 								<ShieldX className="text-primary" />
-								{t("blacklist_headline")}
+								{t("blocks_headline")}
 							</span>
 							<span>
 								<Ampersands className="text-primary" />

@@ -6,8 +6,8 @@ import { PGuildObject } from "plurography";
 import { Command, createMiddleware, Message, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
-export const serverBlacklist = createMiddleware<void>(async (middle) => {
-	const { blacklistedChannels, blacklistedRoles, blacklistedCategories } =
+export const serverBlock = createMiddleware<void>(async (middle) => {
+	const { blockedChannels, blockedRoles, blockedCategories } =
 		PGuildObject.parse(
 			(
 				await middle.context.client.cache.pguild.get(
@@ -24,7 +24,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 			middle.context.command.parent?.name === "server-config");
 
 	if ("parentId" in channel && !isServerConfig)
-		if (blacklistedCategories.includes(channel.parentId ?? "")) {
+		if (blockedCategories.includes(channel.parentId ?? "")) {
 			return await ctx.write({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"FEATURE_DISABLED_CHANNEL",
@@ -34,7 +34,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		}
 
 	if (
-		blacklistedChannels.includes(middle.context.channelId) &&
+		blockedChannels.includes(middle.context.channelId) &&
 		!isServerConfig
 	) {
 		return await ctx.write({
@@ -45,10 +45,10 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 		});
 	}
 
-	if (blacklistedRoles.length !== 0)
+	if (blockedRoles.length !== 0)
 		if (
 			((await ctx.member?.roles.list(true)) ?? []).some((c) =>
-				blacklistedRoles.includes(c.id),
+				blockedRoles.includes(c.id),
 			)
 		) {
 			if (ctx.isChat() && ctx.message) {
@@ -66,7 +66,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 								components: new AlertView(
 									await ctx.userTranslations(),
 								).errorViewCustom(
-									(await ctx.userTranslations()).BLACKLISTED_PC.replace(
+									(await ctx.userTranslations()).BLOCK_PC.replace(
 										"{{ libbyReasoning }}",
 										caseObj.reasoning,
 									)
@@ -92,7 +92,7 @@ export const serverBlacklist = createMiddleware<void>(async (middle) => {
 						components: new AlertView(
 							await ctx.userTranslations(),
 						).errorViewCustom(
-							(await ctx.userTranslations()).BLACKLISTED.replace(
+							(await ctx.userTranslations()).BLOCKED.replace(
 								"{{ guild }}",
 								(await ctx.guild())?.name ?? "",
 							),

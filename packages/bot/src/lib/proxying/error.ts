@@ -5,6 +5,7 @@ import { createError } from "../create-error";
 import type z from "zod";
 import { emojis } from "../emojis";
 import { MessageFlags } from "seyfert/lib/types";
+import { client } from "@/index";
 
 export async function createProxyError(
 	user: PUser,
@@ -23,12 +24,14 @@ export async function createProxyError(
 		],
 	});
 
+	client.logger.warn("user ran into error [{type}]", { type: opts.type })
+	
 	if (previousApplicableErrors >= 1) {
 		return;
 	}
 
 	const error = await createError(message.guildId ?? "", {
-        ...opts,
+		...opts,
 
 		responsibleUserId: message.user.id,
 		responsibleChannelId: message.channelId,
