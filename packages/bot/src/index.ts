@@ -146,7 +146,6 @@ setTimeout(() => {
 }, 3000);
 
 await client.start({ token: process.env.BOT_TOKEN });
-await client.uploadCommands({ cachePath: "./commands.json" });
 
 client.gateway.setPresence({
 	activities: [
