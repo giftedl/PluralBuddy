@@ -9,5 +9,6 @@ export default config.bot({
         events: "events",
         langs: "i18n"
     },
+    debug: true,
     intents: ["Guilds", "MessageContent", "GuildMessages", "GuildWebhooks", "DirectMessages", "GuildMessageReactions"]
 });
