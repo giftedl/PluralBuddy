@@ -41,26 +41,7 @@ import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import winston from 'winston';
 import { SeqTransport } from '@datalust/winston-seq';
 
-export const logger = process.env.SEQ_HOST ? winston.createLogger({
-	level: 'info',
-	format: winston.format.combine(  /* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
-		winston.format.errors({ stack: true }),
-		winston.format.json(),
-	),
-	defaultMeta: { application: "pluralbuddy" },
-	transports: [
-		new winston.transports.Console({
-			format: winston.format.simple(),
-		}),
-		new SeqTransport({
-			serverUrl: process.env.SEQ_HOST,
-			apiKey: process.env.SEQ_KEY,
-			onError: (e => { console.error(e) }),
-			handleExceptions: true,
-			handleRejections: true,
-		})
-	]
-}) : null;
+export const logger = null;
 
 if (logger)
 	logger.info("PluralBuddy is online")
@@ -133,7 +114,11 @@ client.setServices({
 	middlewares: middlewares,
 	handleCommand: PluralBuddyHandleCommand,
 	cache: {
-		disabledCache: { messages: true }
+		disabledCache: { messages: true },
+		adapter:
+			process.env.REDIS === undefined
+				? new MemoryAdapter()
+				: new RedisAdapter({ redisOptions: { url: process.env.REDIS } }),
 	},
 	langs: { default: "en" },
 });
