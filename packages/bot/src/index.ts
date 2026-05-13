@@ -161,6 +161,9 @@ client.cache.similarWebhookResource = new SimilarWebhookResource(
 );
 client.cache.i18n = new Pi18nCache(client.cache, client);
 
+if (logger)
+  logger.info("Created cache")
+
 await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
 
