@@ -1,34 +1,20 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ComponentCommand, Container, TextDisplay, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
+import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemSettingsView } from "../../views/system-settings";
-import { AlertView } from "../../views/alert";
+import { SystemSettingsView } from "../../../views/system-settings";
+import { AlertView } from "../../../views/alert";
 
 export default class ConfigureSystem extends ComponentCommand {
     componentType = 'Button' as const;
 
     override filter(ctx: ComponentContext<typeof this.componentType>) {
-        return InteractionIdentifier.Systems.ConfigurePublicProfile.startsWith(ctx.customId);
+        return InteractionIdentifier.Systems.Configuration.Pagination.PageOne.startsWith(ctx.customId);
       }
 
     async run(ctx: ComponentContext<typeof this.componentType>) {
-        await ctx.deferReply(true);
-        const originalUserId = InteractionIdentifier.Systems.ConfigurePublicProfile.substring(ctx.customId)[0]
-        
-        if (ctx.author.id !== originalUserId) {
-            return ctx.editResponse({
-                components: [
-                    new Container()
-                        .setComponents(
-                            new TextDisplay()
-                                .setContent((await ctx.userTranslations()).NOT_ORIGINAL_RECIPIENT)
-                        )
-                ],
-                flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
-            })
-        }
+        await ctx.deferUpdate();
 
         const user = await ctx.retrievePUser();
 

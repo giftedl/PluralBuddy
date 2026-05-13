@@ -37,10 +37,11 @@ export default class SystemConfigCommand extends SubCommand {
 						"general",
 						user.system.associatedUserId,
 					),
-					...new SystemSettingsView((await ctx.userTranslations())).generalSettings(
+					...(await new SystemSettingsView((await ctx.userTranslations())).generalSettings(
 						user.system,
 						ctx.guildId,
-					),
+						1
+					)),
 				],
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			},

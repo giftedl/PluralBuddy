@@ -34,6 +34,7 @@ import type { PSystem } from "@/types/system";
 import { getUserById } from "@/types/user";
 import type { PGuild } from "plurography";
 import { sanitizeEmojis } from "@/lib/sanitize-emojis";
+import paginateComponents from "@/lib/views/paginate";
 
 export class AlterView extends TranslatedView {
 	private async getTags(alter: PAlter) {

@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 // biome-ignore lint/suspicious/noExplicitAny: buh?
-class InteractionObj<K extends (...args: any[]) => string> {
+export class InteractionObj<K extends (...args: any[]) => string> {
 	matcher: string;
 	func: K;
 	create: K;
@@ -250,6 +250,11 @@ export const InteractionIdentifier = {
 		Configuration: {
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
+
+			Pagination: {
+				PageOne: createStatic("systems/config/page-1"),
+				PageTwo: createStatic("systems/config/page-2"),
+			},
 
 			GeneralTab: {
 				Index: createStatic("systems/config/general"),

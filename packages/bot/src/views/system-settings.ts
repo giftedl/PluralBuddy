@@ -10,6 +10,7 @@ import {
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
+	type DefaultLocale,
 } from "seyfert";
 import { TranslatedView } from "./translated-view";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
@@ -27,6 +28,7 @@ import { AlterProtectionFlags, type PAlter } from "@/types/alter";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlertView } from "./alert";
 import { mentionCommand } from "@/lib/mention-command";
+import paginateComponents from "@/lib/views/paginate";
 
 export const alterPagination: {
 	id: string;
@@ -122,12 +124,12 @@ export class SystemSettingsView extends TranslatedView {
 		];
 	}
 
-	generalSettings(system: PSystem, guildId: string | undefined) {
+	async generalSettingsPageOne({ system, guildId, $translations }: { system: PSystem, guildId: string | undefined, $translations: DefaultLocale }) {
 		return [
 			new Container()
 				.setComponents(
 					new TextDisplay().setContent(
-						this.translations.GENERAL_SYSTEM_TITLE.replace(
+						$translations.GENERAL_SYSTEM_TITLE.replace(
 							"{{ emoji }}",
 							emojis.settings,
 						).replace("{{ systemName }}", system.systemName),
@@ -136,26 +138,26 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.SYSTEM_NAME_BTN)
+								.setLabel($translations.SYSTEM_NAME_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetName.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.SYSTEM_NAME_DESC),
+							new TextDisplay().setContent($translations.SYSTEM_NAME_DESC),
 						),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.SYSTEM_NICKNAME_FORMAT_BTN)
+								.setLabel($translations.SYSTEM_NICKNAME_FORMAT_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetNicknameFormat.create(),
 								),
 						)
 						.setComponents(
 							new TextDisplay().setContent(
-								this.translations.SYSTEM_NICKNAME_FORMAT_DESC,
+								$translations.SYSTEM_NICKNAME_FORMAT_DESC,
 							),
 						),
 					new Separator(),
@@ -163,7 +165,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.SYSTEM_PRIVACY_BTN)
+								.setLabel($translations.SYSTEM_PRIVACY_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.create(),
 								),
@@ -171,21 +173,21 @@ export class SystemSettingsView extends TranslatedView {
 						.setComponents(
 							new TextDisplay().setContent(
 								// biome-ignore lint/style/useTemplate: a
-								this.translations.SYSTEM_PRIVACY_DESC +
-									((system.public ?? 0) > 0
-										? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem(this.translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
-										: ""),
+								$translations.SYSTEM_PRIVACY_DESC +
+								((system.public ?? 0) > 0
+									? `\n-# ${$translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem($translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
+									: ""),
 							),
 						),
 
-					new TextDisplay().setContent(this.translations.SYSTEM_AP_DESC),
+					new TextDisplay().setContent($translations.SYSTEM_AP_DESC),
 
 					new ActionRow().setComponents(
 						new StringSelectMenu()
 							.setPlaceholder(
 								guildId === undefined
-									? this.translations.REQUIRED_SERVER_PROXY
-									: this.translations.SELECT_DEFAULT_PROXY,
+									? $translations.REQUIRED_SERVER_PROXY
+									: $translations.SELECT_DEFAULT_PROXY,
 							)
 							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
 							.setDisabled(guildId === undefined)
@@ -194,8 +196,8 @@ export class SystemSettingsView extends TranslatedView {
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Latch.create(),
 									)
-									.setLabel(this.translations.LATCH_NAME)
-									.setDescription(this.translations.LATCH_DESC)
+									.setLabel($translations.LATCH_NAME)
+									.setDescription($translations.LATCH_DESC)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -204,8 +206,8 @@ export class SystemSettingsView extends TranslatedView {
 									),
 								new StringSelectOption()
 									.setValue("--")
-									.setLabel(this.translations.ALTER_NAME)
-									.setDescription(this.translations.ALTER_DESC_DISABLED)
+									.setLabel($translations.ALTER_NAME)
+									.setDescription($translations.ALTER_DESC_DISABLED)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -216,8 +218,8 @@ export class SystemSettingsView extends TranslatedView {
 									.setValue(
 										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
 									)
-									.setLabel(this.translations.OFF_NAME)
-									.setDescription(this.translations.OFF_DESC)
+									.setLabel($translations.OFF_NAME)
+									.setDescription($translations.OFF_DESC)
 									.setDefault(
 										system.systemAutoproxy.some(
 											(a) =>
@@ -231,33 +233,38 @@ export class SystemSettingsView extends TranslatedView {
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.EXPORT_SYS_BTN)
+								.setLabel($translations.EXPORT_SYS_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.EXPORT_SYS_DESC),
+							new TextDisplay().setContent($translations.EXPORT_SYS_DESC),
 						),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.IMPORT_SYS_BTN)
+								.setLabel($translations.IMPORT_SYS_BTN)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.IMPORT_SYS_DESC),
+							new TextDisplay().setContent($translations.IMPORT_SYS_DESC),
 						),
 				)
 				.setColor("#1190FF"),
+		];
+	}
+
+	async generalSettingsPageTwo({ system, guildId, $translations }: { system: PSystem, guildId: string | undefined, $translations: DefaultLocale }) {
+		return [
 			new Container()
 				.setColor("#FF1717")
 				.setSpoiler(true)
 				.setComponents(
-					new TextDisplay().setContent(this.translations.DANGER_ZONE_TITLE),
+					new TextDisplay().setContent($translations.DANGER_ZONE_TITLE),
 					new Section()
 						.setAccessory(
 							new Button()
@@ -266,32 +273,39 @@ export class SystemSettingsView extends TranslatedView {
 								)
 								.setLabel(
 									system.disabled
-										? this.translations.SYSTEM_E
-										: this.translations.SYSTEM_D,
+										? $translations.SYSTEM_E
+										: $translations.SYSTEM_D,
 								)
 								.setCustomId(
 									InteractionIdentifier.Systems.ToggleDisableSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.SYSTEM_D_DESC),
+							new TextDisplay().setContent($translations.SYSTEM_D_DESC),
 						),
 					new Separator(),
 					new Section()
 						.setAccessory(
 							new Button()
 								.setStyle(ButtonStyle.Danger)
-								.setLabel(this.translations.DELETE_SYS_BTN)
+								.setLabel($translations.DELETE_SYS_BTN)
 								.setCustomId(
 									InteractionIdentifier.Setup.RemoveOldSystem.create(),
 								),
 						)
 						.setComponents(
-							new TextDisplay().setContent(this.translations.DELETE_SYS_DESC),
+							new TextDisplay().setContent($translations.DELETE_SYS_DESC),
 						),
-				),
-		];
+				),]
 	}
+
+	async generalSettings(system: PSystem, guildId: string | undefined, page: number) {
+		return await paginateComponents({
+			"Systems.Configuration.Pagination.PageOne": this.generalSettingsPageOne,
+			"Systems.Configuration.Pagination.PageTwo": this.generalSettingsPageTwo
+		}, { system, guildId }, page, this.translations)
+	}
+
 	async otherAltersSettings(
 		system: PSystem,
 		pgObj?: (typeof alterPagination)[0],
@@ -350,11 +364,11 @@ export class SystemSettingsView extends TranslatedView {
 								`[\`@${has(AlterProtectionFlags.USERNAME, alter.public) ? alter.username : "••••••"}\`] **${has(AlterProtectionFlags.NAME, alter.public) ? alter.displayName : "••••••••"}${alter.pronouns !== null && alter.pronouns !== undefined && has(AlterProtectionFlags.PRONOUNS, alter.public) ? ` | ${alter.pronouns}` : ""}**`,
 						)
 						.join("\n") +
-						(alters.filter((v) =>
-							has(AlterProtectionFlags.VISIBILITY, v.public),
-						).length === 0
-							? this.translations.NO_PUBLIC_ALTERS_DESC
-							: ""),
+					(alters.filter((v) =>
+						has(AlterProtectionFlags.VISIBILITY, v.public),
+					).length === 0
+						? this.translations.NO_PUBLIC_ALTERS_DESC
+						: ""),
 				),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
@@ -373,9 +387,9 @@ export class SystemSettingsView extends TranslatedView {
 							"{{ possibleSearchQuery }}",
 							pgObj.searchQuery !== undefined
 								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-										"{{ query }}",
-										`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
-									)
+									"{{ query }}",
+									`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+								)
 								: "",
 						),
 				),
@@ -393,7 +407,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
-								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+							Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.NextPage.create(
@@ -511,9 +525,9 @@ export class SystemSettingsView extends TranslatedView {
 							"{{ possibleSearchQuery }}",
 							pgObj.searchQuery !== undefined
 								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-										"{{ query }}",
-										`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
-									)
+									"{{ query }}",
+									`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+								)
 								: "",
 						),
 				),
@@ -537,7 +551,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
-								Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+							Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(
@@ -651,9 +665,9 @@ export class SystemSettingsView extends TranslatedView {
 							"{{ possibleSearchQuery }}",
 							pgObj.searchQuery !== undefined
 								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-										"{{ query }}",
-										`\`${pgObj.searchQuery}\``,
-									)
+									"{{ query }}",
+									`\`${pgObj.searchQuery}\``,
+								)
 								: "",
 						),
 				),
@@ -677,7 +691,7 @@ export class SystemSettingsView extends TranslatedView {
 						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
 						.setDisabled(
 							pgObj?.memoryPage ===
-								Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),
+							Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),
 						)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TagPagination.NextPage.create(
@@ -749,7 +763,7 @@ export class SystemSettingsView extends TranslatedView {
 							).replace(
 								"{{ pronouns }}",
 								system.systemPronouns ??
-									this.translations.PUBLIC_PROFILE_UNSET_PN,
+								this.translations.PUBLIC_PROFILE_UNSET_PN,
 							),
 						),
 					)
@@ -806,7 +820,7 @@ export class SystemSettingsView extends TranslatedView {
 				new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_TITLE),
 				new Separator().setSpacing(Spacing.Large),
 				new TextDisplay().setContent(
-					
+
 					this.translations.IMPORT_SETTINGS_DESC
 				),
 				new Separator().setSpacing(Spacing.Small).setDivider(false),
