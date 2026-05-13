@@ -29,6 +29,7 @@ import { DiscordSnowflake } from "@sapphire/snowflake";
 import { AlertView } from "./alert";
 import { mentionCommand } from "@/lib/mention-command";
 import paginateComponents from "@/lib/views/paginate";
+import { SystemFlags } from "plurography";
 
 export const alterPagination: {
 	id: string;
@@ -259,7 +260,18 @@ export class SystemSettingsView extends TranslatedView {
 	}
 
 	async generalSettingsPageTwo({ system, guildId, $translations }: { system: PSystem, guildId: string | undefined, $translations: DefaultLocale }) {
+		const keepProxyTags = ((system.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) !== 0;
+
 		return [
+			new Container().setColor("#1190FF").setComponents(
+
+				new TextDisplay().setContent(
+					$translations.GENERAL_SYSTEM_TITLE.replace(
+						"{{ emoji }}",
+						emojis.settings,
+					).replace("{{ systemName }}", system.systemName),
+				),
+			),
 			new Container()
 				.setColor("#FF1717")
 				.setSpoiler(true)

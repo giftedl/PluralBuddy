@@ -18,6 +18,12 @@ const publicDescription = `This is a bitwise operation-based number which determ
 | ALTERS          | \`64\` \`(1 << 6)\`     | Allows external users to see alters inside of the system. |
 | TAGS            | \`128\` \`(1 << 7)\`    | Allows external users to see tags inside of the system. |`;
 
+const flagDescription = `This is a bitwise operation-based number which determines certain system settings.
+
+| Public Flag     | Value                   | Description |
+|-----------------|-------------------------|-------------|
+| KEEP_PROXY_TAGS | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |`
+
 const tagMapDescription = `This is a map that shows the association between a Discord server ID and a custom display tag.
 
 \`\`\`js
@@ -35,6 +41,10 @@ export enum SystemProtectionFlags {
 	PRONOUNS = 1 << 5,
 	ALTERS = 1 << 6,
 	TAGS = 1 << 7,
+}
+
+export enum SystemFlags {
+	KEEP_PROXY_TAGS = 1 << 0
 }
 
 export const PSystemObject = z.object({
@@ -68,6 +78,8 @@ export const PSystemObject = z.object({
 	latchExpiration: z.number().min(0).max(36000000).optional(),
 
 	public: z.number().nonnegative().meta({ description: publicDescription }),
+	flags: z.number().nonnegative().meta({ description: flagDescription }).default(0),
+
 	/** WIP */
 	subAccounts: z.array(z.string()),
 	disabled: z.boolean().default(false),

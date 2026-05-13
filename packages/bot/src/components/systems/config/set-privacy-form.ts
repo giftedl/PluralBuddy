@@ -76,7 +76,7 @@ export default class SetNameForm extends ModalCommand {
     await ctx.interaction.update({
       components: [
           ...new SystemSettingsView((await ctx.userTranslations())).topView("general", updatedSystem.associatedUserId),
-          ...new SystemSettingsView((await ctx.userTranslations())).generalSettings(updatedSystem, ctx.guildId)
+          ...await new SystemSettingsView((await ctx.userTranslations())).generalSettings(updatedSystem, ctx.guildId, 1)
 
       ],
       flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral

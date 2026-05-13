@@ -29,7 +29,6 @@ export default class ConfigureSystem extends ComponentCommand {
             components: [
                 ...new SystemSettingsView((await ctx.userTranslations())).topView("general", user.system.associatedUserId),
                 ...(await new SystemSettingsView((await ctx.userTranslations())).generalSettings(user.system, ctx.guildId, 2))
-
             ],
             flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral
 
