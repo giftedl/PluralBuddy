@@ -141,6 +141,10 @@ client.cache.i18n = new Pi18nCache(client.cache, client);
 if (logger)
   logger.info("Created cache")
 
+setTimeout(() => {
+	console.log(client.gateway)
+}, 3000);
+
 await client.start();
 await client.uploadCommands({ cachePath: "./commands.json" });
 
