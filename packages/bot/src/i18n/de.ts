@@ -252,7 +252,6 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
 > %linein% Art by %catjamming% @raincloudzy
 > **Translations:**
 > %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
-> %lineright% 🇧🇷 Portuguese translations by @lemon_piece.
 
 -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
