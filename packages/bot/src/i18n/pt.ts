@@ -1,52 +1,49 @@
 export default {
-  INTRODUCTION_MESSAGE: `## Willkommen bei PluralBuddy
-PluralBuddy ist ein Bot, der entwickelt wurde, um die Lücke zwischen Qualität und Anpassbarkeit im Plural Austausch für Discord Server und Benutzer zu schließen.
+  INTRODUCTION_MESSAGE: `## Welcome to PluralBuddy
+PluralBuddy is a bot designed to fill the gap for quality customizable plurality exchanges for Discord servers and users.
 
-:track_next: Klicken Sie zum Starten auf die Schaltfläche Nächste Seite unten, um Ihr System einzurichten.`,
-  IMPORT_MESSAGE: `## Einrichten Ihres Systems
-Sie können ein neues System erstellen, mit dem Sie Ihre Änderungen und Tags selbst erstellen können.
-Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importieren.
--# Um von Tupperbox zu importieren, da die Daten von Tupperbox nicht vorhanden sind, du musst das System erstellen und dann \`{{ prefix }}system import\` ausführen.`,
-  PAGINATION_NEXT_PAGE: "Nächste Seite",
-  PAGINATION_FINISH: "Ende",
-  NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
-  BLOCKED: "Du wurdest von {{ guild }} in die blocks gesetzt. Die Nutzung von PluralBuddy ist in dieser Gilde nun nicht mehr möglich.",
+:track_next: To get started, click the Next Page button below to setup your system.`,
+  IMPORT_MESSAGE: `## Setting up your system
+You can create a new system which will allow you to create your alters and tags by yourself.
+Additionally, you can also import data from another bot like PluralKit.
+-# To import from Tupperbox, due to the lack of data Tupperbox export data provides, you must create the system and then run \`{{ prefix }}system import\`.`,
+  PAGINATION_NEXT_PAGE: "Next Page",
+  PAGINATION_FINISH: "Finish",
+  NO_SERVER_DELETION: "PluralBuddy Express alters must be actually invited to a server for messages to be eligible to be deleted due to Discord restrictions. You should be able to right click delete it yourself though!",
+  BLOCKED: "You have been blocked from **{{ guild }}**. You cannot use PluralBuddy in this guild.",
   // Does not need to be translated
   BLOCK_PC: `You have been blocked from **Pridecord**. You cannot use PluralBuddy in this guild.
 
 > **Reason:** {{ libbyReasoning }}
 > **Expires:** {{ libbyExpirationDate }}
 > -# {{ reply }} Please view the DM from <@1455014942888693792> regarding case \`{{ libbyCaseId }}\`.`,
-  PAGINATION_PREVIOUS_PAGE: "Vorherige Seite",
-  CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
-  ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
-  OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
-  TOO_MANY_BLOCKED_ITEMS: "Es gibt zu viele blocks Artikel. Du kannst nur 25 blocks Rollen und 25 blocks Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
-  TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
+  PAGINATION_PREVIOUS_PAGE: "Previous Page",
+  CREATING_NEW_SYSTEM_HEADER: "## Creating a new system",
+  ERROR_DISABLED_SYSTEM: "2f – Your system is disabled. You cannot proxy.",
+  OPTION_DISABLED: "This option cannot be selected. This option is disabled.",
+  TOO_MANY_BLOCKED_ITEMS: "There are too many blocked items. You can only have 25 blocked roles, and 25 blocked channels at one time due to Discord modal limitations.",
+  TOO_MANY_MANAGER_ITEMS: "There are too many manager items. You can only have 25 manager roles at one time due to Discord modal limitations.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
-Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
-  CREATING_NEW_SYSTEM_NAME_BUTTON: "Setze Name*",
-  CREATING_NEW_SYSTEM_NAME_SET: "Name ist:",
-  CREATING_NEW_SYSTEM_TAG_BUTTON: "System Etikett festlegen",
-  CREATING_NEW_SYSTEM_TAG_SET: "System Tag ist:",
+Systems on PluralBuddy require a **system name**. They must be at least 3 characters long and shorter than 20 characters long. System names will be shown when somebody identifies a message from your system.`,
+  CREATING_NEW_SYSTEM_NAME_BUTTON: "Set name*",
+  CREATING_NEW_SYSTEM_NAME_SET: "Name is:",
+  CREATING_NEW_SYSTEM_TAG_BUTTON: "Set system tag*",
+  CREATING_NEW_SYSTEM_TAG_SET: "System tag is:",
   CREATING_NEW_SYSTEM_TAG_MESSAGE: `
-Dieser Server benötigt ein **System Tag** für Systeme, die hier proxying. Um hier ein System zu erstellen, benötigen Sie ein System Tag.`,
-  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Datenschutzwerte festlegen",
+This server requires a **system tag** for systems who are proxying here. In order to create a system here, you must have a system tag.`,
+  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Set privacy values",
   CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
-Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer welchen Teil Ihres Systems sehen kann. Standardmäßig ist Ihr System neben der automatischen Moderation des Servers und der Meldung, die Ihr System sendet, komplett privat.`,
-  CREATING_NEW_SYSTEM_PRIVACY_SET: "Werte der öffentlichen Privatsphäre sind:",
-  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Wählen Sie die Datenschutzeinstellungen aus, die öffentlich zugänglich sein sollen.",
-  CREATING_NEW_SYSTEM_SUCCESS: `Neues System erfolgreich erstellt!
-
-### Nächste Schritte
-
-> - Um eine neue Alter zu erstellen, versuchen Sie es mit %command1%
-
-> - Um ein neues Tag zu erstellen, versuchen Sie es mit %command2%`,
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – Sie können kein neues System einrichten, wenn ein System unter Ihrem Konto bereits existiert.",
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "System & Setup erneut entfernen",
-  ERROR_PAGINATION_TOO_OLD: "2g – Die Alter Paginierungs Komponente ist veraltet. Sie können nicht fortfahren. Klicken Sie bitte oben in der Meldung auf den Tab \"Alter\", um die Seiteneinstellungen zurückzusetzen.",
-  ERROR_TAG_PAGINATION_TOO_OLD: "2h – Diese Tag Pagination Komponente ist zu alt, Sie können nicht fortfahren. Bitte klicken Sie auf die Registerkarte \"Tags\" oben in der Nachricht, um die Pagination zurückzusetzen.",
+Systems can have **privacy values** which are values that describe who can see what part of your system. By default, your system is completely private besides server automatic moderation and the message that your system sends. However, changing them will change those values.`,
+  CREATING_NEW_SYSTEM_PRIVACY_SET: "Public Privacy values are:",
+  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Select the privacy values you want open to the public.",
+  CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
+### Next Steps
+> - To create a new alter, try using %command1%
+> - To create a new tag, try using %command2%`,
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
+  ERROR_PAGINATION_TOO_OLD: '2g – That alter pagination component is too old, you cannot proceed. Please hit the "Alters" tab at the top of the message to reset the pagination.',
+  ERROR_TAG_PAGINATION_TOO_OLD: '2h – That tag pagination component is too old, you cannot proceed. Please hit the "Tags" tab at the top of the message to reset the pagination.',
   ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
   ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
   ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
@@ -237,24 +234,31 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   OPERATION_CHANGE_PRIVACY: "Set system privacy values to %privacy%.",
   OPERATION_UNDO_SUCCESS: "Successfully updated %value-count% value(s) as result of an undo action.",
   NEW_ROLE_PREF: "Creating Role Preference...",
-  ROLE_USAGE: "Role",
+  ROLE_USAGE: "Cargo",
   UNABLE_TO_BE_FUNNY: "You are not permitted to use the funny commands.",
   DISABLED_DM_REPLIES: "Successfully toggled DM replies off. Use `pb;nudge-preferences` to re-enable them.",
-  ABOUT_PB: `### PluralBuddy Build #%version% · \`%branch%\`
-%github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+  ABOUT_PB: `-# **DEVELOPMENT INFO**
+> PluralBuddy Build #%version% · \`%branch%\`
 
-> PluralBuddy is an accessibility tool for those who are DID/OSDD systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
+-# **ABOUT PLURALBUDDY**
+> PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
-> **Credits:**
-> %linein% Programmed w/ :heart_hands: by @giftedly 
-> %linein% Art by %catjamming% @raincloudzy
-> **Translations:**
-> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
-> %lineright% 🇧🇷 Portuguese translations by @lemon_piece.
+-# **CREDITS**
+**Programmed w/ :heart_hands: by @giftedly**
+-# Developed all major parts of PluralBuddy
 
--# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+**Art by %catjamming% @raincloudzy**
+-# Created the banner, profile picture and overall brand of PluralBuddy
+
+**Translated on Crowdin**
+-# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇧🇷 Portuguese translations by @lemon_piece.
+
+-# **LINKS**
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
   SET_AUTO_PROXY: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_DMS: "Successfully set proxy mode to **%mode%** for your system in that server.",
@@ -296,13 +300,13 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   INSUFFICIENT_DATA_SIZE: "2ad – There is not a sufficient amount of resources under your user context to continue with this operation.",
   INSUFFICIENT_USER_PERMISSIONS: "2ag – You do not have permission to edit this information.",
   SUCCESS_CHANGED_SERVER_PREFIXES: "This server now has the following prefixes: \n%prefixes%",
-  SUCCESS_ADD_ITEM_blocks: "%item% has been added to the blocks successfully.",
-  SUCCESS_REMOVE_ITEM_blocks: "%item% has been removed from the blocks successfully.",
-  SUCCESS_CHANGED_SERVER_blocks: "This server now has the following blocks configuration: \n%blocks_items%",
+  SUCCESS_ADD_ITEM_BLOCKED: "%item% has been blocked successfully.",
+  SUCCESS_REMOVE_ITEM_BLOCKED: "%item% has been unblocked successfully.",
+  SUCCESS_CHANGED_SERVER_BLOCKS: "This server now has the following block configuration: \n%block_items%",
   PREFIX_ALREADY_EXISTS: "That prefix already exists or there is a duplicate in the array.",
   BLOCK_ALREADY_EXISTS: "That role or channel is already blocked.",
   SUCCESS_ADD_MANAGER_ROLE: "%item% has been added to the manager role list successfully.",
-  SUCCESS_CHANGED_MANAGER_blocks: "This server now has the following manager role configuration: \n%manager_roles%",
+  SUCCESS_CHANGED_MANAGER_BLOCKS: "This server now has the following manager role configuration: \n%manager_roles%",
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",
   MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
   SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
@@ -450,9 +454,9 @@ Please download the JSON file sent to you and use the button to upload the attac
   SRV_CFG_PREFIXES_BTN: "Set Prefixes",
   SRV_CFG_BLOCKS_DESC: `**Configure Block**
 > Roles and channels can be blocked from proxying or using commands from PluralBuddy.`,
-  SRV_CFG_blocksS_ITEMS: `> Currently, the guild's blocks items are: {{ list }}`,
-  SRV_CFG_blocksS_ITEMS_EMPTY: "> - _There are no blocks items._",
-  SRV_CFG_blocksS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blocks items.`,
+  SRV_CFG_BLOCKS_ITEMS: `> Currently, the guild's blocked items are: {{ list }}`,
+  SRV_CFG_BLOCKS_ITEMS_EMPTY: "> - _There are no blocked items._",
+  SRV_CFG_BLOCKS_ITEMS_MORE: `\n> - ... and {{ count }} extra item(s). Use {{ commandMention }} to see the rest of the blocked items.`,
   SRV_CFG_ADD_CHANNELS: "Add Channels",
   SRV_CFG_ADD_CATEGORIES: "Add Category",
   SRV_CFG_ADD_ROLES: "Add Roles",
