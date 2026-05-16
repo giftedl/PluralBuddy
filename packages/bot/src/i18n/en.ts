@@ -351,6 +351,7 @@ Systems can have **privacy values** which are values that describe who can see w
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇧🇷 Portuguese translations by @lemon_piece.
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
