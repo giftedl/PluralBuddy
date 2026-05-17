@@ -20,7 +20,8 @@ app.webhooks.on("push", async ({ octokit, payload }) => {
     repo: payload.repository.name,
     sha: payload.head_commit?.id ?? "",
     state: "pending",
-    description: "PluralBuddy Status Checker (2 minute-check)"
+    description: "PluralBuddy waits 5 minutes to check the status of the bot.",
+    operationName: "PluralBuddy Status Checker"
 
   })
 
