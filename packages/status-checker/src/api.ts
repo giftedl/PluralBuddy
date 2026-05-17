@@ -22,7 +22,6 @@ app.webhooks.on("push", async ({ octokit, payload }) => {
     state: "pending",
     description: "PluralBuddy waits 5 minutes to check the status of the bot.",
     operationName: "PluralBuddy Status Checker"
-
   })
 
   console.log(result)
