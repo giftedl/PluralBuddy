@@ -11,18 +11,20 @@ const app = new App({
   }
 });
 
-app.webhooks.on("push", ({ octokit, payload }) => {
+app.webhooks.on("push", async ({ octokit, payload }) => {
   console.log("new push", payload)
   console.log("sha", payload.commits[0]?.id ?? "")
 
-  octokit.rest.repos.createCommitStatus({
+  const result = await octokit.rest.repos.createCommitStatus({
     owner: payload.repository.owner?.login ?? "",
     repo: payload.repository.name,
-    sha: payload.commits[0]?.id ?? "",
+    sha: payload.head_commit?.id ?? "",
     state: "pending",
     description: "PluralBuddy Status Checker (2 minute-check)"
 
   })
+
+  console.log(result)
 })
 
 createServer(createNodeMiddleware(app)).listen(3000);
