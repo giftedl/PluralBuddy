@@ -25,8 +25,9 @@ client.setServices({
     }
 });
 
-export function startDiscordBot() {
+export async function startDiscordBot() {
 
-    client.start();
+    await client.start();
 
+    console.log("started bot")
 }
