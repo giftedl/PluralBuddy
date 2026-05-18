@@ -4,6 +4,7 @@ import { hc } from "hono/client";
 import { app, startWebhookListener } from "./api";
 import { startDiscordBot } from "./discord";
 import type { components } from "@octokit/openapi-types";
+import type { Octokit } from "octokit";
 
 const statusUrl = "https://internal-pb.giftedly.dev";
 
@@ -23,9 +24,11 @@ startDiscordBot();
 export async function resolveStatusAlert({
 	repository,
 	commit,
+	octokit
 }: {
 	repository: components["schemas"]["webhook-push"]["repository"];
 	commit: components["schemas"]["webhook-push"]["head_commit"];
+	octokit: Octokit
 }) {
 	const result = await Promise.race([
 		async () => executeStatusEndpoint(),
@@ -39,7 +42,7 @@ export async function resolveStatusAlert({
 	if ("error" in (result as any)) {
 		console.log("panic", Date.now());
 
-		const commitStatus = await app.octokit.rest.repos.createCommitStatus({
+		const commitStatus = await octokit.rest.repos.createCommitStatus({
 			owner: repository.owner?.login ?? "",
 			repo: repository.name,
 			sha: commit?.id ?? "",
@@ -49,7 +52,7 @@ export async function resolveStatusAlert({
 			context: "Status",
 		});
 	} else
-		await app.octokit.rest.repos.createCommitStatus({
+		await octokit.rest.repos.createCommitStatus({
 			owner: repository.owner?.login ?? "",
 			repo: repository.name,
 			sha: commit?.id ?? "",

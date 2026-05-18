@@ -43,6 +43,7 @@ app.webhooks.on("push", async ({ octokit, payload }) => {
 				resolveStatusAlert({
 					repository: payload.repository,
 					commit: payload.head_commit,
+					octokit
 				}),
 			sixMinutes,
 		),
