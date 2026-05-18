@@ -29,13 +29,15 @@ export async function resolveStatusAlert({
 }) {
 	const result = await Promise.race([
 		async () => executeStatusEndpoint(),
-		new Promise( (_,r) => {
-			setTimeout(() => {r("timed out")}, 6 * 1000)
-		} )
-	]).catch(r => ({ error: r }))
+		new Promise((_, r) => {
+			setTimeout(() => {
+				r("timed out");
+			}, 6 * 1000);
+		}),
+	]).catch((r) => ({ error: r }));
 
 	if ("error" in (result as any)) {
-		console.log("panic", Date.now())
+		console.log("panic", Date.now());
 
 		const commitStatus = await app.octokit.rest.repos.createCommitStatus({
 			owner: repository.owner?.login ?? "",
@@ -46,10 +48,8 @@ export async function resolveStatusAlert({
 			operationName: "PluralBuddy Status Checker",
 			context: "Status",
 		});
-
-
-	}
-		const commitStatus = await app.octokit.rest.repos.createCommitStatus({
+	} else
+		await app.octokit.rest.repos.createCommitStatus({
 			owner: repository.owner?.login ?? "",
 			repo: repository.name,
 			sha: commit?.id ?? "",
