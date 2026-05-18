@@ -1,8 +1,11 @@
 import type { RESTPostAPIWebhookWithTokenJSONBody } from "discord-api-types/v9";
 import type { ClientType } from "bot";
 import { hc } from "hono/client";
+import { app, startWebhookListener } from "./api";
+import { startDiscordBot } from "./discord";
+import type { components } from "@octokit/openapi-types";
 
-const statusUrl = "https://internal-pb.giftedly.dev/api/stats"
+const statusUrl = "https://internal-pb.giftedly.dev";
 
 export const { api } = hc<ClientType>(statusUrl, {
 	headers: {
@@ -10,13 +13,49 @@ export const { api } = hc<ClientType>(statusUrl, {
 	},
 });
 
-async function executeWebhook(body: RESTPostAPIWebhookWithTokenJSONBody) {
-    return await fetch(process.env.URGENT_WEBHOOK ?? "", {
-        method: "POST",
-        body: JSON.stringify(body)
-    })
+async function executeStatusEndpoint() {
+	return await api.health.$get();
 }
 
-async function executeStatusEndpoint() {
-    return await api.health.$get()
+startWebhookListener();
+startDiscordBot();
+
+export async function resolveStatusAlert({
+	repository,
+	commit,
+}: {
+	repository: components["schemas"]["webhook-push"]["repository"];
+	commit: components["schemas"]["webhook-push"]["head_commit"];
+}) {
+	const result = await Promise.race([
+		async () => executeStatusEndpoint(),
+		new Promise( (_,r) => {
+			setTimeout(() => {r("timed out")}, 6 * 1000)
+		} )
+	]).catch(r => ({ error: r }))
+
+	if ("error" in (result as any)) {
+		console.log("panic", Date.now())
+
+		const commitStatus = await app.octokit.rest.repos.createCommitStatus({
+			owner: repository.owner?.login ?? "",
+			repo: repository.name,
+			sha: commit?.id ?? "",
+			state: "failure",
+			description: `PluralBuddy panicked after checking status for reason: ${(result as any).error}`,
+			operationName: "PluralBuddy Status Checker",
+			context: "Status",
+		});
+
+
+	}
+		const commitStatus = await app.octokit.rest.repos.createCommitStatus({
+			owner: repository.owner?.login ?? "",
+			repo: repository.name,
+			sha: commit?.id ?? "",
+			state: "success",
+			description: `Successfully checked status!`,
+			operationName: "PluralBuddy Status Checker",
+			context: "Status",
+		});
 }
