@@ -6,7 +6,7 @@ import { startDiscordBot } from "./discord";
 import type { components } from "@octokit/openapi-types";
 import type { Octokit } from "octokit";
 
-const statusUrl = "https://internal-pb.giftedly.dev";
+const statusUrl = "https://aaa.com";
 
 export const { api } = hc<ClientType>(statusUrl, {
 	headers: {
