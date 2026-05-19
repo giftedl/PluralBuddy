@@ -1,7 +1,6 @@
 import { Client, MemoryAdapter } from "seyfert";
 
 export const client = new Client();
-const { BOT_ID, MAIN_GUILD } = process.env;
 
 client.setServices({
     cache: {

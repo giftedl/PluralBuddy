@@ -65,7 +65,7 @@ export async function resolveStatusAlert({
 						`The status checker has detected after the following (head) commit that the bot is no longer responsive:`,
 					),
 					new TextDisplay().setContent(
-						`[\`\`${commit?.id.substring(0, 5)}\`\`](${commit?.url}) ${commit?.message} - ${commit?.committer.name}`,
+						`[\`\`${commit?.id.substring(0, 7)}\`\`](${commit?.url}) ${commit?.message} - ${commit?.committer.name}`,
 					),
 					new Separator(),
 					new TextDisplay().setContent(`## How should this be resolved?`),
