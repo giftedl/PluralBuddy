@@ -18,6 +18,7 @@ async function executeStatusEndpoint() {
 	return await api.health.$get();
 }
 
+
 startWebhookListener();
 startDiscordBot();
 
@@ -31,7 +32,7 @@ export async function resolveStatusAlert({
 	octokit: Octokit
 }) {
 	const result = await (Promise.race([
-		executeStatusEndpoint(),
+		executeStatusEndpoint().then(v => v.json()),
 		new Promise((_, r) => {
 			setTimeout(() => {
 				r("timed out");
