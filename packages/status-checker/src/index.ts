@@ -30,14 +30,14 @@ export async function resolveStatusAlert({
 	commit: components["schemas"]["webhook-push"]["head_commit"];
 	octokit: Octokit
 }) {
-	const result = await Promise.race([
+	const result = await (Promise.race([
 		async () => await executeStatusEndpoint(),
 		new Promise((_, r) => {
 			setTimeout(() => {
 				r("timed out");
 			}, 6 * 1000);
 		}),
-	]).catch((r) => ({ error: r }));
+	]).catch((r) => ({ error: r })));
 
 	console.log(result)
 
