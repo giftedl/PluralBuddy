@@ -6,7 +6,7 @@ import { startDiscordBot } from "./discord";
 import type { components } from "@octokit/openapi-types";
 import type { Octokit } from "octokit";
 
-const statusUrl = "https://aaa.com";
+const statusUrl = "https://internal-pb.giftedly.dev";
 
 export const { api } = hc<ClientType>(statusUrl, {
 	headers: {
@@ -17,7 +17,6 @@ export const { api } = hc<ClientType>(statusUrl, {
 async function executeStatusEndpoint() {
 	return await api.health.$get();
 }
-
 
 startWebhookListener();
 startDiscordBot();
@@ -32,7 +31,7 @@ export async function resolveStatusAlert({
 	octokit: Octokit
 }) {
 	const result = await (Promise.race([
-		executeStatusEndpoint().then(v => v.json()),
+		executeStatusEndpoint().then(v => v.json),
 		new Promise((_, r) => {
 			setTimeout(() => {
 				r("timed out");
