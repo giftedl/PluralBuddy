@@ -31,7 +31,7 @@ export async function resolveStatusAlert({
 	octokit: Octokit
 }) {
 	const result = await (Promise.race([
-		executeStatusEndpoint,
+		executeStatusEndpoint(),
 		new Promise((_, r) => {
 			setTimeout(() => {
 				r("timed out");
