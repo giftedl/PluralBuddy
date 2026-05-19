@@ -1,14 +1,14 @@
 import type { RESTPostAPIWebhookWithTokenJSONBody } from "discord-api-types/v9";
 import type { ClientType } from "bot";
 import { hc } from "hono/client";
-import { app, startWebhookListener } from "./api";
-import { checkIfBotIsOn, client, startDiscordBot } from "./discord";
+import {  startWebhookListener } from "./api";
+import { client, startDiscordBot } from "./discord";
 import type { components } from "@octokit/openapi-types";
 import type { Octokit } from "octokit";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { ActionRow, Button, Container, Separator, TextDisplay } from "seyfert";
 
-const statusUrl = "https://aaaaaa.com";
+const statusUrl = "https://internal-pb.giftedly.dev";
 
 export const { api } = hc<ClientType>(statusUrl, {
 	headers: {
@@ -74,7 +74,7 @@ export async function resolveStatusAlert({
 2. **Check if the bot is still responsive to commands.** If the bot is not responsive to commands, this may mean it's stuck somewhere.
 3. **Create a status notification.** If the bot is not online and/or isn't responsive to commands, create a status notification with the template below.`,
 					),
-					new Separator(),
+					new Separator(),	
 					new ActionRow().setComponents(
 						new Button()
 							.setStyle(ButtonStyle.Secondary)
