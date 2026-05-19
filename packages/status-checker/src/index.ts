@@ -5,8 +5,8 @@ import { app, startWebhookListener } from "./api";
 import { checkIfBotIsOn, client, startDiscordBot } from "./discord";
 import type { components } from "@octokit/openapi-types";
 import type { Octokit } from "octokit";
-import { MessageFlags } from "seyfert/lib/types";
-import { Container, Separator, TextDisplay } from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { ActionRow, Button, Container, Separator, TextDisplay } from "seyfert";
 
 const statusUrl = "https://aaaaaa.com";
 
@@ -59,28 +59,33 @@ export async function resolveStatusAlert({
 		await client.messages.write(process.env.NOTIFICATION_CHANNEL ?? "", {
 			components: [
 				new TextDisplay().setContent(`<@&${process.env.NOTIFICATION_ROLE}>`),
-				new Container()
-					.setColor("#FF6961")
-					.setComponents(
-						new TextDisplay().setContent(
-							"## Bot may be currently unresponsive",
-						),
-						new TextDisplay().setContent(
-							`The status checker has detected after the following (head) commit that the bot is no longer responsive:`,
-						),
-						new TextDisplay().setContent(
-							`[\`\`${commit?.id}\`\`](${commit?.url}) ${commit?.message} - ${commit?.committer.name}`,
-						),
-						new Separator(),
-						new TextDisplay().setContent(`## How should this be resolved?`),
-						new TextDisplay().setContent(
-							`1. **Check if the bot is online still.** If the bot is online, this is a good sign.`,
-						),
-						new TextDisplay().setContent(
-							`2. **Check if the bot is still responsive to commands.** If the bot is not responsive to commands, this may mean it's stuck somewhere.`,
-						),
-						new TextDisplay().setContent(`3. **Create a status notification.** If the bot is not online and/or isn't responsive to commands, create a status notification with the template below.`)
+				new Container().setColor("#FF6961").setComponents(
+					new TextDisplay().setContent("## Bot may be currently unresponsive"),
+					new TextDisplay().setContent(
+						`The status checker has detected after the following (head) commit that the bot is no longer responsive:`,
 					),
+					new TextDisplay().setContent(
+						`[\`\`${commit?.id.substring(0, 5)}\`\`](${commit?.url}) ${commit?.message} - ${commit?.committer.name}`,
+					),
+					new Separator(),
+					new TextDisplay().setContent(`## How should this be resolved?`),
+					new TextDisplay().setContent(
+						`1. **Check if the bot is online still.** If the bot is online, this is a good sign.
+2. **Check if the bot is still responsive to commands.** If the bot is not responsive to commands, this may mean it's stuck somewhere.
+3. **Create a status notification.** If the bot is not online and/or isn't responsive to commands, create a status notification with the template below.`,
+					),
+					new Separator(),
+					new ActionRow().setComponents(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel("Copy Status Template")
+							.setCustomId("status-template"),
+						new Button()
+							.setStyle(ButtonStyle.Success)
+							.setLabel("Resolve")
+							.setCustomId("resolve"),
+					),
+				),
 			],
 			flags: MessageFlags.IsComponentsV2,
 		});
