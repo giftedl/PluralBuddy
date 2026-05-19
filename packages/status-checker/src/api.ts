@@ -35,7 +35,7 @@ app.webhooks.on("push", async ({ octokit, payload }) => {
 		context: "Status",
 	});
 
-	const sixMinutes = 0.25 * 60 * 1000;
+	const sixMinutes = 6 * 60 * 1000;
 
 	queuedCommits.push({
 		timer: setTimeout(
