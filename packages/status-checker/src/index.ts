@@ -39,6 +39,8 @@ export async function resolveStatusAlert({
 		}),
 	]).catch((r) => ({ error: r }));
 
+	console.log(result)
+
 	if ("error" in (result as any)) {
 		console.log("panic", Date.now());
 
