@@ -36,15 +36,15 @@ Denne serveren krever en **systemtagg** for systemer som proxyer here. For å la
   CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
 Systemer kan ha **personvernverider** som er verdier som beskriver hvem som kan se hvilke del av ditt system. Standard så er systemet ditt helt privat unntatt for server automatisk moderering, og meldingen som systemet ditt sender.`,
   CREATING_NEW_SYSTEM_PRIVACY_SET: "Offtenlige personvernverider er:",
-  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Select the privacy values you want open to the public.",
-  CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
-### Next Steps
-> - To create a new alter, try using %command1%
-> - To create a new tag, try using %command2%`,
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b – You cannot setup a new system if a system under your account already exists.",
-  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
-  ERROR_PAGINATION_TOO_OLD: '2g – That alter pagination component is too old, you cannot proceed. Please hit the "Alters" tab at the top of the message to reset the pagination.',
-  ERROR_TAG_PAGINATION_TOO_OLD: '2h – That tag pagination component is too old, you cannot proceed. Please hit the "Tags" tab at the top of the message to reset the pagination.',
+  CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Velg de personvernsverdiene du vil ha åpent offentlig.",
+  CREATING_NEW_SYSTEM_SUCCESS: `Nytt system laget!
+### Neste steg:
+> - For å lage ett nytt alter, prøv å bruke %command1%
+> - For å lage en ny tag, prøv å bruke %command2%`,
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS: "2b - Du kan ikke sette opp et nytt system hvis et system under din konto allerede eksisterer.",
+  SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Fjern system & starte oppsett på nytt",
+  ERROR_PAGINATION_TOO_OLD: "2g - Den alter paginasjonskomponentet er for gammelt, du kan ikke fortsette. Vennligst trykk på \"Alter\" fanen øverst på meldingen for å nullstille paginasjonen.",
+  ERROR_TAG_PAGINATION_TOO_OLD: "2h - Den tag paginasjonkomponenten er for gammel, du kan ikke fortsette. Vennligst trykk på \"Tagger\" fanen øverst på meldingen for å nullstille paginasjonen.",
   ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
   ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
   ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
