@@ -696,5 +696,6 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   NO_TYPING_STATUS_BTN: "Deshabilitar estados de escritura",
   NO_TYPING_STATUS_BTN_D: "Reactivar Estados de escritura",
   TOGGLED_TYPING_STATUS_E: "Se ha cambiado correctamente el estado de escritura. (activado)",
-  TOGGLED_TYPING_STATUS_D: "Se ha cambiado correctamente el estado de escritura. (desactivado)"
+  TOGGLED_TYPING_STATUS_D: "Se ha cambiado correctamente el estado de escritura. (desactivado)",
+  CONFIGURE_SYSTEM: "Configure System"
 };
