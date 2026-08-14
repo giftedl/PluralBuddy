@@ -681,5 +681,6 @@ Your system is using the front state of **{{ mode }}**.`,
   NO_TYPING_STATUS_BTN: "Disable Typing Statuses",
   NO_TYPING_STATUS_BTN_D: "Re-enable Typing Statuses",
   TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
-  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)"
+  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
+  CONFIGURE_SYSTEM: "Configure System"
 };
