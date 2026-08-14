@@ -428,8 +428,7 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
 	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
 		"Toggled displaying pronouns on the system.",
-	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS:
-		"Toggled typing status on the system.",
+	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -920,12 +919,15 @@ Your system is using the front state of **{{ mode }}**.`,
 
 	NOT_FRIDAY:
 		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
-	
-	EXPRESS_DISCONTINUED: "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!",
 
-	NO_TYPING_STATUS: "Disabling the typing status will remove the typing status that appears when this system proxies. Typing statuses still may not appear if the server disabled it.",
+	EXPRESS_DISCONTINUED:
+		"Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!",
+
+	NO_TYPING_STATUS:
+		"Disabling the typing status will remove the typing status that appears when this system proxies. Typing statuses still may not appear if the server disabled it.",
 	NO_TYPING_STATUS_BTN: "Disable Typing Statuses",
 	NO_TYPING_STATUS_BTN_D: "Re-enable Typing Statuses",
-  TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
-  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
+	TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
+	TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
+	CONFIGURE_SYSTEM: "Configure System",
 };
