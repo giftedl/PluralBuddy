@@ -582,6 +582,10 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 
 	DELETE_DESC:
 		"**This cannot be undone.** Deleting an alter will delete your alter and its data.",
+	KEEP_PROXY_TAGS_ALTER_DESC:
+		"Keeping proxy tags for this alter will show the proxy tags specifically for this alter. System settings will override this setting if that is currently set.",
+	KEEP_PROXY_TAGS_ALTER_BTN_E: "Enable Proxy Tags",
+	KEEP_PROXY_TAGS_ALTER_BTN_D: "Disable Proxy Tags",
 	PROXY_MODE_TITLE:
 		"### {{ circleQuestion }}   Proxy Mode · @{{ alterUsername }}",
 	SELECT_PM: "Please select the mode you would like to use below.",
