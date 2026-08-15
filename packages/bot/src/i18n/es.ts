@@ -423,6 +423,9 @@ ${emojis.reply} Esta no es una lista completa de las políticas de PluralBuddy. 
   OFF_NAME: "Desactivado",
   OFF_DESC: "Desactivar el proxy automático en tu sistema.",
   DELETE_DESC: "**Esto no se puede deshacer.** Eliminar un alter borrará al alter y todos sus datos.",
+  KEEP_PROXY_TAGS_ALTER_DESC: "Keeping proxy tags for this alter will show the proxy tags specifically for this alter. System settings will override this setting if that is currently set.",
+  KEEP_PROXY_TAGS_ALTER_BTN_E: "Enable Proxy Tags",
+  KEEP_PROXY_TAGS_ALTER_BTN_D: "Disable Proxy Tags",
   PROXY_MODE_TITLE: "### {{ circleQuestion }} Modo Proxy · @{{ alterUsername }}",
   SELECT_PM: "Por favor, selecciona el modo que deseas usar a continuación.",
   FORCED_WEBHOOK_WARNING: ` {{ x }} **Este servidor aplica una política obligatoria de {{ policyType }}.** Esto significa que todos los alters deberán usar específicamente el modo proxy {{ policyType }} en este servidor. Se bloquearán tus mensajes si no usas el modo Ambos o el modo requerido.`,
@@ -454,7 +457,7 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
   PUBLIC_PROFILE_COLOR_DESC: "Establecer un color para un alter muestra ese color en su contenedor de rango y en su perfil público.",
   PUBLIC_PROFILE_SYSTEM_TAG_DESC: `Puedes establecer una etiqueta de sistema para tu sistema. Las descripciones de sistema pueden tener un máximo de 75 caracteres.
 -# La etiqueta del sistema {{ systemName }} es: {{ displayTag }}`,
-  ALTER_TOP_VIEW: `-# @{{ alterUsername }}> • ID: \`{{ alterId }}\``,
+  ALTER_TOP_VIEW: `-# @{{ alterUsername }}> • ID: `{{ alterId }}\``,
   GENERAL_LABEL: "General",
   TOP_BACK_LABEL: "Volver",
   ALTER_PROXY_TAGS_LABEL: "Etiquetas proxy",
@@ -696,5 +699,6 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   NO_TYPING_STATUS_BTN: "Deshabilitar estados de escritura",
   NO_TYPING_STATUS_BTN_D: "Reactivar Estados de escritura",
   TOGGLED_TYPING_STATUS_E: "Se ha cambiado correctamente el estado de escritura. (activado)",
-  TOGGLED_TYPING_STATUS_D: "Se ha cambiado correctamente el estado de escritura. (desactivado)"
+  TOGGLED_TYPING_STATUS_D: "Se ha cambiado correctamente el estado de escritura. (desactivado)",
+  CONFIGURE_SYSTEM: "Configure System"
 };

@@ -418,6 +418,9 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
   OFF_NAME: "Desabilitado",
   OFF_DESC: "Desabilitar o auto-proxy do seu sistema.",
   DELETE_DESC: "**Isto não pode ser desfeito.** A exclusão de um Integrante apagará seus dados e integrante.",
+  KEEP_PROXY_TAGS_ALTER_DESC: "Keeping proxy tags for this alter will show the proxy tags specifically for this alter. System settings will override this setting if that is currently set.",
+  KEEP_PROXY_TAGS_ALTER_BTN_E: "Enable Proxy Tags",
+  KEEP_PROXY_TAGS_ALTER_BTN_D: "Disable Proxy Tags",
   PROXY_MODE_TITLE: "### {{ circleQuestion }}   Proxy Mode · @{{ alterUsername }}",
   SELECT_PM: "Por favor selecione o modo que você gostaria de usar abaixo.",
   FORCED_WEBHOOK_WARNING: `  {{ x }}   **This server enforces a required {{ policyType }} policy.** This means that all alters will have to use the {{ policyType }} proxy mode in this server specifically. Your message will be blocked from proxying if you are not using the Both proxy mode or using the enforced proxy mode.`,
@@ -681,5 +684,6 @@ Your system is using the front state of **{{ mode }}**.`,
   NO_TYPING_STATUS_BTN: "Disable Typing Statuses",
   NO_TYPING_STATUS_BTN_D: "Re-enable Typing Statuses",
   TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
-  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)"
+  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
+  CONFIGURE_SYSTEM: "Configure System"
 };

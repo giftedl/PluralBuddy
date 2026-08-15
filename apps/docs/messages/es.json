@@ -1,7 +1,7 @@
 {
     "HomePage": {
         "title": "La era {#headline}más rápida{/headline} de los bots de pluralidad",
-        "desc": "PluralBuddy es el {#highlight}bote de pluralidad de próxima generación{/highlight} para Discord – construido en {#br}{/br}directores de {#accent}speed{/accent}, {#accent}accesibilidad{/accent} & {#accent}conveniencia de datos.{/accent}",
+        "desc": "PluralBuddy es el {#resaltado}bote de pluralidad de próxima generación{/resalt} para Discord – construido en {#br}{/br}directores de {#accent}speed{/accent}, {#accent}accesibilidad{/accent} & {#accent}conveniencia de datos.{/accent}",
         "proxy_time_headline": "Tiempo de proxy <600ms",
         "blocks_headline": "Bloqueos, roles de administrador, retrasos de propia",
         "developer_headline": "Construido con desarrolladores en mente",
@@ -10,7 +10,7 @@
         "oss_headline": "Código abierto",
         "oss_desc": "Encuentra PluralBuddy en {#github}GitHub{/github}",
         "oss_about": "PluralBuddy es de código abierto y seguirá siendo así. Todo el código que se ejecuta en su servidor o sistema es supervisado por otras personas.",
-        "optimized_headline": "Optimizado para {#highlight}sistemas{/highlight}",
+        "optimized_headline": "Optimizado para {#resaltado}sistemas{/resaltado}",
         "optimized_desc": "En nuestra vanguardia – PluralBuddy está construido para sistemas y diseñado por sistemas.",
         "instant_headline": "Proxy ahora",
         "instant_title": "Proxy siempre que esté listo.",
