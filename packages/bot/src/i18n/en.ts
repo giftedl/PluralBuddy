@@ -429,6 +429,8 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
 		"Toggled displaying pronouns on the system.",
 	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
+	OPERATION_SYSTEM_PREFER_ACCESSIBLITY:
+		"Toggled prefer accessiblity mode on the system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -859,6 +861,10 @@ There is an example below of what an example proxy with this role would look lik
 		"Including pronouns will add pronouns to the webhook name every time you proxy in parentheses.",
 	INCLUDE_PRONOUNS_BTN: "Include Pronouns",
 	INCLUDE_PRONOUNS_OFF_BTN: "Disable Including Pronouns",
+	PREFER_ACCESSIBLITY_BTN: "Prefer Accessiblity",
+	PREFER_ACCESSIBLITY_OFF_BTN: "Disable Prefer Accessibility",
+	PREFER_ACCESSIBLITY_DESC:
+		"PluralBuddy will prefer accessiblity over looks/data visiblity. Some text may be farther apart, bold, or not visible in this mode.",
 
 	VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
 	ERROR_CREATING_WEBHOOK_TITLE:
@@ -920,6 +926,10 @@ Your system is using the front state of **{{ mode }}**.`,
 		"Successfully toggled including pronouns. (Enabled)",
 	TOGGLED_INCLUDING_PRONOUNS_D:
 		"Successfully toggled including pronouns. (Disabled)",
+	PREFER_ACCESSIBLITY_E:
+		"Successfully toggled preferring accessiblity. (Enabled)",
+	PREFER_ACCESSIBLITY_D:
+		"Successfully toggled preferring accessiblity. (Disabled)",
 
 	NOT_FRIDAY:
 		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
