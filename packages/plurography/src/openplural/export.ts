@@ -2,6 +2,9 @@ import z from "zod";
 import { OpenPluralAsset } from "./asset";
 import { OpenPluralCustomField } from "./custom-field";
 import { OpenPluralCustomFieldValue } from "./custom-field-value";
+import { OpenPluralFrontComment } from "./front/front-comment";
+import { OpenPluralFrontEvent } from "./front/front-event";
+import { OpenPluralFrontPeriod } from "./front/front-period";
 import { OpenPluralGroup } from "./group";
 import { OpenPluralGroupMembership } from "./group-membership";
 import { OpenPluralMember } from "./member";
@@ -55,10 +58,10 @@ export const OpenPluralExport = z.object({
 	taxonomy_assignments: OpenPluralTaxonomyAssignment.array(),
 	custom_fields: OpenPluralCustomField.array(),
 	custom_field_values: OpenPluralCustomFieldValue.array(),
-    
-	front_periods: z.unknown(),
-    front_events: z.unknown(),
-    front_comments: z.unknown(),
+
+	front_periods: OpenPluralFrontPeriod.array(),
+    front_events: OpenPluralFrontEvent.array(),
+    front_comments: OpenPluralFrontComment.array(),
 
 	notes: OpenPluralNote.array(),
     assets: OpenPluralAsset.array(),
