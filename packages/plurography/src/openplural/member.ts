@@ -4,7 +4,8 @@ import { OpenPluralSourceRef } from "./source-ref";
 
 export const OpenPluralMember = z.object({
 	id: z.uuid(),
-	system_id: z.uuid(),
+	system_id: z.uuid().optional(),
+	//                 ^^^^^^^^^^^ Seems Sheaf doesn't follow the spec (lol)
 	name: z.string().nullable(),
 	display_name: z.string().nullable(),
 	pronouns: z.string().nullable(),
