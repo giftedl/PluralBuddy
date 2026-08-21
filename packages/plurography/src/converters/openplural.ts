@@ -248,10 +248,14 @@ export default class OpenPluralConverter
 		} as z.infer<typeof ImportNotation>);
 	}
 
-	from(system: PSystem, handleAsset?: (url: string) => string) {
+	from(
+		system: PSystem,
+		handleAsset?: (url: string) => string,
+		systemId = crypto.randomUUID(),
+	) {
 		return OpenPluralSystem.parse({
 			parent_system_id: null,
-			id: crypto.randomUUID(),
+			id: systemId,
 			name: system.systemName,
 			display_name: system.systemName,
 			description: system.systemDescription ?? null,
@@ -306,7 +310,11 @@ export default class OpenPluralConverter
 		} satisfies z.infer<typeof OpenPluralSystem>);
 	}
 
-	fromAlter(data: PAlter, handleAsset?: (url: string) => string) {
+	fromAlter(
+		data: PAlter,
+		handleAsset?: (url: string) => string,
+		systemId = crypto.randomUUID(),
+	) {
 		return OpenPluralMember.parse({
 			id: crypto.randomUUID(),
 			name: data.username,
@@ -336,8 +344,11 @@ export default class OpenPluralConverter
 			proxy_tags: data.proxyTags,
 			is_custom_front: data.fields["@/openplural/is_custom_front"] === "true",
 			archived: false,
-			sort_order: Number(data.fields["@/openplural/sort-order"]),
+			sort_order: Number.isNaN(Number(data.fields["@/openplural/sort_order"]))
+				? null
+				: Number(data.fields["@/openplural/sort_order"]),
 			created_at: data.created,
+			system_id: systemId,
 			privacy:
 				data.public > 0
 					? {
@@ -372,10 +383,10 @@ export default class OpenPluralConverter
 		} satisfies z.infer<typeof OpenPluralMember>);
 	}
 
-	fromTag(data: PTag) {
+	fromTag(data: PTag, systemId = crypto.randomUUID()) {
 		return OpenPluralGroup.parse({
 			id: crypto.randomUUID(),
-			system_id: data.systemId,
+			system_id: systemId,
 			name: data.tagFriendlyName,
 			description: data.tagDescription ?? null,
 			color: data.fields["@/custom-color"] ?? null,
@@ -404,22 +415,27 @@ export default class OpenPluralConverter
 	fromImport(data: z.infer<typeof ImportNotation>) {
 		if (!data.system) throw new Error("no system");
 
+		const systemId = crypto.randomUUID()
 		const attachments: { url: string; uuid: string }[] = [];
 		const systems = [
 			this.from(data.system, (url) => {
 				const uuid = crypto.randomUUID();
 				attachments.push({ url, uuid });
 				return uuid;
-			}),
+			}, systemId),
 		];
 		const alters = data.alters.map((v) =>
-			this.fromAlter(v, (url) => {
-				const uuid = crypto.randomUUID();
-				attachments.push({ url, uuid });
-				return uuid;
-			}),
+			this.fromAlter(
+				v,
+				(url) => {
+					const uuid = crypto.randomUUID();
+					attachments.push({ url, uuid });
+					return uuid;
+				},
+				systemId,
+			),
 		);
-		const tags = data.tags.map((v) => this.fromTag(v));
+		const tags = data.tags.map((v) => this.fromTag(v, systemId));
 		const groupMemberships = data.alters.flatMap((v) =>
 			v.tagIds.map(
 				(c) =>
@@ -434,7 +450,7 @@ export default class OpenPluralConverter
 								app: "plurography",
 								collection: "assets",
 								id: c,
-                                uuid: null
+								uuid: null,
 							},
 						],
 					}) satisfies z.infer<typeof OpenPluralGroupMembership>,
@@ -494,11 +510,11 @@ export default class OpenPluralConverter
 					app: "plurography",
 					collection: "love<3",
 					id: data.system.associatedUserId,
-                    uuid: null,
+					uuid: null,
 				},
 			],
-            warnings: [],
-            privacy: { visibility: "unknown", source: {} }
+			warnings: [],
+			privacy: { visibility: "unknown", source: {} },
 		} satisfies z.infer<typeof OpenPluralExport>);
 	}
 
