@@ -20,9 +20,10 @@ export { Tupper, TupperBoxGroup, TupperBoxSystem };
 export { SimplyPluralSystem, SimplyPluralMember, SimplyPluralGroup }
 
 // TODO: figure out how to fix converters getting into Next.js build (who asked?)
-// export * from "./converters"
-// export * from "./converters/pluralkit"
-// export * from "./converters/tupperbox"
+export * from "./converters"
+export * from "./converters/openplural"
+export * from "./converters/pluralkit"
+export * from "./converters/tupperbox"
 export * from "./pluralbuddy/alter";
 export * from "./pluralbuddy/auto-proxy";
 export * from "./pluralbuddy/express-application";
