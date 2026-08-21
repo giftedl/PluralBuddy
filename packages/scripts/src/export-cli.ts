@@ -30,13 +30,11 @@ const data = await getPipedContentsAsPromise();
 const parsed = await (async () => JSON.parse(data))().catch(v => {
     throw new Error("Couldn't parse input.")
 });
-
 const input = possibleConverters[initial];
 const output = possibleConverters[newPath];
 
 if (!input || !output)
 	throw new Error("Not a valid export path.");
-
 const parsedSystem = input.parserZod.parse(parsed)
 
 // convert to pluralbuddy

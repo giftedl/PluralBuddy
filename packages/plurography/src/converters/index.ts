@@ -2,7 +2,7 @@ import type z from "zod";
 import { OpenPluralExport } from "@/openplural/export";
 import { OpenPluralSystem } from "@/openplural/system";
 import { PAlter } from "@/pluralbuddy/alter";
-import type { ImportNotation } from "@/pluralbuddy/import-notation";
+import { ImportNotation } from "@/pluralbuddy/import-notation";
 import { type PSystem, PSystemObject } from "@/pluralbuddy/system";
 import { PTag } from "@/pluralbuddy/tag";
 import { PluralKitSystem } from "@/pluralkit";
@@ -45,7 +45,7 @@ export const possibleConverters: Record<
 		name: "PluralBuddy",
 		description: "The default format. Most reliable.",
 		converter: PluralBuddyConverter,
-		parserZod: PSystemObject,
+		parserZod: ImportNotation,
 	},
 	openplural: {
 		name: "OpenPlural",
