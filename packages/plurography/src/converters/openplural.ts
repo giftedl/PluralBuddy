@@ -2,6 +2,7 @@ import z from "zod";
 import { DiscordOpenPluralExtension } from "@/openplural/discord-extension";
 import { OpenPluralExport } from "@/openplural/export";
 import { OpenPluralGroup } from "@/openplural/group";
+import { OpenPluralGroupMembership } from "@/openplural/group-membership";
 import { OpenPluralMember } from "@/openplural/member";
 import {
 	PluralBuddyAlterExtension,
@@ -189,6 +190,7 @@ export default class OpenPluralConverter
 				"@/converter/openplural": tag.id,
 				"@/openplural/sort_order": String(tag.sort_order),
 				...(tag.color !== null ? { "@/custom-color": tag.color } : {}),
+				...(tag.emoji !== null ? { "@/emoji": tag.emoji } : {}),
 			},
 		} satisfies PTag);
 	}
@@ -333,10 +335,171 @@ export default class OpenPluralConverter
 				: null,
 			proxy_tags: data.proxyTags,
 			is_custom_front: data.fields["@/openplural/is_custom_front"] === "true",
-            archived: false,
-            sort_order: Number(data.fields["@/openplural/sort-order"]),
-            created_at
+			archived: false,
+			sort_order: Number(data.fields["@/openplural/sort-order"]),
+			created_at: data.created,
+			privacy:
+				data.public > 0
+					? {
+							visibility: "public",
+							source: { __pluralbuddy: data.public },
+						}
+					: {
+							visibility: "private",
+							source: { __pluralbuddy: data.public },
+						},
+			source_refs: [
+				{
+					app: "plurography",
+					collection: "alters",
+					id: data.alterId.toString(),
+					uuid: null,
+				},
+			],
+			extensions: {
+				pluralbuddy_alter: PluralBuddyAlterExtension.parse({
+					webhook_avatar_url: data.webhookAvatarUrl,
+					message_count: data.messageCount,
+					last_message: data.lastMessageTimestamp,
+					alter_mode: data.alterMode,
+					proxy_tags_kept: this.getAlterFeatures(data).keepProxyTags,
+				} satisfies z.infer<typeof PluralBuddyAlterExtension>),
+				discord: DiscordOpenPluralExtension.parse({
+					user_id: data.systemId,
+					disabled_guilds: [],
+				} satisfies z.infer<typeof DiscordOpenPluralExtension>),
+			},
 		} satisfies z.infer<typeof OpenPluralMember>);
+	}
+
+	fromTag(data: PTag) {
+		return OpenPluralGroup.parse({
+			id: crypto.randomUUID(),
+			system_id: data.systemId,
+			name: data.tagFriendlyName,
+			description: data.tagDescription ?? null,
+			color: data.fields["@/custom-color"] ?? null,
+			emoji: data.fields["@/emoji"] ?? null,
+			parent_group_id: null,
+			sort_order: Number.isNaN(Number(data.fields["@/openplural/sort_order"]))
+				? null
+				: Number(data.fields["@/openplural/sort_order"]),
+			source_refs: [
+				{
+					app: "plurography",
+					collection: "tags",
+					id: data.tagId.toString(),
+					uuid: null,
+				},
+			],
+			extensions: {
+				discord: DiscordOpenPluralExtension.parse({
+					user_id: data.systemId,
+					disabled_guilds: [],
+				} satisfies z.infer<typeof DiscordOpenPluralExtension>),
+			},
+		} satisfies z.infer<typeof OpenPluralGroup>);
+	}
+
+	fromImport(data: z.infer<typeof ImportNotation>) {
+		if (!data.system) throw new Error("no system");
+
+		const attachments: { url: string; uuid: string }[] = [];
+		const systems = [
+			this.from(data.system, (url) => {
+				const uuid = crypto.randomUUID();
+				attachments.push({ url, uuid });
+				return uuid;
+			}),
+		];
+		const alters = data.alters.map((v) =>
+			this.fromAlter(v, (url) => {
+				const uuid = crypto.randomUUID();
+				attachments.push({ url, uuid });
+				return uuid;
+			}),
+		);
+		const tags = data.tags.map((v) => this.fromTag(v));
+		const groupMemberships = data.alters.flatMap((v) =>
+			v.tagIds.map(
+				(c) =>
+					({
+						id: crypto.randomUUID(),
+						group_id: tags.find((v) => v.source_refs[0].id === c)?.id ?? "??",
+						member_id:
+							alters.find((v) => v.source_refs[0].id === v.id)?.id ?? "??",
+						sort_order: null,
+						source_refs: [
+							{
+								app: "plurography",
+								collection: "assets",
+								id: c,
+                                uuid: null
+							},
+						],
+					}) satisfies z.infer<typeof OpenPluralGroupMembership>,
+			),
+		);
+
+		return OpenPluralExport.parse({
+			openplural_version: "0.1",
+			exported_at: new Date(),
+			producer: {
+				app: "Plurography, aka. PluralBuddy",
+				app_id: "plurography",
+				app_version: "0.5.0",
+				exporter_version: "1.0.0",
+			},
+			capabilities: {
+				modules: ["members", "groups", "systems", "assets"],
+			},
+			systems,
+			assets: attachments.map((c) => ({
+				id: c.uuid,
+				uri: c.url,
+				kind: "unknown",
+				mime_type: null,
+				file_name: null,
+				data_base64: null,
+				data_uri: null,
+				size_bytes: null,
+				duration_ms: null,
+				extensions: {},
+				source_refs: [
+					{
+						app: "plurography",
+						collection: "assets",
+						id: c.uuid,
+						uuid: c.uuid,
+					},
+				],
+				sha256: null,
+				width: null,
+				height: null,
+			})),
+			group_memberships: groupMemberships,
+			groups: tags,
+			members: alters,
+			taxonomy_assignments: [],
+			taxonomy_terms: [],
+			custom_field_values: [],
+			custom_fields: [],
+			front_comments: [],
+			front_events: [],
+			front_periods: [],
+			notes: [],
+			extensions: {},
+			source_refs: [
+				{
+					app: "plurography",
+					collection: "love<3",
+					id: data.system.associatedUserId,
+                    uuid: null,
+				},
+			],
+            warnings: [],
+            privacy: { visibility: "unknown", source: {} }
+		} satisfies z.infer<typeof OpenPluralExport>);
 	}
 
 	private combine(
@@ -369,6 +532,29 @@ export default class OpenPluralConverter
 					? (data.flags ?? 0)
 					: (data.flags ?? 0) + flag,
 			bool: (flag: SystemFlags, bool?: boolean) =>
+				bool
+					? ((data.flags ?? 0) & flag) !== 0 /* does have flag */
+						? (data.flags ?? 0)
+						: (data.flags ?? 0) + flag
+					: ((data.flags ?? 0) & flag) === 0 /* doesn't have flag */
+						? (data.flags ?? 0)
+						: (data.flags ?? 0) - flag,
+		};
+	}
+	private getAlterFeatures(data: PAlter) {
+		return {
+			keepProxyTags: ((data.flags ?? 0) & AlterFlags.PROXY_TAGS_KEPT) !== 0,
+
+			has: (flag: AlterFlags) => ((data.flags ?? 0) & flag) !== 0,
+			disable: (flag: AlterFlags) =>
+				((data.flags ?? 0) & flag) === 0 /* doesn't have flag */
+					? (data.flags ?? 0)
+					: (data.flags ?? 0) - flag,
+			enable: (flag: AlterFlags) =>
+				((data.flags ?? 0) & flag) !== 0 /* does have flag */
+					? (data.flags ?? 0)
+					: (data.flags ?? 0) + flag,
+			bool: (flag: AlterFlags, bool?: boolean) =>
 				bool
 					? ((data.flags ?? 0) & flag) !== 0 /* does have flag */
 						? (data.flags ?? 0)
