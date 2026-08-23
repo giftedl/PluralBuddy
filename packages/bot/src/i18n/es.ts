@@ -165,7 +165,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   ALTER_DISPLAY_NAME_FORM_LABEL: "Nombre para mostrar",
   ALTER_SEARCH_STRING_FORM_LABEL: "Cadena de búsqueda (máx. 4 caracteres)",
   ALTER_SET_PRONOUNS: "Establecer pronombres",
-  TAG_DELETE: "Delete Tag",
+  TAG_DELETE: "Eliminar Etiqueta",
   ALTER_SET_DESCRIPTION: "Establecer descripción",
   ALTER_SET_ORDER_STRING: "Establecer cadena de pedido",
   ALTER_SET_PFP: "Establecer foto de perfil",
@@ -456,7 +456,7 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
 -# Esta cadena de orden de etiquetas es: {{ order }}`,
   S_PUBLIC_PROFILE_DESC_DESC: `Puedes establecer una descripción para tu sistema. Tienen un máximo de 2000 caracteres.
 -# Para ver tu descripción completa, ejecuta: {{ mention }}`,
-  DELETE_TAG_DESC: "Deleting your tag will permanently remove it from all alters that its associated with, and this system.",
+  DELETE_TAG_DESC: "Eliminar la etiqueta la eliminará permanentemente de todos los alter con los que se asocia y este sistema.",
   PUBLIC_PROFILE_COLOR_DESC: "Establecer un color para un alter muestra ese color en su contenedor de rango y en su perfil público.",
   PUBLIC_PROFILE_SYSTEM_TAG_DESC: `Puedes establecer una etiqueta de sistema para tu sistema. Las descripciones de sistema pueden tener un máximo de 75 caracteres.
 -# La etiqueta del sistema {{ systemName }} es: {{ displayTag }}`,
@@ -709,7 +709,7 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   TOGGLED_TYPING_STATUS_E: "Se ha cambiado correctamente el estado de escritura. (activado)",
   TOGGLED_TYPING_STATUS_D: "Se ha cambiado correctamente el estado de escritura. (desactivado)",
   CONFIGURE_SYSTEM: "Configurar el sistema",
-  SUCCESSFULLY_DELETED_TAG: "Successfully deleted **{{ tag }}** from your system.",
-  WARN_DELETE_TAG: "This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
-  ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag"
+  SUCCESSFULLY_DELETED_TAG: "Se ha eliminado correctamente **{{ tag }}** de su sistema.",
+  WARN_DELETE_TAG: "Esta etiqueta está asociada a más de 5 alters, ¿estás seguro de que quieres eliminar esta etiqueta del sistema?",
+  ACKNOWLEDGE_DELETE_TAG: "Confirmado, eliminar esta etiqueta"
 };
