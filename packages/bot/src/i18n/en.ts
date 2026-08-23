@@ -228,6 +228,7 @@ PluralBuddy uses a **username/display name** system.
 	ALTER_DISPLAY_NAME_FORM_LABEL: "Display Name",
 	ALTER_SEARCH_STRING_FORM_LABEL: "Search String (max 4 chars.)",
 	ALTER_SET_PRONOUNS: "Set Pronouns",
+	TAG_DELETE: "Delete Tag",
 	ALTER_SET_DESCRIPTION: "Set Description",
 	ALTER_SET_ORDER_STRING: "Set Order String",
 	ALTER_SET_PFP: "Set Profile Picture",
@@ -618,6 +619,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 -# This tags order string is: {{ order }}`,
 	S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ mention }}`,
+	DELETE_TAG_DESC: "Deleting your tag will permanently remove it from all alters that its associated with, and this system.",
 	PUBLIC_PROFILE_COLOR_DESC:
 		"Setting a color for an alter shows that color for their rank container along with their public profile.",
 	PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
@@ -944,4 +946,9 @@ Your system is using the front state of **{{ mode }}**.`,
 	TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
 	TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
 	CONFIGURE_SYSTEM: "Configure System",
+	SUCCESSFULLY_DELETED_TAG:
+		"Successfully deleted **{{ tag }}** from your system.",
+	WARN_DELETE_TAG:
+		"This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
+	ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag",
 };
