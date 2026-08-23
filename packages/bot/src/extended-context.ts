@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { assetStringGeneration, type PAlter } from "plurography";
+import { assetStringGeneration, type PAlter, type PTerminology } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -88,7 +88,12 @@ export const extendedContext = extendContext((interaction) => {
 
 					await userCollection.updateOne(
 						{ userId: interaction.author.id },
-						{ $set: { policyStatus: 1, storagePrefix: assetStringGeneration(8) } },
+						{
+							$set: {
+								policyStatus: 1,
+								storagePrefix: assetStringGeneration(8),
+							},
+						},
 						{ upsert: true },
 					);
 
@@ -187,8 +192,7 @@ export const extendedContext = extendContext((interaction) => {
 			PGuildObject.parseAsync(
 				await getGuildFromId(interaction.guildId ?? "??"),
 			),
-		userTranslations: async () =>
-			client.t(await language()).get(await language()),
+		userTranslations: async () => replaceTranslations((client.t(await language()).get(await language()))),
 		setContextAlter: (alter: PAlter) => {
 			contextAlter = alter;
 		},
@@ -215,3 +219,20 @@ export const extendedContext = extendContext((interaction) => {
 		},
 	};
 });
+
+const replaceTranslations = (
+	translations: DefaultLocale,
+	terminology?: PTerminology,
+) => {
+	Object.keys(translations).forEach((c: string) => {
+		translations[c as keyof DefaultLocale] = translations[
+			c as keyof DefaultLocale
+		]
+			.replaceAll("an alter", "a member")
+			.replaceAll("alter", "member")
+			.replaceAll("Alter", "Member")
+			.replaceAll("tag", "group")
+			.replaceAll("Tag", "Group");
+	});
+	return translations;
+};
