@@ -65,7 +65,7 @@ SimplyPlural has been discontinued.`,
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
   CREATE_NEW_SYS_DESCRIPTION: "Neues System erstellen",
   PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Die zu importierenden Daten dürfen 2 MB nicht überschreiten. Bitte kontaktieren Sie den Support, wenn Sie versuchen, Dateien zu importieren, die größer als 2 MB sind.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Anhänge für Banner oder Profilbilder dürfen 2 MB nicht überschreiten.",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Uncompressed images must be under 5MB. (After compression, images can only be 1MB.)",
   CREATE_NEW_ALTER_DESCRIPTION: "Neues System erstellen",
   CREATE_NEW_TAG_DESCRIPTION: "Neues Tag erstellen",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – Die importierte Datei ist kein gültiges JSON.",
@@ -705,5 +705,6 @@ Your system is using the front state of **{{ mode }}**.`,
   CONFIGURE_SYSTEM: "Configure System",
   SUCCESSFULLY_DELETED_TAG: "Successfully deleted **{{ tag }}** from your system.",
   WARN_DELETE_TAG: "This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
-  ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag"
+  ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag",
+  AFTER_COMPRESSION_TOO_BIG: "This file is still too big after being compressed and resized. Please make sure a minimal version of this file is smaller than 1MB."
 };
