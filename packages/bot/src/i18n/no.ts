@@ -62,7 +62,7 @@ SimplyPlural har blitt avviklet.`,
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
   CREATE_NEW_SYS_DESCRIPTION: "Lag Nytt System",
   PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Importerende filer kan ikke være større enn 2MB. Vennligst kontakt brukerstøtte om du faktisk prøver å importere ett system større en 2MB.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Vedlegg for bannere eller profilbilder kan ikke være større enn 1MB.",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Uncompressed images must be under 5MB. (After compression, images can only be 1MB.)",
   CREATE_NEW_ALTER_DESCRIPTION: "Lag Nytt Alter",
   CREATE_NEW_TAG_DESCRIPTION: "Lag Ny Tag",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – Filen du importerte er ikke gyldig JSON.",
@@ -701,5 +701,6 @@ Your system is using the front state of **{{ mode }}**.`,
   CONFIGURE_SYSTEM: "Configure System",
   SUCCESSFULLY_DELETED_TAG: "Successfully deleted **{{ tag }}** from your system.",
   WARN_DELETE_TAG: "This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
-  ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag"
+  ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag",
+  AFTER_COMPRESSION_TOO_BIG: "This file is still too big after being compressed and resized. Please make sure a minimal version of this file is smaller than 1MB."
 };
