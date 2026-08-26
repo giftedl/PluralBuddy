@@ -378,7 +378,7 @@ export const getModernComponentsMappings = (
 						.map((v, i) => ({ filename: v.name, id: String(i) })),
 				}
 			: components.length === 1 &&
-					components[1]?.data.type === ComponentType.File
+					components[0]?.data.type === ComponentType.File
 				? {
 						content: "",
 						attachments: fileComponents
