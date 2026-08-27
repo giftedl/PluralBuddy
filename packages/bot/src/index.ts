@@ -219,7 +219,7 @@ if (import.meta.main) {
 	await client.start({ token: process.env.BOT_TOKEN });
 
 	try {
-		await client.uploadCommands();
+		await client.uploadCommands({ cachePath: "./commands.json" });
 	} catch (e) {
 		(logger ?? console).warn(e);
 		// uploading commands has an extremely low ratelimit.

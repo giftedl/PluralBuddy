@@ -260,6 +260,8 @@ export class SystemSettingsView extends TranslatedView {
 		const typingStatus =
 			((system.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) === 0;
 		const preferAccessiblity = ((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
+		const leftSidedTag =
+			((system.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -335,6 +337,22 @@ export class SystemSettingsView extends TranslatedView {
 						new TextDisplay().setContent(
 							$translations.PREFER_ACCESSIBLITY_DESC,
 						),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								leftSidedTag
+									? $translations.LEFT_SIDED_TAG_BTN
+									: $translations.LEFT_SIDED_TAG_BTN_D,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleLeftSidedTags.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent($translations.LEFT_SIDED_TAG_DESC),
 					),
 				new Separator(),
 				new TextDisplay().setContent(

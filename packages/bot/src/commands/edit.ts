@@ -19,7 +19,7 @@ const options = {
 		description: "Contents of the new message to edit",
 		required: true,
 	}),
-	msgId: createStringOption({
+	'message-id': createStringOption({
 		description: "Message ID of the message to edit",
 		required: false,
 		flag: true,
@@ -37,7 +37,7 @@ export default class EditCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 
-		const { contents, msgId } = ctx.options;
+		const { contents, 'message-id': msgId } = ctx.options;
 
 		const getMessage = async () => {
 			switch (true) {

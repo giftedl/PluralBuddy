@@ -8,6 +8,7 @@ import { defaultPrefixes } from "@/types/guild";
 import type { PSystem } from "@/types/system";
 import type { PUser } from "@/types/user";
 import { getWiderAutoProxy } from "../autoproxy-util";
+import { getSystemFeatures } from "../get-system-flags";
 
 function listStartsWith(string: string, list: string[]) {
 	for (const item of list) if (string.startsWith(item)) return true;
@@ -74,7 +75,7 @@ export const setLastLatchAlter = async (
 	alter?: PAlter,
 ) => {
 	const existingGuildPolicies = getWiderAutoProxy(system, guildId, channelId);
-	
+
 	if (
 		existingGuildPolicies &&
 		existingGuildPolicies.autoproxyMode === "latch"
@@ -91,8 +92,28 @@ export const setLastLatchAlter = async (
 				},
 			},
 			{
-				arrayFilters: [{ "serverEntry.serverId": existingGuildPolicies.serverId }],
+				arrayFilters: [
+					{ "serverEntry.serverId": existingGuildPolicies.serverId },
+				],
 			},
 		);
 	}
+};
+
+export const getDisplayNameWebhook = (
+	checkAlter: PAlter,
+	message: Message,
+	user: PUser,
+) => {
+	let body = `${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""}${getSystemFeatures(user.system!!).includePronouns ? ` (${checkAlter?.pronouns})` : ""}`;
+	const tagElement =
+		(user.system?.displayTagMap ?? {})[message.guildId ?? ""] ??
+		user.system?.systemDisplayTag ??
+		"";
+
+	if (user.system && getSystemFeatures(user.system).leftSidedTag) {
+		body = `${tagElement} ${body}`;
+	} else body = `${body} ${tagElement}`
+	
+	return body;
 };

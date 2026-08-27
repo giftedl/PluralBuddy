@@ -22,7 +22,7 @@ import { proxy } from "..";
 import { createProxyError } from "../error";
 import { processEmojis } from "../process-emojis";
 import { getReferencedMessageString } from "../referenced-message";
-import { setLastLatchAlter } from "../util";
+import { getDisplayNameWebhook, setLastLatchAlter } from "../util";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -352,7 +352,7 @@ export async function performTagProxy(
 				client,
 				message,
 				processedContents,
-				`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""}${getSystemFeatures(user.system).includePronouns ? ` (${checkAlter?.pronouns})` : ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				getDisplayNameWebhook(checkAlter, message, user),
 				checkAlter?.alterId as number,
 				checkAlter?.systemId as string,
 				[...referencedMessage],

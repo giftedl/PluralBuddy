@@ -6,6 +6,7 @@ export function getSystemFeatures(data: PSystem) {
 		includePronouns: ((data.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) !== 0,
 		noTypingStatus: ((data.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) !== 0,
 		preferAccessiblity: ((data.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) !== 0,
+		leftSidedTag: ((data.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) !== 0,
 
 		has: (flag: SystemFlags) => ((data.flags ?? 0) & flag) !== 0,
 		disable: (flag: SystemFlags) =>

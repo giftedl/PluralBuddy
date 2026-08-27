@@ -281,6 +281,9 @@ export const InteractionIdentifier = {
 				TogglePreferAccessiblity: createStatic(
 					"systems/config/general/prefer-accessiblity",
 				),
+				ToggleLeftSidedTags: createStatic(
+					"systems/config/general/left-sided-tags"
+				)
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),
