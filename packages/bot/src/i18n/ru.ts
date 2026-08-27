@@ -316,6 +316,7 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
   OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
   OPERATION_SYSTEM_PREFER_ACCESSIBLITY: "Toggled prefer accessiblity mode on the system.",
+  OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
   EDIT_MESSAGE: "Editing message",
   MESSAGE_CONTENTS: "New Message Contents",
   BLOCKLIST_USER: "Blocklist User ID",
@@ -702,5 +703,10 @@ Your system is using the front state of **{{ mode }}**.`,
   SUCCESSFULLY_DELETED_TAG: "Successfully deleted **{{ tag }}** from your system.",
   WARN_DELETE_TAG: "This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
   ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag",
-  AFTER_COMPRESSION_TOO_BIG: "This file is still too big after being compressed and resized. Please make sure a minimal version of this file is smaller than 1MB."
+  AFTER_COMPRESSION_TOO_BIG: "This file is still too big after being compressed and resized. Please make sure a minimal version of this file is smaller than 1MB.",
+  LEFT_SIDED_TAG_DESC: "Left sided tag mode will set the **display tag** of this system to the left as opposed to the default position of the right.",
+  LEFT_SIDED_TAG_BTN: "Enable Left Sided Tags",
+  LEFT_SIDED_TAG_BTN_D: "Disable Left Sided Tags",
+  TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
+  TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)"
 };
