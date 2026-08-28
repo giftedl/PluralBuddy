@@ -317,6 +317,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Se ha cambiado el estado de escritura en el sistema.",
   OPERATION_SYSTEM_PREFER_ACCESSIBLITY: "Se activó el modo de accesibilidad preferido en el sistema.",
   OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
+  OPERATION_FLIPPED_CASE_INSENS_PROXIES: "Toggled case insensitive proxying on this system.",
   EDIT_MESSAGE: "Editando mensaje",
   MESSAGE_CONTENTS: "Nuevo contenido del mensaje",
   BLOCKLIST_USER: "ID de usuario a bloquear",
@@ -717,6 +718,9 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   LEFT_SIDED_TAG_DESC: "Left sided tag mode will set the **display tag** of this system to the left as opposed to the default position of the right.",
   LEFT_SIDED_TAG_BTN: "Enable Left Sided Tags",
   LEFT_SIDED_TAG_BTN_D: "Disable Left Sided Tags",
+  CASE_INSENS_PROXIES_DESC: "Case insensitive proxy tags will allow messages to be classified as matching a proxy tag regardless of the message's capital casing.",
+  CASE_INSENS_PROXIES_BTN: "Enable Case Insensitive Proxy",
+  CASE_INSENS_PROXIES_BTN_D: "Disable Case Insensitive Proxy",
   TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
   TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)"
 };
