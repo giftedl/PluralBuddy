@@ -31,6 +31,7 @@ import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { blockedChannel, blockedRole } from "@/lib/blocked";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { getLanguageByUserId } from "@/lib/lang";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
@@ -420,7 +421,7 @@ export default createEvent({
 									alterId: Number(user.system.alterIds[i]),
 								});
 
-					if (proxyTagValid(proxyTag, message)) {
+					if (proxyTagValid(proxyTag, message, getSystemFeatures(user.system).caseInsensitiveProxies)) {
 						message.client.logger.info("Attempted to proxy: {proxyTag}", {
 							proxyTag,
 						});

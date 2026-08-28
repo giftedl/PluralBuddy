@@ -99,7 +99,8 @@ ${z.prettifyError(alter.error)}
 
 		await ctx.interaction.update({
 			components: await new SystemSettingsView(
-				(await ctx.userTranslations()),
+				await ctx.userTranslations(),
+				getSystemFeatures(user.system)?.preferAccessiblity,
 			).altersSettings({
 				...user.system,
 				alterIds: [...user.system.alterIds, alter.data.alterId],

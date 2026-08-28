@@ -7,6 +7,7 @@ export function getSystemFeatures(data: PSystem) {
 		noTypingStatus: ((data.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) !== 0,
 		preferAccessiblity: ((data.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) !== 0,
 		leftSidedTag: ((data.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) !== 0,
+		caseInsensitiveProxies: ((data.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) !== 0,
 
 		has: (flag: SystemFlags) => ((data.flags ?? 0) & flag) !== 0,
 		disable: (flag: SystemFlags) =>

@@ -283,7 +283,8 @@ export const InteractionIdentifier = {
 				),
 				ToggleLeftSidedTags: createStatic(
 					"systems/config/general/left-sided-tags"
-				)
+				),
+				ToggleCaseInsensitiveProxies: createStatic("systems/config/general/toggle-case-insensitive-proxies")
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),

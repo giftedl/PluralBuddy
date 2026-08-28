@@ -11,7 +11,7 @@ export default class PublicProfileBtn extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleTypingStatus.startsWith(
+		return InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleCaseInsensitiveProxies.startsWith(
 			context.customId,
 		);
 	}
@@ -31,14 +31,18 @@ export default class PublicProfileBtn extends ComponentCommand {
 		await createSystemOperation(
 			system,
 			{
-				flags: getSystemFeatures(system).noTypingStatus
-					? getSystemFeatures(system).disable(SystemFlags.NO_TYPING_STATUS)
-					: getSystemFeatures(system).enable(SystemFlags.NO_TYPING_STATUS),
+				flags: getSystemFeatures(system).caseInsensitiveProxies
+					? getSystemFeatures(system).disable(
+							SystemFlags.CASE_INSENSITIVE_PROXIES,
+						)
+					: getSystemFeatures(system).enable(
+							SystemFlags.CASE_INSENSITIVE_PROXIES,
+						),
 			},
 			await ctx.userTranslations(),
 			"discord",
 			{
-				flippedNoTypingStatus: true,
+				flippedCaseInsensitiveProxying: true,
 			},
 		);
 
@@ -54,9 +58,13 @@ export default class PublicProfileBtn extends ComponentCommand {
 				).generalSettings(
 					{
 						...system,
-						flags: getSystemFeatures(system).noTypingStatus
-							? getSystemFeatures(system).disable(SystemFlags.NO_TYPING_STATUS)
-							: getSystemFeatures(system).enable(SystemFlags.NO_TYPING_STATUS),
+						flags: getSystemFeatures(system).caseInsensitiveProxies
+							? getSystemFeatures(system).disable(
+									SystemFlags.CASE_INSENSITIVE_PROXIES,
+								)
+							: getSystemFeatures(system).enable(
+									SystemFlags.CASE_INSENSITIVE_PROXIES,
+								),
 					},
 					ctx.guildId,
 					2,

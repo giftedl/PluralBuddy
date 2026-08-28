@@ -18,13 +18,14 @@ const publicDescription = `This is a bitwise operation-based number which determ
 
 const flagDescription = `This is a bitwise operation-based number which determines certain system settings.
 
-| Public Flag         | Value                   | Description |
-|---------------------|-------------------------|-------------|
-| KEEP_PROXY_TAGS     | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |
-| KEEP_PRONOUNS       | \`2\` \`(1 << 1)\`      | Pronouns will be shown in the webhook name of the proxying. |
-| NO_TYPING_STATUS    | \`4\` \`(1 << 2)\`      | Typing status from the bot wont be displayed. |
-| PREFER_ACCESSIBLITY | \`8\` \`(1 << 3)\`      | Prefer accessiblity in menus for this system. |
-| LEFT_SIDED_TAG      | \`16\` \`(1 << 4)\`     | Display tags will be displayed on the left side of the webhook. |`;
+| Public Flag              | Value                   | Description |
+|--------------------------|-------------------------|-------------|
+| KEEP_PROXY_TAGS          | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |
+| KEEP_PRONOUNS            | \`2\` \`(1 << 1)\`      | Pronouns will be shown in the webhook name of the proxying. |
+| NO_TYPING_STATUS         | \`4\` \`(1 << 2)\`      | Typing status from the bot wont be displayed. |
+| PREFER_ACCESSIBLITY      | \`8\` \`(1 << 3)\`      | Prefer accessiblity in menus for this system. |
+| LEFT_SIDED_TAG           | \`16\` \`(1 << 4)\`     | Display tags will be displayed on the left side of the webhook. |
+| CASE_INSENSITIVE_PROXIES | \`32\` \`(1 << 5)\`     | Proxy tags when proxying will be matched case insensitively. |`;
 
 const tagMapDescription = `This is a map that shows the association between a Discord server ID and a custom display tag.
 
@@ -51,6 +52,7 @@ export enum SystemFlags {
 	NO_TYPING_STATUS = 1 << 2,
 	PREFER_ACCESSIBLITY = 1 << 3,
 	LEFT_SIDED_TAG = 1 << 4,
+	CASE_INSENSITIVE_PROXIES = 1 << 5,
 }
 
 export const PSystemObject = z

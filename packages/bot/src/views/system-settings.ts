@@ -259,9 +259,11 @@ export class SystemSettingsView extends TranslatedView {
 			((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
 		const typingStatus =
 			((system.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) === 0;
-		const preferAccessiblity = ((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
+		const preferAccessiblity =
+			((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
 		const leftSidedTag =
 			((system.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) === 0;
+		const caseInsensitiveProxies = ((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -354,6 +356,24 @@ export class SystemSettingsView extends TranslatedView {
 					.setComponents(
 						new TextDisplay().setContent($translations.LEFT_SIDED_TAG_DESC),
 					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setStyle(ButtonStyle.Secondary)
+							.setLabel(
+								caseInsensitiveProxies
+									? $translations.CASE_INSENS_PROXIES_BTN
+									: $translations.CASE_INSENS_PROXIES_BTN_D,
+							)
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleCaseInsensitiveProxies.create(),
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(
+							$translations.CASE_INSENS_PROXIES_DESC,
+						),
+					),
 				new Separator(),
 				new TextDisplay().setContent(
 					`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,
@@ -408,7 +428,6 @@ export class SystemSettingsView extends TranslatedView {
 			this.translations,
 		);
 	}
-
 
 	async generalSettingsPageThree({
 		system,
