@@ -370,7 +370,7 @@ export const getModernComponentsMappings = (
 							? (components[0].data.content ?? "").startsWith("# <")
 								? (components[0].data.content ?? "").slice(1)
 								: components[0].data.content
-							: "_Failed to slice this message correctly._",
+							: "",
 					attachments: fileComponents
 						.filter((v, pos) => {
 							return fileComponents.indexOf(v) === pos;
