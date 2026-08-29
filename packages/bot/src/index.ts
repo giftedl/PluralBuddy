@@ -38,6 +38,7 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
 import { ProxyResource } from "./cache/system-proxy-tags";
+import { PTerminologyCache } from "./cache/terminology";
 import TagCommand from "./commands/tag"
 import {
 	PluralBuddyComponentErrorCommand,
@@ -60,7 +61,7 @@ export const logger = null;
 
 if (logger) logger.info("PluralBuddy is online");
 
-export const build = `26.1.2/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
+export const build = `26.2.0/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
 	"noWebhookMiddleware",
@@ -213,6 +214,7 @@ if (import.meta.main) {
 		client,
 	);
 	client.cache.i18n = new Pi18nCache(client.cache, client);
+	client.cache.terminology = new PTerminologyCache(client.cache, client);
 
 	if (logger) logger.info("Created cache");
 

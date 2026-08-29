@@ -151,7 +151,7 @@ SimplyPlural has been discontinued.`,
 		"You already have a tag named **%display%** in your system.",
 
 	CONFIRMATION_SYSTEM_DELETION:
-		"# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system intead.",
+		"# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system instead.",
 	CONFIRMATION_SYSTEM_DELETION_PRIVACY:
 		"-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
 	CONFIRMATION_SYSTEM_DELETION_BTN:
@@ -433,7 +433,8 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_SYSTEM_PREFER_ACCESSIBLITY:
 		"Toggled prefer accessiblity mode on the system.",
 	OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
-	OPERATION_FLIPPED_CASE_INSENS_PROXIES: "Toggled case insensitive proxying on this system.",
+	OPERATION_FLIPPED_CASE_INSENS_PROXIES:
+		"Toggled case insensitive proxying on this system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -486,9 +487,9 @@ PluralBuddy uses a **username/display name** system.
 		"%item% has been removed from the manager role list successfully.",
 
 	REQUIRE_TAG_ENABLED:
-		"All systems will now be required to enable system tags in order to proxy.",
+		"All systems will now be required to enable display tags in order to proxy.",
 	REQUIRE_TAG_DISABLED:
-		"All systems will no longer be required to enable system tags to proxy.",
+		"All systems will no longer be required to enable display tags to proxy.",
 	ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
 	FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
 	FEATURE_DISABLED_CHANNEL: "This channel is disabled from using PluralBuddy.",
@@ -631,6 +632,8 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 	ALTER_TOP_VIEW: `-# @{{ alterUsername }} • ID: \`{{ alterId }}\``,
 
 	GENERAL_LABEL: "General",
+	TERMINOLOGY_LABEL: "Terminology",
+	EDIT_TERMINOLOGY_LABEL: "Editing Terminology",
 	TOP_BACK_LABEL: "Back",
 	ALTER_PROXY_TAGS_LABEL: "Proxy Tags",
 	PUBLIC_PROFILE_LABEL: "Public Profile",
@@ -756,9 +759,11 @@ There is an example below of what an example proxy with this role would look lik
 	ALTERS_PROFILE_LABEL: "**Alters:** ",
 
 	GENERAL_SYSTEM_TITLE: `## {{ emoji }} General Settings - {{ systemName }}`,
+	TERMINOLOGY_SYSTEM_TITLE: `## {{ emoji }} Terminology - {{ systemName }}`,
+	TERMINOLOGY_DESC: `Terminology is the way that PluralBuddy refers to your system, and the terms that are used inside of it. All terms currently have a character limit of 15 characters. **Terms besides the default terminology are currently English-only.**`,
 	SYSTEM_NAME_BTN: "Set System Name",
 	SYSTEM_NAME_DESC:
-		"The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
+		"The title of your system is the first thing that identifies your system and appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
 	SYSTEM_NICKNAME_FORMAT_BTN: "Set Nickname Format",
 	SYSTEM_NICKNAME_FORMAT_DESC:
 		"The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
@@ -969,4 +974,25 @@ Your system is using the front state of **{{ mode }}**.`,
 
 	TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
 	TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
+
+	NORMAL_TERMS_TITLE: "**Singular Words or Features**",
+	NORMAL_TERMS_DESC:
+		"Any word or feature that is just singular would be editable here.",
+	PLURAL_TERMS_TITLE: "**Plural Words or Features**",
+	PLURAL_TERMS_DESC:
+		"Any word or feature that would be referred to as more than one would be editable here.",
+
+	EDIT_NORMAL_TERMS_BTN: "Edit Normal Terms",
+	EDIT_PLURAL_TERMS_BTN: "Edit Plural Terms",
+
+	ALTER_DESCRIPTION:
+		"A data structure describing entities or presences apart of a system.",
+	TAG_DESCRIPTION:
+		"A data structure describing a collective of entities (or alters) inside of a system",
+	SYSTEM_DESCRIPTION:
+		"A data structure embodying all alters, tags, and preferences associated with a user.",
+	PROXY_TAG_DESCRIPTION:
+		"A list of prefixes and suffixes that are required to proxy with an alter.",
+	DISPLAY_TAG_DESCRIPTION:
+		"A suffix or prefix (if left aligned) added to the webhook name when proxying.",
 };

@@ -560,7 +560,7 @@ There is an example below of what an example proxy with this role would look lik
   ALTERS_PROFILE_LABEL: "**Integrantes:** ",
   GENERAL_SYSTEM_TITLE: `## {{ emoji }} Configurações Gerais - {{ systemName }}`,
   SYSTEM_NAME_BTN: "Definir Nome do Sistema",
-  SYSTEM_NAME_DESC: "The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
+  SYSTEM_NAME_DESC: "The title of your system is the first thing that identifies your system and appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
   SYSTEM_NICKNAME_FORMAT_BTN: "Set Nickname Format",
   SYSTEM_NICKNAME_FORMAT_DESC: "The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
   SYSTEM_PRIVACY_BTN: "Definir Privacidade do Sistema",

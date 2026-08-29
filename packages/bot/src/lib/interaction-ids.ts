@@ -251,6 +251,20 @@ export const InteractionIdentifier = {
 			PluralKit: createStatic("systems/external-export/pluralkit"),
 		},
 		Configuration: {
+			TerminologyTab: {
+				Index: createStatic("systems/config/terminology/index"),
+				EditNormalTerms: createStatic("systems/config/terminology/edit-normal-terms"),
+				EditNormalTermsForm: createStatic("systems/config/terminology/edit-normal-terms-form"),
+
+				EditPluralTerms: createStatic("systems/config/terminology/edit-plural-terms"),
+				EditPluralTermsForm: createStatic("systems/config/terminology/edit-plural-terms-form"),
+
+				Alter: createStatic("systems/config/terminology/alters"),
+				Tags: createStatic("systems/config/terminology/tags"),
+				ProxyTags: createStatic("systems/config/terminology/proxy-tags"),
+				System: createStatic("system/config/terminology/system"),
+				DisplayTag: createStatic("systems/config/terminology/display-tag")
+			},
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
 

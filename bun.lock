@@ -131,10 +131,12 @@
         "@hono/zod-validator": "^0.7.6",
         "@sapphire/snowflake": "^3.5.5",
         "@slipher/redis-adapter": "^0.0.6",
+        "@types/lodash": "^4.17.25",
         "bson": "7.2.0",
         "colorthief": "^3.3.1",
         "file-type": "^21.3.0",
         "hono": "^4.12.1",
+        "lodash": "^4.18.1",
         "mongodb": "^7.1.0",
         "parse-duration": "^2.1.5",
         "plurography": "workspace:*",
@@ -187,7 +189,7 @@
     },
     "packages/plurography": {
       "name": "plurography",
-      "version": "0.5.2",
+      "version": "0.5.3",
       "dependencies": {
         "@sapphire/snowflake": "^3.5.5",
         "moment-timezone": "^0.6.0",
@@ -1000,6 +1002,8 @@
     "@types/find-remove": ["@types/find-remove@2.0.3", "", {}, "sha512-FF9QKGSLfRk5O/R/KImfvwfj8NVlc8xIIDSvmfVR4FXbFMgN3urI720/2FUYtul+1iwfLl/j+6Wqq+52dPQxBQ=="],
 
     "@types/hast": ["@types/hast@3.0.4", "", { "dependencies": { "@types/unist": "*" } }, "sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ=="],
+
+    "@types/lodash": ["@types/lodash@4.17.25", "", {}, "sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ=="],
 
     "@types/mdast": ["@types/mdast@4.0.4", "", { "dependencies": { "@types/unist": "*" } }, "sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA=="],
 

@@ -1,27 +1,27 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { MessageFlags } from "seyfert/lib/types";
-import { posthogClient } from ".";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import type {
-  CommandContext,
-  MenuCommandContext,
-  OnOptionsReturnObject,
-  ComponentCommand,
   Command,
-  ContextMenuCommand,
-  UsingClient,
-  PermissionStrings,
+  CommandContext,
+  ComponentCommand,
   ComponentContext,
+  ContextMenuCommand,
+  MenuCommandContext,
   ModalContext,
+  OnOptionsReturnObject,
+  PermissionStrings,
+  UsingClient,
 } from "seyfert";
-import { AlertView } from "./views/alert";
+import type { SubCommand } from "seyfert/lib/commands";
+import { MessageFlags } from "seyfert/lib/types";
+import { posthogClient } from ".";
 import {
   PluralBuddyErrorCommandImpl,
   PluralBuddyErrorComponentCommandImpl,
   PluralBuddyErrorModalCommandImpl,
 } from "./error-command-impl";
-import type { SubCommand } from "seyfert/lib/commands";
+import { AlertView } from "./views/alert";
 
 function capturePostHogException(
   error: unknown,
