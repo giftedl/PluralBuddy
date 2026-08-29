@@ -1,31 +1,30 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { client } from "@/index";
-import { alterCollection, messagesCollection } from "@/mongodb";
-import type { PAlter } from "@/types/alter";
-import type { PUser } from "@/types/user";
-import {
+import type { PGuild } from "plurography";
+import {CacheFrom, 
 	Container,
 	GuildMember,
-	TextDisplay,
 	type Message,
+	TextDisplay,
 	type TopLevelBuilders,
-	type Webhook,
+	type Webhook
 } from "seyfert";
-import { getReferencedMessageString } from "../referenced-message";
-import { processEmojis } from "../process-emojis";
-import { proxy } from "..";
-import { setLastLatchAlter } from "../util";
-import { createProxyError } from "../error";
-import type { PGuild } from "plurography";
 import type {
 	ApplicableWebhookWritePayload,
 	PWebhook,
 } from "@/events/on-message-create";
-import { CacheFrom } from "seyfert";
+import { client } from "@/index";
 import { createError } from "@/lib/create-error";
-import { w } from "@/webhooks";
 import { getSystemFeatures } from "@/lib/get-system-flags";
+import { alterCollection, messagesCollection } from "@/mongodb";
+import type { PAlter } from "@/types/alter";
+import type { PUser } from "@/types/user";
+import { w } from "@/webhooks";
+import { proxy } from "..";
+import { createProxyError } from "../error";
+import { processEmojis } from "../process-emojis";
+import { getReferencedMessageString } from "../referenced-message";
+import { getDisplayNameWebhook, setLastLatchAlter } from "../util";
 
 export async function performAlterAutoProxy(
 	message: Message,
@@ -287,7 +286,7 @@ export async function performAlterAutoProxy(
 				client,
 				message,
 				processedContents,
-				`${alter.nameMap.find((c) => c.server === message.guildId)?.name ?? alter?.displayName ?? ""}${getSystemFeatures(user.system).includePronouns ? ` (${alter?.pronouns})` : ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				getDisplayNameWebhook(alter, message, user),
 				alter?.alterId as number,
 				alter?.systemId as string,
 				[...referencedMessage],

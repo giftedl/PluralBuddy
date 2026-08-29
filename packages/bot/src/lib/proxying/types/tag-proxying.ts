@@ -22,7 +22,7 @@ import { proxy } from "..";
 import { createProxyError } from "../error";
 import { processEmojis } from "../process-emojis";
 import { getReferencedMessageString } from "../referenced-message";
-import { setLastLatchAlter } from "../util";
+import { getDisplayNameWebhook, setLastLatchAlter } from "../util";
 
 export const proxyTagValid = (
 	proxyTag: {
@@ -30,14 +30,25 @@ export const proxyTagValid = (
 		suffix: string;
 	},
 	message: Message,
+	caseInsensitive: boolean = false,
 ) => {
 	const hasPrefix = proxyTag.prefix !== "";
 	const hasSuffix = proxyTag.suffix !== "";
 	if (!hasPrefix && !hasSuffix) return false;
 
+	const content = caseInsensitive
+		? message.content.toLocaleLowerCase()
+		: message.content;
+	const prefix = caseInsensitive
+		? proxyTag.prefix.toLocaleLowerCase()
+		: proxyTag.prefix;
+	const suffix = caseInsensitive
+		? proxyTag.suffix.toLocaleLowerCase()
+		: proxyTag.suffix;
+
 	return (
-		(!hasPrefix || message.content.startsWith(proxyTag.prefix)) &&
-		(!hasSuffix || message.content.endsWith(proxyTag.suffix))
+		(!hasPrefix || content.startsWith(prefix)) &&
+		(!hasSuffix || content.endsWith(suffix))
 	);
 };
 
@@ -53,7 +64,6 @@ export async function performTagProxy(
 	guild: PGuild,
 	author: GuildMember,
 ) {
-
 	(async () => {
 		const channel = await message.channel();
 
@@ -158,7 +168,6 @@ export async function performTagProxy(
 	}
 
 	if (checkAlter?.alterMode === "both" || checkAlter?.alterMode === "webhook") {
-	;
 		if (similarWebhooks.length >= 1) {
 			webhook = similarWebhooks[0];
 		} else {
@@ -227,9 +236,24 @@ export async function performTagProxy(
 		}
 
 		let contents = message.content;
+		const prefixMatches =
+			user.system !== undefined &&
+			getSystemFeatures(user.system)?.caseInsensitiveProxies
+				? contents
+						.toLocaleLowerCase()
+						.startsWith(proxyTag.prefix.toLocaleLowerCase())
+				: contents.startsWith(proxyTag.prefix);
+		const suffixMatches =
+			user.system !== undefined &&
+			getSystemFeatures(user.system)?.caseInsensitiveProxies
+				? contents
+						.toLocaleLowerCase()
+						.endsWith(proxyTag.prefix.toLocaleLowerCase())
+				: contents.endsWith(proxyTag.suffix);
+
 		if (
 			proxyTag.prefix &&
-			contents.startsWith(proxyTag.prefix) &&
+			prefixMatches &&
 			user.system &&
 			!(
 				getSystemFeatures(user.system).keepProxyTags ||
@@ -238,9 +262,10 @@ export async function performTagProxy(
 		) {
 			contents = contents.slice(proxyTag.prefix.length);
 		}
+
 		if (
 			proxyTag.suffix &&
-			contents.endsWith(proxyTag.suffix) &&
+			suffixMatches &&
 			user.system &&
 			!(
 				getSystemFeatures(user.system).keepProxyTags ||
@@ -352,7 +377,7 @@ export async function performTagProxy(
 				client,
 				message,
 				processedContents,
-				`${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""}${getSystemFeatures(user.system).includePronouns ? ` (${checkAlter?.pronouns})` : ""} ${(user.system?.displayTagMap ?? {})[message.guildId] ?? user.system?.systemDisplayTag ?? ""}`,
+				getDisplayNameWebhook(checkAlter, message, user),
 				checkAlter?.alterId as number,
 				checkAlter?.systemId as string,
 				[...referencedMessage],

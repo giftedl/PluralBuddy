@@ -82,7 +82,7 @@ SimplyPlural has been discontinued.`,
 	PLURALBUDDY_IMPORT_ERROR_TOO_LARGE:
 		"2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
 	ERROR_ATTACHMENT_TOO_LARGE:
-		"2j – Attachments for banners or profile pictures cannot be larger than 1MB.",
+		"2j – Uncompressed images must be under 5MB. (After compression, images can only be 1MB.)",
 	CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
 	CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
 	PLURALBUDDY_IMPORT_ERROR_INVALID_JSON:
@@ -432,6 +432,8 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
 	OPERATION_SYSTEM_PREFER_ACCESSIBLITY:
 		"Toggled prefer accessiblity mode on the system.",
+	OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
+	OPERATION_FLIPPED_CASE_INSENS_PROXIES: "Toggled case insensitive proxying on this system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -619,7 +621,8 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 -# This tags order string is: {{ order }}`,
 	S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ mention }}`,
-	DELETE_TAG_DESC: "Deleting your tag will permanently remove it from all alters that its associated with, and this system.",
+	DELETE_TAG_DESC:
+		"Deleting your tag will permanently remove it from all alters that its associated with, and this system.",
 	PUBLIC_PROFILE_COLOR_DESC:
 		"Setting a color for an alter shows that color for their rank container along with their public profile.",
 	PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
@@ -951,4 +954,19 @@ Your system is using the front state of **{{ mode }}**.`,
 	WARN_DELETE_TAG:
 		"This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
 	ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag",
+	AFTER_COMPRESSION_TOO_BIG:
+		"This file is still too big after being compressed and resized. Please make sure a minimal version of this file is smaller than 1MB.",
+
+	LEFT_SIDED_TAG_DESC:
+		"Left sided tag mode will set the **display tag** of this system to the left as opposed to the default position of the right.",
+	LEFT_SIDED_TAG_BTN: "Enable Left Sided Tags",
+	LEFT_SIDED_TAG_BTN_D: "Disable Left Sided Tags",
+
+	CASE_INSENS_PROXIES_DESC:
+		"Case insensitive proxy tags will allow messages to be classified as matching a proxy tag regardless of the message's capital casing.",
+	CASE_INSENS_PROXIES_BTN: "Enable Case Insensitive Proxy",
+	CASE_INSENS_PROXIES_BTN_D: "Disable Case Insensitive Proxy",
+
+	TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
+	TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
 };

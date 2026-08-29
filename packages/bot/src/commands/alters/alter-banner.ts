@@ -13,7 +13,8 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { FileTooBigException } from "@/lib/file-too-big";
+import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -38,8 +39,8 @@ const options = {
 		value(data, ok, fail) {
 			if (!data.value.contentType?.startsWith("image"))
 				fail("This attachment is not an image.");
-			if (data.value.size > 2_500_000)
-				fail("This attachment is too big. Attachments at most can be 2.5MB.");
+			if (data.value.size > 5_000_000)
+				fail("This attachment is too big. Attachments at most can be 5MB.");
 			ok(data);
 		},
 	}),
@@ -60,7 +61,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 		});
 
 		const user = await ctx.retrievePUser();
-		const {
+		let {
 			"alter-name": alterName, 
 			"alter-banner": attachment,
 			"alter-banner-text": attachmentText,
@@ -86,6 +87,11 @@ export default class EditAlterPictureCommand extends SubCommand {
 		}
 
 		if (attachment === undefined && attachmentText === undefined) {
+			await deleteOldObject({
+				imageProperty: alter.banner,
+				storagePrefix: user.storagePrefix,
+			});
+			
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
 				{ $set: { banner: null } },
@@ -112,55 +118,55 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		let objectName: string | undefined;
-
 		if (attachmentText === undefined) {
-			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
-			const bucketName = process.env.GCP_BUCKET ?? "";
-
 			try {
-				const accessToken = await getGcpAccessToken();
-				const { newObject } = await uploadDiscordAttachmentToGcp(
+				const objectUrl = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
-					accessToken,
-					bucketName,
-					objectName,
+					`${user.storagePrefix}/${assetStringGeneration(32)}`,
 					{
 						authorId: ctx.author.id,
 						alterId: String(alter.alterId),
 						type: "banner",
 					},
-
-					(alter.banner ?? "").startsWith("https://pluralbuddy.giftedly.dev")
-						? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.banner?.split(user.storagePrefix)[1]}`
-						: undefined,
+					getOldObject({
+						imageProperty: alter.banner,
+						storagePrefix: user.storagePrefix,
+					}),
+					{ height: 450 }
 				);
 
-				objectName = newObject;
+				attachmentText = objectUrl;
 			} catch (error) {
+			if (error instanceof FileTooBigException)
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+						"AFTER_COMPRESSION_TOO_BIG",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
+			return await ctx.editResponse({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 			}
-		}
+		} else
+			await deleteOldObject({
+				imageProperty: alter.banner,
+				storagePrefix: user.storagePrefix,
+			});
 
-		const publicUrl =
-			objectName !== undefined
-				? `https://pluralbuddy.giftedly.dev/${objectName}`
-				: attachmentText;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
-			{ $set: { banner: publicUrl } },
+			{ $set: { banner: attachmentText } },
 		);
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
 			alter: {
 				...alter,
-				banner: publicUrl,
+				banner: attachmentText,
 			},
 		});
 
@@ -175,7 +181,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 				new Container().setComponents(
 					new MediaGallery().addItems(
 						new MediaGalleryItem()
-							.setMedia(`https://wsrv.nl/?url=${publicUrl}&w=1024&h=84`)
+							.setMedia(attachmentText)
 							.setDescription(`@${alter.username}'s profile`),
 					),
 				),

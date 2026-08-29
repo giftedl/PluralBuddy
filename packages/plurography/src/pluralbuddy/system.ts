@@ -18,10 +18,14 @@ const publicDescription = `This is a bitwise operation-based number which determ
 
 const flagDescription = `This is a bitwise operation-based number which determines certain system settings.
 
-| Public Flag     | Value                   | Description |
-|-----------------|-------------------------|-------------|
-| KEEP_PROXY_TAGS | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |
-| KEEP_PRONOUNS   | \`2\` \`(1 << 1)\`      | Pronouns will be shown in the webhook name of the proxying. |`;
+| Public Flag              | Value                   | Description |
+|--------------------------|-------------------------|-------------|
+| KEEP_PROXY_TAGS          | \`1\` \`(1 << 0)\`      | All messages sent in the system will maintain their proxy tags. |
+| KEEP_PRONOUNS            | \`2\` \`(1 << 1)\`      | Pronouns will be shown in the webhook name of the proxying. |
+| NO_TYPING_STATUS         | \`4\` \`(1 << 2)\`      | Typing status from the bot wont be displayed. |
+| PREFER_ACCESSIBLITY      | \`8\` \`(1 << 3)\`      | Prefer accessiblity in menus for this system. |
+| LEFT_SIDED_TAG           | \`16\` \`(1 << 4)\`     | Display tags will be displayed on the left side of the webhook. |
+| CASE_INSENSITIVE_PROXIES | \`32\` \`(1 << 5)\`     | Proxy tags when proxying will be matched case insensitively. |`;
 
 const tagMapDescription = `This is a map that shows the association between a Discord server ID and a custom display tag.
 
@@ -47,45 +51,53 @@ export enum SystemFlags {
 	INCLUDE_PRONOUNS = 1 << 1,
 	NO_TYPING_STATUS = 1 << 2,
 	PREFER_ACCESSIBLITY = 1 << 3,
+	LEFT_SIDED_TAG = 1 << 4,
+	CASE_INSENSITIVE_PROXIES = 1 << 5,
 }
 
-export const PSystemObject = z.object({
-	associatedUserId: z.string(),
+export const PSystemObject = z
+	.object({
+		associatedUserId: z.string(),
 
-	systemName: z.string().max(100).min(1),
-	systemDisplayTag: z.string().optional(),
-	displayTagMap: z
-		.record(z.string(), z.string())
-		.default({})
-		.meta({
-			description: tagMapDescription,
-			example: {
-				"1444187699924963350": "string",
-			},
-		}),
-	systemDescription: z.string().max(4000).optional(),
-	systemAvatar: z.string().optional().nullable(),
-	systemBanner: z.string().optional().nullable(),
-	systemPronouns: z.string().optional().nullable(),
+		systemName: z.string().max(100).min(1),
+		systemDisplayTag: z.string().optional(),
+		displayTagMap: z
+			.record(z.string(), z.string())
+			.default({})
+			.meta({
+				description: tagMapDescription,
+				example: {
+					"1444187699924963350": "string",
+				},
+			}),
+		systemDescription: z.string().max(4000).optional(),
+		systemAvatar: z.string().optional().nullable(),
+		systemBanner: z.string().optional().nullable(),
+		systemPronouns: z.string().optional().nullable(),
 
-	nicknameFormat: z.string().optional().nullable(),
+		nicknameFormat: z.string().optional().nullable(),
 
-	alterIds: z.array(z.number()).max(2000).default([]),
-	tagIds: z.array(z.string()).max(500).default([]),
-	createdAt: z.coerce.date(),
+		alterIds: z.array(z.number()).max(2000).default([]),
+		tagIds: z.array(z.string()).max(500).default([]),
+		createdAt: z.coerce.date(),
 
-	systemAutoproxy: z.array(PAutoProxyObj),
-	systemOperationDM: z.boolean().default(true),
+		systemAutoproxy: z.array(PAutoProxyObj),
+		systemOperationDM: z.boolean().default(true),
 
-	latchExpiration: z.number().min(0).max(36000000).optional(),
+		latchExpiration: z.number().min(0).max(36000000).optional(),
 
-	public: z.number().nonnegative().meta({ description: publicDescription }),
-	flags: z.number().nonnegative().meta({ description: flagDescription }).default(0),
-	disabledGuilds: z.string().array().optional().default([]),
+		public: z.number().nonnegative().meta({ description: publicDescription }),
+		flags: z
+			.number()
+			.nonnegative()
+			.meta({ description: flagDescription })
+			.default(0),
+		disabledGuilds: z.string().array().optional().default([]),
 
-	/** WIP */
-	subAccounts: z.array(z.string()),
-	disabled: z.boolean().default(false),
-}).meta({ id: "PSystem" })
+		/** WIP */
+		subAccounts: z.array(z.string()).default([]).optional(),
+		disabled: z.boolean().default(false),
+	})
+	.meta({ id: "PSystem" });
 
 export type PSystem = z.infer<typeof PSystemObject>;

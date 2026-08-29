@@ -11,7 +11,7 @@ export default class PublicProfileBtn extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleTypingStatus.startsWith(
+		return InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleLeftSidedTags.startsWith(
 			context.customId,
 		);
 	}
@@ -31,14 +31,14 @@ export default class PublicProfileBtn extends ComponentCommand {
 		await createSystemOperation(
 			system,
 			{
-				flags: getSystemFeatures(system).noTypingStatus
-					? getSystemFeatures(system).disable(SystemFlags.NO_TYPING_STATUS)
-					: getSystemFeatures(system).enable(SystemFlags.NO_TYPING_STATUS),
+				flags: getSystemFeatures(system).leftSidedTag
+					? getSystemFeatures(system).disable(SystemFlags.LEFT_SIDED_TAG)
+					: getSystemFeatures(system).enable(SystemFlags.LEFT_SIDED_TAG),
 			},
 			await ctx.userTranslations(),
 			"discord",
 			{
-				flippedNoTypingStatus: true,
+				flippedLeftSideTag: true,
 			},
 		);
 
@@ -54,9 +54,9 @@ export default class PublicProfileBtn extends ComponentCommand {
 				).generalSettings(
 					{
 						...system,
-						flags: getSystemFeatures(system).noTypingStatus
-							? getSystemFeatures(system).disable(SystemFlags.NO_TYPING_STATUS)
-							: getSystemFeatures(system).enable(SystemFlags.NO_TYPING_STATUS),
+						flags: getSystemFeatures(system).leftSidedTag
+							? getSystemFeatures(system).disable(SystemFlags.LEFT_SIDED_TAG)
+							: getSystemFeatures(system).enable(SystemFlags.LEFT_SIDED_TAG),
 					},
 					ctx.guildId,
 					2,

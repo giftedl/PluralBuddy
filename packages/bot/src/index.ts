@@ -38,6 +38,7 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
 import { ProxyResource } from "./cache/system-proxy-tags";
+import TagCommand from "./commands/tag"
 import {
 	PluralBuddyComponentErrorCommand,
 	PluralBuddyErrorCommand,
@@ -66,6 +67,7 @@ const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"globalBlockUserMiddleware",
 	"serverBlock",
 ];
+
 
 export const policyModal = async (
 	ctx: AnyContext | CollectorInteraction,

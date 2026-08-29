@@ -81,6 +81,7 @@
 		"react-router": "^7.14.0",
 		"react-string-replace": "^2.0.1",
 		"rough-notation": "^0.5.1",
+		"s3mini": "^1.0.0",
 		"scroll-into-view-if-needed": "^3.1.0",
 		"shadcn": "^4.13.1",
 		"shiki": "^4.0.2",

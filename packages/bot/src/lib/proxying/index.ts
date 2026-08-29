@@ -119,7 +119,7 @@ export async function proxy(
 			...(message.stickerItems ?? []).map((c) =>
 				new MediaGallery().addItems(
 					new MediaGalleryItem().setMedia(
-						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=320`,
+						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=256`,
 					),
 				),
 			),
@@ -366,7 +366,7 @@ export const getModernComponentsMappings = (
 					components[1]?.data.type === ComponentType.File)
 			? {
 					content:
-						components[0] !== undefined && ("content" in components[0].data)
+						components[0] !== undefined && "content" in components[0].data
 							? (components[0].data.content ?? "").startsWith("# <")
 								? (components[0].data.content ?? "").slice(1)
 								: components[0].data.content
@@ -377,11 +377,21 @@ export const getModernComponentsMappings = (
 						})
 						.map((v, i) => ({ filename: v.name, id: String(i) })),
 				}
-			: {
-					components,
-					flags:
-						components.length !== 0
-							? MessageFlags.IsComponentsV2
-							: (0 as MessageFlags),
-				};
+			: components.length === 1 &&
+					components[0]?.data.type === ComponentType.File
+				? {
+						content: "",
+						attachments: fileComponents
+							.filter((v, pos) => {
+								return fileComponents.indexOf(v) === pos;
+							})
+							.map((v, i) => ({ filename: v.name, id: String(i) })),
+					}
+				: {
+						components,
+						flags:
+							components.length !== 0
+								? MessageFlags.IsComponentsV2
+								: (0 as MessageFlags),
+					};
 };
