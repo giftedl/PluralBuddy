@@ -7,5 +7,5 @@ export const PTerminology = z.object({
 	tags_plural: z.string().max(15).default("tags"),
 	system: z.string().max(15).default("system"),
 	system_plural: z.string().max(15).default("systems"),
-});
+}).optional();
 export type PTerminology = z.infer<typeof PTerminology>;
