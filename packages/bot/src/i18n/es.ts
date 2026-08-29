@@ -683,10 +683,10 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   PROVIDER_NOT_FOUND: `No se encontró ese proveedor de proxy automático o no autorizaste con el permiso [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap). Contacta al desarrollador de esta integración si crees que es un error.
 	
 -# Integración: \`{{ id }}\``,
-  AP_INVALID_SYNTAX: `Modo de proxy automático o proveedor inválido \`{{ mode }}\`.
+  AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
 
-**Uso de proxy automático:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+**Auto-proxy Usage:**
+\`pb;autoproxy [off|latch|alter|status|clear-latch|{{ aiap }}]\``,
   AP_ALTER_INVALID_SYNTAX: `Debes especificar un alter para el modo proxy \`alter\`.
 
 **Uso de proxy automático:**
