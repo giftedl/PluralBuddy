@@ -18,8 +18,8 @@
     "v1/users/user/system/create-alter/post",
     "v1/users/user/system/edit/post",
     "v1/users/user/alters/alter/edit/post",
-    "v1/users/user/fields/alters/id/get",
     "v1/users/user/fields/tags/id/get",
+    "v1/users/user/fields/alters/id/get",
     "v1/users/user/tags/tag/edit/post"
   ],
   "icon": "Notebook"
