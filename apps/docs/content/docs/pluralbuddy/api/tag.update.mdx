@@ -3,7 +3,7 @@ title: Receive tag updates
 full: true
 _openapi:
   preload:
-    - https://pb.giftedly.dev/openapi.yml
+    - http://localhost:3000/openapi.yml
   method: POST
   webhook: true
   toc: []
@@ -22,7 +22,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="https://pb.giftedly.dev/openapi.yml" webhooks={[{"name":"tag.update","method":"post"}]} showDescription />
+      <Comp document="http://localhost:3000/openapi.yml" webhooks={[{"name":"tag.update","method":"post"}]} showDescription />
     </>
   );
 }

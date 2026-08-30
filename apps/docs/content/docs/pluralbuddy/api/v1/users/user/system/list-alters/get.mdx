@@ -3,7 +3,7 @@ title: List system alters
 full: true
 _openapi:
   preload:
-    - https://pb.giftedly.dev/openapi.yml
+    - http://localhost:3000/openapi.yml
   method: GET
   webhook: false
   toc: []
@@ -25,7 +25,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="https://pb.giftedly.dev/openapi.yml" operations={[{"path":"/v1/users/{user}/system/list-alters","method":"get"}]} showDescription />
+      <Comp document="http://localhost:3000/openapi.yml" operations={[{"path":"/v1/users/{user}/system/list-alters","method":"get"}]} showDescription />
     </>
   );
 }

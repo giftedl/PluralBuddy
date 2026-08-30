@@ -3,7 +3,7 @@ title: Edit system data
 full: true
 _openapi:
   preload:
-    - https://pb.giftedly.dev/openapi.yml
+    - http://localhost:3000/openapi.yml
   method: POST
   webhook: false
   toc: []
@@ -23,7 +23,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="https://pb.giftedly.dev/openapi.yml" operations={[{"path":"/v1/users/{user}/system/edit","method":"post"}]} showDescription />
+      <Comp document="http://localhost:3000/openapi.yml" operations={[{"path":"/v1/users/{user}/system/edit","method":"post"}]} showDescription />
     </>
   );
 }

@@ -1,5 +1,5 @@
-import { createOpenAPI } from "fumadocs-openapi/server";
 import path from "node:path";
+import { createOpenAPI } from "fumadocs-openapi/server";
 
 const baseUrl =
 	process.env.NEXT_PUBLIC_VERCEL_ENV !== undefined
