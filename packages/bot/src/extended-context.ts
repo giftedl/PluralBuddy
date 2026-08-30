@@ -257,10 +257,6 @@ export const extendedContext = extendContext((interaction) => {
 });
 
 const ENGLISH_VOWELS = ["a", "e", "i", "o", "u"];
-const CONFLICTING_PLACEHOLDERS = {
-	"{{ systemName }}": "{{ sysName }}" as const,
-	"{{ alters }}": "{{ aNumber }}" as const
-};
 const replaceTranslations = (
 	translations: DefaultLocale,
 	terminology: PTerminology = terminologyDefaults,
@@ -272,13 +268,30 @@ const replaceTranslations = (
 		return false;
 	};
 	const clonedTranslations = cloneDeep(translations);
-	
+
 	const replace = () =>
 		Object.keys(clonedTranslations).forEach((c: string) => {
-			Object.entries(CONFLICTING_PLACEHOLDERS).forEach(([k,v]) => {
-				clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[c as keyof DefaultLocale]
-					.replaceAll(k, v)
-			})
+			const conflictingPlaceholders: Record<string, string> = {};
+			const placeholderRegex1 = /%([^%]+)%/g;
+			const placeholderRegex2 = /(\{[^}]*\}\})/g;
+
+			const matches = [
+				...clonedTranslations[c as keyof DefaultLocale].matchAll(
+					placeholderRegex1,
+				),
+				...clonedTranslations[c as keyof DefaultLocale].matchAll(
+					placeholderRegex2,
+				),
+			];
+			matches.forEach((match) => {
+				conflictingPlaceholders[match[0]] = `{{ ${crypto.randomUUID()} }}`;
+			});
+
+			Object.entries(conflictingPlaceholders).forEach(([k, v]) => {
+				clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
+					c as keyof DefaultLocale
+				].replaceAll(k, v);
+			});
 			clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
 				c as keyof DefaultLocale
 			]
@@ -301,7 +314,7 @@ const replaceTranslations = (
 				.replaceAll("tags", terminology.tags_plural)
 				.replaceAll("tag", terminology.tags)
 				.replaceAll("Tag", terminology.tags_capital);
-			Object.entries(CONFLICTING_PLACEHOLDERS).forEach(([k, v]) => {
+			Object.entries(conflictingPlaceholders).forEach(([k, v]) => {
 				clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
 					c as keyof DefaultLocale
 				].replaceAll(v, k);

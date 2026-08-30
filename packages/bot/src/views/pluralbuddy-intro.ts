@@ -15,6 +15,7 @@ import {
 } from "seyfert";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
+import { terminologyTemplates } from "@/lib/terminology-templates";
 import { createdSystems } from "../components/pluralbuddy-intro/create-new-system";
 import type { TranslationString } from "../lang";
 import { InteractionIdentifier } from "../lib/interaction-ids";
@@ -240,6 +241,27 @@ export class PluralBuddyIntro extends TranslatedView {
 								: ButtonStyle.Primary,
 						),
 				),
+			new Separator().setSpacing(Spacing.Large),
+			new TextDisplay().setContent(this.translations.TERMINOLOGY_EXPLANER),
+			new ActionRow().setComponents(
+				new StringSelectMenu()
+					.setCustomId(
+						InteractionIdentifier.Setup.CreateNewSystem.Terminology.create(
+							rootInteractionId,
+						),
+					)
+					.setValuesLength({ min: 1, max: 1 })
+					.setPlaceholder(this.translations.TEMPLATE_PLACEHOLDER)
+					.setOptions(
+						terminologyTemplates.map((template) =>
+							new StringSelectOption()
+								.setValue(template.name.toLocaleLowerCase())
+								.setLabel(template.name)
+								.setDefault(JSON.stringify(temporarySystem.terminology) === JSON.stringify(template.data))
+								.setDescription(template.description),
+						),
+					),
+			),
 		);
 
 		createdSystems.set(rootInteractionId, temporarySystem);

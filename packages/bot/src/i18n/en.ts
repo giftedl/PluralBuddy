@@ -626,7 +626,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 		"Deleting your tag will permanently remove it from all alters that its associated with, and this system.",
 	PUBLIC_PROFILE_COLOR_DESC:
 		"Setting a color for an alter shows that color for their rank container along with their public profile.",
-	PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
+	PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System tags can be at maximum 75 characters long.
 -# {{ systemName }}'s system tag is: {{ displayTag }}`,
 
 	ALTER_TOP_VIEW: `-# @{{ alterUsername }} • ID: \`{{ alterId }}\``,
@@ -761,6 +761,7 @@ There is an example below of what an example proxy with this role would look lik
 	GENERAL_SYSTEM_TITLE: `## {{ emoji }} General Settings - {{ systemName }}`,
 	TERMINOLOGY_SYSTEM_TITLE: `## {{ emoji }} Terminology - {{ systemName }}`,
 	TERMINOLOGY_DESC: `Terminology is the way that PluralBuddy refers to your system, and the terms that are used inside of it. All terms currently have a character limit of 15 characters. **Terms besides the default terminology are currently English-only.**`,
+	TEMPLATE_TERMINOLOGY_DESC: `You can reset your terminology with a specific template below.`,
 	SYSTEM_NAME_BTN: "Set System Name",
 	SYSTEM_NAME_DESC:
 		"The title of your system is the first thing that identifies your system and appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
@@ -981,9 +982,13 @@ Your system is using the front state of **{{ mode }}**.`,
 	PLURAL_TERMS_TITLE: "**Plural Words or Features**",
 	PLURAL_TERMS_DESC:
 		"Any word or feature that would be referred to as more than one would be editable here.",
+	CAPITAL_TERMS_TITLE: "**Capital Words or Features**",
+	CAPITAL_TERMS_DESC:
+		"Any word or feature that is Capitalized would be editable here.",
 
 	EDIT_NORMAL_TERMS_BTN: "Edit Normal Terms",
 	EDIT_PLURAL_TERMS_BTN: "Edit Plural Terms",
+	EDIT_CAPITAL_TERMS_BTN: "Edit Capital Terms",
 
 	ALTER_DESCRIPTION:
 		"A data structure describing entities or presences apart of a system.",
@@ -995,4 +1000,11 @@ Your system is using the front state of **{{ mode }}**.`,
 		"A list of prefixes and suffixes that are required to proxy with an alter.",
 	DISPLAY_TAG_DESCRIPTION:
 		"A suffix or prefix (if left aligned) added to the webhook name when proxying.",
+
+	TEMPLATE_PLACEHOLDER: "Choose your favorite plurality product...",
+
+	TERMINOLOGY_EXPLANER: "PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
+	SUCCESSFULLY_APPLIED_TEMPLATE: "Successfully applied that template!",
+	USE_PLURALKIT_TERMINOLOGY_TITLE: "Use PluralKit-style Terminology (new!)",
+	USE_PLURALKIT_TERMINOLOGY_DESC: "Use terminology similar to represented in PluralKit (ie. member, group)."
 };

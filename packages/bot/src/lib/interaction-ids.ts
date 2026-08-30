@@ -259,11 +259,16 @@ export const InteractionIdentifier = {
 				EditPluralTerms: createStatic("systems/config/terminology/edit-plural-terms"),
 				EditPluralTermsForm: createStatic("systems/config/terminology/edit-plural-terms-form"),
 
+				EditCapitalTerms: createStatic("systems/config/terminology/edit-capital-terms"),
+				EditCapitalTermsForm: createStatic("systems/config/terminology/edit-capital-terms-form"),
+
 				Alter: createStatic("systems/config/terminology/alters"),
 				Tags: createStatic("systems/config/terminology/tags"),
 				ProxyTags: createStatic("systems/config/terminology/proxy-tags"),
 				System: createStatic("system/config/terminology/system"),
-				DisplayTag: createStatic("systems/config/terminology/display-tag")
+				DisplayTag: createStatic("systems/config/terminology/display-tag"),
+
+				TemplatesSelect: createStatic("systems/config/terminology/templates")
 			},
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
@@ -631,6 +636,7 @@ export const InteractionIdentifier = {
 			Name: createFromAdditionalArg("setup/create-new-system/name"),
 			Privacy: createFromAdditionalArg("setup/create-new-system/privacy"),
 			SystemTag: createFromAdditionalArg("setup/create-new-system/system-tag"),
+			Terminology: createFromAdditionalArg("setup/create-new-system/terminology")
 		},
 		FormSelection: {
 			NameType: createStatic("setup/create-new-system/type-form/name"),
@@ -647,6 +653,7 @@ export const InteractionIdentifier = {
 			ImportType: createStatic("setup/create-new-system/type-form/import"),
 			PkForm: createStatic("setup/create-new-system/set-form/pk-import"),
 			PkType: createStatic("setup/create-new-system/type-form/pk-import"),
+			PkTerminologyCheckboxType: createStatic("setup/create-new-system/type-form/pk-terms"),
 			PkRawTextType: createStatic(
 				"setup/create-new-system/type-form/pk-raw-text",
 			),

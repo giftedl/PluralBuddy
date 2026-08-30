@@ -17,6 +17,7 @@ import {
 } from "seyfert";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { mentionCommand } from "@/lib/mention-command";
+import { terminologyTemplates } from "@/lib/terminology-templates";
 import paginateComponents from "@/lib/views/paginate";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterProtectionFlags, type PAlter } from "@/types/alter";
@@ -55,10 +56,15 @@ export const tagsPagination: {
 }[] = [];
 export class SystemSettingsView extends TranslatedView {
 	topView(
-		currentTab: "general" | "alters" | "tags" | "public-settings" | "terminology",
+		currentTab:
+			| "general"
+			| "alters"
+			| "tags"
+			| "public-settings"
+			| "terminology",
 		systemId: string,
 	) {
-		const page2Tabs = ["terminology"]
+		const page2Tabs = ["terminology"];
 
 		if (page2Tabs.includes(currentTab))
 			return [
@@ -157,12 +163,8 @@ export class SystemSettingsView extends TranslatedView {
 							InteractionIdentifier.Systems.Configuration.PublicProfile.Index.create(),
 						),
 					new Button()
-						.setStyle(
-							ButtonStyle.Secondary
-						)
-						.setEmoji(
-							emojis.chevronRight
-						)
+						.setStyle(ButtonStyle.Secondary)
+						.setEmoji(emojis.chevronRight)
 						.setCustomId(
 							InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
 						),
@@ -307,7 +309,8 @@ export class SystemSettingsView extends TranslatedView {
 			((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
 		const leftSidedTag =
 			((system.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) === 0;
-		const caseInsensitiveProxies = ((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
+		const caseInsensitiveProxies =
+			((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -1084,6 +1087,26 @@ export class SystemSettingsView extends TranslatedView {
 					),
 					new TextDisplay().setContent(this.translations.TERMINOLOGY_DESC),
 					new Separator().setSpacing(Spacing.Large),
+					new TextDisplay().setContent(
+						this.translations.TEMPLATE_TERMINOLOGY_DESC,
+					),
+					new ActionRow().setComponents(
+						new StringSelectMenu()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.TerminologyTab.TemplatesSelect.create(),
+							)
+							.setValuesLength({ min: 1, max: 1 })
+							.setPlaceholder(this.translations.TEMPLATE_PLACEHOLDER)
+							.setOptions(
+								terminologyTemplates.map((template) =>
+									new StringSelectOption()
+										.setValue(template.name.toLocaleLowerCase())
+										.setLabel(template.name)
+										.setDescription(template.description),
+								),
+							),
+					),
+					new Separator(),
 					new Section()
 						.setComponents(
 							new TextDisplay().setContent(
@@ -1112,6 +1135,23 @@ export class SystemSettingsView extends TranslatedView {
 									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditPluralTerms.create(),
 								)
 								.setLabel(this.translations.EDIT_PLURAL_TERMS_BTN)
+								.setStyle(ButtonStyle.Primary),
+						),
+					new Section()
+						.setComponents(
+							new TextDisplay().setContent(
+								this.translations.CAPITAL_TERMS_TITLE,
+							),
+							new TextDisplay().setContent(
+								this.translations.CAPITAL_TERMS_DESC,
+							),
+						)
+						.setAccessory(
+							new Button()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditCapitalTerms.create(),
+								)
+								.setLabel(this.translations.EDIT_CAPITAL_TERMS_BTN)
 								.setStyle(ButtonStyle.Primary),
 						),
 				)

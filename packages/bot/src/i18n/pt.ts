@@ -444,7 +444,7 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
   S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ mention }}`,
   PUBLIC_PROFILE_COLOR_DESC: "Setting a color for an alter shows that color for their rank container along with their public profile.",
-  PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
+  PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System tags can be at maximum 75 characters long.
 -# {{ systemName }}'s system tag is: {{ displayTag }}`,
   ALTER_TOP_VIEW: `-# @{{ alterUsername }} • ID: \`{{ alterId }}\``,
   GENERAL_LABEL: "Geral",
