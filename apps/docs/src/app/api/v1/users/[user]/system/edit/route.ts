@@ -1,9 +1,9 @@
-import { authenticateOAuth } from "@/lib/oauth";
-import { api } from "@/lib/rpc";
-import { createOAuthFunction } from "@/server/wrapper";
 import { waitUntil } from "@vercel/functions";
 import { NextRequest } from "next/server";
 import { PSystemObject, PUser } from "plurography";
+import { authenticateOAuth } from "@/lib/oauth";
+import { api } from "@/lib/rpc";
+import { createOAuthFunction } from "@/server/wrapper";
 
 const SystemEditInput = PSystemObject.omit({
 	alterIds: true,
@@ -49,14 +49,13 @@ export const POST = createOAuthFunction<
 
 		if (!user?.system) throw new Error("No system.");
 
-		const a = await api.systems.operation.$post({
+		await api.systems.operation.$post({
 			json: {
 				method: "exchange",
 				changedOperation: data,
 				oldSystem: user.system,
 			},
 		});
-		console.log(await a.json())
 
 		return ctx.respond({
 			...user.system,

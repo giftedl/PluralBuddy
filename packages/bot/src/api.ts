@@ -1,24 +1,26 @@
-import { Hono } from "hono";
-import { build, client } from ".";
-import { trimTrailingSlash } from "hono/trailing-slash";
+import { styleText } from "node:util";
 import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
+import { trimTrailingSlash } from "hono/trailing-slash";
+import { type ImportStage, PSystemObject } from "plurography";
+import type { BaseResource } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
+import { build, client } from ".";
+import { ImportStagingValidation } from "./api-types";
+import type { StatisticResource } from "./cache/statistics";
+import { importControllers } from "./lib/importing/importControllers";
+import { getLanguageByUserId } from "./lib/lang";
+import { createSystemOperation } from "./lib/system-operation";
 import {
 	alterCollection,
 	mongoClient,
 	tagCollection,
 	userCollection,
 } from "./mongodb";
-import { PSystemObject, type ImportStage } from "plurography";
-import type { BaseResource } from "seyfert";
+import { terminologyMemoryCache } from "./types/user";
 import { AlertView } from "./views/alert";
-import { importControllers } from "./lib/importing/importControllers";
 import { LoadingView } from "./views/loading";
-import { MessageFlags } from "seyfert/lib/types";
-import type { StatisticResource } from "./cache/statistics";
-import { createSystemOperation } from "./lib/system-operation";
-import { getLanguageByUserId } from "./lib/lang";
-import { ImportStagingValidation } from "./api-types";
 
 const SystemEditInput = PSystemObject.omit({
 	alterIds: true,
@@ -38,7 +40,13 @@ app.use("/api/*", async (ctx, next) => {
 	if (ctx.req.header("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
 		return ctx.json({ error: "invalid key" }, { status: 400 });
 
-	return await next();
+	const timeStart = new Date();
+
+	await next();
+	
+	console.log(
+		`${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? 'red' : 'green', ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
+	);
 });
 app.use(trimTrailingSlash());
 
@@ -93,7 +101,7 @@ export const clientRoutes = app
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				})
 				.then(async (message) => {
-					console.log(message)
+					console.log(message);
 					if (importStage.response === null) return;
 
 					const system = await userCollection.findOne({
@@ -107,22 +115,24 @@ export const clientRoutes = app
 						.toArray();
 					let response = null;
 
-					response = await importControllers[importStage.response.dataType][
-						importStage.importMode
-							.replace("full-mode", "both")
-							.replace("delete", "deleteM") as
-							| "both"
-							| "add"
-							| "replace"
-							| "deleteM"
-					]({
-						existing: {
-							alters,
-							tags,
-							userId: importStage.originatingSystemId,
-						},
-						import: JSON.parse(importStage.response?.data ?? ""),
-					}).catch(e => console.error(e));
+					response = await importControllers[importStage.response.dataType]
+						[
+							importStage.importMode
+								.replace("full-mode", "both")
+								.replace("delete", "deleteM") as
+								| "both"
+								| "add"
+								| "replace"
+								| "deleteM"
+						]({
+							existing: {
+								alters,
+								tags,
+								userId: importStage.originatingSystemId,
+							},
+							import: JSON.parse(importStage.response?.data ?? ""),
+						})
+						.catch((e) => console.error(e));
 
 					client.interactions.editOriginal(importStage.webhook.token, {
 						components: new AlertView(translations).successViewCustom(
@@ -153,7 +163,7 @@ export const clientRoutes = app
 				changedOperation: SystemEditInput,
 				oldSystem: PSystemObject.omit({
 					subAccounts: true,
-					systemAutoproxy: true
+					systemAutoproxy: true,
 				}),
 			}),
 		),
@@ -163,10 +173,10 @@ export const clientRoutes = app
 				oldSystem.associatedUserId ?? "",
 			);
 
-			console.log("notfying.?")
+			console.log("notfying.?");
 
 			createSystemOperation(
-				{...oldSystem, subAccounts: [], systemAutoproxy: []},
+				{ ...oldSystem, subAccounts: [], systemAutoproxy: [] },
 				changedOperation,
 				translations,
 				method === "exchange" ? "api-exchange" : "api-web",
@@ -182,6 +192,28 @@ export const clientRoutes = app
 				.filter((v) => !v.path.endsWith("*"))
 				.map((v) => v.path),
 		}),
+	)
+	.delete(
+		"/api/cache",
+		zValidator(
+			"json",
+			z.object({
+				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n"]),
+				key: z.string(),
+			}),
+		),
+		async (c) => {
+			const { type, key } = c.req.valid("json");
+			await client.cache[type].remove(key);
+
+			if (type === "terminology") {
+				delete terminologyMemoryCache[key];
+			}
+
+			return c.json({
+				success: true,
+			});
+		},
 	);
 
 export default {

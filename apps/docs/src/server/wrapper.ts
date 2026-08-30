@@ -1,11 +1,11 @@
-import { Collection, Db, MongoClient } from "mongodb";
-import { after, NextRequest, NextResponse } from "next/server";
-import clientPromise from "./db";
-import { PAlter, PIntegrationFront, PTag, PUser } from "plurography";
-import { authenticateOAuth } from "@/lib/oauth";
-import { unstable_cache } from "next/cache";
-import z from "zod";
 import { SchemaClient } from "@better-auth/oauth-provider";
+import { Collection, Db, MongoClient } from "mongodb";
+import { unstable_cache } from "next/cache";
+import { after, NextRequest, NextResponse } from "next/server";
+import { PAlter, PIntegrationFront, PTag, PUser } from "plurography";
+import z from "zod";
+import { authenticateOAuth } from "@/lib/oauth";
+import clientPromise from "./db";
 
 export const getCachedTag = unstable_cache(
 	async (id: string, userId: string) => {
@@ -102,7 +102,7 @@ export function createOAuthFunction<
 	) => {
 		const db = await clientPromise;
 		await db.connect();
-
+		
 		const oauthResponse = await authenticateOAuth(request, options.scopes, db);
 		const [botDb, webDb] = [
 			db.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`),
@@ -220,6 +220,8 @@ export function createOAuthFunction<
 			}
 		}
 
+		try {
+
 		if (options.bodyResolver !== undefined) {
 			const data = await request.json();
 			const input = options.bodyResolver.safeParse(data);
@@ -232,6 +234,9 @@ export function createOAuthFunction<
 					friendly: z.treeifyError(input.error),
 				});
 			}
+		}
+		} catch (e ) {
+			return ctx.error({ type: "no-json", friendly: "There is no JSON to parse here." })
 		}
 
 		if (options.expectSystem === true) {
