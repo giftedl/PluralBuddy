@@ -1,12 +1,12 @@
-import { userCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import { CommandContext, Declare, Options, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { userCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 @Declare({
 	name: "enable",
 	description: "Enabling proxying in this server.",
-	aliases: ["e"],
+	aliases: ["e", "on"],
 	contexts: ["Guild"]
 })
 export default class EnableProxying extends SubCommand {

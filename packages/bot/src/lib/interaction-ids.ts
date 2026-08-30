@@ -282,14 +282,27 @@ export const InteractionIdentifier = {
 					"systems/config/general/prefer-accessiblity",
 				),
 				ToggleLeftSidedTags: createStatic(
-					"systems/config/general/left-sided-tags"
+					"systems/config/general/left-sided-tags",
 				),
-				ToggleCaseInsensitiveProxies: createStatic("systems/config/general/toggle-case-insensitive-proxies")
+				ToggleCaseInsensitiveProxies: createStatic(
+					"systems/config/general/toggle-case-insensitive-proxies",
+				),
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),
 				NextPage: createFromAdditionalArg("systems/config/oapg/next"),
 				Search: createFromAdditionalArg("systems/config/oapg/search"),
+			},
+
+			AlterPlainPagination: {
+				Page: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/page",
+				),
+				CustomPage: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/custom-page_",
+				),
+				CustomPageForm: createStatic("systems/config/alter-plain-pagination/custom-page-form"),
+				CustomPageInput: createStatic("systems/config/alter-plain-pagination/custom-page-input")
 			},
 			AlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
@@ -407,7 +420,9 @@ export const InteractionIdentifier = {
 				ConfigureTagExternal: createFromAdditionalArg(
 					"systems/config/tags/configure-external",
 				),
-				AssureDeleteTag: createFromAdditionalArg("systems/config/tags/assure-delete-tag"),
+				AssureDeleteTag: createFromAdditionalArg(
+					"systems/config/tags/assure-delete-tag",
+				),
 				DeleteTag: createFromAdditionalArg("systems/config/tags/delete-tag"),
 
 				SetDisplayName: createFromAdditionalArg(

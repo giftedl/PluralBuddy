@@ -839,7 +839,7 @@ There is an example below of what an example proxy with this role would look lik
 
 	DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
 	DISPLAY_TAG_ENFORCE_DESC:
-		'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+		'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by using the button on the right.',
 
 	NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
 	NOTIFIED_1:
@@ -969,4 +969,10 @@ Your system is using the front state of **{{ mode }}**.`,
 
 	TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
 	TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
+
+	JUMP_TO_CUSTOM_PAGE: "Jump to custom page",
+	CUSTOM_PAGE_TITLE: "Custom Page",
+	CUSTOM_PAGE_DESC: "Maximum page you can go to is: {{ page }}.",
+
+	NOT_A_VALID_PAGE_COUNT: "That isn't a valid page count. Please only use numbers.",
 };

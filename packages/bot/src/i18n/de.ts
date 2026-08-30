@@ -619,7 +619,7 @@ There is an example below of what an example proxy with this role would look lik
   LINK_SUPPORT: "Support",
   LINK_DOCS: "Docs",
   DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
-  DISPLAY_TAG_ENFORCE_DESC: 'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+  DISPLAY_TAG_ENFORCE_DESC: 'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable display tags for your system by going into `pb;system config` -> "Public Profile".',
   NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
   NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
   NOTIFIED_2: "-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
