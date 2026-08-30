@@ -3,7 +3,7 @@ title: Get a user's terminology
 full: true
 _openapi:
   preload:
-    - http://localhost:3000/openapi.yml
+    - https://pluralbuddy-git-terminology-dvelo.vercel.app/openapi.yml
   method: GET
   webhook: false
   toc: []
@@ -23,7 +23,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="http://localhost:3000/openapi.yml" operations={[{"path":"/v1/users/{user}/terminology","method":"get"}]} showDescription />
+      <Comp document="https://pluralbuddy-git-terminology-dvelo.vercel.app/openapi.yml" operations={[{"path":"/v1/users/{user}/terminology","method":"get"}]} showDescription />
     </>
   );
 }

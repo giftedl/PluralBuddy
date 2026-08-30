@@ -14,5 +14,5 @@ const schemaPath = process.cwd().includes("/apps/docs")
 
 export const openapi = createOpenAPI({
 	// the OpenAPI schema, you can also give it an external URL.
-	input: ["https://pb.giftedly.dev/openapi.yml"],
+	input: ["https://pluralbuddy-git-terminology-dvelo.vercel.app/openapi.yml"],
 });
