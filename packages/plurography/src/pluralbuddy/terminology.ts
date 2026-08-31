@@ -12,6 +12,7 @@ export const terminologyDefaults = {
 	system_capital: "System",
 	proxy_tag: "proxy tag",
 	proxy_tags_plural: "proxy tags",
+	proxy_tags_capital: "Proxy Tags",
 	display_tag: "display tag"
 }
 
@@ -28,5 +29,6 @@ export const PTerminology = z.object({
 	display_tag: z.string().max(15).default(terminologyDefaults.display_tag),
 	proxy_tag: z.string().max(15).default(terminologyDefaults.proxy_tag),
 	proxy_tags_plural: z.string().max(15).default(terminologyDefaults.proxy_tags_plural),
+	proxy_tags_capital: z.string().max(15).default(terminologyDefaults.proxy_tags_capital),
 }).optional();
 export type PTerminology = z.infer<typeof PTerminology>;

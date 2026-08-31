@@ -87,6 +87,24 @@ export default class GeneralTab extends ComponentCommand {
 								.setLength({ max: 15 })
 								.setStyle(TextInputStyle.Short),
 						),
+					new Label()
+						.setLabel("Proxy Tags")
+						.setDescription(
+							(await ctx.userTranslations()).PROXY_TAG_DESCRIPTION,
+						)
+						.setComponent(
+							new TextInput()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.TerminologyTab.ProxyTags.create(),
+								)
+								.setRequired(true)
+								.setValue(
+									user.terminology?.proxy_tags_capital ??
+										terminologyDefaults.proxy_tags_capital,
+								)
+								.setLength({ max: 15 })
+								.setStyle(TextInputStyle.Short),
+						),
 				]),
 		);
 	}

@@ -27,10 +27,11 @@ export default class SetPronounsButton extends ModalCommand {
 			});
 		}
 
-		const [alter, tag, systemArgument] = [
+		const [alter, tag, systemArgument, proxyTags] = [
 			InteractionIdentifier.Systems.Configuration.TerminologyTab.Alter.create(),
 			InteractionIdentifier.Systems.Configuration.TerminologyTab.Tags.create(),
 			InteractionIdentifier.Systems.Configuration.TerminologyTab.System.create(),
+			InteractionIdentifier.Systems.Configuration.TerminologyTab.ProxyTags.create()
 		].map((c) => ctx.interaction.getInputValue(c, true));
 
 		await userCollection.updateOne(
@@ -42,6 +43,7 @@ export default class SetPronounsButton extends ModalCommand {
 						alters_capital: (alter as string) ?? "",
 						tags_capital: (tag as string) ?? "",
 						system_capital: (systemArgument as string) ?? "",
+						proxy_tags_capital: (proxyTags as string) ?? "",
 					},
 				},
 			},
@@ -52,6 +54,7 @@ export default class SetPronounsButton extends ModalCommand {
 			alters_capital: (alter as string) ?? "",
 			tags_capital: (tag as string) ?? "",
 			system_capital: (systemArgument as string) ?? "",
+			proxy_tags_capital: (proxyTags as string) ?? "",
 		});
 
 		terminologyMemoryCache[ctx.author.id] = newObj;

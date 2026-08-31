@@ -33,7 +33,7 @@ export const POST = createOAuthFunction<{ user: string }, typeof PTerminology>(
 		);
 
         // Delete bot cache of terminology for user
-        console.log(await api.cache.$delete({ json: { type: "terminology", key: userId } }))
+        await api.cache.$delete({ json: { type: "terminology", key: userId } })
 
         return ctx.respond({ success: true })
 	},

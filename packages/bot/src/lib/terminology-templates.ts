@@ -23,6 +23,7 @@ export const terminologyTemplates = [
 			proxy_tag: "proxy tag",
 			proxy_tags_plural: "proxy tags",
 			display_tag: "system tag",
+			proxy_tags_capital: "Proxy Tags",
 		},
 	},
 	{
@@ -41,6 +42,7 @@ export const terminologyTemplates = [
 			proxy_tag: "bracket",
 			proxy_tags_plural: "brackets",
 			display_tag: "system tag",
+			proxy_tags_capital: "Brackets"
 		},
 	},
 ];

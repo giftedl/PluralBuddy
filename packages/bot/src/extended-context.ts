@@ -304,6 +304,7 @@ const replaceTranslations = (
 				)
 				.replaceAll("proxy tags", terminology.proxy_tags_plural)
 				.replaceAll("proxy tag", terminology.proxy_tag)
+				.replaceAll("Proxy Tags", terminology.proxy_tags_capital)
 				.replaceAll("display tag", terminology.display_tag)
 				.replaceAll(
 					"a tag",

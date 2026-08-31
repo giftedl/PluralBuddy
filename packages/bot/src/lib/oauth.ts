@@ -9,10 +9,10 @@ export const getOAuthConsents = async (userId: string) => {
     if (!matchingAccount)
         return [];
 
-    const consents = appDb.collection<{ clientId: string, userId: ObjectId, scopes: string[] }>("oauthConsent");
+    const consents = appDb.collection<{ clientId: string, userId: ObjectId, scopes: string | string[] }>("oauthConsent");
     const clients = appDb.collection<{ clientId: string, metadata: { aaid: string }, name: string }>("oauthClient");
 
     const userConsents = await consents.find({ userId: new ObjectId(matchingAccount.userId) }).toArray()
     
-    return Promise.all(userConsents.map(async (v) => ({ ...v, ...(await clients.findOne({ clientId: v.clientId })) })))
+    return Promise.all(userConsents.filter(v => v.scopes.includes("system:ai-ap")).map(async (v) => ({ ...v, ...(await clients.findOne({ clientId: v.clientId })) })))
 }
