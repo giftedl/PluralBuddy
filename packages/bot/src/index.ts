@@ -38,6 +38,7 @@ import { PGuildCache } from "./cache/plural-guild";
 import { SimilarWebhookResource } from "./cache/similar-webhooks";
 import { StatisticResource } from "./cache/statistics";
 import { ProxyResource } from "./cache/system-proxy-tags";
+import TagCommand from "./commands/tag"
 import {
 	PluralBuddyComponentErrorCommand,
 	PluralBuddyErrorCommand,
@@ -59,13 +60,14 @@ export const logger = null;
 
 if (logger) logger.info("PluralBuddy is online");
 
-export const build = `26.1.1/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
+export const build = `26.1.2/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
 	"noWebhookMiddleware",
 	"globalBlockUserMiddleware",
 	"serverBlock",
 ];
+
 
 export const policyModal = async (
 	ctx: AnyContext | CollectorInteraction,

@@ -1,19 +1,19 @@
-import { emojis } from "@/lib/emojis";
-import { langMemoryCache } from "@/lib/lang";
-import { userCollection } from "@/mongodb";
-import { writeUserById } from "@/types/user";
-import { AlertView } from "@/views/alert";
 import CrowdinApi from "@crowdin/crowdin-api-client";
 import {
 	Command,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,
 	Options,
 	TextDisplay,
-	type CommandContext,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
+import { langMemoryCache } from "@/lib/lang";
+import { userCollection } from "@/mongodb";
+import { writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
 
 const getFlagEmoji = (countryCode: string) => {
 	const codePoints = countryCode
@@ -39,7 +39,7 @@ const options = {
 			return await ctx.respond([
 				{ name: `${getFlagEmoji("US")} English - source`, value: "en" },
 				...progress.data.map((v) => ({
-					name: `${getFlagEmoji(v.data.language.twoLettersCode)} ${v.data.language.name} - ${v.data.approvalProgress}% translated`,
+					name: `${getFlagEmoji(v.data.language.twoLettersCode.replace("ja", "jp"))} ${v.data.language.name} - ${v.data.approvalProgress}% translated`,
 					value: v.data.language.twoLettersCode,
 				})),
 			]);

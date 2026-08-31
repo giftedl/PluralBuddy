@@ -183,7 +183,7 @@ ${
 							new TextDisplay().setContent(
 								this.translations.T_ORDER_STRING_DESC.replace(
 									"{{ order }}",
-									tag.orderString ?? "unset"
+									tag.orderString ?? "unset",
 								),
 							),
 						)
@@ -218,6 +218,21 @@ ${
 								.setLabel(this.translations.ALTER_SET_DESCRIPTION)
 								.setCustomId(
 									InteractionIdentifier.Systems.Configuration.Tags.SetDescription.create(
+										tag.tagId,
+									),
+								),
+						),
+					new Separator().setSpacing(Spacing.Small),
+					new Section()
+						.addComponents(
+							new TextDisplay().setContent(this.translations.DELETE_TAG_DESC),
+						)
+						.setAccessory(
+							new Button()
+								.setStyle(ButtonStyle.Danger)
+								.setLabel(this.translations.TAG_DELETE)
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.Tags.DeleteTag.create(
 										tag.tagId,
 									),
 								),

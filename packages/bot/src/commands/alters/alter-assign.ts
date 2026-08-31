@@ -1,22 +1,22 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import {
+	ActionRow,
+	Button,
+	CommandContext,
+	createStringOption,
+	Declare,
+	Options,
+	SubCommand,
+	TextDisplay,
+} from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { autocompleteTags } from "@/lib/autocomplete-tags";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
-import {
-	createStringOption,
-	Declare,
-	SubCommand,
-	Options,
-	CommandContext,
-	TextDisplay,
-	Button,
-	ActionRow,
-} from "seyfert";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 const options = {
 	"alter-name": createStringOption({

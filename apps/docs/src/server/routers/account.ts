@@ -13,8 +13,8 @@ import {
 import z from "zod";
 import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
-import { deleteAttachment, getGcpAccessToken } from "../gcp";
 import { baseProcedure, createTRPCRouter } from "../init";
+import { deleteS3AssetPrefix } from "../object-storage";
 
 export const AccountRouter = createTRPCRouter({
 	getAccountSettings: baseProcedure.query(async ({ ctx }) => {
@@ -157,9 +157,8 @@ export const AccountRouter = createTRPCRouter({
 		]);
 
 		try {
-			const gcpAccessToken = await getGcpAccessToken();
 			if (systemUser?.storagePrefix)
-				await deleteAttachment(systemUser?.storagePrefix, gcpAccessToken);
+				await deleteS3AssetPrefix(systemUser?.storagePrefix);
 		} catch (e) {
 			console.warn("error while deleting attachments", e);
 		}

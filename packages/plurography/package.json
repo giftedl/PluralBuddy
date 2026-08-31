@@ -1,7 +1,7 @@
 {
   "name": "plurography",
   "module": "src/index.ts",
-  "version": "0.5.0",
+  "version": "0.5.3",
   "type": "module",
   "license": "MIT",
   "main": "./dist/index.js",

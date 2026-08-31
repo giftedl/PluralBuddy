@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  *//**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
 	type Attachment,
@@ -14,8 +14,13 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { object } from "zod";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { FileTooBigException } from "@/lib/file-too-big";
 import { createSystemOperation } from "@/lib/system-operation";
+import {
+	deleteOldObject,
+	getOldObject,
+	uploadAttachment,
+} from "@/object-storage";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
 import {
@@ -26,20 +31,19 @@ import { AlertView } from "../../views/alert";
 import { LoadingView } from "../../views/loading";
 
 const options = {
-    "system-avatar-text": createStringOption({
-        description: "The URL for an avatar to use for the system.",
-    }),
+	"system-avatar-text": createStringOption({
+		description: "The URL for an avatar to use for the system.",
+	}),
 	"system-avatar": createAttachmentOption({
 		description: "The picture to use for the alter. (leave blank to clear)",
 		value(data, ok, fail) {
 			if (!data.value.contentType?.startsWith("image"))
 				fail("This attachment is not an image.");
-			if (data.value.size > 2_500_000)
-				fail("This attachment is too big. Attachments at most can be 2.5MB.");
+			if (data.value.size > 5_000_000)
+				fail("This attachment is too big. Attachments at most can be 5MB.");
 			ok(data);
 		},
 	}),
-
 };
 
 @Declare({
@@ -52,16 +56,17 @@ const options = {
 export default class EditAlterPictureCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.write({
-			components: new LoadingView((await ctx.userTranslations())).loadingView(),
+			components: new LoadingView(await ctx.userTranslations()).loadingView(),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 		});
 
-		const user = await ctx.retrievePUser()
-		const { "system-avatar": attachment, "system-avatar-text": attachmentText } = ctx.options;
+		const user = await ctx.retrievePUser();
+		let { "system-avatar": attachment, "system-avatar-text": attachmentText } =
+			ctx.options;
 
 		if (user.system === undefined) {
 			return await ctx.editResponse({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -69,62 +74,89 @@ export default class EditAlterPictureCommand extends SubCommand {
 		}
 
 		if (attachmentText === undefined && attachment === undefined) {
+			await deleteOldObject({
+				imageProperty: user.system.systemAvatar,
+				storagePrefix: user.storagePrefix,
+			});
+
 			await createSystemOperation(
-				user.system, { systemAvatar: null }, (await ctx.userTranslations()), "discord"
+				user.system,
+				{ systemAvatar: null },
+				await ctx.userTranslations(),
+				"discord",
 			);
 
 			return await ctx.editResponse({
 				components: [
-					...new AlertView((await ctx.userTranslations())).successViewCustom(
-						(await ctx.userTranslations()).PFP_SUCCESS.replace("@%alter%", "your system"),
+					...new AlertView(await ctx.userTranslations()).successViewCustom(
+						(await ctx.userTranslations()).PFP_SUCCESS.replace(
+							"@%alter%",
+							"your system",
+						),
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
 			});
 		}
 
-		let objectName: string | undefined;
+		const objectName = `${user.storagePrefix}/${assetStringGeneration(32)}}`;
 
-		if (attachmentText === undefined ) {
-			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}}`;
-			const bucketName = process.env.GCP_BUCKET ?? "";
-	
+		if (attachmentText === undefined) {
 			try {
-				const accessToken = await getGcpAccessToken();
-				const {newObject} = await uploadDiscordAttachmentToGcp(
+				attachmentText = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
-					accessToken,
-					bucketName,
 					objectName,
-					{ authorId: ctx.author.id, alterId: '@system', type: "profile-picture" },
-					(user.system.systemAvatar ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${user.system.systemAvatar?.split(user.storagePrefix)[1]}` : undefined
+					{
+						authorId: ctx.author.id,
+						alterId: "@system",
+						type: "profile-picture",
+					},
+					getOldObject({
+						imageProperty: user.system.systemAvatar,
+						storagePrefix: user.storagePrefix,
+					}),
+					{ height: 512, width: 512 }
 				);
-				objectName = newObject;
 			} catch (error) {
+				if (error instanceof FileTooBigException)
+					return await ctx.editResponse({
+						components: new AlertView(await ctx.userTranslations()).errorView(
+							"AFTER_COMPRESSION_TOO_BIG",
+						),
+						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+					});
 				return await ctx.editResponse({
-					components: new AlertView((await ctx.userTranslations())).errorView(
+					components: new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
 			}
-		}
-
-		const publicUrl = objectName !== undefined ? `https://pluralbuddy.giftedly.dev/${objectName}` : attachmentText;
+		} else
+			await deleteOldObject({
+				imageProperty: user.system.systemAvatar,
+				storagePrefix: user.storagePrefix,
+			});
 
 		await createSystemOperation(
-			user.system, { systemAvatar: publicUrl }, (await ctx.userTranslations()), "discord"
+			user.system,
+			{ systemAvatar: attachmentText },
+			await ctx.userTranslations(),
+			"discord",
 		);
 
 		return await ctx.editResponse({
 			components: [
-				...new AlertView((await ctx.userTranslations())).successViewCustom(
-					(await ctx.userTranslations()).PFP_SUCCESS.replace("@%alter%", "your system"),
+				...new AlertView(await ctx.userTranslations()).successViewCustom(
+					(await ctx.userTranslations()).PFP_SUCCESS.replace(
+						"@%alter%",
+						"your system",
+					),
 				),
 				new Container().setComponents(
 					new MediaGallery().addItems(
 						new MediaGalleryItem()
-							.setMedia(`https://wsrv.nl/?url=${publicUrl}&w=256&h=256`)
+							.setMedia(attachmentText)
 							.setDescription(`System profile`),
 					),
 				),

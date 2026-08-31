@@ -1,11 +1,11 @@
+import { PSystemObject, SystemFlags } from "plurography";
+import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
-import { PSystemObject, SystemFlags } from "plurography";
-import { ComponentCommand, type ComponentContext } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
 
 export default class PublicProfileBtn extends ComponentCommand {
 	componentType = "Button" as const;
@@ -44,12 +44,13 @@ export default class PublicProfileBtn extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new SystemSettingsView(await ctx.userTranslations()).topView(
-					"general",
-					system.associatedUserId,
-				),
+				...new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).topView("general", system.associatedUserId),
 				...(await new SystemSettingsView(
 					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
 				).generalSettings(
 					{
 						...system,

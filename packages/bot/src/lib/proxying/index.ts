@@ -1,33 +1,41 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { alterCollection, messagesCollection } from "@/mongodb";
+
+import { getColor } from "colorthief";
 import {
-	type Webhook,
-	type UsingClient,
-	type TopLevelBuilders,
 	type ApplicationEmoji,
+	AttachmentBuilder,
+	Container,
+	Embed,
+	File,
 	MediaGallery,
 	MediaGalleryItem,
-	AttachmentBuilder,
-	Thumbnail,
-	File,
-	Embed,
-	TextDisplay,
-	Container,
-	Separator,
 	Section,
+	Separator,
+	TextDisplay,
+	Thumbnail,
+	type TopLevelBuilders,
+	type UsingClient,
+	type Webhook,
 } from "seyfert";
+import type { MediaGalleryComponent } from "seyfert/lib/components/MediaGallery";
+import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import type { Message } from "seyfert/lib/structures";
-import { MessageFlags, Spacing, StickerFormatType } from "seyfert/lib/types";
-import { processFileAttachments } from "./process-file-attachments";
-import { processUrlIntegrations } from "./process-url-attachments";
-import { emojis } from "../emojis";
-import { getGuildFromId, type PGuild } from "@/types/guild";
+import {
+	ComponentType,
+	MessageFlags,
+	Spacing,
+	StickerFormatType,
+} from "seyfert/lib/types";
 import type {
 	ApplicableWebhookWritePayload,
 	PWebhook,
 } from "@/events/on-message-create";
+import { alterCollection, messagesCollection } from "@/mongodb";
+import { getGuildFromId, type PGuild } from "@/types/guild";
 import { createError } from "../create-error";
-import { getColor } from "colorthief";
+import { emojis } from "../emojis";
+import { processFileAttachments } from "./process-file-attachments";
+import { processUrlIntegrations } from "./process-url-attachments";
 
 export const imageOrVideoExtensions = [
 	".png",
@@ -111,7 +119,7 @@ export async function proxy(
 			...(message.stickerItems ?? []).map((c) =>
 				new MediaGallery().addItems(
 					new MediaGalleryItem().setMedia(
-						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=320`,
+						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=256`,
 					),
 				),
 			),
@@ -127,19 +135,21 @@ export async function proxy(
 	if (components.length === 0) {
 		return;
 	}
-	
+
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
+
+		console.log();
 
 		try {
 			webhook.messages
 				.write({
 					body: {
-						components,
-						flags:
-							components.length !== 0
-								? MessageFlags.IsComponentsV2
-								: (0 as MessageFlags),
+						...getModernComponentsMappings(components, [
+							...mediaFiles,
+							...otherFiles,
+							...fileAttachments,
+						]),
 						username: username.substring(0, 80),
 						avatar_url: picture,
 						files: fileAttachments.map((c, i) =>
@@ -295,7 +305,7 @@ export async function proxy(
 						});
 					}
 
-					if (sentMessage?.id) {
+					if (sentMessage?.id && components.length !== 1) {
 						processUrlIntegrations(
 							webhook,
 							client,
@@ -326,3 +336,62 @@ export async function proxy(
 		await message.delete();
 	}
 }
+
+export const getModernComponentsMappings = (
+	components: TopLevelBuilders[],
+	fileComponents: {
+		buff: Buffer<ArrayBufferLike>;
+		spoilered: boolean;
+		name: string;
+	}[] = [],
+): ApplicableWebhookWritePayload["body"] => {
+	if (
+		components.length === 2 &&
+		components[1]?.data.type === ComponentType.MediaGallery
+	) {
+	}
+	console.log(fileComponents);
+	return components.length === 1 &&
+		components[0]?.data.type === ComponentType.TextDisplay
+		? {
+				content:
+					"content" in components[0].data
+						? components[0].data.content?.startsWith("# <")
+							? components[0].data.content.slice(1)
+							: components[0].data.content
+						: "_Failed to slice this message correctly._",
+			}
+		: components.length === 2 &&
+				(components[1]?.data.type === ComponentType.MediaGallery ||
+					components[1]?.data.type === ComponentType.File)
+			? {
+					content:
+						components[0] !== undefined && "content" in components[0].data
+							? (components[0].data.content ?? "").startsWith("# <")
+								? (components[0].data.content ?? "").slice(1)
+								: components[0].data.content
+							: "",
+					attachments: fileComponents
+						.filter((v, pos) => {
+							return fileComponents.indexOf(v) === pos;
+						})
+						.map((v, i) => ({ filename: v.name, id: String(i) })),
+				}
+			: components.length === 1 &&
+					components[0]?.data.type === ComponentType.File
+				? {
+						content: "",
+						attachments: fileComponents
+							.filter((v, pos) => {
+								return fileComponents.indexOf(v) === pos;
+							})
+							.map((v, i) => ({ filename: v.name, id: String(i) })),
+					}
+				: {
+						components,
+						flags:
+							components.length !== 0
+								? MessageFlags.IsComponentsV2
+								: (0 as MessageFlags),
+					};
+};

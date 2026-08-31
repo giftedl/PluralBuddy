@@ -8,7 +8,7 @@ import { AlertView } from "@/views/alert";
 @Declare({
 	name: "prefer-accessiblity",
 	description:
-		"PluralBuddy will prefer accessiblity over looks/data visiblity. Some text may be farther apart, bold, or not visible in this mode.",
+		"PluralBuddy will prefer accessiblity over looks/data visiblity.",
 })
 export default class IncludeProxyTags extends SubCommand {
 	override async run(ctx: CommandContext) {

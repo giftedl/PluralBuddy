@@ -1,8 +1,8 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ComponentCommand, Label, Modal, TextInput, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
+import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { AlertView } from "../../../views/alert";
 
 export default class SetName extends ComponentCommand {
@@ -34,13 +34,13 @@ export default class SetName extends ComponentCommand {
                                 new TextInput()
                                     .setStyle(TextInputStyle.Short)
                                     .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.NameType.create())
-                                    .setLength({  max: 20 })
+                                    .setLength({  max: 100 })
                                     .setRequired(true)
                                     .setValue(oldSystemName) :
                                 new TextInput()
                                     .setStyle(TextInputStyle.Short)
                                     .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.NameType.create())
-                                    .setLength({ max: 20 })
+                                    .setLength({ max: 100 })
                                     .setRequired(true)
                         )
                 ]

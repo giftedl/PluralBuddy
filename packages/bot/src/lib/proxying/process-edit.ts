@@ -1,30 +1,28 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { PMessage } from "@/types/message";
+import type { PGuild } from "plurography";
+import type { GuildMember, TopLevelBuilders, Webhook } from "seyfert";
 import {
 	AttachmentBuilder,
 	Container,
-	File,
-	TextDisplay,
+	File,MediaGallery, MediaGalleryItem, 
 	type Message,
+	TextDisplay
 } from "seyfert";
-import { processEmojis } from "./process-emojis";
-import { processFileAttachments } from "./process-file-attachments";
-import { client } from "@/index";
-import { imageOrVideoExtensions } from ".";
-import type { GuildMember, TopLevelBuilders, Webhook } from "seyfert";
-import { getReferencedMessageString } from "./referenced-message";
-import { MediaGallery } from "seyfert";
-import { MediaGalleryItem } from "seyfert";
+import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import {
+	type APITextDisplayComponent,
 	ComponentType,
 	MessageFlags,
-	type APITextDisplayComponent,
 } from "seyfert/lib/types";
-import { processUrlIntegrations } from "./process-url-attachments";
-import type { PGuild } from "plurography";
+import { client } from "@/index";
+import { messagesCollection } from "@/mongodb";
+import type { PMessage } from "@/types/message";
 import { emojis } from "../emojis";
-import { alterCollection, messagesCollection } from "@/mongodb";
+import { getModernComponentsMappings, imageOrVideoExtensions } from ".";
+import { processEmojis } from "./process-emojis";
+import { processFileAttachments } from "./process-file-attachments";
+import { processUrlIntegrations } from "./process-url-attachments";
 
 export async function processEditContents(
 	messageData: PMessage,
@@ -87,7 +85,8 @@ export async function processEditContents(
 				let continueBool = true;
 
 				if (
-					(lastMessageInChannel.isTextable() || lastMessageInChannel.isVoice()) &&
+					(lastMessageInChannel.isTextable() ||
+						lastMessageInChannel.isVoice()) &&
 					lastMessageInChannel.lastMessageId
 				) {
 					const messageLast = await lastMessageInChannel.messages.list({
@@ -170,23 +169,23 @@ export async function processEditContents(
 	}
 
 	const channel = await message.channel();
-	const parent = ("parentId" in channel && channel.isThread()) ? channel.parentId : null;
+	const parent =
+		"parentId" in channel && channel.isThread() ? channel.parentId : null;
 
 	if (await message.fetch().catch(() => null)) {
 		webhook.messages
 			.edit({
 				messageId: messageData.messageId,
 				body: {
-					components,
+					...getModernComponentsMappings(components),
 					allowed_mentions: { parse: [] },
 					files: fileAttachments.map((c) =>
 						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
 					),
-				
 				},
 				query: {
-					...(parent ? {thread_id: channel.id} : {})
-				}
+					...(parent ? { thread_id: channel.id } : {}),
+				},
 			})
 			.then((sentMessage) => {
 				if (sentMessage?.id) {

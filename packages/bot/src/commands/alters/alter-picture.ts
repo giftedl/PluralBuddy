@@ -14,7 +14,8 @@ import {
 	SubCommand,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { FileTooBigException } from "@/lib/file-too-big";
+import {  deleteOldObject, getOldObject, uploadAttachment } from "@/object-storage";
 import { w } from "@/webhooks";
 import { autocompleteAlters } from "../../lib/autocomplete-alters";
 import { alterCollection } from "../../mongodb";
@@ -39,8 +40,8 @@ const options = {
 		value(data, ok, fail) {
 			if (!data.value.contentType?.startsWith("image"))
 				fail("This attachment is not an image.");
-			if (data.value.size > 2_500_000)
-				fail("This attachment is too big. Attachments at most can be 2.5MB.");
+			if (data.value.size > 5_000_000)
+				fail("This attachment is too big. Attachments at most can be 5MB.");
 			ok(data);
 		},
 	}),
@@ -66,7 +67,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 		});
 
 		const user = await ctx.retrievePUser();
-		const {
+		let {
 			"alter-name": alterName,
 			"alter-avatar": attachment,
 			"alter-avatar-text": attachmentText,
@@ -102,6 +103,12 @@ export default class EditAlterPictureCommand extends SubCommand {
 		}
 
 		if (attachmentText === undefined && attachment === undefined) {
+			if (!(se && ctx.guildId))
+				await deleteOldObject({
+					imageProperty: alter.avatarUrl,
+					storagePrefix: user.storagePrefix,
+				});
+				
 			await alterCollection.updateOne(
 				{ alterId: alter.alterId },
 				{
@@ -156,52 +163,52 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		let objectName: string | undefined;
+		let objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
+
 		if (attachmentText === undefined) {
-			objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;
-			const bucketName = process.env.GCP_BUCKET ?? "";
 
 			try {
-				const accessToken = await getGcpAccessToken();
-				let { newObject } = await uploadDiscordAttachmentToGcp(
+				attachmentText = await uploadAttachment(
 					(attachment as { value: Attachment }).value,
-					accessToken,
-					bucketName,
 					objectName,
 					{
 						authorId: ctx.author.id,
 						alterId: String(alter.alterId),
 						type: "profile-picture",
 					},
-
-					(alter.avatarUrl ?? "").startsWith("https://pluralbuddy.giftedly.dev")
-						? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.avatarUrl?.split(user.storagePrefix)[1]}`
-						: undefined,
+					getOldObject({ imageProperty: alter.avatarUrl, storagePrefix: user.storagePrefix }),
+					{ width: 512, height: 512 }
 				);
-
-				objectName = newObject;
 			} catch (error) {
-				ctx.client.logger.fatal(error);
+			if (error instanceof FileTooBigException)
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+						"AFTER_COMPRESSION_TOO_BIG",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
+			// ctx.client.logger.fatal(error);
+			return await ctx.editResponse({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
 			}
-		}
+		} else 
+			await deleteOldObject({
+				imageProperty: alter.avatarUrl,
+				storagePrefix: user.storagePrefix,
+			});
 
-		const publicUrl =
-			objectName !== undefined
-				? `https://pluralbuddy.giftedly.dev/${objectName}`
-				: attachmentText;
+
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
 			{
 				$set:
 					se && ctx.guildId
-						? { [`avatarUrlMap.${ctx.guildId}`]: publicUrl }
-						: { avatarUrl: publicUrl },
+						? { [`avatarUrlMap.${ctx.guildId}`]: attachmentText }
+						: { avatarUrl: attachmentText },
 			},
 		);
 
@@ -209,7 +216,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			type: "alter.update",
 			alter: {
 				...alter,
-				avatarUrl: publicUrl,
+				avatarUrl: attachmentText,
 			},
 		});
 
@@ -224,7 +231,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 				new Container().setComponents(
 					new MediaGallery().addItems(
 						new MediaGalleryItem()
-							.setMedia(publicUrl ?? "")
+							.setMedia(attachmentText ?? "")
 							.setDescription(`@${alter.username}'s profile`),
 					),
 				),

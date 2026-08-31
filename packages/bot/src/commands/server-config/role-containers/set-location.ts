@@ -1,7 +1,3 @@
-import { emojis } from "@/lib/emojis";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { guildCollection } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import {
 	ActionRow,
 	Button,
@@ -18,6 +14,10 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags, Spacing } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { guildCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	role: createRoleOption({

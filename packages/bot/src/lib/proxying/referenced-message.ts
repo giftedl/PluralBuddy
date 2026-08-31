@@ -1,7 +1,21 @@
-import { emojis } from "@/lib/emojis";
-import { messagesCollection, alterCollection } from "@/mongodb";
 import type { Message } from "seyfert/lib/structures";
 import { ComponentType } from "seyfert/lib/types";
+import { emojis } from "@/lib/emojis";
+import { alterCollection, messagesCollection } from "@/mongodb";
+
+const replifyContents = (contents: string) =>
+	contents
+		.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
+		.substring(0, 74)
+		.replaceAll("https://", "")
+		.replaceAll("http://", "")
+		.replaceAll("discord.com", "discord")
+		.replaceAll("\n", "")
+		.replaceAll("]", "")
+		.replaceAll("[", "")
+		.replaceAll(/<@!?(\d+)>/g, "")
+		.replaceAll("@everyone", "--")
+		.replace(/<#(.*)>/, "");
 
 export async function getReferencedMessageString(
 	message: Message,
@@ -9,28 +23,9 @@ export async function getReferencedMessageString(
 ) {
 	let userString = `<@${message.referencedMessage?.author.id}>`;
 	let messageString = `[${
-		message.referencedMessage?.content
-			.replace(/<#(.*)>/, "")
-			.replaceAll("https://", "")
-			.replaceAll("\n", "")
-			.replaceAll("discord.com", "discord")
-			.replaceAll("http://", "")
-			.replaceAll("]", "")
-			.replaceAll("[", "")
-			.replaceAll(/<@!?(\d+)>/g, "") === ""
+		replifyContents(message.referencedMessage?.content ?? "") === ""
 			? "Jump to message"
-			: message.referencedMessage?.content
-					.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
-					.substring(0, 74)
-					.replaceAll("https://", "")
-					.replaceAll("discord.com", "discord")
-					.replaceAll("\n", "")
-					.replaceAll("]", "")
-					.replaceAll("[", "")
-					.replaceAll("http://", "")
-					.replaceAll(/<@!?(\d+)>/g, "")
-					.replaceAll("@everyone", "--")
-					.replace(/<#(.*)>/, "")
+			: replifyContents(message.referencedMessage?.content ?? "")
 	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 
 	if (message.referencedMessage?.webhookId === proxyWHId) {
@@ -42,9 +37,12 @@ export async function getReferencedMessageString(
 			const alter = await alterCollection.findOne({
 				alterId: messageDb.alterId,
 			});
-			let contents = "";
+			let contents = message.referencedMessage.content;
 
-			if (message.referencedMessage.components !== undefined) {
+			if (
+				message.referencedMessage.components !== undefined &&
+				contents.length === 0
+			) {
 				if (
 					message.referencedMessage.components[0] !== undefined &&
 					message.referencedMessage.components[0].type ===
@@ -68,28 +66,9 @@ export async function getReferencedMessageString(
 			if (alter !== null) {
 				userString = `@${alter?.username}`;
 				messageString = `[${
-					contents
-						.replace(/<#(.*)>/, "")
-						.replaceAll("https://", "")
-						.replaceAll("discord.com", "discord")
-						.replaceAll("\n", "")
-						.replaceAll("http://", "")
-						.replaceAll("]", "")
-						.replaceAll("[", "")
-						.replaceAll(/<@!?(\d+)>/g, "") === ""
+					replifyContents(contents) === ""
 						? "Jump to message"
-						: contents
-								.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
-								.substring(0, 74)
-								.replaceAll("https://", "")
-								.replaceAll("http://", "")
-								.replaceAll("discord.com", "discord")
-								.replaceAll("\n", "")
-								.replaceAll("]", "")
-								.replaceAll("[", "")
-								.replaceAll(/<@!?(\d+)>/g, "")
-								.replaceAll("@everyone", "--")
-								.replace(/<#(.*)>/, "")
+						: replifyContents(contents)
 				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 			}
 		}

@@ -1,12 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
+import { FileTooBigException } from "@/lib/file-too-big";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
-import { AlterView } from "@/views/alters";
-import { getGcpAccessToken, uploadDiscordAttachmentToGcp } from "@/gcp";
+import { getOldObject, uploadAttachment } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
+import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
 
 export default class SetPFPForm extends ModalCommand {
@@ -22,7 +23,7 @@ export default class SetPFPForm extends ModalCommand {
 				ctx.customId,
 			)[0];
 
-		const user = await ctx.retrievePUser()
+		const user = await ctx.retrievePUser();
 		const systemId = ctx.author.id;
 		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
@@ -32,7 +33,7 @@ export default class SetPFPForm extends ModalCommand {
 
 		if (alter === null) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
@@ -46,66 +47,74 @@ export default class SetPFPForm extends ModalCommand {
 			)[0] as Attachment,
 		};
 
-		if (attachment.value.size > 1_000_000) {
+		if (attachment.value.size > 5_000_000) {
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		let objectName = `${(process.env.BRANCH ?? "c")[0]}/${user.storagePrefix}/${assetStringGeneration(32)}`;;
-		const bucketName = process.env.GCP_BUCKET ?? "";
+		const objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
+		let url = "";
 
 		try {
-			const accessToken = await getGcpAccessToken();
-			const { newObject } = await uploadDiscordAttachmentToGcp(
+			url = await uploadAttachment(
 				(attachment as { value: Attachment }).value,
-				accessToken,
-				bucketName,
 				objectName,
-				{ authorId: ctx.author.id, alterId: String(alter.alterId), type: "profile-picture/form" },
-				(alter.avatarUrl ?? "").startsWith("https://pluralbuddy.giftedly.dev") ? `${(process.env.BRANCH ?? "a")[0]}/${user.storagePrefix}${alter.avatarUrl?.split(user.storagePrefix)[1]}` : undefined
+				{
+					authorId: ctx.author.id,
+					alterId: String(alter.alterId),
+					type: "profile-picture/form",
+				},
+				getOldObject({
+					imageProperty: alter.avatarUrl,
+					storagePrefix: user.storagePrefix,
+				}),
+				{ width: 512, height: 512 },
 			);
-
-			objectName = newObject;
 		} catch (error) {
+			if (error instanceof FileTooBigException)
+				return await ctx.editResponse({
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"AFTER_COMPRESSION_TOO_BIG",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				});
 			return await ctx.write({
-				components: new AlertView((await ctx.userTranslations())).errorView(
+				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 				),
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 
-		const publicUrl = `https://pluralbuddy.giftedly.dev/${objectName}`;
 		await alterCollection.updateOne(
 			{ alterId: alter.alterId },
-			{ $set: { avatarUrl: publicUrl } },
+			{ $set: { avatarUrl: url } },
 		);
 
 		w(ctx.author.id, "alter.update", {
 			type: "alter.update",
 			alter: {
 				...alter,
-				avatarUrl: publicUrl
+				avatarUrl: url,
 			},
 		});
 
-
 		return await ctx.interaction.update({
 			components: [
-				...new AlterView((await ctx.userTranslations())).alterTopView(
+				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"public-settings",
 					alter.alterId.toString(),
 					alter.username,
 				),
-				...new AlterView((await ctx.userTranslations())).altersPublicView(
+				...new AlterView(await ctx.userTranslations()).altersPublicView(
 					alter,
 					(await ctx.guild()) ?? { name: "", id: "" },
 					(await ctx.getDefaultPrefix()) ?? "",
-					ctx.interaction?.message?.messageReference === undefined
+					ctx.interaction?.message?.messageReference === undefined,
 				),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,

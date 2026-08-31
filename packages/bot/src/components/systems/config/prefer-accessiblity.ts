@@ -44,12 +44,13 @@ export default class PublicProfileBtn extends ComponentCommand {
 
 		return await ctx.update({
 			components: [
-				...new SystemSettingsView(await ctx.userTranslations()).topView(
-					"general",
-					system.associatedUserId,
-				),
+				...new SystemSettingsView(
+					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
+				).topView("general", system.associatedUserId),
 				...(await new SystemSettingsView(
 					await ctx.userTranslations(),
+					getSystemFeatures(system)?.preferAccessiblity,
 				).generalSettings(
 					{
 						...system,

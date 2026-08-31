@@ -1,5 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { Double } from "mongodb";
 import {
 	ActionRow,
 	Button,
@@ -30,6 +31,7 @@ import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { blockedChannel, blockedRole } from "@/lib/blocked";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { getLanguageByUserId } from "@/lib/lang";
 import { handleDMReply } from "@/lib/proxying/dm-replying";
@@ -62,7 +64,7 @@ export type ApplicableWebhookWritePayload = {
 		RESTPostAPIWebhookWithTokenJSONBody,
 		"components" | "embeds" | "poll" | "content"
 	> &
-	SendResolverProps;
+		SendResolverProps;
 	query?: RESTPostAPIWebhookWithTokenQuery | undefined;
 };
 export type ApplicableWebhookEditPayload = {
@@ -70,7 +72,7 @@ export type ApplicableWebhookEditPayload = {
 		RESTPatchAPIWebhookWithTokenMessageJSONBody,
 		"components" | "content" | "embeds" | "poll"
 	> &
-	ResolverProps;
+		ResolverProps;
 	messageId: string;
 	query?: RESTPatchAPIWebhookWithTokenMessageQuery | undefined;
 };
@@ -89,14 +91,12 @@ export type PWebhook = {
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message: Message) => {
-
 		latencyDataPoints.push(
 			Date.now() -
-			// @ts-ignore
-			message.createdTimestamp,
+				// @ts-ignore
+				message.createdTimestamp,
 		);
 		handleDMReply(message);
-
 
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
@@ -115,19 +115,22 @@ export default createEvent({
 						),
 						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 					});
-				} catch (_) { }
+				} catch (_) {}
 				return;
 			}
 
 			const currentPage = helpPages[0];
 			const contents = await Bun.file(`content/${currentPage?.file}`).text();
 
-			client.logger.info("User requested help page: {contents}", { contents })
+			client.logger.info("User requested help page: {contents}", { contents });
 
 			return await message.reply({
 				components: [
 					new TextDisplay().setContent(
-						locale.AWAKE.replace("{{ buildNumber }}", String(build)).replace("{{ branch }}", process.env.BRANCH ?? "unknown")
+						locale.AWAKE.replace("{{ buildNumber }}", String(build)).replace(
+							"{{ branch }}",
+							process.env.BRANCH ?? "unknown",
+						),
 					),
 					new ActionRow().setComponents(
 						[
@@ -183,9 +186,7 @@ export default createEvent({
 			message.reply({
 				components: [
 					// @ts-ignore
-					...new AlertView(locale).errorView(
-						"NO_DM_CHANNELS",
-					),
+					...new AlertView(locale).errorView("NO_DM_CHANNELS"),
 				],
 				flags: MessageFlags.IsComponentsV2,
 			});
@@ -209,34 +210,41 @@ export default createEvent({
 		const user = await getUserById(message.author.id);
 		const guild = PGuildObject.parse(
 			(await client.cache.pguild.get(message.guildId ?? ""))?.g ??
-			(await getGuildFromId(message.guildId ?? "")),
+				(await getGuildFromId(message.guildId ?? "")),
 		);
 
 		if (user.system === undefined) return;
-		if (user.blocked) { client.logger.info(`${message.id} ended because user was blocked`); return };
+		if (user.blocked) {
+			client.logger.info(`${message.id} ended because user was blocked`);
+			return;
+		}
 		if (user.system.disabled) return;
 		if ((user.system.disabledGuilds ?? []).includes(message.guildId ?? ""))
 			return;
-		if (!message.guildId)
-			return;
+		if (!message.guildId) return;
 
-		const apMode = getWiderAutoProxy(user.system, message.guildId, message.channelId)
+		const apMode = getWiderAutoProxy(
+			user.system,
+			message.guildId,
+			message.channelId,
+		);
 
-		if (apMode.autoproxyMode !== "latch" && apMode.autoproxyMode !== "off"
-		) {
-			startTimer(`proxy: pre-system autoproxy (${message.id})`)
+		if (apMode.autoproxyMode !== "latch" && apMode.autoproxyMode !== "off") {
+			startTimer(`proxy: pre-system autoproxy (${message.id})`);
 
 			let alter = apMode.autoproxyAlter;
 
 			if (apMode.autoproxyMode !== "alter" && !alter) {
 				// Check for AI/AP
 
-				const fronts = await frontsCollection.findOne({ aiapId: apMode?.autoproxyMode, systemId: message.author.id })
+				const fronts = await frontsCollection.findOne({
+					aiapId: apMode?.autoproxyMode,
+					systemId: message.author.id,
+				});
 
 				if (fronts?.alterId) {
-					alter = fronts.alterId
+					alter = fronts.alterId;
 				}
-
 			}
 
 			if (message.content.startsWith("\\")) {
@@ -249,15 +257,13 @@ export default createEvent({
 					systemId: message.author.id,
 				});
 
-
-
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
 
 					if (!(await blockedRole(guild, locale, message))) return;
 					if (!(await blockedChannel(guild, locale, message))) return;
 
-					endTimer(`proxy: pre-system autoproxy (${message.id})`)
+					endTimer(`proxy: pre-system autoproxy (${message.id})`);
 
 					performAlterAutoProxy(
 						message,
@@ -267,14 +273,14 @@ export default createEvent({
 						guild,
 						message.member,
 					);
+					return;
 				}
 			}
 		}
 
 		if (user.system.alterIds.length === 0) return;
-
 		if (!indexingMap[message.author.id]) {
-			startTimer(`proxy: bruteforce proxy (${message.id})`)
+			startTimer(`proxy: bruteforce proxy (${message.id})`);
 
 			let indexingMessage: MessageStructure | null =
 				null as MessageStructure | null;
@@ -286,7 +292,10 @@ export default createEvent({
 					locale = await getLanguageByUserId(message.author.id);
 				const channel = message.channelId;
 
-				client.logger.warn("{message} is taking too long. shoved into the processing queue ({alterCount} alters)", { message: message.id, alterCount: user.system?.alterIds.length })
+				client.logger.warn(
+					"{message} is taking too long. shoved into the processing queue ({alterCount} alters)",
+					{ message: message.id, alterCount: user.system?.alterIds.length },
+				);
 
 				if (eligibleToProcess && process.env.REDIS)
 					try {
@@ -309,7 +318,7 @@ export default createEvent({
 						});
 
 						indexingMessageMap[message.author.id] = indexingMessage;
-					} catch (_) { }
+					} catch (_) {}
 			}, 2000);
 			indexingMap[message.author.id] = indexingTimeout;
 
@@ -319,7 +328,7 @@ export default createEvent({
 
 				clearTimeout(indexingTimeout);
 				if (indexingMessage !== null) indexingMessage.delete();
-			}
+			};
 
 			// Only find the alters that we need
 			for (let i = 0; i < user.system.alterIds.length; i++) {
@@ -331,7 +340,14 @@ export default createEvent({
 				if (i % 20 === 0 && indexingMessage) {
 					const locale = await getLanguageByUserId(message.author.id);
 
-					client.logger.debug("processing {message} ({alterCount} alters), {percentage}% done", { message: message.id, alterCount: user.system?.alterIds.length, percentage: `${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%` })
+					client.logger.debug(
+						"processing {message} ({alterCount} alters), {percentage}% done",
+						{
+							message: message.id,
+							alterCount: user.system?.alterIds.length,
+							percentage: `${Math.round((i / Math.round(user.system?.alterIds.length ?? 1)) * 1000) / 10}%`,
+						},
+					);
 
 					await indexingMessage?.edit({
 						components: [
@@ -351,10 +367,9 @@ export default createEvent({
 								)
 								.setColor("#5450fe"),
 						],
-						flags: MessageFlags.IsComponentsV2,x
+						flags: MessageFlags.IsComponentsV2,
 					});
 				}
-
 
 				// If cache miss or cache stale, fetch from DB and set cache
 				if (!proxyObject || !proxyObject.pt) {
@@ -403,11 +418,13 @@ export default createEvent({
 						proxyObject && proxyObject.pt
 							? null // Data came from cache so don't fetch here unless we need further fields
 							: await alterCollection.findOne({
-								alterId: Number(user.system.alterIds[i]),
-							});
+									alterId: Number(user.system.alterIds[i]),
+								});
 
-					if (proxyTagValid(proxyTag, message)) {
-						message.client.logger.info("Attempted to proxy: {proxyTag}", { proxyTag })
+					if (proxyTagValid(proxyTag, message, getSystemFeatures(user.system).caseInsensitiveProxies)) {
+						message.client.logger.info("Attempted to proxy: {proxyTag}", {
+							proxyTag,
+						});
 						const locale = await getLanguageByUserId(message.author.id);
 						// Check for system tag policy
 						if (
@@ -418,7 +435,7 @@ export default createEvent({
 								((user.system?.displayTagMap ?? {})[message.guildId] ??
 									user.system.systemDisplayTag) === null)
 						) {
-							endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`);
 							createProxyError(user, message, {
 								title: locale.DISPLAY_TAG_ENFORCE,
 								description: locale.DISPLAY_TAG_ENFORCE_DESC,
@@ -432,19 +449,17 @@ export default createEvent({
 						// Only get more data about the alter after confirmation of proxy tag
 						if (!checkAlter) {
 							checkAlter = await alterCollection.findOne({
-								alterId: user.system.alterIds[i],
+								alterId: new Double(user.system.alterIds[i] ?? 3 ),
 							});
 						}
 
-
-
 						if (!(await blockedRole(guild, locale, message))) {
-							endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`);
 							removeFromMap();
 							return;
 						}
 						if (!(await blockedChannel(guild, locale, message))) {
-							endTimer(`proxy: bruteforce proxy (${message.id})`)
+							endTimer(`proxy: bruteforce proxy (${message.id})`);
 							removeFromMap();
 							return;
 						}
@@ -468,25 +483,21 @@ export default createEvent({
 			removeFromMap();
 		}
 
-		if (
-			apMode.autoproxyMode === "latch"
-		) {
-			startTimer(`proxy: latch proxy (${message.id})`)
+		if (apMode.autoproxyMode === "latch") {
+			startTimer(`proxy: latch proxy (${message.id})`);
 
 			if (message.content.startsWith("\\\\")) {
 				setLastLatchAlter(guild.guildId, message.channelId, user.system);
 				return;
 			}
-			if (message.content.startsWith("\\"))
-				return;
+			if (message.content.startsWith("\\")) return;
 
 			const HOUR = 3_600_000;
 
 			if (user.system.latchExpiration)
 				if (
-					(apMode?.lastLatchTimestamp?.getTime() ??
-						Date.now()) +
-					user.system.latchExpiration <
+					(apMode?.lastLatchTimestamp?.getTime() ?? Date.now()) +
+						user.system.latchExpiration <
 					Date.now()
 				) {
 					setLastLatchAlter(guild.guildId, message.channelId, user.system);
@@ -501,14 +512,13 @@ export default createEvent({
 					systemId: message.author.id,
 				});
 
-
 				if (fetchedAlter) {
 					const locale = await getLanguageByUserId(message.author.id);
 
 					if (!(await blockedRole(guild, locale, message, true))) return;
 					if (!(await blockedChannel(guild, locale, message, true))) return;
 
-					endTimer(`proxy: latch proxy (${message.id})`)
+					endTimer(`proxy: latch proxy (${message.id})`);
 					performAlterAutoProxy(
 						message,
 						similarWebhooks,
@@ -520,6 +530,5 @@ export default createEvent({
 				}
 			}
 		}
-
 	},
 });
