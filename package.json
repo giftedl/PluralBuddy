@@ -11,7 +11,8 @@
 		"support:bot": "cd packages/support-bot-module && bun run bot",
 		"docs:dev": "cd apps/docs && bun run dev",
 		"docs:openapi": "cd packages/plurography && bun run src/openapi && cd ../../apps/docs && rm -rf content/docs/pluralbuddy/api && bun run scripts/generate-docs.ts",
-		"test": "cd packages/tests && bun test"
+		"test": "cd packages/tests && bun test",
+		"types": "cd packages/plurography && bunx tsc --outDir dist"
 	},
 	"workspaces": ["packages/*", "apps/*"],
 	"dependencies": {

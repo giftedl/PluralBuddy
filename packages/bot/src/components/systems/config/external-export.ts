@@ -1,20 +1,22 @@
-import { buildPkExportPayload } from "@/lib/export";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
-import { LoadingView } from "@/views/loading";
+import { ImportNotation, possibleConverters } from "plurography";
 import {
 	AttachmentBuilder,
 	ComponentCommand,
 	type ComponentContext,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import type z from "zod";
+import { buildExportPayload, buildPkExportPayload } from "@/lib/export";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class PluralKitExternalExporting extends ComponentCommand {
 	componentType = "StringSelect" as const;
 
 	override filter(ctx: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.ExternalExporting.PluralKit.equals(
-			ctx.interaction.values[0] ?? "",
+		return InteractionIdentifier.Systems.ExternalExporting.Selector.equals(
+			ctx.customId
 		);
 	}
 
@@ -35,13 +37,21 @@ export default class PluralKitExternalExporting extends ComponentCommand {
 			});
 		}
 
+		const exportPayload = JSON.parse( await buildExportPayload(user.system) ) as z.infer<typeof ImportNotation>;
+		const converter = possibleConverters[ctx.interaction.data.values[0] ?? "pluralkit"]
+		
+		if (!converter)
+			throw new Error("couldn't find that converter.")
+		
+		const converterObj = new converter.converter();
+
 		await ctx.followup({
 			files: [
 				new AttachmentBuilder()
 					.setName("system.json")
 					.setFile(
 						"buffer",
-						Buffer.from(await buildPkExportPayload(user.system)),
+						Buffer.from(JSON.stringify(converterObj.fromImport(exportPayload))),
 					),
 			],
 			flags: MessageFlags.Ephemeral,

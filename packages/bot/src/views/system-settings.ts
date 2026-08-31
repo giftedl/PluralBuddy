@@ -2,7 +2,7 @@
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import type { FindCursor, WithId } from "mongodb";
-import { SystemFlags } from "plurography";
+import { possibleConverters, SystemFlags } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -263,7 +263,8 @@ export class SystemSettingsView extends TranslatedView {
 			((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
 		const leftSidedTag =
 			((system.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) === 0;
-		const caseInsensitiveProxies = ((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
+		const caseInsensitiveProxies =
+			((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
 
 		return [
 			new Container().setColor("#1190FF").setComponents(
@@ -399,13 +400,14 @@ export class SystemSettingsView extends TranslatedView {
 						.setCustomId(
 							InteractionIdentifier.Systems.ExternalExporting.Selector.create(),
 						)
-						.setOptions([
-							new StringSelectOption()
-								.setLabel("PluralKit")
-								.setValue(
-									InteractionIdentifier.Systems.ExternalExporting.PluralKit.create(),
-								),
-						]),
+						.setOptions(
+							Object.entries(possibleConverters).map(([k, v]) =>
+								new StringSelectOption()
+									.setLabel(v.name)
+									.setDescription(v.description)
+									.setValue(k),
+							),
+						),
 				),
 			),
 		];

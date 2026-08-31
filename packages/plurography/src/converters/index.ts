@@ -57,7 +57,7 @@ export const possibleConverters: Record<
 	pluralkit: {
 		name: "PluralKit",
 		description:
-			"Supported import/export on most major plurality applications - including PluralKit itself.",
+			"Supported import/export on most major plurality apps - including PluralKit itself.",
 		converter: PluralKitConverter,
 		parserZod: PluralKitSystem
 	},

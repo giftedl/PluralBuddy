@@ -294,7 +294,7 @@ export default class OpenPluralConverter
 			extensions: {
 				discord: DiscordOpenPluralExtension.parse({
 					user_id: system.associatedUserId,
-					disabled_guilds: system.disabledGuilds,
+					disabled_guilds: system.disabledGuilds ?? [],
 				}),
 				pluralbuddy_system: PluralBuddySystemExtension.parse({
 					keep_proxy_tags: this.getSystemFeatures(system).keepProxyTags,
@@ -302,9 +302,9 @@ export default class OpenPluralConverter
 					prefer_accessiblity:
 						this.getSystemFeatures(system).preferAccessiblity,
 					no_typing_status: this.getSystemFeatures(system).noTypingStatus,
-					creation_date: system.createdAt,
-					display_tag_map: system.displayTagMap,
-					system_operation_dm: system.systemOperationDM,
+					creation_date: new Date(system.createdAt),
+					display_tag_map: system.displayTagMap ?? {},
+					system_operation_dm: system.systemOperationDM ?? false,
 				} satisfies z.infer<typeof PluralBuddySystemExtension>),
 			},
 		} satisfies z.infer<typeof OpenPluralSystem>);
@@ -323,7 +323,7 @@ export default class OpenPluralConverter
 			description: data.description,
 			age: null,
 			birthday:
-				data.fields["@/birthday"] === undefined
+				data.fields["@/birthday"] !== undefined
 					? {
 							value: `${new Date(data.fields["@/birthday"]).getFullYear()}-${new Date(data.fields["@/birthday"]).getMonth().toString().padStart(2, "0")}-${new Date(data.fields["@/birthday"]).getDate().toString().padStart(2, "0")}`,
 							precision: "day",
