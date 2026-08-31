@@ -228,7 +228,8 @@ export default class PluralBuddyImportModal extends ModalCommand {
 					avatarUrlMap: {},
 					fields: {
 						"@pk": member.id.substring(0, 30)
-					}
+					},
+					flags: 0
 				} satisfies PAlter),
 				originalPkId: member.id,
 			};

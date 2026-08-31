@@ -176,6 +176,7 @@ export default class PluralKitConverter
 					? { "@/birthday": birthdayDate.toISOString() }
 					: {}),
 			},
+			flags: 0
 		} satisfies PAlter);
 	}
 	toImport(data: PluralKitSystemType): z.infer<typeof ImportNotation> {
