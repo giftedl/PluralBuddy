@@ -1,6 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { PluralKitConfiguration, PluralKitSystem } from "./pluralkit";
+import { PluralKitAPISystem } from "./pluralkit/api-system";
 import { PluralKitGroup } from "./pluralkit/group";
 import { PluralKitMember } from "./pluralkit/member";
 import { SimplyPluralSystem } from "./simplyplural";
@@ -15,6 +16,7 @@ export {
 	PluralKitGroup,
 	PluralKitMember,
 	PluralKitSystem,
+	PluralKitAPISystem
 };
 export { Tupper, TupperBoxGroup, TupperBoxSystem };
 export { SimplyPluralSystem, SimplyPluralMember, SimplyPluralGroup }
@@ -28,6 +30,7 @@ export * from "./pluralbuddy/front";
 export * from "./pluralbuddy/guild";
 export * from "./pluralbuddy/import-notation";
 export * from "./pluralbuddy/import-staging";
+export * from "./pluralbuddy/import-transcript"
 export * from "./pluralbuddy/message";
 export * from "./pluralbuddy/operation";
 export * from "./pluralbuddy/system";

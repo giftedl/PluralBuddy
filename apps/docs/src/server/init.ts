@@ -1,6 +1,9 @@
-import { auth } from "@/lib/auth";
 import { initTRPC } from "@trpc/server";
-import superjson from 'superjson';
+import { ObjectId } from "mongodb";
+import { after } from "next/server";
+import superjson from "superjson";
+import { auth } from "@/lib/auth";
+import clientPromise from "./db";
 
 /**
  * This context creator accepts `headers` so it can be reused in both
@@ -9,7 +12,28 @@ import superjson from 'superjson';
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
 	const session = await auth.api.getSession({ headers: opts.headers });
-	return { session };
+
+	const mongoClient = await clientPromise;
+	await mongoClient.connect();
+
+	after(() => mongoClient.close());
+
+	const botDatabase = mongoClient.db(
+		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
+	);
+	const webDatabase = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
+	let discordAccountId: string | null = null;
+
+	if (session !== null) {
+		discordAccountId =
+			(
+				await webDatabase
+					.collection("account")
+					.findOne({ userId: new ObjectId(session.user.id) })
+			)?.accountId ?? null;
+	}
+
+	return { session, mongoClient, discordAccountId, botDatabase, webDatabase };
 };
 
 // Avoid exporting the entire t-object
@@ -19,7 +43,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 const t = initTRPC
 	.context<Awaited<ReturnType<typeof createTRPCContext>>>()
 	.create({
-        transformer: superjson
+		transformer: superjson,
 	});
 
 // Base router and procedure helpers

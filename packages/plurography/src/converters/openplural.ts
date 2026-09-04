@@ -415,14 +415,18 @@ export default class OpenPluralConverter
 	fromImport(data: z.infer<typeof ImportNotation>) {
 		if (!data.system) throw new Error("no system");
 
-		const systemId = crypto.randomUUID()
+		const systemId = crypto.randomUUID();
 		const attachments: { url: string; uuid: string }[] = [];
 		const systems = [
-			this.from(data.system, (url) => {
-				const uuid = crypto.randomUUID();
-				attachments.push({ url, uuid });
-				return uuid;
-			}, systemId),
+			this.from(
+				data.system,
+				(url) => {
+					const uuid = crypto.randomUUID();
+					attachments.push({ url, uuid });
+					return uuid;
+				},
+				systemId,
+			),
 		];
 		const alters = data.alters.map((v) =>
 			this.fromAlter(
@@ -436,24 +440,24 @@ export default class OpenPluralConverter
 			),
 		);
 		const tags = data.tags.map((v) => this.fromTag(v, systemId));
+		
 		const groupMemberships = data.alters.flatMap((v) =>
-			v.tagIds.map(
-				(c) =>
-					({
-						id: crypto.randomUUID(),
-						group_id: tags.find((v) => v.source_refs[0].id === c)?.id ?? "??",
-						member_id:
-							alters.find((v) => v.source_refs[0].id === v.id)?.id ?? "??",
-						sort_order: null,
-						source_refs: [
-							{
-								app: "plurography",
-								collection: "assets",
-								id: c,
-								uuid: null,
-							},
-						],
-					}) satisfies z.infer<typeof OpenPluralGroupMembership>,
+			v.tagIds.map((c) => 
+				({
+					id: crypto.randomUUID(),
+					group_id: tags.find((v) => v.source_refs[0].id === c)?.id ?? "??",
+					member_id:
+						alters.find((a) => Number(a.source_refs[0].id) === v.alterId)?.id ?? "??",
+					sort_order: null,
+					source_refs: [
+						{
+							app: "plurography",
+							collection: "assets",
+							id: c,
+							uuid: null,
+						},
+					],
+				}) satisfies z.infer<typeof OpenPluralGroupMembership>
 			),
 		);
 

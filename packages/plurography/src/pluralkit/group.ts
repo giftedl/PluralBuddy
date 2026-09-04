@@ -18,7 +18,7 @@ export const PluralKitGroup = z.object({
 		})
 		.nullable(),
 	created: z.coerce.date(),
-	members: z.string().array(),
+	members: z.string().array().optional(),
 	privacy: z.object({
 		name_privacy: PrivacyLevel,
 		description_privacy: PrivacyLevel,

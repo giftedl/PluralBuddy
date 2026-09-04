@@ -176,9 +176,105 @@ export default class PluralKitConverter
 					? { "@/birthday": birthdayDate.toISOString() }
 					: {}),
 			},
-			flags: 0
+			flags: 0,
 		} satisfies PAlter);
 	}
+
+	_syncUpdateAlter(alter: z.infer<typeof PluralKitMember>, i?: number) {
+		const date = new Date();
+		date.setSeconds(i ?? 0);
+
+		let birthdayDate = alter.birthday ? new Date() : null;
+
+		if (birthdayDate !== null) {
+			const [year, month, date] = (alter.birthday ?? "").split("-");
+			if (
+				Number.isNaN(Number(year)) ||
+				Number.isNaN(Number(month)) ||
+				Number.isNaN(Number(date))
+			) {
+				birthdayDate = null;
+			} else
+				birthdayDate.setFullYear(Number(year), Number(month), Number(date));
+		}
+
+		return {
+			color: alter.color !== null ? `#${alter.color}` : null,
+			description: alter.description,
+			pronouns: alter.pronouns,
+			avatarUrl: alter.avatar_url ?? alter.webhook_avatar_url,
+			banner: alter.banner,
+			proxyTags: alter.proxy_tags.map((tag, i) => {
+				const date = new Date();
+				date.setSeconds(i ?? 0);
+
+				const id = DiscordSnowflake.generate({
+					timestamp: date,
+					workerId: BigInt(i ?? 0),
+					processId: BigInt(Math.floor(Math.random() * 1000)),
+				});
+
+				return {
+					prefix: tag.prefix?.replaceAll('"', "") ?? "",
+					suffix: tag.suffix?.replaceAll('"', "") ?? "",
+					id: Number(id).toString(),
+				};
+			}),
+			public: this.combine(
+				...[
+					...(alter.privacy.visibility === "public"
+						? [AlterProtectionFlags.VISIBILITY]
+						: []),
+					...(alter.privacy.pronoun_privacy === "public"
+						? [AlterProtectionFlags.PRONOUNS]
+						: []),
+					...(alter.privacy.description_privacy === "public"
+						? [AlterProtectionFlags.DESCRIPTION]
+						: []),
+					...(alter.privacy.avatar_privacy === "public"
+						? [AlterProtectionFlags.AVATAR]
+						: []),
+					...(alter.privacy.banner_privacy === "public"
+						? [AlterProtectionFlags.BANNER]
+						: []),
+					...(alter.privacy.metadata_privacy === "public"
+						? [AlterProtectionFlags.MESSAGE_COUNT, AlterProtectionFlags.TAGS]
+						: []),
+					...(alter.privacy.name_privacy === "public"
+						? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
+						: []),
+				],
+			),
+		};
+	}
+	_syncUpdateTag(tag: z.infer<typeof PluralKitGroup>, i?: number) {
+
+		const date = new Date();
+		date.setSeconds(i ?? 0);
+
+		return {
+
+			tagFriendlyName: tag.display_name ?? tag.name,
+			tagDescription: tag.description ?? undefined,
+			tagColor: "pink",
+
+
+			public: this.combine(
+				...[
+					...(tag.privacy.description_privacy === "public"
+						? [TagProtectionFlags.DESCRIPTION]
+						: []),
+					...(tag.privacy.name_privacy === "public"
+						? [TagProtectionFlags.NAME]
+						: []),
+					...(tag.privacy.metadata_privacy === "public"
+						? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
+						: []),
+				],
+			),
+		}
+	}
+
 	toImport(data: PluralKitSystemType): z.infer<typeof ImportNotation> {
 		let alters = data.members.map((v, i) =>
 			this.toAlter(v, i, String(data.accounts[0])),
@@ -231,7 +327,7 @@ export default class PluralKitConverter
 			tagDescription: tag.description ?? undefined,
 			tagColor: "pink",
 
-			associatedAlters: tag.members,
+			associatedAlters: tag.members ?? [],
 
 			public: this.combine(
 				...[
@@ -412,7 +508,7 @@ export default class PluralKitConverter
 
 		groups = groups.map((v) => ({
 			...v,
-			members: v.members
+			members: (v.members ?? [])
 				.map((c) => members.find((m) => String(m.oldId) === c))
 				.filter((v) => v !== undefined)
 				.map((v) => v.parsed.id),
