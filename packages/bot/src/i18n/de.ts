@@ -65,7 +65,7 @@ SimplyPlural has been discontinued.`,
   IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
   CREATE_NEW_SYS_DESCRIPTION: "Neues System erstellen",
   PLURALBUDDY_IMPORT_ERROR_TOO_LARGE: "2j – Die zu importierenden Daten dürfen 2 MB nicht überschreiten. Bitte kontaktieren Sie den Support, wenn Sie versuchen, Dateien zu importieren, die größer als 2 MB sind.",
-  ERROR_ATTACHMENT_TOO_LARGE: "2j – Uncompressed images must be under 5MB. (After compression, images can only be 1MB.)",
+  ERROR_ATTACHMENT_TOO_LARGE: "2j – Anhänge für Banner oder Profilbilder dürfen 2 MB nicht überschreiten.",
   CREATE_NEW_ALTER_DESCRIPTION: "Neues System erstellen",
   CREATE_NEW_TAG_DESCRIPTION: "Neues Tag erstellen",
   PLURALBUDDY_IMPORT_ERROR_INVALID_JSON: "2k – Die importierte Datei ist kein gültiges JSON.",
@@ -628,7 +628,7 @@ There is an example below of what an example proxy with this role would look lik
   LINK_SUPPORT: "Support",
   LINK_DOCS: "Docs",
   DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
-  DISPLAY_TAG_ENFORCE_DESC: 'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+  DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable display tags for your system by going into `pb;system config` -> \"Public Profile\".",
   NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
   NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
   NOTIFIED_2: "-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
@@ -680,7 +680,7 @@ Your system is using the front state of **{{ mode }}**.`,
   AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
 
 **Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|clear-latch|{{ aiap }}]\``,
+\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
   AP_ALTER_INVALID_SYNTAX: `You must add an alter for the \`alter\` proxy mode.
 
 **Auto-proxy Usage:**
@@ -716,5 +716,9 @@ Your system is using the front state of **{{ mode }}**.`,
   CASE_INSENS_PROXIES_BTN: "Enable Case Insensitive Proxy",
   CASE_INSENS_PROXIES_BTN_D: "Disable Case Insensitive Proxy",
   TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
-  TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)"
+  TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
+  JUMP_TO_CUSTOM_PAGE: "Jump to custom page",
+  CUSTOM_PAGE_TITLE: "Custom Page",
+  CUSTOM_PAGE_DESC: "Maximum page you can go to is: {{ page }}.",
+  NOT_A_VALID_PAGE_COUNT: "That isn't a valid page count. Please only use numbers."
 };
