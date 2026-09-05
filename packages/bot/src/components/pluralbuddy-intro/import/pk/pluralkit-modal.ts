@@ -245,7 +245,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 				tagColor: "pink",
 
 				associatedAlters: parsedSafe
-					.filter((c) => group.members.includes(c.originalPkId))
+					.filter((c) => (group.members ?? []).includes(c.originalPkId))
 					.map((c) => c.zodData)
 					.filter((c) => c.success)
 					.map((c) => c.data.alterId.toString()),

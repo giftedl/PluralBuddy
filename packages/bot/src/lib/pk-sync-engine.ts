@@ -1,12 +1,11 @@
 import {
 	type PAlter,
-	PluralKitAPISystem,
+	PluralKitAPISystem,PluralKitConverter, 
 	type PluralKitGroup,
 	type PluralKitMember,
 	type PSystem,
-	type PTag,
+	type PTag
 } from "plurography";
-import PluralKitConverter from "plurography/dist/converters/pluralkit";
 import type z from "zod";
 
 type SyncEngineAction<K> = {

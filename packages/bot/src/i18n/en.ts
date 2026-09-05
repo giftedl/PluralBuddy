@@ -969,4 +969,13 @@ Your system is using the front state of **{{ mode }}**.`,
 
 	TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
 	TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
+	PK_TRANSCRIPT_VIEW: "View Sync Transcript",
+	PK_TRANSCRIPT_APPLY: "Apply Transcript Non-destructively",
+	PK_TRANSCRIPT_APPLY_DESTRUCTIVE: "Apply Transcript Destructively",
+
+	TRANSCRIPT_TOP: `## {{ circleQuestionWhite }}  Transcript Summary
+Actions to the right (destructive actions) will only be applied if you hit **Apply Transcript Destructively**. That will delete alters missing from PluralKit.`,
+
+	ALTERS_SEPARATOR: "-# **ALTERS**",
+	TAGS_SEPARATOR: "-# **TAGS**",
 };

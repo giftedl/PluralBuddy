@@ -23,7 +23,7 @@
 		"stripInternal": true,
 		"outDir": "./dist",
 		"types": ["bun"],
-		"rootDir": "."
+		"rootDir": "./src"
 	},
 	"exclude": [
 		"**/lib",

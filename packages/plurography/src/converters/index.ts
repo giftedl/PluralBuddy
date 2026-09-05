@@ -12,6 +12,11 @@ import PluralBuddyConverter from "./pluralbuddy";
 import PluralKitConverter from "./pluralkit";
 import TupperBoxConverter from "./tupperbox";
 
+export { OpenPluralConverter };
+export { PluralBuddyConverter };
+export { PluralKitConverter };
+export { TupperBoxConverter }; 
+
 type ClassOf<V> = { new (): V };
 
 export type ConverterInput = {

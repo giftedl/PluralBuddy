@@ -241,6 +241,14 @@ export const InteractionIdentifier = {
 		},
 	},
 	Systems: {
+		Syncing: {
+			ApplyTranscript: createFromAdditionalArg(
+				"systems/syncing/apply-transcript",
+			),
+			ApplyTranscriptDestructively: createFromAdditionalArg(
+				"systems/syncing/apply-transcrip-d"
+			)
+		},
 		DeleteSystem: createStatic("systems/delete"),
 		DeleteSystemMedia: createStatic("systems/delete-media"),
 		ConfigurePublicProfile: createFromAdditionalArg(
@@ -282,9 +290,11 @@ export const InteractionIdentifier = {
 					"systems/config/general/prefer-accessiblity",
 				),
 				ToggleLeftSidedTags: createStatic(
-					"systems/config/general/left-sided-tags"
+					"systems/config/general/left-sided-tags",
 				),
-				ToggleCaseInsensitiveProxies: createStatic("systems/config/general/toggle-case-insensitive-proxies")
+				ToggleCaseInsensitiveProxies: createStatic(
+					"systems/config/general/toggle-case-insensitive-proxies",
+				),
 			},
 			OtherAlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/oapg/previous"),
@@ -407,7 +417,9 @@ export const InteractionIdentifier = {
 				ConfigureTagExternal: createFromAdditionalArg(
 					"systems/config/tags/configure-external",
 				),
-				AssureDeleteTag: createFromAdditionalArg("systems/config/tags/assure-delete-tag"),
+				AssureDeleteTag: createFromAdditionalArg(
+					"systems/config/tags/assure-delete-tag",
+				),
 				DeleteTag: createFromAdditionalArg("systems/config/tags/delete-tag"),
 
 				SetDisplayName: createFromAdditionalArg(
