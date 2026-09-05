@@ -619,7 +619,7 @@ There is an example below of what an example proxy with this role would look lik
   LINK_SUPPORT: "Suporte",
   LINK_DOCS: "Documentação",
   DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
-  DISPLAY_TAG_ENFORCE_DESC: 'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+  DISPLAY_TAG_ENFORCE_DESC: 'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by using the button on the right.',
   NO_DM_CHANNELS: "Você não pode usar proxy em mensagens diretas. Desculpe!",
   NOTIFIED_1: "-# Você foi notificado sobre esta ação devido à associação do seu integrante PluralBuddy.",
   NOTIFIED_2: "-# Desenvolvido como software open-source @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
@@ -707,5 +707,9 @@ Your system is using the front state of **{{ mode }}**.`,
   CASE_INSENS_PROXIES_BTN: "Enable Case Insensitive Proxy",
   CASE_INSENS_PROXIES_BTN_D: "Disable Case Insensitive Proxy",
   TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
-  TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)"
+  TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
+  JUMP_TO_CUSTOM_PAGE: "Jump to custom page",
+  CUSTOM_PAGE_TITLE: "Custom Page",
+  CUSTOM_PAGE_DESC: "Maximum page you can go to is: {{ page }}.",
+  NOT_A_VALID_PAGE_COUNT: "That isn't a valid page count. Please only use numbers."
 };
