@@ -1,12 +1,12 @@
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import z from "zod";
-import { PAlter, PAlterObject } from "@/pluralbuddy/alter";
-import { ImportNotation } from "@/pluralbuddy/import-notation";
-import { PTag, PTagObject } from "@/pluralbuddy/tag";
-import { createRandomId } from "@/pluralbuddy/util";
-import { TupperBoxSystem } from "@/tupperbox";
-import { TupperBoxGroup } from "@/tupperbox/group";
-import { Tupper } from "@/tupperbox/tupper";
+import { PAlter, PAlterObject } from "../pluralbuddy/alter";
+import { ImportNotation } from "../pluralbuddy/import-notation";
+import { PTag, PTagObject } from "../pluralbuddy/tag";
+import { createRandomId } from "../pluralbuddy/util";
+import { TupperBoxSystem } from "../tupperbox";
+import { TupperBoxGroup } from "../tupperbox/group";
+import { Tupper } from "../tupperbox/tupper";
 import Converter from ".";
 
 export default class TupperBoxConverter

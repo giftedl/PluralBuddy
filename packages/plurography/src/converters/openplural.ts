@@ -1,29 +1,29 @@
 import z from "zod";
-import { DiscordOpenPluralExtension } from "@/openplural/discord-extension";
-import { OpenPluralExport } from "@/openplural/export";
-import { OpenPluralGroup } from "@/openplural/group";
-import { OpenPluralGroupMembership } from "@/openplural/group-membership";
-import { OpenPluralMember } from "@/openplural/member";
+import { DiscordOpenPluralExtension } from "../openplural/discord-extension";
+import { OpenPluralExport } from "../openplural/export";
+import { OpenPluralGroup } from "../openplural/group";
+import { OpenPluralGroupMembership } from "../openplural/group-membership";
+import { OpenPluralMember } from "../openplural/member";
 import {
 	PluralBuddyAlterExtension,
 	PluralBuddySystemExtension,
-} from "@/openplural/pluralbuddy-extension";
-import { OpenPluralSystem } from "@/openplural/system";
+} from "../openplural/pluralbuddy-extension";
+import { OpenPluralSystem } from "../openplural/system";
 import {
 	AlterFlags,
 	AlterProtectionFlags,
 	PAlter,
 	PAlterObject,
-} from "@/pluralbuddy/alter";
-import { ImportNotation } from "@/pluralbuddy/import-notation";
+} from "../pluralbuddy/alter";
+import { ImportNotation } from "../pluralbuddy/import-notation";
 import {
 	PSystem,
 	PSystemObject,
 	SystemFlags,
 	SystemProtectionFlags,
-} from "@/pluralbuddy/system";
-import { PTag, PTagObject, TagProtectionFlags } from "@/pluralbuddy/tag";
-import { createRandomId } from "@/pluralbuddy/util";
+} from "../pluralbuddy/system";
+import { PTag, PTagObject, TagProtectionFlags } from "../pluralbuddy/tag";
+import { createRandomId } from "../pluralbuddy/util";
 import Converter from ".";
 
 export default class OpenPluralConverter

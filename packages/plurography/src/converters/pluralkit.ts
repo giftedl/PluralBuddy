@@ -4,22 +4,22 @@ import {
 	AlterProtectionFlags,
 	PAlter,
 	PAlterObject,
-} from "@/pluralbuddy/alter";
-import { ImportNotation } from "@/pluralbuddy/import-notation";
+} from "../pluralbuddy/alter";
+import { ImportNotation } from "../pluralbuddy/import-notation";
 import {
 	listFromMaskAlters,
 	listFromMaskSystems,
 	listFromMaskTags,
-} from "@/pluralbuddy/privacy-bitmask";
+} from "../pluralbuddy/privacy-bitmask";
 import {
 	PSystem,
 	PSystemObject,
 	SystemProtectionFlags,
-} from "@/pluralbuddy/system";
-import { PTag, PTagObject, TagProtectionFlags } from "@/pluralbuddy/tag";
-import { PluralKitGroup } from "@/pluralkit/group";
-import { PluralKitMember } from "@/pluralkit/member";
+} from "../pluralbuddy/system";
+import { PTag, PTagObject, TagProtectionFlags } from "../pluralbuddy/tag";
 import { makePkId, PluralKitSystem, PluralKitSystemType } from "../pluralkit";
+import { PluralKitGroup } from "../pluralkit/group";
+import { PluralKitMember } from "../pluralkit/member";
 import Converter from ".";
 
 export default class PluralKitConverter

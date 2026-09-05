@@ -1,8 +1,8 @@
 import z from "zod";
-import { PAlter } from "@/pluralbuddy/alter";
-import { ImportNotation } from "@/pluralbuddy/import-notation";
-import { PSystem } from "@/pluralbuddy/system";
-import { PTag } from "@/pluralbuddy/tag";
+import { PAlter } from "../pluralbuddy/alter";
+import { ImportNotation } from "../pluralbuddy/import-notation";
+import { PSystem } from "../pluralbuddy/system";
+import { PTag } from "../pluralbuddy/tag";
 import Converter from ".";
 
 export default class PluralBuddyConverter
