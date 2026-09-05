@@ -9,6 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const config = {
+	transpilePackages: ["plurography"],
 	reactStrictMode: true,
 	typescript: {
 		// TypeScript is strictly for IDE support for the frontend.

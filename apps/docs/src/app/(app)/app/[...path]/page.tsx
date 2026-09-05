@@ -28,6 +28,7 @@ import ExpressAlterPage from "@/components/app/pages/express/page";
 import ExpressSpecificAlterPage from "@/components/app/pages/express/page";
 import ImportStagingDonePage from "@/components/app/pages/import-staging/done/page";
 import ImportStagingPage from "@/components/app/pages/import-staging/page";
+import ImportTranscriptsPage from "@/components/app/pages/import-transcripts/page";
 import NotFoundPage from "@/components/app/pages/not-found";
 import { IndexSettingsAppPage } from "@/components/app/pages/page";
 import ProfilePage from "@/components/app/pages/profile/page";
@@ -146,6 +147,10 @@ export default function PluralBuddyApp() {
 									<Route
 										path="/app/settings/about"
 										element={<AboutPage />}
+									/>
+									<Route
+										path="/app/settings/sync/transcript/:id"
+										element={<ImportTranscriptsPage />}
 									/>
 								</Route>
 								<Route

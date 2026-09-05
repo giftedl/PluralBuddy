@@ -21,8 +21,9 @@
 		"skipLibCheck": true,
 		"noErrorTruncation": true,
 		"stripInternal": true,
-		"outDir": "dist",
+		"outDir": "./dist",
 		"types": ["bun"],
+		"rootDir": ".",
 		"paths": {
 			"@/*": ["./src/*"]
 		}
