@@ -37,7 +37,10 @@ export default class SetPronounsButton extends ModalCommand {
 		}, (await ctx.userTranslations()), "discord")
 
 		if (newSystem)
-		system = newSystem;
+			system = newSystem;
+
+		if (ctx.guildId === undefined)
+			return await ctx.interaction.deferUpdate();
 
 		return await ctx.interaction.update({
 			components: [

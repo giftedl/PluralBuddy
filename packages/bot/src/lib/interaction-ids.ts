@@ -301,6 +301,17 @@ export const InteractionIdentifier = {
 				NextPage: createFromAdditionalArg("systems/config/oapg/next"),
 				Search: createFromAdditionalArg("systems/config/oapg/search"),
 			},
+
+			AlterPlainPagination: {
+				Page: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/page",
+				),
+				CustomPage: createFromAdditionalArg(
+					"systems/config/alter-plain-pagination/custom-page_",
+				),
+				CustomPageForm: createStatic("systems/config/alter-plain-pagination/custom-page-form"),
+				CustomPageInput: createStatic("systems/config/alter-plain-pagination/custom-page-input")
+			},
 			AlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),
 				NextPage: createFromAdditionalArg("systems/config/apg/next"),

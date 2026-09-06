@@ -1,11 +1,12 @@
-import { errorCollection } from "@/mongodb";
 import type { GuildErrorTypes, PUser } from "plurography";
-import { Container, TextDisplay, type Message } from "seyfert";
-import { createError } from "../create-error";
+import { Button, Container, type Message, Section, TextDisplay } from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import type z from "zod";
-import { emojis } from "../emojis";
-import { MessageFlags } from "seyfert/lib/types";
 import { client } from "@/index";
+import { errorCollection } from "@/mongodb";
+import { createError } from "../create-error";
+import { emojis } from "../emojis";
+import { InteractionIdentifier } from "../interaction-ids";
 
 export async function createProxyError(
 	user: PUser,
@@ -14,6 +15,7 @@ export async function createProxyError(
 		title: string;
 		description: string;
 		type: z.infer<typeof GuildErrorTypes>;
+		setSystemTag?: string;
 	},
 ) {
 	const previousApplicableErrors = await errorCollection.countDocuments({
@@ -24,8 +26,8 @@ export async function createProxyError(
 		],
 	});
 
-	client.logger.warn("user ran into error [{type}]", { type: opts.type })
-	
+	client.logger.warn("user ran into error [{type}]", { type: opts.type });
+
 	if (previousApplicableErrors >= 1) {
 		return;
 	}
@@ -38,13 +40,27 @@ export async function createProxyError(
 	});
 	message.react(emojis.x);
 
+	const textDisplay =
+		new TextDisplay().setContent(`  ${emojis.x}   **${error.title}**
+> - ${error.description}
+> -# This error will not appear again for a while.`);
+
 	await message.user.write({
 		components: [
 			new Container()
 				.setComponents(
-					new TextDisplay().setContent(`  ${emojis.x}   **${error.title}**
-> - ${error.description}
-> -# This error will not appear again for a while.`),
+					opts.type === "EnforcedGuildTagRegulation"
+						? new Section()
+								.setComponents(textDisplay)
+								.setAccessory(
+									new Button()
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.SetSystemTag.create(),
+										)
+										.setLabel(opts.setSystemTag ?? "Set System Tag")
+										.setStyle(ButtonStyle.Primary),
+								)
+						: textDisplay,
 				)
 				.setColor("#B70000"),
 		],
