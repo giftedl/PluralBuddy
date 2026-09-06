@@ -302,7 +302,8 @@ export default function ImportTranscriptsPage() {
 														<span>
 															<Markdown>
 																{(
-																	importTranscript.system as unknown as Record<
+																	importTranscript.system
+																		.destructive as unknown as Record<
 																		string,
 																		string
 																	>
@@ -310,7 +311,8 @@ export default function ImportTranscriptsPage() {
 															</Markdown>
 														</span>{" "}
 														{(
-															importTranscript.system as unknown as Record<
+															importTranscript.system
+																.destructive as unknown as Record<
 																string,
 																string
 															>
@@ -528,9 +530,7 @@ export default function ImportTranscriptsPage() {
 						(c) => c.tagId === v.tagId,
 					) ? (
 						<Plus className="text-green-400" />
-					) : importTranscript.tags.update.some(
-							(c) => c.tagId === v.tagId,
-						) ? (
+					) : importTranscript.tags.update.some((c) => c.tagId === v.tagId) ? (
 						<Pencil className="text-yellow-400 size-4" />
 					) : (
 						<Minus className="text-red-400" />
