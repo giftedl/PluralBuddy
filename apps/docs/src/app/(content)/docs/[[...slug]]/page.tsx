@@ -20,6 +20,7 @@ export default async function Page(props: PageProps<"/[lang]/docs/[[...slug]]">)
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
+	console.log(page.data.toc)
 
 	const MDX = page.data.body;
 

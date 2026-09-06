@@ -1,23 +1,23 @@
 'use client';
-import * as TocDefault from '@fumadocs/base-ui/components/toc/default';
-import * as TocClerk from '@fumadocs/base-ui/components/toc/clerk';
-import * as Base from '@fumadocs/base-ui/components/toc';
 import { useTranslations } from '@fuma-translate/react';
-import { cn } from '@/lib/cn';
+import * as Base from '@fumadocs/base-ui/components/toc';
+import * as TocClerk from '@fumadocs/base-ui/components/toc/clerk';
+import * as TocDefault from '@fumadocs/base-ui/components/toc/default';
+import { useTreePath } from '@fumadocs/base-ui/contexts/tree';
 import { ChevronDown, Text } from 'lucide-react';
 import {
+  type ComponentProps,
   createContext,
+  type ReactNode,
   use,
   useEffect,
   useEffectEvent,
   useMemo,
   useRef,
   useState,
-  type ComponentProps,
-  type ReactNode,
 } from 'react';
-import { useTreePath } from '@fumadocs/base-ui/contexts/tree';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { cn } from '@/lib/cn';
 import { useDocsLayout } from '../..';
 
 export type TOCProviderProps = Base.TOCProviderProps;
@@ -48,7 +48,7 @@ export type TOCProps = {
     }
 );
 
-export function TOC({ container, header, footer, style = 'normal', list }: TOCProps) {
+export function TOC({ container, header, footer, style = 'normal', list, noHide }: TOCProps & { noHide?: boolean }) {
   const t = useTranslations({ note: 'table of contents' });
   const items = Base.useTOCItems();
   const { TOCItems, TOCEmpty, TOCItem } = style === 'clerk' ? TocClerk : TocDefault;
@@ -58,33 +58,35 @@ export function TOC({ container, header, footer, style = 'normal', list }: TOCPr
   }
 
   return (
-    <div
-      id="nd-toc"
-      {...container}
-      className={cn(
-        'sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] flex flex-col [grid-area:toc] w-(--fd-toc-width) pt-12 pe-4 pb-2 xl:layout:[--fd-toc-width:268px] max-xl:hidden',
-        container?.className,
-      )}
-    >
-      {header}
-      <h3
-        id="toc-title"
-        className="inline-flex items-center gap-1.5 text-sm text-fd-muted-foreground"
-      >
-        <Text className="size-4" />
-        {t('On this page')}
-      </h3>
-      <Base.TOCScrollArea className="ms-px">
-        <TOCItems {...list}>
-          {items.length === 0 && <TOCEmpty />}
-          {items.map((item) => (
-            <TOCItem key={item.url} item={item} />
-          ))}
-        </TOCItems>
-      </Base.TOCScrollArea>
-      {footer}
-    </div>
-  );
+			<div
+				id="nd-toc"
+				{...container}
+				className={cn(
+					"sticky top-(--fd-docs-row-1) h-[calc(var(--fd-docs-height)-var(--fd-docs-row-1))] flex flex-col [grid-area:toc] w-(--fd-toc-width) pe-4 pb-2 xl:layout:[--fd-toc-width:268px]",
+					!noHide && "max-xl:hidden pt-12",
+          noHide && "pt-6",
+					container?.className,
+				)}
+			>
+				{header}
+				<h3
+					id="toc-title"
+					className="inline-flex items-center gap-1.5 text-sm text-fd-muted-foreground"
+				>
+					<Text className="size-4" />
+					{t("On this page")}
+				</h3>
+				<Base.TOCScrollArea className="ms-px">
+					<TOCItems {...list}>
+						{items.length === 0 && <TOCEmpty />}
+						{items.map((item) => (
+							<TOCItem key={item.url} item={item} />
+						))}
+					</TOCItems>
+				</Base.TOCScrollArea>
+				{footer}
+			</div>
+		);
 }
 
 const TocPopoverContext = createContext<{

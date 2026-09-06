@@ -60,7 +60,7 @@ export const PSystemObject = z
 		associatedUserId: z.string(),
 
 		systemName: z.string().max(100).min(1),
-		systemDisplayTag: z.string().optional(),
+		systemDisplayTag: z.string().optional().nullable(),
 		displayTagMap: z
 			.record(z.string(), z.string())
 			.default({})

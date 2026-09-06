@@ -1,10 +1,13 @@
 import {
 	type PAlter,
-	PluralKitAPISystem,PluralKitConverter, 
+	PAlterObject,
+	PluralKitAPISystem,
+	PluralKitConverter,
 	type PluralKitGroup,
 	type PluralKitMember,
 	type PSystem,
-	type PTag
+	type PTag,
+    PTagObject,
 } from "plurography";
 import type z from "zod";
 
@@ -33,7 +36,10 @@ export function runSandboxActions({
 }): {
 	alters: SyncEngineAction<PAlter>;
 	tags: SyncEngineAction<PTag>;
-	system: PSystem;
+	system: {
+		destructive: PSystem;
+		nondestructive: PSystem;
+	};
 } {
 	const systemParsed = PluralKitAPISystem.parse(pluralkit.system);
 	const simulatedSystemChange = {
@@ -75,6 +81,20 @@ export function runSandboxActions({
 			const possibleAlter = pluralbuddy.alters.find(
 				(c) => c.username === v.display_name || c.username === v.name,
 			);
+			const newAlter = converter._syncUpdateAlter(v, i);
+
+			if (
+				JSON.stringify(sortObject(PAlterObject.parse(possibleAlter))) ===
+				JSON.stringify(
+					sortObject(
+						PAlterObject.parse({
+							...possibleAlter,
+							...converter._syncUpdateAlter(v, i),
+						}),
+					),
+				)
+			)
+				return;
 
 			if (possibleAlter)
 				updateAlters.push({
@@ -122,6 +142,19 @@ export function runSandboxActions({
 					c.tagFriendlyName === v.display_name || c.tagFriendlyName === v.name,
 			);
 
+			if (
+				JSON.stringify(sortObject(PTagObject.parse(possibleTag))) ===
+				JSON.stringify(
+					sortObject(
+						PTagObject.parse({
+							...possibleTag,
+							...converter._syncUpdateTag(v, i),
+						}),
+					),
+				)
+			)
+				return;
+
 			if (possibleTag)
 				updateTags.push({
 					...possibleTag,
@@ -135,20 +168,34 @@ export function runSandboxActions({
 
 	return {
 		system: {
-			...pluralbuddy.system,
-			...simulatedSystemChange,
-			alterIds: [
-				...pluralbuddy.system.alterIds.filter((c) =>
-					!deletionAlters.some(v => v.alterId === c),
-				),
-				...creationAlters.map((v) => v.alterId),
-			],
-            tagIds: [
-                ...pluralbuddy.system.tagIds.filter((c) =>
-                    !deletionTags.some(v => v.tagId === c)
-                ),
-                ...creationTags.map((v) => v.tagId)
-            ]
+			destructive: {
+				...pluralbuddy.system,
+				...simulatedSystemChange,
+				alterIds: [
+					...pluralbuddy.system.alterIds.filter(
+						(c) => !deletionAlters.some((v) => v.alterId === c),
+					),
+					...creationAlters.map((v) => v.alterId),
+				],
+				tagIds: [
+					...pluralbuddy.system.tagIds.filter(
+						(c) => !deletionTags.some((v) => v.tagId === c),
+					),
+					...creationTags.map((v) => v.tagId),
+				],
+			},
+			nondestructive: {
+				...pluralbuddy.system,
+				...simulatedSystemChange,
+				alterIds: [
+					...pluralbuddy.system.alterIds,
+					...creationAlters.map((v) => v.alterId),
+				],
+				tagIds: [
+					...pluralbuddy.system.tagIds,
+					...creationTags.map((v) => v.tagId),
+				],
+			},
 		},
 		alters: {
 			add: creationAlters,
@@ -157,4 +204,16 @@ export function runSandboxActions({
 		},
 		tags: { add: creationTags, update: updateTags, remove: deletionTags },
 	};
+}
+
+function sortObject(obj: Record<string, string>) {
+	return Object.keys(obj)
+		.sort()
+		.reduce((sorted: Record<string, unknown>, key) => {
+			sorted[key] =
+				typeof obj[key] === "object" && obj[key] !== null
+					? sortObject(obj[key])
+					: obj[key];
+			return sorted;
+		}, {});
 }

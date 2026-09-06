@@ -14,7 +14,10 @@ export const PImportTranscript = z.object({
 		update: PTagObject.array(),
 		remove: z.object({ tagId: z.string(), systemId: z.string() }).array(),
 	}),
-    system: PSystemObject,
+    system: z.object({
+		destructive: PSystemObject,
+		nondestructive: PSystemObject,
+	}),
 
     createdAt: z.coerce.date(),
     userId: z.string(),

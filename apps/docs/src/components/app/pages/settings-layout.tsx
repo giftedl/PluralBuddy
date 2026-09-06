@@ -1,11 +1,11 @@
+import React, { useEffect, useRef } from "react";
+import { Outlet, useLocation } from "react-router";
 import { SettingsSidebar } from "@/components/settings-sidebar";
 import {
 	SidebarInset,
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import React from "react";
-import { Outlet } from "react-router";
 import { SidebarHookRemote } from "../hook-remote";
 
 export function SettingsLayout() {
@@ -15,7 +15,7 @@ export function SettingsLayout() {
 			<SettingsSidebar />
 			<SidebarInset>
 				<SidebarHookRemote />
-				<main className="overflow-auto">
+				<main className="overflow-auto" id='scrollable'>
 					<Outlet />
 				</main>
 			</SidebarInset>
