@@ -644,7 +644,8 @@ function TOCSticky({
 	const [scrollPosition, setScrollPosition] = useState(0);
 	const handleScroll = () => {
 		const scrollable = document.getElementById("scrollable") as HTMLElement;
-		const position = scrollable.scrollTop;
+		const toc = document.getElementById("nd-toc") as HTMLElement;
+		const position = scrollable.scrollTop - (toc.getBoundingClientRect().y * 3);
 		setScrollPosition(position);
 	};
 
@@ -658,7 +659,6 @@ function TOCSticky({
 		};
 	}, []);
 
-	console.log(scrollPosition);
 	return (
 		<span className="text-left w-full">
 			<h2 className="text-xl font-bold">Changes</h2>
