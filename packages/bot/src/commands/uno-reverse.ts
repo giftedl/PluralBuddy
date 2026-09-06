@@ -1,4 +1,3 @@
-import { AlertView } from "@/views/alert";
 import {
 	AttachmentBuilder,
 	Command,
@@ -9,6 +8,8 @@ import {
 	MediaGalleryItem,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { easterEggPlaybackIds, muxPlaybackURL } from "@/lib/easter-eggs";
+import { AlertView } from "@/views/alert";
 
 @Declare({
 	name: "uno-reverse",
@@ -30,18 +31,13 @@ export default class WhoAskedCommand extends Command {
 				new Container().setComponents(
 					new MediaGallery().setItems(
 						new MediaGalleryItem()
-							.setMedia("attachment://uno_reverse.mov")
+							.setMedia(muxPlaybackURL(easterEggPlaybackIds["uno-reverse"]))
 							.setDescription("NO U!"),
 					),
 				),
 			],
-			files: [
-				new AttachmentBuilder()
-					.setName("uno_reverse.mov")
-					.setFile("path", "content/easter-eggs/uno_reverse.mov"),
-			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			allowed_mentions: { parse: [] }
+			allowed_mentions: { parse: [] },
 		});
 	}
 }

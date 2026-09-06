@@ -1,4 +1,3 @@
-import { AlertView } from "@/views/alert";
 import {
 	AttachmentBuilder,
 	Command,
@@ -11,6 +10,8 @@ import {
 	Options,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
+import { easterEggPlaybackIds, muxPlaybackURL } from "@/lib/easter-eggs";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	"time-machine": createBooleanOption({
@@ -61,9 +62,7 @@ export default class WhoAskedCommand extends Command {
 				new Container().setComponents(
 					new MediaGallery().setItems(
 						new MediaGalleryItem()
-							.setMedia(
-								`https://${process.env.FWF_MISSKEY}/files/e86afaa0-7d0c-4cb8-926f-832b09acf507.mp4`,
-							)
+							.setMedia(muxPlaybackURL(easterEggPlaybackIds.fwf))
 							.setDescription("flatworm friday :)"),
 					),
 				),
