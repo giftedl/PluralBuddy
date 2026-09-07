@@ -90,7 +90,7 @@ export function TOCSticky({
 						scrollPosition > 520 && "pl-65.25",
 					)}
 				>
-					{children}-
+					{children}
 				</div>
 			</div>
 		</span>

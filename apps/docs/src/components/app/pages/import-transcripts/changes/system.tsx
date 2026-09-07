@@ -7,7 +7,8 @@ import { ChangesSectionWidgetData } from ".";
 export function ImportTranscriptSystemWidget({
 	importTranscript,
 	allSystemData,
-}: ChangesSectionWidgetData) {
+    destructive
+}: ChangesSectionWidgetData<true>) {
 	return (
 		<Card id="system">
 			<CardContent className="w-full">

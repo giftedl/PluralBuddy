@@ -1,6 +1,17 @@
-export function AltersWidget({ importTranscript, destructive }) {
+import { MultiFileDiff } from "@pierre/diffs/react";
+import { Minus, Pencil, Plus } from "lucide-react";
+import { PAlterObject } from "plurography";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { sortObject } from "../sort-object";
+import { ChangesSectionWidgetData } from ".";
+
+export function AltersWidget({
+	importTranscript,
+	destructive,
+	allSystemData,
+}: ChangesSectionWidgetData<true>) {
 	return (
-		<div>
+		<div className="w-full grid gap-4">
 			<h2 className="text-lg font-bold" id="alters">
 				Alters
 			</h2>

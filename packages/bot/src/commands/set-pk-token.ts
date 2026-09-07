@@ -65,7 +65,7 @@ export default class SetupCommand extends Command {
 		}
 		await ctx.deferReply(true);
 
-		const PK_UA = `PluralBuddy/${build.split("/")[0]} (gftl.fyi/discord; @giftedly@lumis.moe, ActivityPub) Plurography/0.5.0`;
+		const PK_UA = `PluralBuddy/${build.split("/")[0]} (gftl.fyi/discord; @giftedly, Discord) Plurography/0.5.0`;
 		console.log("using user agent:", PK_UA);
 
 		const system = await fetch(`${API_PREFIX}/systems/@me`, {
