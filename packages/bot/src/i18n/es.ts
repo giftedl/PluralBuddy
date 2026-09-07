@@ -634,7 +634,7 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
   LINK_SUPPORT: "Soporte",
   LINK_DOCS: "Documentación",
   DISPLAY_TAG_ENFORCE: "Política de aplicación de etiqueta visible",
-  DISPLAY_TAG_ENFORCE_DESC: 'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by using the button on the right.',
+  DISPLAY_TAG_ENFORCE_DESC: "Este usuario no puede actuar como proxy en este servidor sin una etiqueta de sistema, debido a la política de aplicación de etiquetas de visualización del sistema. Habilite las etiquetas de sistema utilizando el botón de la derecha.",
   NO_DM_CHANNELS: "No puedes enviar mensajes proxy en canales de mensajes directos. ¡Lo sentimos!",
   NOTIFIED_1: "-# Se te notificó de esta acción debido a tu asociación con tu alter de PluralBuddy.",
   NOTIFIED_2: "-# Desarrollado como software de código abierto en [pb.giftedly.dev](<https://pb.giftedly.dev>)",
@@ -683,9 +683,9 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   PROVIDER_NOT_FOUND: `No se encontró ese proveedor de proxy automático o no autorizaste con el permiso [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap). Contacta al desarrollador de esta integración si crees que es un error.
 	
 -# Integración: \`{{ id }}\``,
-  AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
+  AP_INVALID_SYNTAX: `Modo de proxy automático o proveedor inválido \`{{ mode }}\`.
 
-**Auto-proxy Usage:**
+**Uso de proxy automático:**
 \`pb;autoproxy [off|latch|alter|status|clear-latch|{{ aiap }}]\``,
   AP_ALTER_INVALID_SYNTAX: `Debes especificar un alter para el modo proxy \`alter\`.
 
@@ -723,8 +723,8 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   CASE_INSENS_PROXIES_BTN_D: "Desactivar proxy de mayúsculas e insensibles",
   TOGGLED_LEFT_SIDED_TAGS_E: "Se han activado correctamente las etiquetas del lado izquierdo. (habilitado)",
   TOGGLED_LEFT_SIDED_TAGS_D: "Se activaron correctamente las etiquetas del lado izquierdo. (desactivado)",
-  JUMP_TO_CUSTOM_PAGE: "Jump to custom page",
-  CUSTOM_PAGE_TITLE: "Custom Page",
-  CUSTOM_PAGE_DESC: "Maximum page you can go to is: {{ page }}.",
-  NOT_A_VALID_PAGE_COUNT: "That isn't a valid page count. Please only use numbers."
+  JUMP_TO_CUSTOM_PAGE: "Ir a página personalizada",
+  CUSTOM_PAGE_TITLE: "Página personalizada",
+  CUSTOM_PAGE_DESC: "La página máxima a la que puedes ir es: {{ page }}.",
+  NOT_A_VALID_PAGE_COUNT: "No es un recuento de página válido. Por favor, use sólo números."
 };
