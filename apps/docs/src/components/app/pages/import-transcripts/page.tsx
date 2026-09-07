@@ -94,7 +94,6 @@ export default function ImportTranscriptsPage() {
 		queryKey: [`all-system-data`],
 		queryFn: async () => trpc.import_transcripts.getOldData.query(),
 	});
-	const [destructive, setDestructive] = useState(true);
 
 	if (importTranscriptPending || allSystemDataPending)
 		return (

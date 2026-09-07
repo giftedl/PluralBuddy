@@ -7,7 +7,7 @@ import {
 	type PluralKitMember,
 	type PSystem,
 	type PTag,
-    PTagObject,
+	PTagObject,
 } from "plurography";
 import type z from "zod";
 
@@ -206,7 +206,25 @@ export function runSandboxActions({
 	};
 }
 
-function sortObject(obj: Record<string, string>) {
+function sortObject(
+	obj:
+		| Record<
+				string,
+				| string
+				| number
+				| unknown[]
+				| Record<string, string | undefined>
+				| Date
+				| undefined
+				| null
+		  >
+		| Date
+		| unknown[],
+) {
+	if ("length" in obj || "getDate" in obj) {
+		return obj;
+	}
+
 	return Object.keys(obj)
 		.sort()
 		.reduce((sorted: Record<string, unknown>, key) => {

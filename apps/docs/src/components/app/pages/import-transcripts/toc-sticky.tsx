@@ -23,6 +23,7 @@ export function TOCSticky({
 		setScrollPosition(position);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Errors are circular
 	useEffect(() => {
 		const scrollable = document.getElementById("scrollable") as HTMLElement;
 

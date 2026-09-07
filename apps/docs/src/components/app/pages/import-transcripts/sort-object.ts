@@ -1,8 +1,20 @@
-
 export function sortObject(
-	obj: Record<string, string | number | unknown[]> | unknown[],
+	obj:
+		| Record<
+				string,
+				| string
+				| number
+				| unknown[]
+				| Record<string, string | undefined>
+				| Date
+				| undefined
+				| null
+				| boolean
+		  >
+		| Date
+		| unknown[],
 ) {
-	if ("length" in obj) {
+	if ("length" in obj || "getDate" in obj) {
 		return obj;
 	}
 
