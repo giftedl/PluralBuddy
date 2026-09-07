@@ -108,7 +108,7 @@ export default function ImportTranscriptsPage() {
 	if (!importTranscript || !allSystemData)
 		return (
 			<React.Fragment>
-				<DynamicPageTitle title="Unknown Alter • PluralBuddy App" />
+				<DynamicPageTitle title="Unknown Import Transcript • PluralBuddy App" />
 				<main className="flex w-full flex-1 flex-col gap-6 md:px-4 max-md:px-2 pt-18 items-center mx-auto max-w-[1000px] mb-3">
 					<Card>
 						<div className="align-center justify-center flex h-[calc(100vh-200px)] w-[100vh]">
