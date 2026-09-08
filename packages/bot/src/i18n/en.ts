@@ -101,6 +101,7 @@ SimplyPlural has been discontinued.`,
 
 	CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
 	EDIT_SYSTEM_FORM_TITLE: "Editing System",
+	SYNCING_MANUALLY_TITLE: "Syncing Manually",
 	SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
 	SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
 	SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
@@ -237,6 +238,14 @@ PluralBuddy uses a **username/display name** system.
 		"This profile picture will only be specific to this server.",
 	ALTER_SET_TAG: "Set System Tag",
 	ALTER_SET_BANNER: "Set Banner",
+	
+	TOKEN_INPUT: "PluralKit Token",
+	TOKEN_DESC: "Input the token from pk;token here.",
+
+	STORE_TOKEN_INPUT: "Store Token",
+	STORE_TOKEN_INPUT_DESC: "The token will be autofilled everytime you sync and encrypted in the database.",
+	STORE_TOKEN_INPUT_DESC_2: "-# Manually sync again to change the token or tell PluralBuddy to stop storing it by unchecking this box.",
+
 	INVALID_URL:
 		"This is not a valid URL. Make sure you aren't enclosing your URL in `<` or `>`",
 	ALTER_SET_PRIVACY: "Set Privacy",

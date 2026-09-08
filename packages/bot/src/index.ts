@@ -60,7 +60,7 @@ export const logger = null;
 
 if (logger) logger.info("PluralBuddy is online");
 
-export const build = `26.1.2/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
+export const build = `26.2.0/${process.env.SOURCE_COMMIT?.slice(0, 7)}`;
 const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"latency",
 	"noWebhookMiddleware",

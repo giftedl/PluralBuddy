@@ -1,22 +1,21 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { ActionRow, Button, createEvent, TextDisplay } from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { createError } from "@/lib/create-error";
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { getLanguageByUserId } from "@/lib/lang";
+import { getSimilarWebhooks } from "@/lib/proxying/util";
 import {
 	alterCollection,
 	applicationsCollection,
 	messagesCollection,
 	userCollection,
 } from "@/mongodb";
-import { ActionRow, Button, createEvent, TextDisplay } from "seyfert";
-import { client } from "..";
-import { emojis } from "@/lib/emojis";
-import { getSimilarWebhooks } from "@/lib/proxying/util";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { AlertView } from "@/views/alert";
 import { MessageInfo } from "@/views/message-info";
-import { createError } from "@/lib/create-error";
-import { decryptExpressToken } from "@/lib/express-token-encryption";
-import { getLanguageByUserId } from "@/lib/lang";
+import { client } from "..";
 
 export default createEvent({
 	data: { name: "messageReactionAdd", once: false },
@@ -114,67 +113,46 @@ export default createEvent({
 
 				return;
 			}
-
-			if (!message.expressUserId) {
-				const channel = await client.channels.fetch(reaction.channelId);
-				const parent =
-					"parentId" in channel && channel.isThread() ? channel.parentId : null;
-
-				const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
-
-				if (similarWebhooks[0] === undefined) {
-					await client.reactions.delete(
-						reaction.messageId,
-						reaction.channelId,
-						emojis.loading,
-						client.applicationId,
-					);
-					await nativeMessage.react(emojis.x);
-
-					setTimeout(
-						() =>
-							client.reactions.delete(
-								reaction.messageId,
-								reaction.channelId,
-								emojis.x,
-								client.applicationId,
-							),
-						3000,
-					);
-					return;
-				}
-
-				const webhook = similarWebhooks[0];
-				const user = await client.users.fetch(reaction.userId, true);
-
-				await webhook.messages.delete({
-					messageId,
-					query: parent !== null ? { thread_id: channel.id } : {},
-					reason: `Removed after user request of @${user.username} (${user.id})`,
-				});
-			} else {
-				const application = await applicationsCollection.findOne({
-					application: message.expressUserId,
-				});
-
-				if (!application)
-					return;
-
-				const unencryptedToken = await decryptExpressToken(application?.token.iv, application?.token.value)
-
-				if (application) {
-					await fetch(
-						`https://discord.com/api/v10/channels/${reaction.channelId}/messages/${message.messageId}`,
-						{
-							method: "DELETE",
-							headers: {
-								Authorization: `Bot ${unencryptedToken}`,
-								"X-Audit-Log-Reason": `Removed after user request of @${reaction.member?.user.username} (${reaction.member?.user.id})`,
-							},
-						},
-					);
-				}
+			if (message.expressUserId) {
+				return;
 			}
+
+			const channel = await client.channels.fetch(reaction.channelId);
+			const parent =
+				"parentId" in channel && channel.isThread() ? channel.parentId : null;
+
+			const similarWebhooks = await getSimilarWebhooks(parent ?? channel.id);
+
+			if (similarWebhooks[0] === undefined) {
+				await client.reactions.delete(
+					reaction.messageId,
+					reaction.channelId,
+					emojis.loading,
+					client.applicationId,
+				);
+				await nativeMessage.react(emojis.x);
+
+				setTimeout(
+					() =>
+						client.reactions.delete(
+							reaction.messageId,
+							reaction.channelId,
+							emojis.x,
+							client.applicationId,
+						),
+					3000,
+				);
+				return;
+			}
+
+			const webhook = similarWebhooks[0];
+			const user = await client.users.fetch(reaction.userId, true);
+
+			await webhook.messages.delete({
+				messageId,
+				query: parent !== null ? { thread_id: channel.id } : {},
+				reason: `Removed after user request of @${user.username} (${user.id})`,
+			});
 			return;
 		}
 		if (reaction.emoji.name === "🔔") {

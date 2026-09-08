@@ -2,7 +2,7 @@
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import type { FindCursor, WithId } from "mongodb";
-import { possibleConverters, SystemFlags } from "plurography";
+import { type PUser, possibleConverters, SystemFlags } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -20,6 +20,7 @@ import { mentionCommand } from "@/lib/mention-command";
 import paginateComponents from "@/lib/views/paginate";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterProtectionFlags, type PAlter } from "@/types/alter";
+import { build } from "..";
 import { emojis, getEmojiFromTagColor } from "../lib/emojis";
 import { InteractionIdentifier } from "../lib/interaction-ids";
 import {
@@ -1027,6 +1028,69 @@ export class SystemSettingsView extends TranslatedView {
 								.setValue("delete"),
 						]),
 				),
+			),
+		];
+	}
+
+	syncSettings(user: PUser) {
+		return [
+			new Container().setComponents(
+				new TextDisplay().setContent(`## Sync Preferences
+PluralBuddy can sync your PluralKit members either one-way or two-way, automatically or manually.`),
+				new Separator().setSpacing(Spacing.Large),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.SyncManually.create(),
+							)
+							.setLabel("Sync Manually")
+							.setStyle(ButtonStyle.Secondary),
+					)
+					.setComponents(
+						new TextDisplay().setContent(`**Sync Manually**`),
+						new TextDisplay().setContent(
+							`PluralBuddy will ask for your PluralKit token or use your stored one, create an import transcript, and then will apply changes corresponding to your PluralKit system.`,
+						),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleAutoSync.create(),
+							)
+							.setLabel("Enable Auto-syncing")
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(
+								user.syncConfiguration?.pluralKit?.token === undefined,
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(`**Automatic Syncing**`),
+						new TextDisplay().setContent(
+							`PluralBuddy will use your stored token to automatically sync **once every 30 minutes when a message is proxied**. You must sync manually once & hit the store token button before this option is available.`,
+						),
+					),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleWriteback.create(),
+							)
+							.setLabel("Enable Write-back")
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(
+								user.syncConfiguration?.pluralKit?.token === undefined,
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(`**Write-back Mode**`),
+						new TextDisplay().setContent(
+							`If write-back mode is enabled, when a change is made to your system, it will automatically be written back to the relevant PluralKit object. You must sync manually once & hit the store token button before this option is available.`,
+						),
+					),
+				new TextDisplay()
+					.setContent(`-# PluralBuddy v${build} - last synced: ${user.syncConfiguration?.pluralkit?.lastSynced ? `<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:R>` : "never"}`)
 			),
 		];
 	}

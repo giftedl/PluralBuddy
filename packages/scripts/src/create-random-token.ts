@@ -7,6 +7,9 @@ const generatedKey = await crypto.subtle.generateKey(
 	["encrypt", "decrypt"],
 );
 
+
 const exportedKey = await crypto.subtle.exportKey("raw", generatedKey);
 
-console.log(Buffer.from(exportedKey).toHex())
+console.log(
+	Buffer.from(exportedKey).toHex(),
+);

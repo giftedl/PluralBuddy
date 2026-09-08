@@ -262,6 +262,16 @@ export const InteractionIdentifier = {
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
 
+			SyncPreferences: {
+				SyncManually: createStatic("systems/config/sync/manually"),
+				SyncManuallyForm: createStatic("systems/config/sync/form/manually"),
+				ToggleAutoSync: createStatic("systems/config/sync/auto"),
+				ToggleWriteback: createStatic("systems/config/sync/write-back"),
+
+				PluralKitToken: createStatic("systems/config/sync/token-input"),
+				StoreToken: createStatic("systems/config/sync/store-token"),
+			},
+
 			Pagination: {
 				PageOne: createStatic("systems/config/page-1"),
 				PageTwo: createStatic("systems/config/page-2"),
