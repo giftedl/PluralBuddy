@@ -1033,6 +1033,8 @@ export class SystemSettingsView extends TranslatedView {
 	}
 
 	syncSettings(user: PUser) {
+		const tokenStored = user.syncConfiguration?.pluralkit?.token !== undefined;
+
 		return [
 			new Container().setComponents(
 				new TextDisplay().setContent(`## Sync Preferences
@@ -1061,9 +1063,7 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 							)
 							.setLabel("Enable Auto-syncing")
 							.setStyle(ButtonStyle.Secondary)
-							.setDisabled(
-								user.syncConfiguration?.pluralKit?.token === undefined,
-							),
+							.setDisabled(!tokenStored),
 					)
 					.setComponents(
 						new TextDisplay().setContent(`**Automatic Syncing**`),
@@ -1079,9 +1079,7 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 							)
 							.setLabel("Enable Write-back")
 							.setStyle(ButtonStyle.Secondary)
-							.setDisabled(
-								user.syncConfiguration?.pluralKit?.token === undefined,
-							),
+							.setDisabled(!tokenStored),
 					)
 					.setComponents(
 						new TextDisplay().setContent(`**Write-back Mode**`),
@@ -1089,8 +1087,9 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 							`If write-back mode is enabled, when a change is made to your system, it will automatically be written back to the relevant PluralKit object. You must sync manually once & hit the store token button before this option is available.`,
 						),
 					),
-				new TextDisplay()
-					.setContent(`-# PluralBuddy v${build} - last synced: ${user.syncConfiguration?.pluralkit?.lastSynced ? `<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:R>` : "never"}`)
+				new TextDisplay().setContent(
+					`-# PluralBuddy v${build} - last synced: ${user.syncConfiguration?.pluralkit?.lastSynced ? `<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:R>` : "never"}`,
+				),
 			),
 		];
 	}

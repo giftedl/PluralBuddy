@@ -1,17 +1,28 @@
-import { Checkbox, ComponentCommand, ComponentContext, Label, Modal, TextDisplay, TextInput } from "seyfert";
+import {
+	Checkbox,
+	ComponentCommand,
+	ComponentContext,
+	Label,
+	Modal,
+	TextDisplay,
+	TextInput,
+} from "seyfert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { decryptToken } from "@/lib/pk-token-encryption";
 import { AlertView } from "@/views/alert";
 
 export default class ManualSyncButton extends ComponentCommand {
-   componentType = 'Button' as const;
-   
-    override filter(context: ComponentContext<typeof this.componentType>) {
-       return InteractionIdentifier.Systems.Configuration.SyncPreferences.SyncManually.equals(context.customId)
-    }
+	componentType = "Button" as const;
 
-    override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const { system } = await ctx.retrievePUser();
+	override filter(context: ComponentContext<typeof this.componentType>) {
+		return InteractionIdentifier.Systems.Configuration.SyncPreferences.SyncManually.equals(
+			context.customId,
+		);
+	}
+
+	override async run(ctx: ComponentContext<typeof this.componentType>) {
+		const { system, syncConfiguration } = await ctx.retrievePUser();
 
 		if (system === undefined) {
 			return await ctx.write({
@@ -21,6 +32,19 @@ export default class ManualSyncButton extends ComponentCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
+
+		const token =
+			syncConfiguration?.pluralkit?.token === undefined
+				? null
+				: await decryptToken(
+						syncConfiguration.pluralkit.token.i,
+						syncConfiguration.pluralkit.token.v,
+					);
+
+		const defaultized = (textInput: TextInput) => {
+			if (token) return textInput.setValue(token);
+			return textInput;
+		};
 
 		const form = new Modal()
 			.setCustomId(
@@ -32,26 +56,30 @@ export default class ManualSyncButton extends ComponentCommand {
 					.setLabel((await ctx.userTranslations()).TOKEN_INPUT)
 					.setDescription((await ctx.userTranslations()).TOKEN_DESC)
 					.setComponent(
-						new TextInput()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SyncPreferences.PluralKitToken.create(),
-							)
-                            .setLength({ max: 64, min: 64 })
-							.setStyle(TextInputStyle.Short)
-							.setRequired(true),
+						defaultized(
+							new TextInput()
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.SyncPreferences.PluralKitToken.create(),
+								)
+								.setLength({ max: 64, min: 64 })
+								.setStyle(TextInputStyle.Short)
+								.setRequired(true),
+						),
 					),
 				new Label()
 					.setLabel((await ctx.userTranslations()).STORE_TOKEN_INPUT)
 					.setDescription((await ctx.userTranslations()).STORE_TOKEN_INPUT_DESC)
 					.setComponent(
-						new Checkbox().setCustomId(
-							InteractionIdentifier.Systems.Configuration.SyncPreferences.StoreToken.create(),
-						),
+						new Checkbox()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.StoreToken.create(),
+							)
+							.setDefault(syncConfiguration?.pluralkit?.token !== undefined),
 					),
 				new TextDisplay().setContent(
 					(await ctx.userTranslations()).STORE_TOKEN_INPUT_DESC_2,
 				),
 			]);
 		return await ctx.modal(form);
-    }
+	}
 }

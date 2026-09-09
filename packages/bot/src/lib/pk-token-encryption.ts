@@ -1,5 +1,5 @@
-export async function decryptExpressToken(iv: string, token: string) {
-	const key = process.env.EXPRESS_DECRYPTION_KEY ?? "";
+export async function decryptToken(iv: string, token: string) {
+	const key = process.env.PK_TOKEN_KEY ?? "";
 
 	const importedKey = await crypto.subtle.importKey(
 		"raw",

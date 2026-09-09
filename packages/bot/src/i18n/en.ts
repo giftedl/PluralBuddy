@@ -238,13 +238,15 @@ PluralBuddy uses a **username/display name** system.
 		"This profile picture will only be specific to this server.",
 	ALTER_SET_TAG: "Set System Tag",
 	ALTER_SET_BANNER: "Set Banner",
-	
+
 	TOKEN_INPUT: "PluralKit Token",
 	TOKEN_DESC: "Input the token from pk;token here.",
 
 	STORE_TOKEN_INPUT: "Store Token",
-	STORE_TOKEN_INPUT_DESC: "The token will be autofilled everytime you sync and encrypted in the database.",
-	STORE_TOKEN_INPUT_DESC_2: "-# Manually sync again to change the token or tell PluralBuddy to stop storing it by unchecking this box.",
+	STORE_TOKEN_INPUT_DESC:
+		"The token will be autofilled everytime you sync and encrypted in the database.",
+	STORE_TOKEN_INPUT_DESC_2:
+		"-# Manually sync again to change the token or tell PluralBuddy to stop storing it by unchecking this box.",
 
 	INVALID_URL:
 		"This is not a valid URL. Make sure you aren't enclosing your URL in `<` or `>`",
@@ -442,7 +444,8 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_SYSTEM_PREFER_ACCESSIBLITY:
 		"Toggled prefer accessiblity mode on the system.",
 	OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
-	OPERATION_FLIPPED_CASE_INSENS_PROXIES: "Toggled case insensitive proxying on this system.",
+	OPERATION_FLIPPED_CASE_INSENS_PROXIES:
+		"Toggled case insensitive proxying on this system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -848,7 +851,7 @@ There is an example below of what an example proxy with this role would look lik
 
 	DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
 	DISPLAY_TAG_ENFORCE_DESC:
-		'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by using the button on the right.',
+		"This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by using the button on the right.",
 
 	NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
 	NOTIFIED_1:
@@ -992,5 +995,12 @@ Actions to the right (destructive actions) will only be applied if you hit **App
 	CUSTOM_PAGE_TITLE: "Custom Page",
 	CUSTOM_PAGE_DESC: "Maximum page you can go to is: {{ page }}.",
 
-	NOT_A_VALID_PAGE_COUNT: "That isn't a valid page count. Please only use numbers.",
+	NOT_A_VALID_PAGE_COUNT:
+		"That isn't a valid page count. Please only use numbers.",
+	PK_ERROR: `PluralKit's API has returned an error while attempting to sync.
+\`\`\`
+{{ error }}
+\`\`\`
+
+-# Please note that PluralKit errors are only in English since PluralKit is not bilingual software.`,
 };
