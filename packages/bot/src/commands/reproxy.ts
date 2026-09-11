@@ -27,6 +27,7 @@ import { pendingIgnoreDeletion } from "@/events/on-message-delete";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
+import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
 import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
@@ -160,31 +161,16 @@ export default class ReproxyCommand extends Command {
 		webhook.messages
 			.write({
 				body: {
-					components: (await Promise.all(
-						originalMessage.components
-							.map((v) => v.toBuilder())
-							.filter((v) => v !== undefined)
-							.map(async (v) => {
-								if (
-									v.data.type === ComponentType.TextDisplay &&
-									v.data.content
-								) {
-									const processEmoji = await processEmojis(v.data.content);
-									processedEmojis.push(...processEmoji.emojis);
-
-									(v as TextDisplay).setContent(processEmoji.newMessage);
-								}
-								return v;
-							}),
-					)) as TopLevelBuilders[],
+					...getModernComponentsMappings(originalMessage.components.map(v => v.toBuilder()) as TopLevelBuilders[]),
+					allowed_mentions: { parse: [] },
+					attachments: originalMessage.attachments,
+				
 					flags: MessageFlags.IsComponentsV2,
 					username: username.substring(0, 80),
-					allowed_mentions: { parse: [] },
 					avatar_url:
 						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
 						alter?.avatarUrl ??
 						undefined,
-					attachments: originalMessage.attachments,
 				},
 				query: {
 					wait: true,
