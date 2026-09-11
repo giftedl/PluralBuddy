@@ -345,7 +345,6 @@ export const getModernComponentsMappings = (
 		name: string;
 	}[] = [],
 ): ApplicableWebhookWritePayload["body"] => {
-	console.log("BBB", components)
 	if (
 		components.length === 2 &&
 		components[1]?.data.type === ComponentType.MediaGallery
