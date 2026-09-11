@@ -30,6 +30,7 @@ const options = {
 	plain: createBooleanOption({
 		description: "View all alters in a view as a plain list with no containers.",
 		flag: true,
+		required: false
 	}),
 };
 
@@ -45,7 +46,7 @@ export default class AlterListCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const user = await ctx.retrievePUser();
-		const { "other-user": otherUser } = ctx.options;
+		const { "other-user": otherUser, plain } = ctx.options;
 
 		if (otherUser) {
 			const user = await userCollection.findOne({ userId: otherUser.id });
@@ -96,7 +97,7 @@ export default class AlterListCommand extends SubCommand {
 				ctx,
 			);
 		}
-		if (options.plain) {
+		if (plain === true) {
 			const alters = await alterCollection
 				.find({ systemId: user.system.associatedUserId })
 				.limit(90)

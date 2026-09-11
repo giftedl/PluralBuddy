@@ -1,19 +1,21 @@
 import { getColor } from "colorthief";
 import {
 	ApplicationEmoji,
-	AttachmentBuilder,Command, 
+	AttachmentBuilder,
+	Command,
 	CommandContext,
 	Container,
 	createStringOption,
-	Declare,IgnoreCommand, 
+	Declare,
+	IgnoreCommand,
 	MediaGallery,
 	Message,
 	Options,
 	Section,
 	Separator,
-	TextDisplay, 
+	TextDisplay,
 	Thumbnail,
-	type TopLevelBuilders
+	type TopLevelBuilders,
 } from "seyfert";
 import {
 	type APIContainerComponent,
@@ -161,11 +163,16 @@ export default class ReproxyCommand extends Command {
 		webhook.messages
 			.write({
 				body: {
-					...getModernComponentsMappings(originalMessage.components.map(v => v.toBuilder()) as TopLevelBuilders[]),
+					...getModernComponentsMappings([
+						...(originalMessage.components.map((v) =>
+							v.toBuilder(),
+						) as TopLevelBuilders[]),
+						...(originalMessage.content !== ""
+							? [new TextDisplay().setContent(originalMessage.content)]
+							: []),
+					]),
 					allowed_mentions: { parse: [] },
 					attachments: originalMessage.attachments,
-				
-					flags: MessageFlags.IsComponentsV2,
 					username: username.substring(0, 80),
 					avatar_url:
 						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
@@ -177,6 +184,7 @@ export default class ReproxyCommand extends Command {
 					...(parent === null ? {} : { thread_id: ctx.channelId }),
 				},
 			})
+			.catch((v) => console.error(v))
 			.then((sentMessage) => {
 				if (
 					(
@@ -185,7 +193,16 @@ export default class ReproxyCommand extends Command {
 						}
 					).autoproxyMode === "latch"
 				)
+<<<<<<< HEAD
 					setLastLatchAlter(ctx.guildId ?? "", ctx.channelId ?? "", system, alter);
+=======
+					setLastLatchAlter(
+						ctx.guildId ?? "",
+						ctx.channelId ?? "",
+						system,
+						alter,
+					);
+>>>>>>> bbc160d7c432046f53baac82cef453b8c07c53d1
 
 				messagesCollection.replaceOne(
 					{ messageId: message.messageId },
