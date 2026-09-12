@@ -108,9 +108,11 @@ export const ImportStagingRouter = router({
 					},
 				);
 
-			api["import-staging-reminder"].$post({
-				json: { importStageId: input.importStagingId },
-			});
+			waitUntil(
+				api["import-staging-reminder"].$post({
+					json: { importStageId: input.importStagingId },
+				}),
+			);
 
 			return { done: true };
 		}),
@@ -128,10 +130,13 @@ export const ImportStagingRouter = router({
 				.collection<ImportStage>("import-staging")
 				.findOne({ "webhook.id": input.id })) as ImportStage | null;
 			if (result === null) {
-				throw new Error("Unauthorized.")
+				throw new Error("Unauthorized.");
 			}
-			if (result.originatingSystemId !== await getDiscordIdBySessionId(session.user.id)) {
-				throw new Error("Unauthorized.")
+			if (
+				result.originatingSystemId !==
+				(await getDiscordIdBySessionId(session.user.id))
+			) {
+				throw new Error("Unauthorized.");
 			}
 
 			if (result) {
