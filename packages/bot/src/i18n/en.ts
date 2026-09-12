@@ -92,6 +92,8 @@ SimplyPlural has been discontinued.`,
 		"2l – This interaction has no longer been kept track of. (Have you waited too long?)",
 	ERROR_SYSTEM_DOESNT_EXIST:
 		"2m – This operation cannot be concluded because there is no system to operate on.",
+	ERROR_ALTER_OPERATION_DOESNT_EXIST:
+		"2m – This operation cannot be concluded because there is no alter operation to operate on.",
 	ERROR_ALTER_DOESNT_EXIST:
 		"2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
 	ERROR_ALTER_DOESNT_EXIST_SUGGESTION:
@@ -1003,4 +1005,10 @@ Actions to the right (destructive actions) will only be applied if you hit **App
 \`\`\`
 
 -# Please note that PluralKit errors are only in English since PluralKit is not bilingual software.`,
+	PREPARING_WRITE: "Preparing to write to database...",
+	DELETING_ALTERS_STAGE: "Deleting operated alters...",
+	CREATING_ALTERS_STAGE: "Creating operated alters...",
+	UPDATING_ALTERS_STAGE: "Updating alter of {{ maxAlters }}...",
+	CLEANING_UP: "Cleaning up...",
+	DONE_SYNCING: "Sucessfully finished alter transcript operation `{{ id }}`."
 };

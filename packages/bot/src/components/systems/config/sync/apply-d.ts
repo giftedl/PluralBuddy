@@ -20,7 +20,7 @@ export default class SetPronounsButton extends ComponentCommand {
 	componentType = "Button" as const;
 
 	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Syncing.ApplyTranscript.startsWith(
+		return InteractionIdentifier.Systems.Syncing.ApplyTranscriptDestructively.startsWith(
 			context.customId,
 		);
 	}
@@ -44,9 +44,10 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		const id = InteractionIdentifier.Systems.Syncing.ApplyTranscript.substring(
-			ctx.customId,
-		)[0];
+		const id =
+			InteractionIdentifier.Systems.Syncing.ApplyTranscriptDestructively.substring(
+				ctx.customId,
+			)[0];
 		const alterOperation = await importTranscriptCollection.findOne({
 			_id: new ObjectId(id),
 			userId: ctx.author.id,
@@ -68,7 +69,8 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		await alterCollection.insertMany(alterOperation.alters.add);
+		if (alterOperation.alters.add.length > 0)
+			await alterCollection.insertMany(alterOperation.alters.add);
 
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
@@ -82,9 +84,29 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		await Promise.all(alterOperation.alters.update.map(async element => {
-			await alterCollection.replaceOne({ alterId: element.alterId, systemId: element.systemId }, element)
-		}));
+		await Promise.all(
+			alterOperation.alters.update.map(async (element) => {
+				await alterCollection.replaceOne(
+					{ alterId: element.alterId, systemId: element.systemId },
+					element,
+				);
+			}),
+		);
+
+		await ctx.interaction.editResponse({
+			components: new LoadingView(
+				await ctx.userTranslations(),
+			).loadingViewCustom((await ctx.userTranslations()).DELETING_ALTERS_STAGE),
+			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+		});
+
+		if (alterOperation.alters.remove.length > 0)
+			await alterCollection.deleteMany({
+				alterId: {
+					$in: alterOperation.alters.remove.map((v) => Number(v.alterId)),
+				},
+				systemId: alterOperation.userId,
+			});
 
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
@@ -98,7 +120,7 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		await alterOperationCollection.deleteOne({ _id: new ObjectId(id) })
+		await alterOperationCollection.deleteOne({ _id: new ObjectId(id) });
 
 		await ctx.interaction.editResponse({
 			components: new AlertView(await ctx.userTranslations()).successViewCustom(
