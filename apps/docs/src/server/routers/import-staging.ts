@@ -1,18 +1,18 @@
-import z from "zod";
-import { baseProcedure } from "../init";
-import { router } from "../trpc";
+import { waitUntil } from "@vercel/functions";
+import { MongoClient } from "mongodb";
+import { headers } from "next/headers";
 import {
 	ImportNotation,
 	ImportStage,
 	PluralKitSystem,
 	TupperBoxSystem,
 } from "plurography";
+import z from "zod";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { MongoClient } from "mongodb";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
 import { api } from "@/lib/rpc";
-import { waitUntil } from "@vercel/functions";
+import { baseProcedure } from "../init";
+import { router } from "../trpc";
 
 export const ImportStagingRouter = router({
 	markImportStagingDone: baseProcedure
@@ -108,7 +108,7 @@ export const ImportStagingRouter = router({
 					},
 				);
 
-			await api["import-staging-reminder"].$post({
+			api["import-staging-reminder"].$post({
 				json: { importStageId: input.importStagingId },
 			});
 
@@ -117,9 +117,7 @@ export const ImportStagingRouter = router({
 	getImportData: baseProcedure
 		.input(z.object({ id: z.string() }))
 		.query(async ({ ctx, input }) => {
-			const session = await auth.api.getSession({
-				headers: await headers(),
-			});
+			const session = ctx.session;
 
 			if (!session) throw new Error("Session error.");
 
