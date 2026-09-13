@@ -246,8 +246,8 @@ export const InteractionIdentifier = {
 				"systems/syncing/apply-transcript",
 			),
 			ApplyTranscriptDestructively: createFromAdditionalArg(
-				"systems/syncing/apply-transcrip-d"
-			)
+				"systems/syncing/apply-transcrip-d",
+			),
 		},
 		DeleteSystem: createStatic("systems/delete"),
 		DeleteSystemMedia: createStatic("systems/delete-media"),
@@ -265,11 +265,22 @@ export const InteractionIdentifier = {
 			SyncPreferences: {
 				SyncManually: createStatic("systems/config/sync/manually"),
 				SyncManuallyForm: createStatic("systems/config/sync/form/manually"),
+				AutoSyncForm: createStatic("systems/config/sync/form/auto"),
+				WriteBackForm: createStatic("systems/config/sync/form/write-back"),
+
+				QuickSync: createStatic("systems/config/sync/quick"),
 				ToggleAutoSync: createStatic("systems/config/sync/auto"),
 				ToggleWriteback: createStatic("systems/config/sync/write-back"),
 
 				PluralKitToken: createStatic("systems/config/sync/token-input"),
 				StoreToken: createStatic("systems/config/sync/store-token"),
+				EnableAutoSync: createStatic(
+					"systems/config/sync/enable-auto-sync-input",
+				),
+				EnableWriteBackSync: createStatic(
+					"systems/config/sync/enable-write-back-input",
+				),
+				DestructiveSync: createStatic("systems/config/sync/destructive-input"),
 			},
 
 			Pagination: {
@@ -319,8 +330,12 @@ export const InteractionIdentifier = {
 				CustomPage: createFromAdditionalArg(
 					"systems/config/alter-plain-pagination/custom-page_",
 				),
-				CustomPageForm: createStatic("systems/config/alter-plain-pagination/custom-page-form"),
-				CustomPageInput: createStatic("systems/config/alter-plain-pagination/custom-page-input")
+				CustomPageForm: createStatic(
+					"systems/config/alter-plain-pagination/custom-page-form",
+				),
+				CustomPageInput: createStatic(
+					"systems/config/alter-plain-pagination/custom-page-input",
+				),
 			},
 			AlterPagination: {
 				PreviousPage: createFromAdditionalArg("systems/config/apg/previous"),

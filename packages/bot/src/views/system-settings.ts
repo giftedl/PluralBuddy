@@ -54,6 +54,13 @@ export const tagsPagination: {
 	documentCount: number;
 	searchQuery?: string | undefined;
 }[] = [];
+
+export enum QuickSyncStatus {
+	NotSyncing,
+	Loading,
+	Done,
+}
+
 export class SystemSettingsView extends TranslatedView {
 	topView(
 		currentTab: "general" | "alters" | "tags" | "public-settings",
@@ -1032,13 +1039,35 @@ export class SystemSettingsView extends TranslatedView {
 		];
 	}
 
-	syncSettings(user: PUser) {
+	syncSettings(
+		user: PUser,
+		state: QuickSyncStatus = QuickSyncStatus.NotSyncing,
+	) {
 		const tokenStored = user.syncConfiguration?.pluralkit?.token !== undefined;
 
 		return [
 			new Container().setComponents(
-				new TextDisplay().setContent(`## Sync Preferences
-PluralBuddy can sync your PluralKit members either one-way or two-way, automatically or manually.`),
+				new Section()
+					.setAccessory(
+						new Button()
+							.setCustomId(
+								InteractionIdentifier.Systems.Configuration.SyncPreferences.QuickSync.create(),
+							)
+							.setStyle(ButtonStyle.Secondary)
+							.setEmoji(
+								state === QuickSyncStatus.Done
+									? emojis.check
+									: state === QuickSyncStatus.Loading
+										? emojis.loading
+										: emojis.refresh,
+							)
+							.setDisabled(
+								!tokenStored || state !== QuickSyncStatus.NotSyncing,
+							),
+					)
+					.setComponents(
+						new TextDisplay().setContent(this.translations.SYNC_PREF_TITLE),
+					),
 				new Separator().setSpacing(Spacing.Large),
 				new Section()
 					.setAccessory(
@@ -1046,13 +1075,15 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.SyncPreferences.SyncManually.create(),
 							)
-							.setLabel("Sync Manually")
+							.setLabel(this.translations.SYNC_MANUALLY)
 							.setStyle(ButtonStyle.Secondary),
 					)
 					.setComponents(
-						new TextDisplay().setContent(`**Sync Manually**`),
 						new TextDisplay().setContent(
-							`PluralBuddy will ask for your PluralKit token or use your stored one, create an import transcript, and then will apply changes corresponding to your PluralKit system.`,
+							this.translations.SYNC_MANUALLY_DESC_1,
+						),
+						new TextDisplay().setContent(
+							this.translations.SYNC_MANUALLY_DESC_2,
 						),
 					),
 				new Section()
@@ -1061,15 +1092,13 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleAutoSync.create(),
 							)
-							.setLabel("Enable Auto-syncing")
+							.setLabel(this.translations.AUTO_SYNCING_TOGGLE)
 							.setStyle(ButtonStyle.Secondary)
 							.setDisabled(!tokenStored),
 					)
 					.setComponents(
-						new TextDisplay().setContent(`**Automatic Syncing**`),
-						new TextDisplay().setContent(
-							`PluralBuddy will use your stored token to automatically sync **once every 30 minutes when a message is proxied**. You must sync manually once & hit the store token button before this option is available.`,
-						),
+						new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_1),
+						new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_2),
 					),
 				new Section()
 					.setAccessory(
@@ -1077,18 +1106,27 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 							.setCustomId(
 								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleWriteback.create(),
 							)
-							.setLabel("Enable Write-back")
+							.setLabel(this.translations.WRITE_BACK_TOGGLE)
 							.setStyle(ButtonStyle.Secondary)
 							.setDisabled(!tokenStored),
 					)
 					.setComponents(
-						new TextDisplay().setContent(`**Write-back Mode**`),
-						new TextDisplay().setContent(
-							`If write-back mode is enabled, when a change is made to your system, it will automatically be written back to the relevant PluralKit object. You must sync manually once & hit the store token button before this option is available.`,
-						),
+						new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_1),
+						new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_2),
 					),
 				new TextDisplay().setContent(
-					`-# PluralBuddy v${build} - last synced: ${user.syncConfiguration?.pluralkit?.lastSynced ? `<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:R>` : "never"}`,
+					user.syncConfiguration?.pluralkit?.lastSynced
+						? this.translations.SYNC_FOOTER.replace(
+								"{{ build }}",
+								build,
+							).replace(
+								"{{ lastSyncDate }}",
+								`<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:f>`,
+							)
+						: this.translations.SYNC_FOOTER_NEVER_SYNCED.replace(
+								"{{ build }}",
+								build,
+							),
 				),
 			),
 		];

@@ -27,8 +27,8 @@ export const PUserObject = z.object({
 	syncConfiguration: z.record(
 		z.string(),
 		z.object({
-			automatic: z.object({ destructive: z.boolean().default(false), enabled: z.boolean().default(false) }) ,
-			writeBack: z.object({ destructive: z.boolean().default(false), enabled: z.boolean().default(false) }) ,
+			automatic: z.object({ destructive: z.boolean().default(false), enabled: z.boolean().default(false) }).optional() ,
+			writeBack: z.object({ enabled: z.boolean().default(false) }).optional() ,
 			token: z.object({ v: z.string(), i: z.string() }).optional(),
             lastSynced: z.coerce.date().optional(),
 

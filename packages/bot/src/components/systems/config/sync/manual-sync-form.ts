@@ -14,12 +14,13 @@ import {
 	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import type { z } from "zod";
+import type { z, ZodError } from "zod";
 import { build } from "@/index";
 import { emojis } from "@/lib/emojis";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { hexToBuffer } from "@/lib/hex-buffer-operation";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { pk } from "@/lib/pk-api";
 import { runSandboxActions } from "@/lib/pk-sync-engine";
 import {
 	alterCollection,
@@ -140,9 +141,6 @@ export default class SetPronounsButton extends ModalCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		const PK_UA = `PluralBuddy/${build.split("/")[0]} (gftl.fyi/discord; @giftedly, Discord) Plurography/0.5.0`;
-		console.log("using user agent:", PK_UA);
-
 		const existingTranscript = await importTranscriptCollection.findOne({
 			userId: ctx.author.id,
 		});
@@ -246,48 +244,34 @@ export default class SetPronounsButton extends ModalCommand {
 			});
 		}
 
-		const system = await fetch(`${API_PREFIX}/systems/@me`, {
-			headers: {
-				Authorization: token,
-				"User-Agent": PK_UA,
-			},
-		});
-		const json = await system.json();
-		if (((json as {message: string | undefined}).message) !== undefined) {
-			return await followup.edit({
-				components: [
-					...(await new AlertView(await ctx.userTranslations()).errorViewCustom(
-						(
-							await ctx.userTranslations()
-						).PK_ERROR.replace(
-							"{{ error }}",
-							(json as { message: string | undefined }).message ?? "??",
-						),
-					)),
-				],
+		const system = await pk(token as string)
+			.systemsCollection.findOne({ userId: "@me" })
+			.catch(async (v: ZodError) => {
+				await followup.edit({
+					components: [
+						...(await new AlertView(
+							await ctx.userTranslations(),
+						).errorViewCustom(
+							(
+								await ctx.userTranslations()
+							).PK_ERROR.replace(
+								"{{ error }}",
+								(v._zod.output as { message: string | undefined }).message ??
+									"??",
+							),
+						)),
+					],
+				});
 			});
-		}
-		const systemParsed = PluralKitAPISystem.parse(json);
 
-		const members = await fetch(`${API_PREFIX}/systems/@me/members`, {
-			headers: {
-				Authorization: token,
-				"User-Agent": PK_UA,
-			},
-		});
-		const membersJson = (await members.json()) as Array<
-			z.infer<typeof PluralKitMember>
-		>;
+		if (typeof system !== "object") return;
 
-		const groups = await fetch(`${API_PREFIX}/systems/@me/groups`, {
-			headers: {
-				Authorization: token,
-				"User-Agent": PK_UA,
-			},
+		const members = await pk(token as string).membersCollection.find({
+			userId: "@me",
 		});
-		const groupsJson = (await groups.json()) as Array<
-			z.infer<typeof PluralKitGroup>
-		>;
+		const groups = await pk(token as string).groupsCollection.find({
+			userId: "@me",
+		});
 
 		const alters = await alterCollection
 			.find({ systemId: ctx.author.id })
@@ -300,9 +284,9 @@ export default class SetPronounsButton extends ModalCommand {
 			pluralbuddy: { alters, tags, system: systemPB },
 			authorId: ctx.author.id,
 			pluralkit: {
-				members: membersJson,
-				system: systemParsed,
-				groups: groupsJson,
+				members: members,
+				system,
+				groups: groups,
 			},
 		});
 		const zodTranscript = PImportTranscript.parse({

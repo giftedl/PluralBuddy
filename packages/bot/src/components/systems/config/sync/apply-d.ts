@@ -12,6 +12,7 @@ import {
 	alterCollection,
 	alterOperationCollection,
 	importTranscriptCollection,
+    userCollection,
 } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
@@ -120,7 +121,11 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		await alterOperationCollection.deleteOne({ _id: new ObjectId(id) });
+		await importTranscriptCollection.deleteOne({ _id: new ObjectId(id) });
+		await userCollection.updateOne(
+			{ userId: ctx.author.id },
+			{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
+		);
 
 		await ctx.interaction.editResponse({
 			components: new AlertView(await ctx.userTranslations()).successViewCustom(

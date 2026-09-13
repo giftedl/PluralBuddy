@@ -104,6 +104,8 @@ SimplyPlural has been discontinued.`,
 	CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
 	EDIT_SYSTEM_FORM_TITLE: "Editing System",
 	SYNCING_MANUALLY_TITLE: "Syncing Manually",
+	SYNCING_AUTOMATICALLY_TITLE: "Syncing Automatically",
+	WRITE_BACK_TITLE: "Writing Back",
 	SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
 	SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
 	SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
@@ -1004,11 +1006,32 @@ Actions to the right (destructive actions) will only be applied if you hit **App
 {{ error }}
 \`\`\`
 
--# Please note that PluralKit errors are only in English since PluralKit is not bilingual software.`,
+-# Please note that PluralKit errors are only in English.`,
 	PREPARING_WRITE: "Preparing to write to database...",
 	DELETING_ALTERS_STAGE: "Deleting operated alters...",
 	CREATING_ALTERS_STAGE: "Creating operated alters...",
 	UPDATING_ALTERS_STAGE: "Updating alter of {{ maxAlters }}...",
 	CLEANING_UP: "Cleaning up...",
-	DONE_SYNCING: "Sucessfully finished alter transcript operation `{{ id }}`."
+	DONE_SYNCING: "Sucessfully finished alter transcript operation `{{ id }}`.",
+
+	SYNC_PREF_TITLE: `## Sync Preferences
+PluralBuddy can sync your PluralKit members either one-way or two-way, automatically or manually.`,
+	SYNC_MANUALLY: "Sync Manually",
+	SYNC_MANUALLY_DESC_1: "**Sync Manually**",
+	SYNC_MANUALLY_DESC_2: `PluralBuddy will ask for your PluralKit token or use your stored one, create an import transcript, and then will apply changes corresponding to your PluralKit system.`,
+	AUTO_SYNCING_TOGGLE: "Auto-syncing Preferences",
+	AUTO_SYNCING_DESC_1: `**Automatic Syncing**`,
+	AUTO_SYNCING_DESC_2: `PluralBuddy will use your stored token to automatically sync **once every 30 minutes when a message is proxied**. You must sync manually once & hit the store token button before this option is available.`,
+	WRITE_BACK_TOGGLE: "Write-back Preferences",
+	WRITE_BACK_DESC_1: `**Write-back Mode**`,
+	WRITE_BACK_DESC_2: `If write-back mode is enabled, when a change is made to your system, it will automatically be written back to the relevant PluralKit object. You must sync manually once & hit the store token button before this option is available.`,
+
+	SYNC_FOOTER: `-# PluralBuddy v{{ build }} - last synced: {{ lastSyncDate }}`,
+	SYNC_FOOTER_NEVER_SYNCED: `-# PluralBuddy v{{ build }} - last synced: never`,
+
+	ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
+	ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
+	DESTRUCTIVE_SWITCH: "Destructive Mode",
+	DESTRUCTIVE_SWITCH_DESC:
+		"Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
 };

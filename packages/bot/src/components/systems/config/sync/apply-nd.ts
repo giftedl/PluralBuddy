@@ -12,6 +12,7 @@ import {
 	alterCollection,
 	alterOperationCollection,
 	importTranscriptCollection,
+	userCollection,
 } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
@@ -68,7 +69,8 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		await alterCollection.insertMany(alterOperation.alters.add);
+		if (alterOperation.alters.add.length > 0)
+			await alterCollection.insertMany(alterOperation.alters.add);
 
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
@@ -82,9 +84,14 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		await Promise.all(alterOperation.alters.update.map(async element => {
-			await alterCollection.replaceOne({ alterId: element.alterId, systemId: element.systemId }, element)
-		}));
+		await Promise.all(
+			alterOperation.alters.update.map(async (element) => {
+				await alterCollection.replaceOne(
+					{ alterId: element.alterId, systemId: element.systemId },
+					element,
+				);
+			}),
+		);
 
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
@@ -98,7 +105,11 @@ export default class SetPronounsButton extends ComponentCommand {
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});
 
-		await alterOperationCollection.deleteOne({ _id: new ObjectId(id) })
+		await importTranscriptCollection.deleteOne({ _id: new ObjectId(id) });
+		await userCollection.updateOne(
+			{ userId: ctx.author.id },
+			{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
+		);
 
 		await ctx.interaction.editResponse({
 			components: new AlertView(await ctx.userTranslations()).successViewCustom(

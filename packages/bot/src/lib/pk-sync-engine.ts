@@ -1,3 +1,4 @@
+import { ObjectId } from "bson";
 import {
 	type PAlter,
 	PAlterObject,
@@ -8,8 +9,18 @@ import {
 	type PSystem,
 	type PTag,
 	PTagObject,
+	type PUser,
 } from "plurography";
 import type z from "zod";
+import {
+	alterCollection,
+	importTranscriptCollection,
+	tagCollection,
+	userCollection,
+} from "@/mongodb";
+import { hexToBuffer } from "./hex-buffer-operation";
+import { pk } from "./pk-api";
+import { decryptToken } from "./pk-token-encryption";
 
 type SyncEngineAction<K> = {
 	add: Array<K>;
@@ -89,7 +100,7 @@ export function runSandboxActions({
 					sortObject(
 						PAlterObject.parse({
 							...possibleAlter,
-							...converter._syncUpdateAlter(v, i),
+							...newAlter,
 						}),
 					),
 				)
@@ -234,4 +245,87 @@ function sortObject(
 					: obj[key];
 			return sorted;
 		}, {});
+}
+
+export async function automaticallySync({
+	syncConfiguration,
+	userId,
+	system: systemPB,
+}: PUser) {
+	console.log({
+
+		autoEnabled: syncConfiguration?.pluralkit?.automatic?.enabled,
+		tokenEnabled: syncConfiguration?.pluralkit?.token,
+		systemExists: systemPB,
+		timeCorrect: Date.now() -
+			(syncConfiguration?.pluralkit?.lastSynced ?? new Date()).valueOf() <
+			1800000
+	})
+	if (
+		!syncConfiguration?.pluralkit?.automatic?.enabled ||
+		!syncConfiguration.pluralkit.token ||
+		!systemPB ||
+		Date.now() -
+			(syncConfiguration.pluralkit.lastSynced ?? new Date()).valueOf() <
+			1800000
+	) {
+		return;
+	}
+
+	// update first to avoid duplicate requests from subsequent messages
+	await userCollection.updateOne(
+		{ userId },
+		{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
+	);
+	console.log("sync", userId);
+
+	const token = await decryptToken(
+		syncConfiguration.pluralkit.token.i,
+		syncConfiguration.pluralkit.token.v,
+	);
+	const destructive =
+		syncConfiguration?.pluralkit?.automatic?.destructive ?? false;
+
+	const system = await pk(token).systemsCollection.findOne({
+		userId: "@me",
+	});
+	const members = await pk(token).membersCollection.find({
+		userId: "@me",
+	});
+	const groups = await pk(token).groupsCollection.find({
+		userId: "@me",
+	});
+
+	const alters = await alterCollection.find({ systemId: userId }).toArray();
+	const tags = await tagCollection.find({ systemId: userId }).toArray();
+
+	const transcript = runSandboxActions({
+		pluralbuddy: { alters, tags, system: systemPB },
+		authorId: userId,
+		pluralkit: {
+			members: members,
+			system,
+			groups: groups,
+		},
+	});
+
+	if (transcript.alters.add.length > 0)
+		await alterCollection.insertMany(transcript.alters.add);
+
+	await Promise.all(
+		transcript.alters.update.map(async (element) => {
+			await alterCollection.replaceOne(
+				{ alterId: element.alterId, systemId: element.systemId },
+				element,
+			);
+		}),
+	);
+
+	if (transcript.alters.remove.length > 0 && destructive)
+		await alterCollection.deleteMany({
+			alterId: {
+				$in: transcript.alters.remove.map((v) => Number(v.alterId)),
+			},
+			systemId: userId,
+		});
 }

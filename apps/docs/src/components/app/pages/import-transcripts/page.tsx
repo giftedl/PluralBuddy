@@ -368,7 +368,7 @@ function PercentageStat({
 					)}
 				>
 					({percentageAfterIncrease > 0 && "+"}
-					{percentageAfterIncrease}% change)
+					{Math.ceil(percentageAfterIncrease)}% change)
 				</span>
 			</span>
 		</span>

@@ -32,8 +32,10 @@ import type {
 } from "@/events/on-message-create";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { getGuildFromId, type PGuild } from "@/types/guild";
+import { getUserById } from "@/types/user";
 import { createError } from "../create-error";
 import { emojis } from "../emojis";
+import { automaticallySync } from "../pk-sync-engine";
 import { processFileAttachments } from "./process-file-attachments";
 import { processUrlIntegrations } from "./process-url-attachments";
 
@@ -333,7 +335,11 @@ export async function proxy(
 			client.cache.similarWebhookResource.remove(message.channelId);
 		}
 
-		await message.delete();
+		await message.delete().then(async () => {
+			const user = await getUserById(message.author.id);
+
+			await automaticallySync(user);
+		});
 	}
 }
 
@@ -350,7 +356,6 @@ export const getModernComponentsMappings = (
 		components[1]?.data.type === ComponentType.MediaGallery
 	) {
 	}
-	console.log(fileComponents);
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
 		? {
