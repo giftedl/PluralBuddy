@@ -56,7 +56,33 @@ import { middlewares } from "./middleware";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
 
-export const logger = null;
+
+
+export const logger = process.env.SEQ_HOST
+	? winston.createLogger({
+			level: "info",
+			format: winston.format.combine(
+				/* This is required to get errors to log with stack traces. See https://github.com/winstonjs/winston/issues/1498 */
+				winston.format.errors({ stack: true }),
+				winston.format.json(),
+			),
+			defaultMeta: { application: "pluralbuddy" },
+			transports: [
+				new winston.transports.Console({
+					format: winston.format.simple(),
+				}),
+				new SeqTransport({
+					serverUrl: process.env.SEQ_HOST,
+					apiKey: process.env.SEQ_KEY,
+					onError: (e) => {
+						console.error(e);
+					},
+					handleExceptions: true,
+					handleRejections: true,
+				}),
+			],
+		})
+	: null;
 
 if (logger) logger.info("PluralBuddy is online");
 
