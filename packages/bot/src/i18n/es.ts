@@ -783,7 +783,7 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
   ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
   ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
   DESTRUCTIVE_SWITCH: "Destructive Mode",
-  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
+  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit automatically.",
   NORMAL_TERMS_TITLE: "**Singular Words or Features**",
   NORMAL_TERMS_DESC: "Any word or feature that is just singular would be editable here.",
   PLURAL_TERMS_TITLE: "**Plural Words or Features**",
