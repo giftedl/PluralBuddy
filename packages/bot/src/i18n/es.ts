@@ -296,8 +296,8 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 -# 🇩🇪 Traducciones al alemán por @mira.mizuki (gracias, amigo/a)
 
 -# **ENLACES**
-> -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pb.giftedly.dev)
-> -# [Términos de servicio](<https://pb.giftedly.dev/docs/policies/terms>) · [Política de privacidad](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+> -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pluralbuddy.app)
+> -# [Términos de servicio](<https://pluralbuddy.app/docs/policies/terms>) · [Política de privacidad](<https://pluralbuddy.app/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Asignar etiqueta",
   SET_AUTO_PROXY_SRV: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en todas partes.",
@@ -414,7 +414,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   REQUIRED_SERVER_PROXY: "Debes estar en un servidor para usar proxy",
   SELECT_DEFAULT_PROXY: "Selecciona un modo de proxy",
   POLICY_MODAL_TITLE: "¡Bienvenido/a a PluralBuddy!",
-  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} ¡Hola, te damos la bienvenida a PluralBuddy para Discord! Para mantener a PluralBuddy como un bot seguro, requerimos que aceptes nuestra [Política de privacidad](https://pb.giftedly.dev/en/docs/policies/privacy) y [Términos de servicio](https://pb.giftedly.dev/en/docs/policies/terms) para usar el bot.
+  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} ¡Hola, te damos la bienvenida a PluralBuddy para Discord! Para mantener a PluralBuddy como un bot seguro, requerimos que aceptes nuestra [Política de privacidad](https://pluralbuddy.app/en/docs/policies/privacy) y [Términos de servicio](https://pluralbuddy.app/en/docs/policies/terms) para usar el bot.
 
 -# - El contenido NSFW no está permitido en PluralBuddy. El contenido NSFW resultará en un bloqueo instantáneo. Ten cuidado con lo que subes.
 -# - Aunque PluralBuddy es un bot **enfocado en la privacidad** desde la perspectiva del usuario, debido a la naturaleza centralizada de los bots de Discord, todos los datos relacionados con el sistema que proporciones pueden ser vistos por los desarrolladores.
@@ -642,7 +642,7 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
   EXISTING_ALTER: "Ya existe un alter con ese nombre de usuario. Elige otro.",
   ALTER_COUNT_LABEL: "**Recuento de alters:** ",
   SELF_REACTION_ERR: "No se pudo remover la reacción propia",
-  SELF_REACTION_DESC: "PluralBuddy no pudo remover el emoji de carga al intentar realizar una [Acción del menú contextual](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+  SELF_REACTION_DESC: "PluralBuddy no pudo remover el emoji de carga al intentar realizar una [Acción del menú contextual](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "No se pudo remover la reacción del usuario",
   REPLY_IN_RESPONSE: "-# {{ reply }} En respuesta a: {{ link }}",
   AWAKE: "¡Hola! Estoy activo, ejecutando PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
@@ -653,7 +653,7 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
   DISPLAY_TAG_ENFORCE_DESC: "Este usuario no puede actuar como proxy en este servidor sin una etiqueta de sistema, debido a la política de aplicación de etiquetas de visualización del sistema. Habilite las etiquetas de sistema utilizando el botón de la derecha.",
   NO_DM_CHANNELS: "No puedes enviar mensajes proxy en canales de mensajes directos. ¡Lo sentimos!",
   NOTIFIED_1: "-# Se te notificó de esta acción debido a tu asociación con tu alter de PluralBuddy.",
-  NOTIFIED_2: "-# Desarrollado como software de código abierto en [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+  NOTIFIED_2: "-# Desarrollado como software de código abierto en [pluralbuddy.app](<https://pluralbuddy.app>)",
   OPT_OUT_DMS: "Desactivar DMs",
   UNDO_BTN: "Deshacer operación",
   EXPIRED: "Expirado",
@@ -696,7 +696,7 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
   DISABLED_SERVER: `Este servidor tiene desactivado el envío de mensajes proxy.`,
   AP_AS: "-# **PROXY AUTOMÁTICO ACTIVO COMO:**",
   AP_INTEGRATION_AS: "-# **{{ provider }} AL FRENTE COMO:**",
-  PROVIDER_NOT_FOUND: `No se encontró ese proveedor de proxy automático o no autorizaste con el permiso [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap). Contacta al desarrollador de esta integración si crees que es un error.
+  PROVIDER_NOT_FOUND: `No se encontró ese proveedor de proxy automático o no autorizaste con el permiso [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap). Contacta al desarrollador de esta integración si crees que es un error.
 	
 -# Integración: \`{{ id }}\``,
   AP_INVALID_SYNTAX: `Modo de proxy automático o proveedor inválido \`{{ mode }}\`.
@@ -783,7 +783,7 @@ PluralBuddy puede sincronizar los miembros de tu PluralKit de forma unidireccion
   ENABLE_AUTO_SWITCH: "Habilitar sincronización automática",
   ENABLE_WRITE_BACK_SWITCH: "Activar reescritura",
   DESTRUCTIVE_SWITCH: "Modo destructivo",
-  DESTRUCTIVE_SWITCH_DESC: "El modo destructivo eliminará automáticamente los Alters que no estén presentes en PluralKit.",
+  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
   NORMAL_TERMS_TITLE: "**Palabras o características singulares**",
   NORMAL_TERMS_DESC: "Cualquier palabra o característica que sea singular se podrá editar aquí.",
   PLURAL_TERMS_TITLE: "**Palabras o características en plural**",
