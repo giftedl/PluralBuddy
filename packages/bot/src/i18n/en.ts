@@ -405,8 +405,8 @@ PluralBuddy uses a **username/display name** system.
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
 -# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
-> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
+> -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
 
 	TAG_ASSIGN_ALTER: "Assign Tag",
 	SET_AUTO_PROXY_SRV:
@@ -573,7 +573,7 @@ PluralBuddy uses a **username/display name** system.
 	SELECT_DEFAULT_PROXY: "Select a proxy mode",
 
 	POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
-	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
+	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
 
 -# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
 -# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
@@ -850,7 +850,7 @@ There is an example below of what an example proxy with this role would look lik
 
 	SELF_REACTION_ERR: "Unable to remove self-reaction",
 	SELF_REACTION_DESC:
-		"PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+		"PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
 	REACTION_ERR: "Unable to remove user reaction",
 
 	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
@@ -869,7 +869,7 @@ There is an example below of what an example proxy with this role would look lik
 	NOTIFIED_1:
 		"-# You were notified of this action due to your association with your PluralBuddy alter.",
 	NOTIFIED_2:
-		"-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+		"-# Developed as open-source software @ [pluralbuddy.app](<https://pluralbuddy.app>)",
 	OPT_OUT_DMS: "Opt-out of DMs",
 	UNDO_BTN: "Undo Operation",
 	EXPIRED: "Expired",
@@ -926,7 +926,7 @@ Your system is using the front state of **{{ mode }}**.`,
 	AP_AS: "-# **AUTO-PROXYING AS:**",
 	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
 
-	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
 	AP_INVALID_SYNTAX: `Invalid autoproxy mode, alter or provider \`{{ mode }}\`.
