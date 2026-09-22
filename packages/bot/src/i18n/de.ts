@@ -300,8 +300,8 @@ PluralBuddy uses a **username/display name** system.
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
 -# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
-> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
+> -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
   SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
@@ -418,7 +418,7 @@ PluralBuddy uses a **username/display name** system.
   REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
   SELECT_DEFAULT_PROXY: "Select a proxy mode",
   POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
-  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
+  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
 
 -# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
 -# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
@@ -636,7 +636,7 @@ There is an example below of what an example proxy with this role would look lik
   EXISTING_ALTER: "An alter with that username already exists. Pick another.",
   ALTER_COUNT_LABEL: "**Alter Count:** ",
   SELF_REACTION_ERR: "Unable to remove self-reaction",
-  SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+  SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "Unable to remove user reaction",
   REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
   AWAKE: "Hi! I'm awake, running PluralBuddy `#{{ buildNumber }}/{{ branch }}`.",
@@ -647,7 +647,7 @@ There is an example below of what an example proxy with this role would look lik
   DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
   NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
   NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
-  NOTIFIED_2: "-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+  NOTIFIED_2: "-# Developed as open-source software @ [pluralbuddy.app](<https://pluralbuddy.app>)",
   OPT_OUT_DMS: "Opt-out of DMs",
   UNDO_BTN: "Undo Operation",
   EXPIRED: "Expired",
@@ -690,7 +690,7 @@ Your system is using the front state of **{{ mode }}**.`,
   DISABLED_SERVER: `This server is disabled from proxying.`,
   AP_AS: "-# **AUTO-PROXYING AS:**",
   AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
   AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
@@ -777,7 +777,7 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
   ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
   ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
   DESTRUCTIVE_SWITCH: "Destructive Mode",
-  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit automatically.",
+  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
   NORMAL_TERMS_TITLE: "**Singular Words or Features**",
   NORMAL_TERMS_DESC: "Any word or feature that is just singular would be editable here.",
   PLURAL_TERMS_TITLE: "**Plural Words or Features**",
