@@ -232,7 +232,7 @@ export const clientRoutes = app
 		zValidator(
 			"json",
 			z.object({
-				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n"]),
+				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n", 'alterProxy']),
 				key: z.string(),
 			}),
 		),

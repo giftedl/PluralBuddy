@@ -19,10 +19,10 @@ import {
 	tagCollection,
 	userCollection,
 } from "@/mongodb";
+import { client, logger } from "..";
 import { hexToBuffer } from "./hex-buffer-operation";
 import { pk } from "./pk-api";
 import { decryptToken } from "./pk-token-encryption";
-import { logger } from "..";
 
 type SyncEngineAction<K> = {
 	add: Array<K>;
@@ -473,7 +473,9 @@ export async function automaticallySync({
 				$in: transcript.tags.remove.map((v) => v.tagId),
 			},
 			systemId: userId,
-		})
+		});
+
+	[...transcript.alters.update, ...transcript.alters.remove].forEach((v) => client.cache.alterProxy.remove(String(v.alterId)))
 
 	await userCollection.updateOne({ userId }, { $set: { "system": destructive ? transcript.system.destructive : transcript.system.nondestructive } })
 

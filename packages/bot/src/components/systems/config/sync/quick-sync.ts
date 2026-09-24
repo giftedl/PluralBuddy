@@ -7,7 +7,7 @@ import {
 import { ComponentCommand, ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import type { z } from "zod";
-import { build, logger } from "@/index";
+import { build, client, logger } from "@/index";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { pk } from "@/lib/pk-api";
@@ -93,6 +93,7 @@ export default class QuickSync extends ComponentCommand {
 			}),
 		);
 
+		transcript.alters.update.forEach((v) => client.cache.alterProxy.remove(String(v.alterId)))
 
 		if (transcript.tags.add.length > 0)
 			await tagCollection.insertMany(transcript.tags.add);

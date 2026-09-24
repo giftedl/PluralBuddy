@@ -7,6 +7,7 @@ import {
 } from "seyfert";
 import { ComponentHandler } from "seyfert/lib/components/handler";
 import { MessageFlags } from "seyfert/lib/types";
+import { client } from "@/index";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import {
 	alterCollection,
@@ -94,6 +95,7 @@ export default class SetPronounsButton extends ComponentCommand {
 			}),
 		);
 
+		alterOperation.alters.update.forEach((v) => client.cache.alterProxy.remove(String(v.alterId)))
 
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
