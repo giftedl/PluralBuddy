@@ -99,6 +99,8 @@ export const InteractionIdentifier = {
 	EditMenu: {
 		EditContextForm: createFromAdditionalArg("edit/set-form/context"),
 		EditContextType: createStatic("edit/type-form/context"),
+
+		EditMessageReaction: createFromAdditionalArg("edit/reaction")
 	},
 	Nudge: {
 		Snooze: createStatic("nudge/snooze"),

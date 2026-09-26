@@ -1,15 +1,15 @@
 import {
 	ComponentCommand,
+	type ComponentContext,
 	ModalCommand,
 	ModalContext,
-	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
-import { messagesCollection } from "@/mongodb";
 import { MessageFlags } from "seyfert/lib/types";
-import { getSimilarWebhooks } from "@/lib/proxying/util";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { processEditContents } from "@/lib/proxying/process-edit";
+import { getSimilarWebhooks } from "@/lib/proxying/util";
+import { messagesCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 export default class EditContextForm extends ModalCommand {
 	componentType = "Button" as const;
@@ -41,8 +41,7 @@ export default class EditContextForm extends ModalCommand {
 		}
 
 		if (
-			message?.systemId !== ctx.author.id ||
-			message.guildId !== ctx.guildId
+			message?.systemId !== ctx.author.id
 		) {
 			return await ctx.write({
 				components: new AlertView(await ctx.userTranslations()).errorView(
@@ -73,8 +72,9 @@ export default class EditContextForm extends ModalCommand {
 		}
 
 		const webhook = similarWebhooks[0];
+		const member = ctx.member ?? await ctx.client.members.fetch(message.guildId ?? "", ctx.author.id, false)
 
-		if (!ctx.member) throw new Error("No member object.");
+		if (!member) throw new Error("No member object.");
 
 		await processEditContents(
 			message,
@@ -82,14 +82,14 @@ export default class EditContextForm extends ModalCommand {
 			webhook,
 			contents as string,
 			guild,
-			ctx.member,
+			member,
 		);
 
 		return ctx.write({
 			components: new AlertView(await ctx.userTranslations()).successViewCustom(
 				(await ctx.userTranslations()).SUCCESSFULLY_EDITED_MESSAGE.replace(
 					"%message%",
-					`https://discord.com/channels/${ctx.guildId}/${fetchedMessage?.channelId}/${fetchedMessage?.id}`,
+					`https://discord.com/channels/${message.guildId ?? fetchedMessage.guildId}/${fetchedMessage?.channelId}/${fetchedMessage?.id}`,
 				),
 			),
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
