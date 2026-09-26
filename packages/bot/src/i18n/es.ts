@@ -803,5 +803,9 @@ PluralBuddy puede sincronizar los miembros de tu PluralKit de forma unidireccion
   SUCCESSFULLY_APPLIED_TEMPLATE: "¡La plantilla se aplicó correctamente!",
   USE_PLURALKIT_TERMINOLOGY_TITLE: "Usar Terminología al estilo PluralKit (¡nuevo!)",
   USE_PLURALKIT_TERMINOLOGY_DESC: "Utilice una terminología similar a la representada en PluralKit (es decir, miembro, grupo).",
-  ALTER_TAG_COUNT_TOO_HIGH: "-# Esta importación no se puede realizar de forma destructiva y/o no destructiva debido a que el recuento de Alter o etiquetas combinado con la transcripción es demasiado alto."
+  ALTER_TAG_COUNT_TOO_HIGH: "-# Esta importación no se puede realizar de forma destructiva y/o no destructiva debido a que el recuento de Alter o etiquetas combinado con la transcripción es demasiado alto.",
+  EDIT_REACTING_TOP: `-# For future reference, you can reply to a message with \`{{ prefix }}edit\` to edit that message.
+	
+You are attempting to edit a message with the 📝 emoji. Please enter the contents of the new message contents with the button below.`,
+  EDIT_MESSAGE_BTN: "Edit Message"
 };
