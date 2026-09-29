@@ -51,7 +51,7 @@ export const PAlterObject = z
 		nameMap: z
 			.object({ server: z.string().max(20), name: z.string().max(100) })
 			.array(),
-		color: z
+		color: z	
 			.string()
 			.regex(/^#[0-9A-F]{6}$/i)
 			.nullable(),

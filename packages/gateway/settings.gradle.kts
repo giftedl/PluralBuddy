@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "openscheduler"
+rootProject.name = "gateway"
 

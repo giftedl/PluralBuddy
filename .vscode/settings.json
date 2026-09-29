@@ -4,5 +4,6 @@
 
 	"editor.codeActionsOnSave": {
 		"source.organizeImports.biome": "explicit"
-	}
+	},
+	"java.configuration.updateBuildConfiguration": "interactive"
 }
