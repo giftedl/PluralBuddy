@@ -218,11 +218,14 @@ if (import.meta.main) {
 		},
 	);
 
-	logger?.info("Starting gateway")
+	client.logger.info("Starting gateway")
 	const gateway = new PluralBuddyGateway(process.env.GATEWAY_TOKEN ?? "");
+	client.logger.info("Waiting for stream to open...")
 	await gateway.waitToOpen()
+	client.logger.info("Authenticating...")
 	await gateway.authenticate()
-	logger?.info("Authenticated w/ PluralBuddy Gateway")
+	gateway.heartbeat()
+	client.logger.info("Authenticated w/ PluralBuddy Gateway")
 
 	client.setServices({
 		middlewares: middlewares,

@@ -24,10 +24,16 @@ dependencies {
     implementation(ktorLibs.server.websockets)
     implementation(libs.hayden.khealth)
     implementation(libs.logback.classic)
+
     implementation("org.mongodb:mongodb-driver-core:5.9.0")
     implementation("org.mongodb:mongodb-driver-sync:5.9.0")
     implementation("org.mongodb:bson:5.9.0")
+    implementation("com.github.dotenv-org:dotenv-vault-kotlin:0.0.2")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
+}
+
+application {
+    mainClass = "app.pluralbuddy.MainKt"
 }

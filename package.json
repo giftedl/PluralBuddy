@@ -17,7 +17,9 @@
 		"types": "cd packages/plurography && bunx tsc --outDir dist",
 		"types:watch": "cd packages/plurography && bunx tsc --outDir dist -w",
 		"bot:types": "concurrently --names plurography,bot \"bun run types:watch\" \"bun run bot:watch\"",
-		"all": "concurrently --names plurography,bot,app \"bun run types:watch\" \"bun run bot:watch\" \"bun run docs:dev\""
+		"all": "concurrently --names plurography,bot,app \"bun run types:watch\" \"bun run bot:watch\" \"bun run docs:dev\"",
+		"all:gateway": "concurrently --names gateway,plurography,bot,app \"cd ./packages/gateway && java -jar ./build/libs/gateway-all.jar \" \"bun run types:watch\" \"sleep 2 && bun run bot:watch\" \"bun run docs:dev\" ",
+		"gateway:build": "java -jar ./gradle/wrapper/gradle-wrapper.jar :packages:gateway:build"
 	},
 	"workspaces": ["packages/*", "apps/*"],
 	"dependencies": {

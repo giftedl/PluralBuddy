@@ -34,3 +34,7 @@ commands.json
 
 # Finder (MacOS) folder config
 .DS_Store
+
+.gradle
+.kotlin
+build

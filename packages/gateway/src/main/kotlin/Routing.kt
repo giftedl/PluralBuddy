@@ -3,11 +3,14 @@ package app.pluralbuddy
 import app.pluralbuddy.packets.AuthenticatedSessionPacket
 import app.pluralbuddy.packets.AuthenticationPacket
 import app.pluralbuddy.packets.BasePacket
+import app.pluralbuddy.packets.PingPacket
+import app.pluralbuddy.packets.PongPacket
 import app.pluralbuddy.packets.ReminderPacket
 import app.pluralbuddy.structure.Reminder
 import app.pluralbuddy.structure.description.Description
 import app.pluralbuddy.structure.description.MessageDescription
 import app.pluralbuddy.structure.description.TextDescription
+import io.github.cdimascio.dotenv.dotenv
 import io.ktor.http.ContentType
 import io.ktor.http.invoke
 import io.ktor.serialization.deserialize
@@ -25,9 +28,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 import org.intellij.lang.annotations.Language
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -43,13 +43,17 @@ fun Application.configureRouting() {
 
     val messageResponseFlow = MutableSharedFlow<BasePacket>()
     val sharedFlow = messageResponseFlow.asSharedFlow()
+    val dotenv = runCatching { dotenv {
+        /* When running via the NPM task,   the actual .env is two directories behind. */
+        directory = "../../"
+    } }
 
     routing {
         get("/") {
             call.respondText(homePage, contentType = ContentType.Text.Html)
         }
         webSocket("/bot") { // websocketSession
-            val authKey = System.getenv("BOT_API_KEY")
+            val authKey = (dotenv.getOrNull()?.get("BOT_API_KEY")) ?: System.getenv("BOT_API_KEY")
             val contentConverter = KotlinxWebsocketSerializationConverter(Json {
                 withOpenSchedulingSettings()
             })
@@ -109,6 +113,12 @@ fun Application.configureRouting() {
                                     sendSerialized(message)
                                 }
                             }
+
+                            if (text.getOrNull() is PingPacket) {
+                                val pingPacket = text.getOrNull() as PingPacket
+
+                                send(contentConverter.serialize(PongPacket(msSince = System.currentTimeMillis() - pingPacket.now) as BasePacket))
+                            }
                         }
                     }
                 }
@@ -117,9 +127,6 @@ fun Application.configureRouting() {
             }.also {
                 possibleSessionJob?.cancel()
             }
-        }
-        get("/json/kotlinx-serialization") {
-            call.respond(mapOf("hello" to "world"))
         }
     }
 }
