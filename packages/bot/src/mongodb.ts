@@ -7,6 +7,7 @@ import type {
 	PGuildError,
 	PImportTranscript,
 	PIntegrationFront,
+	PReminder
 } from "plurography";
 import { connectMongo } from "./lib/libby";
 import type { PAlter } from "./types/alter";
@@ -31,6 +32,7 @@ export let frontsCollection: Collection<PIntegrationFront>;
 export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
 export let analyticsCollection: Collection<PAnalytics>;
+export let reminderCollection: Collection<PReminder>;
 
 export async function setupMongoDB() {
 	mongoClient = new MongoClient(process.env.MONGO ?? "");
@@ -85,6 +87,7 @@ export async function setupDatabases() {
 	alterOperationCollection = mainDb.collection("alter-operations");
 	frontsCollection = mainDb.collection("fronts");
 	importTranscriptCollection = mainDb.collection("import-transcripts");
+	reminderCollection = mainDb.collection("reminders");
 
 	await createPeriodicExpirationDates();
 }

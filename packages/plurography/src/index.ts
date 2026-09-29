@@ -33,6 +33,7 @@ export * from "./pluralbuddy/import-staging";
 export * from "./pluralbuddy/import-transcript"
 export * from "./pluralbuddy/message";
 export * from "./pluralbuddy/operation";
+export * from "./pluralbuddy/reminder"
 export * from "./pluralbuddy/system";
 export * from "./pluralbuddy/tag";
 export * from "./pluralbuddy/terminology"

@@ -2,6 +2,7 @@ import { styleText } from "node:util";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { trimTrailingSlash } from "hono/trailing-slash";
+import { serve } from "inngest/hono";
 import { type ImportStage, PSystemObject } from "plurography";
 import type { BaseResource } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -42,15 +43,17 @@ const SystemEditInput = PSystemObject.omit({
 const app = new Hono();
 
 app.use("/api/*", async (ctx, next) => {
+	if (ctx.req.path === "/api/inngest")
+		return await next();
 	if (ctx.req.header("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
 		return ctx.json({ error: "invalid key" }, { status: 400 });
 
 	const timeStart = new Date();
 
 	await next();
-	
+
 	console.log(
-		`${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? 'red' : 'green', ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
+		`${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? "red" : "green", ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
 	);
 });
 app.use(trimTrailingSlash());
@@ -218,7 +221,7 @@ export const clientRoutes = app
 
 			return json({ done: "User notified." });
 		},
-	)
+)
 	.get("/api/health", (c) =>
 		c.json({
 			about: `PluralBuddy ${build}`,
@@ -232,7 +235,14 @@ export const clientRoutes = app
 		zValidator(
 			"json",
 			z.object({
-				type: z.enum(["terminology", "statistic", "similarWebhookResource", "pguild", "i18n", 'alterProxy']),
+				type: z.enum([
+					"terminology",
+					"statistic",
+					"similarWebhookResource",
+					"pguild",
+					"i18n",
+					"alterProxy",
+				]),
 				key: z.string(),
 			}),
 		),

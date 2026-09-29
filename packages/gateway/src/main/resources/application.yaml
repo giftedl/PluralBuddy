@@ -1,0 +1,9 @@
+ktor:
+  deployment:
+    port: 8080
+  application:
+    modules:
+      - app.pluralbuddy.MonitoringKt.configureMonitoring
+      - app.pluralbuddy.SerializationKt.configureSerialization
+      - app.pluralbuddy.WebsocketsKt.configureWebsockets
+      - app.pluralbuddy.RoutingKt.configureRouting

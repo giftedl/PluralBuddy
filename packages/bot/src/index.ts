@@ -20,6 +20,7 @@ import {
 	Modal,
 	TextDisplay,
 } from "seyfert";
+import type { SeyfertError } from "seyfert/lib/common";
 import type { ContainerComponent } from "seyfert/lib/components/Container";
 import type { CollectorInteraction } from "seyfert/lib/components/handler";
 import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
@@ -47,6 +48,7 @@ import {
 } from "./error-command";
 import { indexingMessageMap } from "./events/on-message-create";
 import { extendedContext } from "./extended-context";
+import { PluralBuddyGateway } from "./gateway";
 import PluralBuddyHandleCommand from "./handle-command";
 import { startEmojiCleanupTimer } from "./lib/clean-up-emojis";
 import { startIndexingCleanupTimer } from "./lib/cleanup-indexing";
@@ -57,7 +59,6 @@ import { initializeApplicationCommands } from "./lib/mention-command";
 import { middlewares } from "./middleware";
 import { mongoClient, setupDatabases, setupMongoDB } from "./mongodb";
 import { defaultPrefixes, getGuildFromId } from "./types/guild";
-import type { SeyfertError } from "seyfert/lib/common";
 
 export const logger = process.env.SEQ_HOST
 	? winston.createLogger({
@@ -94,6 +95,10 @@ const globalMiddlewares: readonly (keyof typeof middlewares)[] = [
 	"globalBlockUserMiddleware",
 	"serverBlock",
 ];
+
+// API
+export type { ClientType } from "./api-types";
+export default api;
 
 export const policyModal = async (
 	ctx: AnyContext | CollectorInteraction,
@@ -213,6 +218,12 @@ if (import.meta.main) {
 		},
 	);
 
+	logger?.info("Starting gateway")
+	const gateway = new PluralBuddyGateway(process.env.GATEWAY_TOKEN ?? "");
+	await gateway.waitToOpen()
+	await gateway.authenticate()
+	logger?.info("Authenticated w/ PluralBuddy Gateway")
+
 	client.setServices({
 		middlewares: middlewares,
 		handleCommand: PluralBuddyHandleCommand,
@@ -305,7 +316,3 @@ export async function startTesting() {
 		afk: false,
 	});
 }
-
-// API
-export type { ClientType } from "./api-types";
-export default api;
