@@ -6,7 +6,7 @@ import java.util.UUID
 class BotClientManager {
     var authenticatedClients: MutableMap<String, Bot> = mutableMapOf()
 
-    fun addAuthenticatedClient(clientBrand: String) {
+    fun addAuthenticatedClient(clientBrand: String): String {
         val id = UUID.randomUUID().toString();
 
         authenticatedClients[id] = Bot(
@@ -16,6 +16,8 @@ class BotClientManager {
             lastPing = 100,
             lastPingEpoch = System.currentTimeMillis()
         )
+
+        return id;
     }
 
     fun setLastPing(editId: String, num: Long?) {

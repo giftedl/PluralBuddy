@@ -19,7 +19,7 @@ export class PluralBuddyGateway {
     }
 
     waitToOpen() {
-        return new Promise<void>((r, e) => { this.websocket.addEventListener("open", () => r()); this.websocket.addEventListener("error", (r) => e(r)) })
+        return new Promise<void>((r, e) => { this.websocket.addEventListener("open", () => r()); this.websocket.addEventListener("error", (r) => {console.log(r); e(r)}) })
     }
 
     authenticate() {
@@ -74,21 +74,34 @@ export class PluralBuddyGateway {
                     setTimeout(async () => {
                         if (ponged === false) {
                             client.logger.warn("Ping hasn't succeed in 10 seconds. Attempting to reconnect...")
+                            
+                            let attempt = 0;
 
                             this.websocket = new WebSocket(process.env.GATEWAY_LOCATION ?? "")
 
-                            client.logger.info("Starting gateway")
-                            const gateway = new PluralBuddyGateway(process.env.GATEWAY_TOKEN ?? "");
-                            client.logger.info("Waiting for stream to open...")
-                            await gateway.waitToOpen().catch(v => {
-                                client.logger.fatal(`Process cannot continue if gateway is not properly connected. Exiting.`)
-                                client.logger.fatal(v)
-                                process.exit();
-                            })
-                            client.logger.info("Authenticating...")
-                            await gateway.authenticate()
-                            gateway.heartbeat()
-                            client.logger.info("Authenticated w/ PluralBuddy Gateway")
+                            const reconnect = async () => {
+                                let doContinue = true;
+
+                                client.logger.info("Starting gateway")
+                                const gateway = new PluralBuddyGateway(process.env.GATEWAY_TOKEN ?? "");
+                                client.logger.info("Waiting for stream to open...")
+                                await gateway.waitToOpen().catch(v => {
+                                    client.logger.fatal(`Process cannot continue if gateway is not properly connected. Reconnecting in 10000ms... [Attempt #${attempt}]`)
+                                    
+                                    attempt++;
+                                    setTimeout(() => reconnect(), 10000)
+                                    doContinue = false;
+                                })
+
+                                if (!doContinue) return;
+
+                                client.logger.info("Authenticating...")
+                                await gateway.authenticate()
+                                gateway.heartbeat()
+                                client.logger.info("Authenticated w/ PluralBuddy Gateway")
+                            }
+
+                            reconnect()
                         }
                     }, 8000);
                 }

@@ -6,6 +6,7 @@ import app.pluralbuddy.packets.BasePacket
 import app.pluralbuddy.packets.PingPacket
 import app.pluralbuddy.packets.PongPacket
 import app.pluralbuddy.packets.ReminderPacket
+import app.pluralbuddy.structure.Bot
 import app.pluralbuddy.structure.Reminder
 import app.pluralbuddy.structure.description.Description
 import app.pluralbuddy.structure.description.MessageDescription
@@ -52,11 +53,15 @@ fun Application.configureRouting() {
         get("/") {
             call.respondText(homePage, contentType = ContentType.Text.Html)
         }
+        get("/bot/statuses") {
+            call.respond<Array<Bot>>(botManager.authenticatedClients.values.toTypedArray())
+        }
         webSocket("/bot") { // websocketSession
             val authKey = (dotenv.getOrNull()?.get("BOT_API_KEY")) ?: System.getenv("BOT_API_KEY")
             val contentConverter = KotlinxWebsocketSerializationConverter(Json {
                 withOpenSchedulingSettings()
             })
+            var clientId: String? = null;
             var authenticated = false;
             var possibleSessionJob: Job? = null;
 
@@ -104,10 +109,11 @@ fun Application.configureRouting() {
 
                             authenticated = true
                             send(contentConverter.serialize(AuthenticatedSessionPacket(success = true) as BasePacket))
+                            clientId = botManager.addAuthenticatedClient(authenticationPacket.userAgent)
                             logger.info("Application with user agent ${authenticationPacket.userAgent} authenticated.")
                         }
 
-                        if (authenticated) {
+                        if (authenticated && clientId != null) {
                             possibleSessionJob = launch {
                                 sharedFlow.collect { message ->
                                     sendSerialized(message)
@@ -116,8 +122,10 @@ fun Application.configureRouting() {
 
                             if (text.getOrNull() is PingPacket) {
                                 val pingPacket = text.getOrNull() as PingPacket
+                                val ping = System.currentTimeMillis() - pingPacket.now
 
-                                send(contentConverter.serialize(PongPacket(msSince = System.currentTimeMillis() - pingPacket.now) as BasePacket))
+                                botManager.setLastPing(clientId, ping)
+                                send(contentConverter.serialize(PongPacket(msSince = ping) as BasePacket))
                             }
                         }
                     }
