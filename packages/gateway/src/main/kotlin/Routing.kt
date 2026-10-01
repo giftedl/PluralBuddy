@@ -80,6 +80,13 @@ fun Application.configureRouting() {
 
 
             runCatching {
+                outgoing.invokeOnClose {
+                    if (authenticated && clientId != null) {
+                        botManager.closeClient(clientId!!)
+                        possibleSessionJob?.cancel()
+                    }
+                }
+
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
                         val text = runCatching { contentConverter.deserialize<BasePacket>(frame) }

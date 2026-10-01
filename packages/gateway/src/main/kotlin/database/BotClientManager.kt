@@ -26,4 +26,10 @@ class BotClientManager {
         client.lastPing = num;
         client.lastPingEpoch = System.currentTimeMillis();
     }
+
+    fun closeClient(editId: String) {
+        val client = authenticatedClients[editId] ?: throw Error("Client doesn't exist?")
+
+        authenticatedClients.remove(editId)
+    }
 }

@@ -8,7 +8,7 @@ data class Reminder(
     val id: String,
     val authorId: String,
     val description: Array<Description>,
-    val `when`: String
+    val `when`: ReminderWhen
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

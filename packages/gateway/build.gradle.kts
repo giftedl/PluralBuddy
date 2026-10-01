@@ -24,6 +24,7 @@ dependencies {
     implementation(ktorLibs.server.websockets)
     implementation(libs.hayden.khealth)
     implementation(libs.logback.classic)
+    implementation("dev.kord:kord-core:0.18.1")
 
     implementation("org.mongodb:mongodb-driver-core:5.9.0")
     implementation("org.mongodb:mongodb-driver-sync:5.9.0")

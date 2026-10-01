@@ -1,7 +1,6 @@
 package app.pluralbuddy.packets
 
 import app.pluralbuddy.structure.Reminder
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
