@@ -288,13 +288,8 @@ PluralBuddy uses a **username/display name** system.
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
 
-**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
--# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
-
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
--# 🇪🇸 Spanish translations by @cosmic.rainbow.
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -412,10 +407,10 @@ PluralBuddy uses a **username/display name** system.
 > - *Alter Mode*: All messages sent from this system will proxy on this alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with this alter regardless of proxy tags.
 > - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
 > - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
-	REQUIRED_SERVER_PROXY: "Você precisa estar em um servidor para usar proxy",
-	SELECT_DEFAULT_PROXY: "Selecione um modo de proxy",
-	POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
-	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
+  REQUIRED_SERVER_PROXY: "Você precisa estar em um servidor para usar proxy",
+  SELECT_DEFAULT_PROXY: "Selecione um modo de proxy",
+  POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
+  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
 
 -# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
 -# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
@@ -599,88 +594,72 @@ There is an example below of what an example proxy with this role would look lik
 > - *Modo Integrante*: Todas as mensagens enviadas por este sistema irão fazer proxy como um Integrante. Tags de proxy adicionadas ao final de sua mensagem não significarão nada, pois todas as mensagens serão enviadas como um Integrante independente dos marcadores de proxy. **Isto requer selecionar um Integrante. *
 > - *Modo de Trava*: O Integrante das últimas mensagens do proxy usando tags de proxy será selecionada para mensagens futuras. essa função não requer que um integrante seja definido inicialmente, mas você também pode definir um integrante.
 > - *Desligado*: Usar tags de proxy irá fazer proxy de um integrante, caso contrário será enviada uma mensagem normal.`,
-	EXPORT_SYS_BTN: "Exportar Sistema",
-	EXPORT_SYS_DESC:
-		"Exportar o sistema simplesmente exportará todos os dados do sistema e enviará para as suas mensagens diretas. Certifique-se de que as suas mensagens diretas estão abertas para o PluralBuddy antes de exportá-los.",
-	EXTERNAL_EXPORT_SYS_DESC:
-		"You can externally export to another service by hitting the service you'd like to export to below:",
-	IMPORT_SYS_BTN: "Importar Sistema",
-	IMPORT_SYS_DESC:
-		"Importing your system will allow you to take data from other bots in various import modes.",
-	DANGER_ZONE_TITLE: "## Zona de Perigo",
-	SYSTEM_E: "Habilitar o Sistema",
-	SYSTEM_D: "Desabilitar sistema",
-	SYSTEM_D_DESC:
-		"Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
-	DELETE_SYS_BTN: "Excluir Sistema",
-	DELETE_SYS_DESC:
-		"**This cannot be undone**. Deleting your system will **delete your system data __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
-	ALTERS_TITLE: "## Integrantes",
-	NO_PUBLIC_ALTERS_DESC: "*Não há nenhum Integrante público nesta página.*",
-	ALTERS_PAGINATION: `-# Pagina {{ page }}/{{ maxPage }} · encontrado {{ alters }}/{{ maxAlters }} integrante(s) em {{ time }}ms {{ possibleSearchQuery }}`,
-	ALTERS_POSSIBLE_SQ: `· Buscando por {{ query }}`,
-	ALTER_EDIT: "Editar Integrante",
-	NEW_TAG_BTN: "Criar nova tag",
-	TAG_TITLE: "## Tags",
-	TAG_EDIT: "Editar Tag",
-	TAGS_PAGINATION: `-# Pagina {{ page }}/{{ maxPage }} · encontrado {{ alters }}/{{ maxAlters }} tag(s) em {{ time }}ms {{ possibleSearchQuery }}`,
-	S_PUBLIC_PROFILE_TITLE: `## Perfil Público - @{{ systemName }}\nSeu perfil público é o como o seu sistema parece para outros usuários quando eles identificam as suas mensagens.`,
-	IMPORT_SETTINGS_TITLE: `## Importar dados de outro bot`,
-	IMPORT_SETTINGS_DESC: `Importar de outro bot permite que você substitua ou adicione dados de seus outros bots, ou fazer os dois como uma combinação.`,
-	REPLACE_DESC:
-		"Substituir irá substituir os dados existentes no seu sistema por dados. Não faz novos dados do sistema.",
-	REPLACE_NAME: "Substituir",
-	ADD_DESC:
-		"Adicionar novas tags ou membros de outro bot. Não substitui os dados de membros ou tags existentes.",
-	ADD_NAME: "Adicionar",
-	FULL_IMPORT_DESC:
-		"O modo de importação completa irá substituir os integrantes existentes e adicionar novos.",
-	FULL_IMPORT_NAME: "Importação Completa",
-	DELETE_IMPORT_DESC:
-		"Excluir o modo de importação removerá Integrantes/tags existentes faltando na importação.",
-	DELETE_NAME: "Apagar",
-	EXISTING_ALTER: "An alter with that username already exists. Pick another.",
-	ALTER_COUNT_LABEL: "**Contador Integrantes:** ",
-	SELF_REACTION_ERR: "Não foi possível remover auto-reação",
-	SELF_REACTION_DESC:
-		"PluralBuddy não conseguiu remover o emoji de carregamento ao tentar executar uma [Ação de Menu de Contexto](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
-	REACTION_ERR: "Não foi possível remover a reação do usuário",
-	REPLY_IN_RESPONSE: "-# {{ reply }} Em resposta a: {{ link }}",
-	AWAKE:
-		"Hi! I'm awake, running PluralBuddy `#{{ buildNumber }}/{{ branch }}`.",
-	LINK_INVITE: "Convite",
-	LINK_SUPPORT: "Suporte",
-	LINK_DOCS: "Documentação",
-	DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
-	DISPLAY_TAG_ENFORCE_DESC:
-		'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
-	NO_DM_CHANNELS: "Você não pode usar proxy em mensagens diretas. Desculpe!",
-	NOTIFIED_1:
-		"-# Você foi notificado sobre esta ação devido à associação do seu integrante PluralBuddy.",
-	NOTIFIED_2:
-		"-# Desenvolvido como software open-source @ [pluralbuddy.app](<https://pluralbuddy.app>)",
-	OPT_OUT_DMS: "Desativar recebimento de mensagens diretas",
-	UNDO_BTN: "Desfazer Operação",
-	EXPIRED: "Expirado",
-	NOT_ORIGINAL_RECIPIENT: "Você não é o destinatário original da mensagem.",
-	IMPORT_REQ_DESC:
-		"Para enviar os dados de importação de outro bot, você deve colocá-los no painel PluralBuddy.",
-	IMPORT_REQ_WAITING:
-		"-# Aguardando resposta...\n-# Isso expira em 15 minutos.",
-	VIEW_DASH: "Ver no Painel",
-	INCLUDE_PROXY_TAGS_DESC:
-		"Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
-	INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
-	INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
-	INCLUDE_PRONOUNS_DESC:
-		"Including pronouns will add pronouns to the webhook name every time you proxy in parentheses.",
-	INCLUDE_PRONOUNS_BTN: "Include Pronouns",
-	INCLUDE_PRONOUNS_OFF_BTN: "Disable Including Pronouns",
-	VALIDATION_TAG_ERROR: "Ocorreu um erro ao criar essa tag:",
-	ERROR_CREATING_WEBHOOK_TITLE: "Erro ao criar webhook para <#{{ channelId }}>",
-	ERROR_CREATING_WEBHOOK_DESC:
-		"Ocorreu um erro ao criar o webhook correspondente para <#{{ channelId }}>. Verifique se o PluralBuddy tem as permissões corretas nesse canal.",
-	SET_LANGUAGE_DESC: `## {{ gear }} Definir linguagem PluralBuddy
+  EXPORT_SYS_BTN: "Exportar Sistema",
+  EXPORT_SYS_DESC: "Exportar o sistema simplesmente exportará todos os dados do sistema e enviará para as suas mensagens diretas. Certifique-se de que as suas mensagens diretas estão abertas para o PluralBuddy antes de exportá-los.",
+  EXTERNAL_EXPORT_SYS_DESC: "You can externally export to another service by hitting the service you'd like to export to below:",
+  IMPORT_SYS_BTN: "Importar Sistema",
+  IMPORT_SYS_DESC: "Importing your system will allow you to take data from other bots in various import modes.",
+  DANGER_ZONE_TITLE: "## Zona de Perigo",
+  SYSTEM_E: "Habilitar o Sistema",
+  SYSTEM_D: "Desabilitar sistema",
+  SYSTEM_D_DESC: "Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
+  DELETE_SYS_BTN: "Excluir Sistema",
+  DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system data __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
+  ALTERS_TITLE: "## Integrantes",
+  NO_PUBLIC_ALTERS_DESC: "*Não há nenhum Integrante público nesta página.*",
+  ALTERS_PAGINATION: `-# Pagina {{ page }}/{{ maxPage }} · encontrado {{ alters }}/{{ maxAlters }} integrante(s) em {{ time }}ms {{ possibleSearchQuery }}`,
+  ALTERS_POSSIBLE_SQ: `· Buscando por {{ query }}`,
+  ALTER_EDIT: "Editar Integrante",
+  NEW_TAG_BTN: "Criar nova tag",
+  TAG_TITLE: "## Tags",
+  TAG_EDIT: "Editar Tag",
+  TAGS_PAGINATION: `-# Pagina {{ page }}/{{ maxPage }} · encontrado {{ alters }}/{{ maxAlters }} tag(s) em {{ time }}ms {{ possibleSearchQuery }}`,
+  S_PUBLIC_PROFILE_TITLE: `## Perfil Público - @{{ systemName }}\nSeu perfil público é o como o seu sistema parece para outros usuários quando eles identificam as suas mensagens.`,
+  IMPORT_SETTINGS_TITLE: `## Importar dados de outro bot`,
+  IMPORT_SETTINGS_DESC: `Importar de outro bot permite que você substitua ou adicione dados de seus outros bots, ou fazer os dois como uma combinação.`,
+  REPLACE_DESC: "Substituir irá substituir os dados existentes no seu sistema por dados. Não faz novos dados do sistema.",
+  REPLACE_NAME: "Substituir",
+  ADD_DESC: "Adicionar novas tags ou membros de outro bot. Não substitui os dados de membros ou tags existentes.",
+  ADD_NAME: "Adicionar",
+  FULL_IMPORT_DESC: "O modo de importação completa irá substituir os integrantes existentes e adicionar novos.",
+  FULL_IMPORT_NAME: "Importação Completa",
+  DELETE_IMPORT_DESC: "Excluir o modo de importação removerá Integrantes/tags existentes faltando na importação.",
+  DELETE_NAME: "Apagar",
+  EXISTING_ALTER: "An alter with that username already exists. Pick another.",
+  ALTER_COUNT_LABEL: "**Contador Integrantes:** ",
+  SELF_REACTION_ERR: "Não foi possível remover auto-reação",
+  SELF_REACTION_DESC: "PluralBuddy não conseguiu remover o emoji de carregamento ao tentar executar uma [Ação de Menu de Contexto](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
+  REACTION_ERR: "Não foi possível remover a reação do usuário",
+  REPLY_IN_RESPONSE: "-# {{ reply }} Em resposta a: {{ link }}",
+  AWAKE: "Hi! I'm awake, running PluralBuddy `#{{ buildNumber }}/{{ branch }}`.",
+  LINK_INVITE: "Convite",
+  LINK_SUPPORT: "Suporte",
+  LINK_DOCS: "Documentação",
+  DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
+  DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
+  NO_DM_CHANNELS: "Você não pode usar proxy em mensagens diretas. Desculpe!",
+  NOTIFIED_1: "-# Você foi notificado sobre esta ação devido à associação do seu integrante PluralBuddy.",
+  NOTIFIED_2: "-# Desenvolvido como software open-source @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
+  OPT_OUT_DMS: "Desativar recebimento de mensagens diretas",
+  UNDO_BTN: "Desfazer Operação",
+  EXPIRED: "Expirado",
+  NOT_ORIGINAL_RECIPIENT: "Você não é o destinatário original da mensagem.",
+  IMPORT_REQ_DESC: "Para enviar os dados de importação de outro bot, você deve colocá-los no painel PluralBuddy.",
+  IMPORT_REQ_WAITING: "-# Aguardando resposta...\n-# Isso expira em 15 minutos.",
+  VIEW_DASH: "Ver no Painel",
+  INCLUDE_PROXY_TAGS_DESC: "Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
+  INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
+  INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
+  INCLUDE_PRONOUNS_DESC: "Including pronouns will add pronouns to the webhook name every time you proxy in parentheses.",
+  INCLUDE_PRONOUNS_BTN: "Include Pronouns",
+  INCLUDE_PRONOUNS_OFF_BTN: "Disable Including Pronouns",
+  PREFER_ACCESSIBLITY_BTN: "Prefer Accessiblity",
+  PREFER_ACCESSIBLITY_OFF_BTN: "Disable Prefer Accessibility",
+  PREFER_ACCESSIBLITY_DESC: "PluralBuddy will prefer accessiblity over looks/data visiblity. Some text may be farther apart, bold, or not visible in this mode.",
+  VALIDATION_TAG_ERROR: "Ocorreu um erro ao criar essa tag:",
+  ERROR_CREATING_WEBHOOK_TITLE: "Erro ao criar webhook para <#{{ channelId }}>",
+  ERROR_CREATING_WEBHOOK_DESC: "Ocorreu um erro ao criar o webhook correspondente para <#{{ channelId }}>. Verifique se o PluralBuddy tem as permissões corretas nesse canal.",
+  SET_LANGUAGE_DESC: `## {{ gear }} Definir linguagem PluralBuddy
 Você pode definir a linguagem que PluralBuddy usa enquanto usa comandos. Se uma linha não for encontrada, há um recurso para a versão em inglês.
 
 {{ languages }}`,
@@ -698,12 +677,12 @@ Hit the button to the right to open this alter in the dashboard.`,
 Your system is currently auto proxying in **{{ mode }}**.`,
   INTEGRATION_AP: `### Auto-Proxy Status
 Your system is using the front state of **{{ mode }}**.`,
-	NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
-	NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
-	DISABLED_SERVER: `This server is disabled from proxying.`,
-	AP_AS: "-# **AUTO-PROXYING AS:**",
-	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+  NO_STATUS_AP: `You are not currently auto proxying on that scope.`,
+  NO_ALTER_AP: `Your auto proxy is not currently attached to an alter.`,
+  DISABLED_SERVER: `This server is disabled from proxying.`,
+  AP_AS: "-# **AUTO-PROXYING AS:**",
+  AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
+  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
   AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
