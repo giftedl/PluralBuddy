@@ -300,121 +300,88 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 -# **ENLACES**
 > -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pluralbuddy.app)
 > -# [Términos de servicio](<https://pluralbuddy.app/docs/policies/terms>) · [Política de privacidad](<https://pluralbuddy.app/docs/policies/privacy>)`,
-	TAG_ASSIGN_ALTER: "Asignar etiqueta",
-	SET_AUTO_PROXY_SRV:
-		"Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en **%server_name%**.",
-	SET_AUTO_PROXY_GLOBAL:
-		"Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en todas partes.",
-	SET_AUTO_PROXY_CUSTOM:
-		"Se ha transferido el control del modo proxy a **%app%** en **%server_name%**. **%app%** podrá controlar quién está al frente hasta que desactives este modo.",
-	SET_AUTO_PROXY_CUSTOM_GLOBAL:
-		"Se ha transferido el control del modo proxy a **%app%** en todas partes. **%app%** podrá controlar quién está al frente hasta que desactives este modo.",
-	SET_AUTO_PROXY_DMS:
-		"Se ha establecido el modo proxy a **%mode%** para tu sistema en ese servidor.",
-	TAG_ALREADY_ASSIGNED: "**%tag%** ya ha sido asignada a **@%alter%.",
-	ASSIGNED_TAG: "**%tag%** se ha asignado con éxito a **@%alter%**.",
-	FORBIDDEN: "No tienes permiso en este servidor para realizar esta acción.",
-	ERROR_FAILED_TO_UPLOAD_TO_GCP:
-		"2d – Error al subir la imagen a Google Cloud Platform. Por favor, inténtalo de nuevo más tarde.",
-	DN_ERROR_SE: "2e – No puedes usar este comando en mensajes directos.",
-	SYSTEM_SET_NAME: "Se ha cambiado con éxito el nombre de tu sistema a %name%",
-	SYSTEM_SET_LATCH_DELAY:
-		"Se ha cambiado con éxito el tiempo de retención a %delay%. Los alters fijados se limpiarán tras ese periodo.",
-	SYSTEM_SET_PRONOUNS:
-		"Se han cambiado con éxito los pronombres de tu sistema a %pronouns%",
-	SYSTEM_SET_SYSTEM_TAG:
-		"Se ha cambiado con éxito la etiqueta de tu sistema a %tag%",
-	OPERATION_SYSTEM_SET_SYSTEM_TAG:
-		"Se cambió la etiqueta de tu sistema a %tag%",
-	OPERATION_AVATAR:
-		"Avatar del sistema actualizado a una **[nueva imagen](<%link%>)**.",
-	OPERATION_AVATAR_UNDEFINED: "Avatar del sistema restablecido",
-	OPERATION_BANNER:
-		"Banner del sistema actualizado a una **[nueva imagen](<%link%>)**.",
-	OPERATION_BANNER_UNDEFINED: "Banner del sistema restablecido",
-	OPERATION_DESCRIPTION:
-		"Descripción del sistema cambiada a:\n > %description%",
-	OPERATION_PRONOUNS: "Pronombres del sistema cambiados a %pronouns%.",
-	OPERATION_LATCH_DELAY:
-		"Tiempo de retención del modo fijado cambiado a %delay%.",
-	OPERATION_FALLBACK: "Se cambió `%property%` a `%value%`",
-	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS:
-		"Se alternó la visibilidad de etiquetas proxy en el sistema.",
-	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
-		"Se alternó la visibilidad de pronombres en el sistema.",
-	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS:
-		"Se ha cambiado el estado de escritura en el sistema.",
-	EDIT_MESSAGE: "Editando mensaje",
-	MESSAGE_CONTENTS: "Nuevo contenido del mensaje",
-	BLOCKLIST_USER: "ID de usuario a bloquear",
-	NUDGE_BLOCKLIST: "Lista de bloqueos para toques (nudges)",
-	SUCCESSFULLY_REMOVED_MESSAGE: "Se eliminó ese mensaje con éxito.",
-	SUCCESSFULLY_EDITED_MESSAGE: "Se editó con éxito [ese mensaje](<%message%>).",
-	NUDGE_SNOOZE: "Silenciar toques permanentemente",
-	BLOCK_SNOOZE: "Bloquear a este usuario para que no te dé toques",
-	ERROR_OWN_MESSAGE:
-		"2c – Este mensaje no te pertenece o no fue enviado por PluralBuddy.",
-	NOT_RECENT_ENOUGH:
-		"2z – No tienes un mensaje lo suficientemente reciente en este canal __**o**__ el mensaje al que respondiste ya no es válido.",
-	DISABLE_NUDGING_DONE: "Has desactivado los toques para ti correctamente.",
-	USER_CANNOT_BE_NUDGED: "2aa – A este usuario no se le pueden dar toques.",
-	USER_ALREADY_BLOCKED: "2ab – Este usuario ya ha sido bloqueado.",
-	USER_NOT_BLOCKED: "2ac – Este usuario aún no ha sido bloqueado.",
-	SUCCESSFULLY_BLOCKED: "Se bloqueó a ese usuario con éxito.",
-	MESSAGE_NOT_MINE: "2af – Este mensaje no es mío.",
-	DATA_DOESNT_EXIST:
-		"2ae – El alter o sistema asociado al mensaje ya no existe. (?)",
-	INSUFFICIENT_DATA_SIZE:
-		"2ad – No hay una cantidad suficiente de recursos en tu contexto de usuario para continuar con esta operación.",
-	INSUFFICIENT_USER_PERMISSIONS:
-		"2ag – No tienes permiso para editar esta información.",
-	SUCCESS_CHANGED_SERVER_PREFIXES:
-		"Este servidor ahora tiene los siguientes prefijos: \n%prefixes%",
-	SUCCESS_ADD_ITEM_BLOCKED: "%item% ha sido bloqueado con éxito.",
-	SUCCESS_REMOVE_ITEM_BLOCKED: "%item% ha sido desbloqueado con éxito.",
-	SUCCESS_CHANGED_SERVER_BLOCKS:
-		"Este servidor ahora tiene la siguiente configuración de bloqueos: \n%block_items%",
-	PREFIX_ALREADY_EXISTS:
-		"Ese prefijo ya existe o hay un duplicado en la lista.",
-	BLOCK_ALREADY_EXISTS: "Ese rol o canal ya está bloqueado.",
-	SUCCESS_ADD_MANAGER_ROLE:
-		"%item% ha sido añadido a la lista de roles de administrador con éxito.",
-	SUCCESS_CHANGED_MANAGER_BLOCKS:
-		"Este servidor ahora tiene la siguiente configuración de roles de administrador: \n%manager_roles%",
-	LATCH_DELAY_INVALID:
-		"Los tiempos de retención no pueden ser mayores a 10 horas ni ser un valor inválido.",
-	MANAGER_ALREADY_EXISTS: "Ese rol de administrador ya está en la lista.",
-	SUCCESS_REMOVE_MANAGER_ROLE:
-		"%item% ha sido eliminado de la lista de roles de administrador con éxito.",
-	REQUIRE_TAG_ENABLED:
-		"Ahora todos los sistemas deberán activar las etiquetas de sistema para poder usar proxy.",
-	REQUIRE_TAG_DISABLED:
-		"Ya no será obligatorio que los sistemas activen etiquetas de sistema para usar proxy.",
-	ERROR_DOESNT_EXIST: "¿Ese error no existe? ¿Acaso ya ha sido resuelto?",
-	FEATURE_DISABLED_GUILD: "Esa función está desactivada en este servidor.",
-	FEATURE_DISABLED_CHANNEL:
-		"Este canal tiene desactivado el uso de PluralBuddy.",
-	LOGGING_CHANNEL_SET:
-		"Se ha establecido correctamente ese canal como canal de registros para este servidor.",
-	ROLE_PREFERENCE_ALREADY_EXISTS: "Esa preferencia de rol ya existe.",
-	ROLE_PREFERENCE_DOESNT_EXIST: "Esa preferencia de rol no existe.",
-	ROLE_PREFERENCE_SEARCH: "Buscando roles",
-	REPROXIED_MESSAGE: "Se ha reenviado el mensaje proxy con éxito.",
-	ERRORS_SEARCH: "Buscando errores",
-	ROLE_CONTENTS: "Contenido del contenedor de rol",
-	ROLE_COLOR: "Color del contenedor de rol",
-	ROLE_LOCATION: "Ubicación del contenedor de rol",
-	FORM_ROLE_CONFIG: "Editando configuración de rol",
-	DELAY_CHANGED:
-		"El retraso de proxy del servidor se actualizó a %seconds% segundos (%ms%ms).",
-	ROLE_NO_SPECIAL_CONFIG: "Este rol no tiene una configuración especial.",
-	SET_CONTAINERS_CONTENT:
-		"Se estableció/limpió correctamente el contenido del contenedor del rol <@&%role%>. Arriba hay una vista previa del contenedor.",
-	SET_CONTAINERS_COLOR:
-		"Se estableció/limpió correctamente el color del contenedor del rol <@&%role%>. Arriba hay una vista previa del contenedor.",
-	SET_CONTAINERS_LOCATION:
-		"Se estableció/limpió correctamente la ubicación del contenedor del rol <@&%role%>. Arriba hay una vista previa del contenedor.",
-	DISABLED_FEATURE: `Se desactivó con éxito esa función.
+  TAG_ASSIGN_ALTER: "Asignar etiqueta",
+  SET_AUTO_PROXY_SRV: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en **%server_name%**.",
+  SET_AUTO_PROXY_GLOBAL: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en todas partes.",
+  SET_AUTO_PROXY_CUSTOM: "Se ha transferido el control del modo proxy a **%app%** en **%server_name%**. **%app%** podrá controlar quién está al frente hasta que desactives este modo.",
+  SET_AUTO_PROXY_CUSTOM_GLOBAL: "Se ha transferido el control del modo proxy a **%app%** en todas partes. **%app%** podrá controlar quién está al frente hasta que desactives este modo.",
+  SET_AUTO_PROXY_DMS: "Se ha establecido el modo proxy a **%mode%** para tu sistema en ese servidor.",
+  TAG_ALREADY_ASSIGNED: "**%tag%** ya ha sido asignada a **@%alter%.",
+  ASSIGNED_TAG: "**%tag%** se ha asignado con éxito a **@%alter%**.",
+  FORBIDDEN: "No tienes permiso en este servidor para realizar esta acción.",
+  ERROR_FAILED_TO_UPLOAD_TO_GCP: "2d – Error al subir la imagen a Google Cloud Platform. Por favor, inténtalo de nuevo más tarde.",
+  DN_ERROR_SE: "2e – No puedes usar este comando en mensajes directos.",
+  SYSTEM_SET_NAME: "Se ha cambiado con éxito el nombre de tu sistema a %name%",
+  SYSTEM_SET_LATCH_DELAY: "Se ha cambiado con éxito el tiempo de retención a %delay%. Los alters fijados se limpiarán tras ese periodo.",
+  SYSTEM_SET_PRONOUNS: "Se han cambiado con éxito los pronombres de tu sistema a %pronouns%",
+  SYSTEM_SET_SYSTEM_TAG: "Se ha cambiado con éxito la etiqueta de tu sistema a %tag%",
+  OPERATION_SYSTEM_SET_SYSTEM_TAG: "Se cambió la etiqueta de tu sistema a %tag%",
+  OPERATION_AVATAR: "Avatar del sistema actualizado a una **[nueva imagen](<%link%>)**.",
+  OPERATION_AVATAR_UNDEFINED: "Avatar del sistema restablecido",
+  OPERATION_BANNER: "Banner del sistema actualizado a una **[nueva imagen](<%link%>)**.",
+  OPERATION_BANNER_UNDEFINED: "Banner del sistema restablecido",
+  OPERATION_DESCRIPTION: "Descripción del sistema cambiada a:\n > %description%",
+  OPERATION_PRONOUNS: "Pronombres del sistema cambiados a %pronouns%.",
+  OPERATION_LATCH_DELAY: "Tiempo de retención del modo fijado cambiado a %delay%.",
+  OPERATION_FALLBACK: "Se cambió `%property%` a `%value%`",
+  OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Se alternó la visibilidad de etiquetas proxy en el sistema.",
+  OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Se alternó la visibilidad de pronombres en el sistema.",
+  OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Se ha cambiado el estado de escritura en el sistema.",
+  OPERATION_SYSTEM_PREFER_ACCESSIBLITY: "Se activó el modo de accesibilidad preferido en el sistema.",
+  OPERATION_FLIPPED_DT: "Etiquetas mostradas en el lado izquierdo del sistema.",
+  OPERATION_FLIPPED_CASE_INSENS_PROXIES: "Se habilitó el proxy insensible a mayúsculas y minúsculas en este sistema.",
+  OPERATION_FLIPPED_PUBLIC_DEFAULT: "Se activó la configuración pública predeterminada en este sistema.",
+  EDIT_MESSAGE: "Editando mensaje",
+  MESSAGE_CONTENTS: "Nuevo contenido del mensaje",
+  BLOCKLIST_USER: "ID de usuario a bloquear",
+  NUDGE_BLOCKLIST: "Lista de bloqueos para toques (nudges)",
+  SUCCESSFULLY_REMOVED_MESSAGE: "Se eliminó ese mensaje con éxito.",
+  SUCCESSFULLY_EDITED_MESSAGE: "Se editó con éxito [ese mensaje](<%message%>).",
+  NUDGE_SNOOZE: "Silenciar toques permanentemente",
+  BLOCK_SNOOZE: "Bloquear a este usuario para que no te dé toques",
+  ERROR_OWN_MESSAGE: "2c – Este mensaje no te pertenece o no fue enviado por PluralBuddy.",
+  NOT_RECENT_ENOUGH: "2z – No tienes un mensaje lo suficientemente reciente en este canal __**o**__ el mensaje al que respondiste ya no es válido.",
+  DISABLE_NUDGING_DONE: "Has desactivado los toques para ti correctamente.",
+  USER_CANNOT_BE_NUDGED: "2aa – A este usuario no se le pueden dar toques.",
+  USER_ALREADY_BLOCKED: "2ab – Este usuario ya ha sido bloqueado.",
+  USER_NOT_BLOCKED: "2ac – Este usuario aún no ha sido bloqueado.",
+  SUCCESSFULLY_BLOCKED: "Se bloqueó a ese usuario con éxito.",
+  MESSAGE_NOT_MINE: "2af – Este mensaje no es mío.",
+  DATA_DOESNT_EXIST: "2ae – El alter o sistema asociado al mensaje ya no existe. (?)",
+  INSUFFICIENT_DATA_SIZE: "2ad – No hay una cantidad suficiente de recursos en tu contexto de usuario para continuar con esta operación.",
+  INSUFFICIENT_USER_PERMISSIONS: "2ag – No tienes permiso para editar esta información.",
+  SUCCESS_CHANGED_SERVER_PREFIXES: "Este servidor ahora tiene los siguientes prefijos: \n%prefixes%",
+  SUCCESS_ADD_ITEM_BLOCKED: "%item% ha sido bloqueado con éxito.",
+  SUCCESS_REMOVE_ITEM_BLOCKED: "%item% ha sido desbloqueado con éxito.",
+  SUCCESS_CHANGED_SERVER_BLOCKS: "Este servidor ahora tiene la siguiente configuración de bloqueos: \n%block_items%",
+  PREFIX_ALREADY_EXISTS: "Ese prefijo ya existe o hay un duplicado en la lista.",
+  BLOCK_ALREADY_EXISTS: "Ese rol o canal ya está bloqueado.",
+  SUCCESS_ADD_MANAGER_ROLE: "%item% ha sido añadido a la lista de roles de administrador con éxito.",
+  SUCCESS_CHANGED_MANAGER_BLOCKS: "Este servidor ahora tiene la siguiente configuración de roles de administrador: \n%manager_roles%",
+  LATCH_DELAY_INVALID: "Los tiempos de retención no pueden ser mayores a 10 horas ni ser un valor inválido.",
+  MANAGER_ALREADY_EXISTS: "Ese rol de administrador ya está en la lista.",
+  SUCCESS_REMOVE_MANAGER_ROLE: "%item% ha sido eliminado de la lista de roles de administrador con éxito.",
+  REQUIRE_TAG_ENABLED: "Ahora todos los sistemas deberán activar las etiquetas de sistema para poder usar proxy.",
+  REQUIRE_TAG_DISABLED: "Ya no será obligatorio que los sistemas activen etiquetas de sistema para usar proxy.",
+  ERROR_DOESNT_EXIST: "¿Ese error no existe? ¿Acaso ya ha sido resuelto?",
+  FEATURE_DISABLED_GUILD: "Esa función está desactivada en este servidor.",
+  FEATURE_DISABLED_CHANNEL: "Este canal tiene desactivado el uso de PluralBuddy.",
+  LOGGING_CHANNEL_SET: "Se ha establecido correctamente ese canal como canal de registros para este servidor.",
+  ROLE_PREFERENCE_ALREADY_EXISTS: "Esa preferencia de rol ya existe.",
+  ROLE_PREFERENCE_DOESNT_EXIST: "Esa preferencia de rol no existe.",
+  ROLE_PREFERENCE_SEARCH: "Buscando roles",
+  REPROXIED_MESSAGE: "Se ha reenviado el mensaje proxy con éxito.",
+  ERRORS_SEARCH: "Buscando errores",
+  ROLE_CONTENTS: "Contenido del contenedor de rol",
+  ROLE_COLOR: "Color del contenedor de rol",
+  ROLE_LOCATION: "Ubicación del contenedor de rol",
+  FORM_ROLE_CONFIG: "Editando configuración de rol",
+  DELAY_CHANGED: "El retraso de proxy del servidor se actualizó a %seconds% segundos (%ms%ms).",
+  ROLE_NO_SPECIAL_CONFIG: "Este rol no tiene una configuración especial.",
+  SET_CONTAINERS_CONTENT: "Se estableció/limpió correctamente el contenido del contenedor del rol <@&%role%>. Arriba hay una vista previa del contenedor.",
+  SET_CONTAINERS_COLOR: "Se estableció/limpió correctamente el color del contenedor del rol <@&%role%>. Arriba hay una vista previa del contenedor.",
+  SET_CONTAINERS_LOCATION: "Se estableció/limpió correctamente la ubicación del contenedor del rol <@&%role%>. Arriba hay una vista previa del contenedor.",
+  DISABLED_FEATURE: `Se desactivó con éxito esa función.
 
 **%name%**
 > %description%`,
@@ -446,10 +413,10 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 > - *Modo Alter*: Todos los mensajes enviados desde este sistema usarán proxy con este alter. Las etiquetas proxy al final de tu mensaje serán ignoradas, ya que todos los mensajes saldrán con este alter.
 > - *Modo Fijado (Latch)*: El alter del último mensaje enviado con etiquetas proxy será seleccionado para los siguientes mensajes. No requiere un alter inicial, pero se puede definir uno.
 > - *Desactivado*: Usar etiquetas proxy enviará un mensaje proxy con un alter, de lo contrario se enviará un mensaje normal.`,
-	REQUIRED_SERVER_PROXY: "Debes estar en un servidor para usar proxy",
-	SELECT_DEFAULT_PROXY: "Selecciona un modo de proxy",
-	POLICY_MODAL_TITLE: "¡Bienvenido/a a PluralBuddy!",
-	POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} ¡Hola, te damos la bienvenida a PluralBuddy para Discord! Para mantener a PluralBuddy como un bot seguro, requerimos que aceptes nuestra [Política de privacidad](https://pluralbuddy.app/en/docs/policies/privacy) y [Términos de servicio](https://pluralbuddy.app/en/docs/policies/terms) para usar el bot.
+  REQUIRED_SERVER_PROXY: "Debes estar en un servidor para usar proxy",
+  SELECT_DEFAULT_PROXY: "Selecciona un modo de proxy",
+  POLICY_MODAL_TITLE: "¡Bienvenido/a a PluralBuddy!",
+  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} ¡Hola, te damos la bienvenida a PluralBuddy para Discord! Para mantener a PluralBuddy como un bot seguro, requerimos que aceptes nuestra [Política de privacidad](https://pluralbuddy.app/en/docs/policies/privacy) y [Términos de servicio](https://pluralbuddy.app/en/docs/policies/terms) para usar el bot.
 
 -# - El contenido NSFW no está permitido en PluralBuddy. El contenido NSFW resultará en un bloqueo instantáneo. Ten cuidado con lo que subes.
 -# - Aunque PluralBuddy es un bot **enfocado en la privacidad** desde la perspectiva del usuario, debido a la naturaleza centralizada de los bots de Discord, todos los datos relacionados con el sistema que proporciones pueden ser vistos por los desarrolladores.
@@ -664,64 +631,51 @@ A continuación hay un ejemplo de cómo se vería un mensaje proxy con este rol:
   TAGS_PAGINATION: `-# Página {{ page }}/{{ maxPage }} · Encontradas {{ alters }}/{{ maxAlters }} etiqueta(s) en {{ time }}ms{{ possibleSearchQuery }}`,
   S_PUBLIC_PROFILE_TITLE: `## Perfil público - @{{ systemName }}
 Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifican tus mensajes.`,
-	IMPORT_SETTINGS_TITLE: `## Importar datos desde otro bot`,
-	IMPORT_SETTINGS_DESC: `Importar desde otro bot te permite reemplazar o agregar datos provenientes de tus otros bots, o hacer una combinación de ambos.`,
-	REPLACE_DESC:
-		"Reemplazar sustituirá los datos existentes en tu sistema con los datos nuevos. No crea un nuevo sistema.",
-	REPLACE_NAME: "Reemplazar",
-	ADD_DESC:
-		"Agregar añadirá nuevas etiquetas y alters desde otro bot. No reemplaza los datos existentes.",
-	ADD_NAME: "Agregar",
-	FULL_IMPORT_DESC:
-		"El modo de importación completa reemplazará los alters existentes y agregará los nuevos.",
-	FULL_IMPORT_NAME: "Importación completa",
-	DELETE_IMPORT_DESC:
-		"El modo de importación con eliminación removerá los alters/etiquetas existentes que no estén presentes en el archivo importado.",
-	DELETE_NAME: "Eliminar",
-	EXISTING_ALTER: "Ya existe un alter con ese nombre de usuario. Elige otro.",
-	ALTER_COUNT_LABEL: "**Recuento de alters:** ",
-	SELF_REACTION_ERR: "No se pudo remover la reacción propia",
-	SELF_REACTION_DESC:
-		"PluralBuddy no pudo remover el emoji de carga al intentar realizar una [Acción del menú contextual](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
-	REACTION_ERR: "No se pudo remover la reacción del usuario",
-	REPLY_IN_RESPONSE: "-# {{ reply }} En respuesta a: {{ link }}",
-	AWAKE:
-		"¡Hola! Estoy activo, ejecutando PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
-	LINK_INVITE: "Invitar",
-	LINK_SUPPORT: "Soporte",
-	LINK_DOCS: "Documentación",
-	DISPLAY_TAG_ENFORCE: "Política de aplicación de etiqueta visible",
-	DISPLAY_TAG_ENFORCE_DESC:
-		'Este usuario no puede enviar mensajes proxy en este servidor sin una etiqueta de sistema debido a la política del servidor. Activa las etiquetas de sistema yendo a `pb;system config` -> "Perfil público".',
-	NO_DM_CHANNELS:
-		"No puedes enviar mensajes proxy en canales de mensajes directos. ¡Lo sentimos!",
-	NOTIFIED_1:
-		"-# Se te notificó de esta acción debido a tu asociación con tu alter de PluralBuddy.",
-	NOTIFIED_2:
-		"-# Desarrollado como software de código abierto en [pluralbuddy.app](<https://pluralbuddy.app>)",
-	OPT_OUT_DMS: "Desactivar DMs",
-	UNDO_BTN: "Deshacer operación",
-	EXPIRED: "Expirado",
-	NOT_ORIGINAL_RECIPIENT: "No eres el destinatario original del mensaje.",
-	IMPORT_REQ_DESC:
-		"Para enviar tus datos de importación desde otro bot, debes ingresarlos en el panel de control de PluralBuddy.",
-	IMPORT_REQ_WAITING:
-		"-# Esperando respuesta...\n-# Esto expira en 15 minutos.",
-	VIEW_DASH: "Ver en el panel de control",
-	INCLUDE_PROXY_TAGS_DESC:
-		"Incluir etiquetas proxy evitará que se omitan automáticamente las etiquetas proxy en el mensaje enviado por PluralBuddy.",
-	INCLUDE_PROXY_TAGS_BTN: "Incluir etiquetas proxy",
-	INCLUDE_PROXY_TAGS_OFF_BTN: "Desactivar inclusión de etiquetas proxy",
-	INCLUDE_PRONOUNS_DESC:
-		"Incluir pronombres añadirá los pronombres entre paréntesis al nombre del webhook cada vez que envíes un mensaje proxy.",
-	INCLUDE_PRONOUNS_BTN: "Incluir pronombres",
-	INCLUDE_PRONOUNS_OFF_BTN: "Desactivar inclusión de pronombres",
-	VALIDATION_TAG_ERROR: "Ocurrió un error al crear esa etiqueta:",
-	ERROR_CREATING_WEBHOOK_TITLE:
-		"Error al crear el webhook para <#{{ channelId }}>",
-	ERROR_CREATING_WEBHOOK_DESC:
-		"Ocurrió un error al crear el webhook correspondiente para <#{{ channelId }}>. Verifica si PluralBuddy tiene los permisos correctos en ese canal.",
-	SET_LANGUAGE_DESC: `## {{ gear }} Establecer idioma de PluralBuddy
+  IMPORT_SETTINGS_TITLE: `## Importar datos desde otro bot`,
+  IMPORT_SETTINGS_DESC: `Importar desde otro bot te permite reemplazar o agregar datos provenientes de tus otros bots, o hacer una combinación de ambos.`,
+  REPLACE_DESC: "Reemplazar sustituirá los datos existentes en tu sistema con los datos nuevos. No crea un nuevo sistema.",
+  REPLACE_NAME: "Reemplazar",
+  ADD_DESC: "Add añadirá nuevas etiquetas y alters provenientes de otro bot.",
+  ADD_NAME: "Agregar",
+  FULL_IMPORT_DESC: "El modo de importación completa reemplazará los alters existentes y agregará los nuevos.",
+  FULL_IMPORT_NAME: "Importación completa",
+  DELETE_IMPORT_DESC: "El modo de importación con eliminación removerá los alters/etiquetas existentes que no estén presentes en el archivo importado.",
+  DELETE_NAME: "Eliminar",
+  EXISTING_ALTER: "Ya existe un alter con ese nombre de usuario. Elige otro.",
+  ALTER_COUNT_LABEL: "**Recuento de alters:** ",
+  SELF_REACTION_ERR: "No se pudo remover la reacción propia",
+  SELF_REACTION_DESC: "PluralBuddy no pudo remover el emoji de carga al intentar realizar una [Acción del menú contextual](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
+  REACTION_ERR: "No se pudo remover la reacción del usuario",
+  REPLY_IN_RESPONSE: "-# {{ reply }} En respuesta a: {{ link }}",
+  AWAKE: "¡Hola! Estoy activo, ejecutando PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
+  LINK_INVITE: "Invitar",
+  LINK_SUPPORT: "Soporte",
+  LINK_DOCS: "Documentación",
+  DISPLAY_TAG_ENFORCE: "Política de aplicación de etiqueta visible",
+  DISPLAY_TAG_ENFORCE_DESC: "Este usuario no puede actuar como proxy en este servidor sin una etiqueta de sistema, debido a la política de aplicación de etiquetas de visualización del sistema. Habilite las etiquetas de sistema utilizando el botón de la derecha.",
+  NO_DM_CHANNELS: "No puedes enviar mensajes proxy en canales de mensajes directos. ¡Lo sentimos!",
+  NOTIFIED_1: "-# Se te notificó de esta acción debido a tu asociación con tu alter de PluralBuddy.",
+  NOTIFIED_2: "-# Desarrollado como software de código abierto en [pluralbuddy.app](<https://pluralbuddy.app>)",
+  OPT_OUT_DMS: "Desactivar DMs",
+  UNDO_BTN: "Deshacer operación",
+  EXPIRED: "Expirado",
+  NOT_ORIGINAL_RECIPIENT: "No eres el destinatario original del mensaje.",
+  IMPORT_REQ_DESC: "Para enviar tus datos de importación desde otro bot, debes ingresarlos en el panel de control de PluralBuddy.",
+  IMPORT_REQ_WAITING: "-# Esperando respuesta...\n-# Esto expira en 15 minutos.",
+  VIEW_DASH: "Ver en el panel de control",
+  INCLUDE_PROXY_TAGS_DESC: "Incluir etiquetas proxy evitará que se omitan automáticamente las etiquetas proxy en el mensaje enviado por PluralBuddy.",
+  INCLUDE_PROXY_TAGS_BTN: "Incluir etiquetas proxy",
+  INCLUDE_PROXY_TAGS_OFF_BTN: "Desactivar inclusión de etiquetas proxy",
+  INCLUDE_PRONOUNS_DESC: "Incluir pronombres añadirá los pronombres entre paréntesis al nombre del webhook cada vez que envíes un mensaje proxy.",
+  INCLUDE_PRONOUNS_BTN: "Incluir pronombres",
+  INCLUDE_PRONOUNS_OFF_BTN: "Desactivar inclusión de pronombres",
+  PREFER_ACCESSIBLITY_BTN: "Preferir accesibilidad",
+  PREFER_ACCESSIBLITY_OFF_BTN: "Deshabilitar Preferir accesibilidad",
+  PREFER_ACCESSIBLITY_DESC: "PluralBuddy priorizará la accesibilidad sobre la apariencia y la visibilidad de los datos. En este modo, es posible que algunos textos aparezcan más separados, en negrita o no sean visibles.",
+  VALIDATION_TAG_ERROR: "Ocurrió un error al crear esa etiqueta:",
+  ERROR_CREATING_WEBHOOK_TITLE: "Error al crear el webhook para <#{{ channelId }}>",
+  ERROR_CREATING_WEBHOOK_DESC: "Ocurrió un error al crear el webhook correspondiente para <#{{ channelId }}>. Verifica si PluralBuddy tiene los permisos correctos en ese canal.",
+  SET_LANGUAGE_DESC: `## {{ gear }} Establecer idioma de PluralBuddy
 Puedes establecer el idioma que usa PluralBuddy en sus comandos. Si no se encuentra un texto, se utilizará la versión en inglés como alternativa.
 
 {{ languages }}`,
@@ -739,12 +693,12 @@ Haz clic en el botón de la derecha para abrir este alter en el panel de control
 Tu sistema actualmente tiene activado el proxy automático en **{{ mode }}**.`,
   INTEGRATION_AP: `### Estado del proxy automático
 Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
-	NO_STATUS_AP: `Actualmente no estás usando el proxy automático en este ámbito.`,
-	NO_ALTER_AP: `Tu proxy automático no está vinculado a ningún alter en este momento.`,
-	DISABLED_SERVER: `Este servidor tiene desactivado el envío de mensajes proxy.`,
-	AP_AS: "-# **PROXY AUTOMÁTICO ACTIVO COMO:**",
-	AP_INTEGRATION_AS: "-# **{{ provider }} AL FRENTE COMO:**",
-	PROVIDER_NOT_FOUND: `No se encontró ese proveedor de proxy automático o no autorizaste con el permiso [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap). Contacta al desarrollador de esta integración si crees que es un error.
+  NO_STATUS_AP: `Actualmente no estás usando el proxy automático en este ámbito.`,
+  NO_ALTER_AP: `Tu proxy automático no está vinculado a ningún alter en este momento.`,
+  DISABLED_SERVER: `Este servidor tiene desactivado el envío de mensajes proxy.`,
+  AP_AS: "-# **PROXY AUTOMÁTICO ACTIVO COMO:**",
+  AP_INTEGRATION_AS: "-# **{{ provider }} AL FRENTE COMO:**",
+  PROVIDER_NOT_FOUND: `No se encontró ese proveedor de proxy automático o no autorizaste con el permiso [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap). Contacta al desarrollador de esta integración si crees que es un error.
 	
 -# Integración: \`{{ id }}\``,
   AP_INVALID_SYNTAX: `Modo de proxy automático o proveedor inválido \`{{ mode }}\`.
@@ -852,7 +806,7 @@ PluralBuddy puede sincronizar los miembros de tu PluralKit de forma unidireccion
   USE_PLURALKIT_TERMINOLOGY_TITLE: "Usar Terminología al estilo PluralKit (¡nuevo!)",
   USE_PLURALKIT_TERMINOLOGY_DESC: "Utilice una terminología similar a la representada en PluralKit (es decir, miembro, grupo).",
   ALTER_TAG_COUNT_TOO_HIGH: "-# Esta importación no se puede realizar de forma destructiva y/o no destructiva debido a que el recuento de Alter o etiquetas combinado con la transcripción es demasiado alto.",
-  EDIT_REACTING_TOP: `Para futuras ocasiones, puedes responder a un mensaje con \`{{ prefix }}edit\` para editarlo.
+  EDIT_REACTING_TOP: `-# Para futuras ocasiones, puedes responder a un mensaje con \`{{ prefix }}edit\` para editarlo.
 
 Estás intentando editar un mensaje marcado con el emoji 📝. Por favor, introduce el contenido del nuevo mensaje usando el botón de abajo.`,
   EDIT_MESSAGE_BTN: "Editar mensaje",
