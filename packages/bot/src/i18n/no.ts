@@ -110,7 +110,7 @@ SimplyPlural har blitt avviklet.`,
   CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use %command% for more details.",
   TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
   TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
-  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system instead.",
+  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system intead.",
   CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
   CONFIRMATION_SYSTEM_DELETION_BTN: "I acknowledge this is a permanent action, continue",
   BACK_TO_SAFETY_BTN: "No, go back to safety",
@@ -294,9 +294,8 @@ PluralBuddy uses a **username/display name** system.
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
--# 🇩🇪 German translations by @.ayake & @mira.mizuki
+-# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 -# 🇪🇸 Spanish translations by @cosmic.rainbow.
--# 🇳🇴 Norweigan translations by @zeondev
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -362,8 +361,8 @@ PluralBuddy uses a **username/display name** system.
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",
   MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
   SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
-  REQUIRE_TAG_ENABLED: "All systems will now be required to enable display tags in order to proxy.",
-  REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable display tags to proxy.",
+  REQUIRE_TAG_ENABLED: "All systems will now be required to enable system tags in order to proxy.",
+  REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable system tags to proxy.",
   ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
   FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
   FEATURE_DISABLED_CHANNEL: "This channel is disabled from using PluralBuddy.",
@@ -494,6 +493,9 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
   DM_REPLIES_DESC: "DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
   DISABLE_DM: "Disable DM Replies",
   ENABLE_DM: "Enable DM Replies",
+  DISABLE_SERVER_REPLYING: "Disable Server Replying",
+  ENABLE_SERVER_REPLYING: "Enable Server Replying",
+  SERVER_REPLYING_DESC: "Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
   BLOCK_USERS_DESC: `You can block users from nudging you specifically. Currently, you have {{ userCount }} user(s) blocked.`,
   EXPORT_NUDGE_BLOCKLIST: "Export Nudge Blocklist",
   VIEW_NUDGE_BLOCKLIST: "View Nudge Blocklist",
@@ -776,7 +778,7 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
   ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
   ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
   DESTRUCTIVE_SWITCH: "Destructive Mode",
-  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit automatically.",
+  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
   NORMAL_TERMS_TITLE: "**Singular Words or Features**",
   NORMAL_TERMS_DESC: "Any word or feature that is just singular would be editable here.",
   PLURAL_TERMS_TITLE: "**Plural Words or Features**",
