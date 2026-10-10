@@ -288,17 +288,18 @@ PluralBuddy uses a **username/display name** system.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
-> **Credits:**
-> %linein% Programmed w/ :heart_hands: by @giftedly 
-> **Translations:**
-> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# **CREDITS**
+**Programmed w/ :heart_hands: by @giftedly**
+-# Developed all major parts of PluralBuddy
 
 **OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
--# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇩🇪 German translations by @.ayake & @mira.mizuki
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
+-# 🇳🇴 Norweigan translations by @zeondev
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
