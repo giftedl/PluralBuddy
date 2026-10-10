@@ -162,7 +162,8 @@ export async function proxy(
 		});
 
 		const isNativelyMentioning =
-			message.webhookId !== undefined
+			message.referencedMessage &&
+			message.referencedMessage?.webhookId !== undefined
 				? true
 				: message.referencedMessage &&
 					message.mentions.users
