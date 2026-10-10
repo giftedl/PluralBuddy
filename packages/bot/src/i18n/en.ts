@@ -385,7 +385,6 @@ PluralBuddy uses a **username/display name** system.
 	UNABLE_TO_BE_FUNNY: "You are not permitted to use the funny commands.",
 	DISABLED_DM_REPLIES:
 		"Successfully toggled DM replies off. Use `pb;nudge-preferences` to re-enable them.",
-
 	ABOUT_PB: `-# **DEVELOPMENT INFO**
 > PluralBuddy Build %version% · \`%branch%\`
 
@@ -675,6 +674,9 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 		"DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
 	DISABLE_DM: "Disable DM Replies",
 	ENABLE_DM: "Enable DM Replies",
+	DISABLE_SERVER_REPLYING: "Disable Server Replying",
+	ENABLE_SERVER_REPLYING: "Enable Server Replying",
+	SERVER_REPLYING_DESC: "Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
 	BLOCK_USERS_DESC: `You can block users from nudging you specifically. Currently, you have {{ userCount }} user(s) blocked.`,
 	EXPORT_NUDGE_BLOCKLIST: "Export Nudge Blocklist",
 	VIEW_NUDGE_BLOCKLIST: "View Nudge Blocklist",
