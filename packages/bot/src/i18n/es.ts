@@ -277,29 +277,30 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   ROLE_USAGE: "Rol",
   UNABLE_TO_BE_FUNNY: "No tienes permitido usar los comandos divertidos.",
   DISABLED_DM_REPLIES: "Se han desactivado las respuestas por DM. Usa `pb;nudge-preferences` para volver a activarlas.",
-  ABOUT_PB: `-# **INFORMACIÓN DE DESARROLLO**
-> PluralBuddy Versión %version% · \`%branch%\`
+  ABOUT_PB: `-# **DEVELOPMENT INFO**
+> PluralBuddy Build %version% · \`%branch%\`
 
--# **ACERCA DE PLURALBUDDY**
-> PluralBuddy es una herramienta de accesibilidad para sistemas, que permite a sus *alters* utilizar pseudocuentas como webhooks para representar a un miembro determinado.
-> Este bot fue creado como una alternativa más rápida y controlable a otros bots plurales.
-> Para comenzar a usar PluralBuddy, usa %command%.
+-# **ABOUT PLURALBUDDY**
+> PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
+> This bot was made as a faster, more controllable alternative to other plural bots.
+> To get started with using PluralBuddy, use %command%.
 
--# **CRÉDITOS**
-**Programado con :heart_hands: por @giftedly**
--# Desarrolló la mayor parte de PluralBuddy
+-# **CREDITS**
+**Programmed w/ :heart_hands: by @giftedly**
+-# Developed all major parts of PluralBuddy
 
-**Contribuciones de código abierto** - [PluralBuddy tiene licencia MIT](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
 -# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
--# Documentación: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
+-# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
-**Traducido en Crowdin**
--# 🇩🇪 Traducciones al alemán por @mira.mizuki (gracias, amigo/a)
--# 🇪🇸 Traducciones al español de @cosmic.rainbow.
+**Translated on Crowdin**
+-# 🇩🇪 German translations by @.ayake & @mira.mizuki
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
+-# 🇳🇴 Norweigan translations by @zeondev
 
--# **ENLACES**
-> -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pluralbuddy.app)
-> -# [Términos de servicio](<https://pluralbuddy.app/docs/policies/terms>) · [Política de privacidad](<https://pluralbuddy.app/docs/policies/privacy>)`,
+-# **LINKS**
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
+> -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Asignar etiqueta",
   SET_AUTO_PROXY_SRV: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en todas partes.",
