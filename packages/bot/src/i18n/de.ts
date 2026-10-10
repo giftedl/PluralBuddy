@@ -49,8 +49,8 @@ Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer wel
   ERROR_PAGINATION_TOO_OLD: "2g – Die Alter Paginierungs Komponente ist veraltet. Sie können nicht fortfahren. Klicken Sie bitte oben in der Meldung auf den Tab \"Alter\", um die Seiteneinstellungen zurückzusetzen.",
   ERROR_TAG_PAGINATION_TOO_OLD: "2h – Diese Tag Pagination Komponente ist zu alt, Sie können nicht fortfahren. Bitte klicken Sie auf die Registerkarte \"Tags\" oben in der Nachricht, um die Pagination zurückzusetzen.",
   ERROR_ASSIGN_PAGINATION_TOO_OLD: "2i – Diese Paginations komponente ist zu alt, Sie können nicht fortfahren. Bitte gehen Sie zurück und klicken Sie erneut auf den Knopf Zuordnen, damit die Paginations komponente wieder funktioniert.",
-  ERROR_NO_ALTERS: "2w – Sie haben keine Änderungen! Erstellen Sie unten eine!",
-  ERROR_NO_TAGS: "2w – Sie haben keine Änderungen! Erstellen Sie unten eine!",
+  ERROR_NO_ALTERS: "2w – Sie haben keine Anteile! Erstellen Sie unten eine!",
+  ERROR_NO_TAGS: "2w – Sie haben keine Anteile! Erstellen Sie unten eine!",
   PK_IMPORT_START: "## PluralKit importieren",
   SP_IMPORT_START: `## Simply Plural Importing
 	
