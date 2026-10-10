@@ -110,7 +110,7 @@ SimplyPlural har blitt avviklet.`,
   CREATE_NEW_TAG_DONE: "Successfully created  %color_emoji% **%tag_name%**  in your system. Use %command% for more details.",
   TAG_SPACE_WARNING: "Since this tag has **spaces** in it, some commands may require you put the display name in quotes to be parsed correctly. Additionally, you can just use application commands instead.",
   TAG_ALREADY_EXISTS: "You already have a tag named **%display%** in your system.",
-  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system intead.",
+  CONFIRMATION_SYSTEM_DELETION: "# :warning: __YOU ARE ABOUT TO DELETE YOUR SYSTEM__ :warning:\n**This action __CANNOT__ be undone by PluralBuddy Support**, or by yourself in any capacity at ANY date in the future. __This will delete ALL system data, including tags, alters, and other assets from your system__.\n\n> **Pro tip:** If you need to simply disable proxying for all alters, it may be better to **disable** the system instead.",
   CONFIRMATION_SYSTEM_DELETION_PRIVACY: "-# As per [PluralBuddy's Privacy Policy](https://gftl.fyi/privacy), this action will delete all data related to your system, **except** for system banners and profile pictures. Those can be deleted by using %command%'s `media-included` flag.",
   CONFIRMATION_SYSTEM_DELETION_BTN: "I acknowledge this is a permanent action, continue",
   BACK_TO_SAFETY_BTN: "No, go back to safety",
@@ -297,8 +297,8 @@ PluralBuddy uses a **username/display name** system.
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
 -# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
-> -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
+> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
   SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
@@ -360,8 +360,8 @@ PluralBuddy uses a **username/display name** system.
   LATCH_DELAY_INVALID: "Latch delays cannot be longer than 10 hours, or be an invalid input. ",
   MANAGER_ALREADY_EXISTS: "That manager role is already on the manager role list.",
   SUCCESS_REMOVE_MANAGER_ROLE: "%item% has been removed from the manager role list successfully.",
-  REQUIRE_TAG_ENABLED: "All systems will now be required to enable system tags in order to proxy.",
-  REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable system tags to proxy.",
+  REQUIRE_TAG_ENABLED: "All systems will now be required to enable display tags in order to proxy.",
+  REQUIRE_TAG_DISABLED: "All systems will no longer be required to enable display tags to proxy.",
   ERROR_DOESNT_EXIST: "That error doesn't exist. Has it already been cleared?",
   FEATURE_DISABLED_GUILD: "That feature is disabled on this guild.",
   FEATURE_DISABLED_CHANNEL: "This channel is disabled from using PluralBuddy.",
@@ -415,7 +415,7 @@ PluralBuddy uses a **username/display name** system.
   REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
   SELECT_DEFAULT_PROXY: "Select a proxy mode",
   POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
-  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
+  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
 
 -# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
 -# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
@@ -774,7 +774,7 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
   ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
   ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
   DESTRUCTIVE_SWITCH: "Destructive Mode",
-  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
+  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit automatically.",
   NORMAL_TERMS_TITLE: "**Singular Words or Features**",
   NORMAL_TERMS_DESC: "Any word or feature that is just singular would be editable here.",
   PLURAL_TERMS_TITLE: "**Plural Words or Features**",
