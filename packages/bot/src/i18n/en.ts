@@ -403,8 +403,9 @@ PluralBuddy uses a **username/display name** system.
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
--# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇩🇪 German translations by @.ayake & @mira.mizuki
 -# 🇪🇸 Spanish translations by @cosmic.rainbow.
+-# 🇳🇴 Norweigan translations by @zeondev
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -453,8 +454,7 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
 	OPERATION_FLIPPED_CASE_INSENS_PROXIES:
 		"Toggled case insensitive proxying on this system.",
-	OPERATION_FLIPPED_PUBLIC_DEFAULT:
-		"Toggled public defaulting on this system.",
+	OPERATION_FLIPPED_PUBLIC_DEFAULT: "Toggled public defaulting on this system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -836,8 +836,7 @@ There is an example below of what an example proxy with this role would look lik
 	REPLACE_DESC:
 		"Replace will replace existing data in your system with data. Does not make new system data.",
 	REPLACE_NAME: "Replace",
-	ADD_DESC:
-		"Add will add new tags and alters from another bot.",
+	ADD_DESC: "Add will add new tags and alters from another bot.",
 	ADD_NAME: "Add",
 	FULL_IMPORT_DESC:
 		"Full import mode will both replace existing alters and add new ones.",
@@ -961,10 +960,8 @@ Your system is using the front state of **{{ mode }}**.`,
 		"Successfully toggled preferring accessiblity. (Enabled)",
 	PREFER_ACCESSIBLITY_D:
 		"Successfully toggled preferring accessiblity. (Disabled)",
-	PUBLIC_DEFAULT_E:
-		"Successfully toggled public defaulting. (Enabled)",
-	PUBLIC_DEFAULT_D:
-		"Successfully toggled public defaulting. (Disabled)",
+	PUBLIC_DEFAULT_E: "Successfully toggled public defaulting. (Enabled)",
+	PUBLIC_DEFAULT_D: "Successfully toggled public defaulting. (Disabled)",
 
 	NOT_FRIDAY:
 		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
@@ -1080,12 +1077,15 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 
 	TEMPLATE_PLACEHOLDER: "Choose your favorite plurality product...",
 
-	TERMINOLOGY_EXPLANER: "PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
+	TERMINOLOGY_EXPLANER:
+		"PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
 	SUCCESSFULLY_APPLIED_TEMPLATE: "Successfully applied that template!",
 	USE_PLURALKIT_TERMINOLOGY_TITLE: "Use PluralKit-style Terminology (new!)",
-	USE_PLURALKIT_TERMINOLOGY_DESC: "Use terminology similar to represented in PluralKit (ie. member, group).",
+	USE_PLURALKIT_TERMINOLOGY_DESC:
+		"Use terminology similar to represented in PluralKit (ie. member, group).",
 
-	ALTER_TAG_COUNT_TOO_HIGH: "-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high.",
+	ALTER_TAG_COUNT_TOO_HIGH:
+		"-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high.",
 
 	EDIT_REACTING_TOP: `-# For future reference, you can reply to a message with \`{{ prefix }}edit\` to edit that message.
 	
@@ -1095,5 +1095,5 @@ You are attempting to edit a message with the 📝 emoji. Please enter the conte
 
 	PT_CREATE_NEW: "Create New Proxy Tag",
 	PT_DELETE: "Delete Proxy Tag",
-	PT_LIMIT: "-# You can create up to 6 proxy tags."
+	PT_LIMIT: "-# You can create up to 6 proxy tags.",
 };
