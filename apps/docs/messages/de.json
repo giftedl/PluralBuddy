@@ -1,4 +1,11 @@
 {
+    "HomePage-v2": {
+        "headline": "The {#plural}plurality{/plural} bot",
+        "headline_2": "finally built correctly",
+        "desc": "Your system on Discord is finally yours. PluralBuddy runs on the bleeding edge of Discord, and delievers the benefits to your system.",
+        "blocks_headline": "Server staff accounted for",
+        "stickers_emojis_headline": "Stickers and emojis proxy without clearing proxy"
+    },
     "HomePage": {
         "title": "Das Alter von {#headline}schneller{/headline} der Pluralität Bots",
         "desc": "PluralBuddy ist der PluralBuddy der {#highlight}-Generation{/highlight} für Discord – aufgebaut auf {#br}{/br}Principals von {#accent}speed{/accent}, {#accent}accessibility{/accent} & {#accent}data convenience.{/accent}",
