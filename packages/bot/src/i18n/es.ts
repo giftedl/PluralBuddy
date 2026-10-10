@@ -277,30 +277,29 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
   ROLE_USAGE: "Rol",
   UNABLE_TO_BE_FUNNY: "No tienes permitido usar los comandos divertidos.",
   DISABLED_DM_REPLIES: "Se han desactivado las respuestas por DM. Usa `pb;nudge-preferences` para volver a activarlas.",
-  ABOUT_PB: `-# **DEVELOPMENT INFO**
-> PluralBuddy Build %version% · \`%branch%\`
+  ABOUT_PB: `-# **INFORMACIÓN DE DESARROLLO**
+> PluralBuddy Versión %version% · \`%branch%\`
 
--# **ABOUT PLURALBUDDY**
-> PluralBuddy is an accessibility tool for those who are systems, allowing system *alters* to make pseudo-accounts as webhooks to represent a certain alter.
-> This bot was made as a faster, more controllable alternative to other plural bots.
-> To get started with using PluralBuddy, use %command%.
+-# **ACERCA DE PLURALBUDDY**
+> PluralBuddy es una herramienta de accesibilidad para sistemas, que permite a sus *alters* utilizar pseudocuentas como webhooks para representar a un miembro determinado.
+> Este bot fue creado como una alternativa más rápida y controlable a otros bots plurales.
+> Para comenzar a usar PluralBuddy, usa %command%.
 
--# **CREDITS**
-**Programmed w/ :heart_hands: by @giftedly**
--# Developed all major parts of PluralBuddy
+-# **CRÉDITOS**
+**Programado con :heart_hands: por @giftedly**
+-# Desarrolló la mayor parte de PluralBuddy
 
-**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+**Contribuciones de código abierto** - [PluralBuddy tiene licencia MIT](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
 -# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
--# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
+-# Documentación: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
-**Translated on Crowdin**
--# 🇩🇪 German translations by @.ayake & @mira.mizuki
--# 🇪🇸 Spanish translations by @cosmic.rainbow.
--# 🇳🇴 Norweigan translations by @zeondev
+**Traducido en Crowdin**
+-# 🇩🇪 Traducciones al alemán por @mira.mizuki (gracias, amigo/a)
+-# 🇪🇸 Traducciones al español de @cosmic.rainbow.
 
--# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
-> -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
+-# **ENLACES**
+> -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pluralbuddy.app)
+> -# [Términos de servicio](<https://pluralbuddy.app/docs/policies/terms>) · [Política de privacidad](<https://pluralbuddy.app/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Asignar etiqueta",
   SET_AUTO_PROXY_SRV: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Se ha establecido el modo de proxy automático a **%mode%** para tu sistema en todas partes.",
@@ -501,6 +500,9 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
   DM_REPLIES_DESC: "Las respuestas por DM te enviarán un mensaje privado cuando alguien te responda. **Debes tener los DMs activados en al menos uno de los servidores en los que estoy o no podré contactarte.**",
   DISABLE_DM: "Desactivar respuestas por DM",
   ENABLE_DM: "Activar respuestas por DM",
+  DISABLE_SERVER_REPLYING: "Disable Server Replying",
+  ENABLE_SERVER_REPLYING: "Enable Server Replying",
+  SERVER_REPLYING_DESC: "Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
   BLOCK_USERS_DESC: `Puedes bloquear a usuarios específicos para que no te den toques. Actualmente, tienes {{ userCount }} usuario(s) bloqueado(s).`,
   EXPORT_NUDGE_BLOCKLIST: "Exportar lista de bloqueos de toques",
   VIEW_NUDGE_BLOCKLIST: "Ver lista de bloqueos de toques",
