@@ -26,32 +26,45 @@ export const PUserObject = z.object({
 			dmReply: false,
 			serverReplying: false,
 		}),
-    terminology: PTerminology,
-	syncConfiguration: z.record(
-		z.string(),
-		z.object({
-			automatic: z.object({ destructive: z.boolean().default(false), enabled: z.boolean().default(false) }).optional() ,
-			writeBack: z.object({ enabled: z.boolean().default(false) }).optional() ,
-			token: z.object({ v: z.string(), i: z.string() }).optional(),
-            lastSynced: z.coerce.date().optional(),
-
-		}),
-	).optional(),
+	terminology: PTerminology,
+	syncConfiguration: z
+		.record(
+			z.string(),
+			z.object({
+				automatic: z
+					.object({
+						destructive: z.boolean().default(false),
+						enabled: z.boolean().default(false),
+					})
+					.optional(),
+				writeBack: z.object({ enabled: z.boolean().default(false) }).optional(),
+				token: z.object({ v: z.string(), i: z.string() }).optional(),
+				lastSynced: z.coerce.date().optional(),
+			}),
+		)
+		.optional(),
 });
 
-export type PUser = z.infer<typeof PUserObject>
+export type PUser = z.infer<typeof PUserObject>;
 
 export const defaultUserStructure = (userId: string) => {
-    return {
-        userId,
-        blocked: false,
-        userLang: "en",
-        storagePrefix: assetStringGeneration(8),
-        nudging: {
-            blockedUsers: [],
-            currentlyEnabled: true,
-            dmReply: false,
-			serverReplying: false
-        }
-    } satisfies PUser
-}
+	return {
+		userId,
+		blocked: false,
+		userLang: "en",
+		storagePrefix: assetStringGeneration(8),
+		nudging: {
+			blockedUsers: [],
+			currentlyEnabled: true,
+			dmReply: false,
+			serverReplying: false,
+		},
+	} satisfies PUser;
+};
+
+export const defaultNudgingStructure = () => ({
+	blockedUsers: [],
+	currentlyEnabled: true,
+	dmReply: false,
+	serverReplying: false,
+});
