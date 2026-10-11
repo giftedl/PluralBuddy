@@ -416,7 +416,7 @@ PluralBuddy uses a **username/display name** system.
   REQUIRED_SERVER_PROXY: "You must be in a server to proxy",
   SELECT_DEFAULT_PROXY: "Select a proxy mode",
   POLICY_MODAL_TITLE: "Welcome to PluralBuddy!",
-  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pluralbuddy.app/en/docs/policies/privacy) & [Terms of Service](https://pluralbuddy.app/en/docs/policies/terms) to use PluralBuddy.
+  POLICY_MODAL_DESCRIPTION: `${emojis.clockCheck} Hello, welcome to PluralBuddy for Discord! In order for us to keep PluralBuddy a safe bot, we require that you agree to our [Privacy Policy](https://pb.giftedly.dev/en/docs/policies/privacy) & [Terms of Service](https://pb.giftedly.dev/en/docs/policies/terms) to use PluralBuddy.
 
 -# - NSFW content is not tolerated on PluralBuddy. NSFW will result in an instant block. Be careful with the content you upload.
 -# - While PluralBuddy is a **private-first** bot from a user perspective, however due to the nature of centralized Discord bots, all system-related data you provide PluralBuddy is able to be seen by developers.
@@ -493,6 +493,9 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
   DM_REPLIES_DESC: "DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
   DISABLE_DM: "Disable DM Replies",
   ENABLE_DM: "Enable DM Replies",
+  DISABLE_SERVER_REPLYING: "Disable Server Replying",
+  ENABLE_SERVER_REPLYING: "Enable Server Replying",
+  SERVER_REPLYING_DESC: "Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
   BLOCK_USERS_DESC: `You can block users from nudging you specifically. Currently, you have {{ userCount }} user(s) blocked.`,
   EXPORT_NUDGE_BLOCKLIST: "Export Nudge Blocklist",
   VIEW_NUDGE_BLOCKLIST: "View Nudge Blocklist",
@@ -625,7 +628,7 @@ There is an example below of what an example proxy with this role would look lik
   IMPORT_SETTINGS_DESC: `Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
   REPLACE_DESC: "Replace will replace existing data in your system with data. Does not make new system data.",
   REPLACE_NAME: "Replace",
-  ADD_DESC: "Add will add new tags and alters from another bot.",
+  ADD_DESC: "Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
   ADD_NAME: "Add",
   FULL_IMPORT_DESC: "Full import mode will both replace existing alters and add new ones.",
   FULL_IMPORT_NAME: "Full Import",
@@ -634,7 +637,7 @@ There is an example below of what an example proxy with this role would look lik
   EXISTING_ALTER: "An alter with that username already exists. Pick another.",
   ALTER_COUNT_LABEL: "**Alter Count:** ",
   SELF_REACTION_ERR: "Unable to remove self-reaction",
-  SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
+  SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "Unable to remove user reaction",
   REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
   AWAKE: "Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
@@ -645,7 +648,7 @@ There is an example below of what an example proxy with this role would look lik
   DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
   NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
   NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
-  NOTIFIED_2: "-# Developed as open-source software @ [pluralbuddy.app](<https://pluralbuddy.app>)",
+  NOTIFIED_2: "-# Developed as open-source software @ [pb.giftedly.dev](<https://pb.giftedly.dev>)",
   OPT_OUT_DMS: "Opt-out of DMs",
   UNDO_BTN: "Undo Operation",
   EXPIRED: "Expired",
@@ -688,7 +691,7 @@ Your system is using the front state of **{{ mode }}**.`,
   DISABLED_SERVER: `This server is disabled from proxying.`,
   AP_AS: "-# **AUTO-PROXYING AS:**",
   AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+  PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
   AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
