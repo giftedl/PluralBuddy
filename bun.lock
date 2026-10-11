@@ -71,7 +71,7 @@
         "file-type": "^22.1.1",
         "fumadocs-core": "16.17.1",
         "fumadocs-mdx": "15.2.1",
-        "fumadocs-openapi": "^11.2.2",
+        "fumadocs-openapi": "11.2.2",
         "fumadocs-typescript": "5.3.0",
         "fumadocs-ui": "16.14.0",
         "hast-util-to-jsx-runtime": "^2.3.6",

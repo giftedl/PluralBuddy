@@ -3,7 +3,7 @@ title: Receive tag creation updates
 full: true
 _openapi:
   preload:
-    - http://localhost:3000/openapi.yml
+    - https://pluralbuddy.app/openapi.yml
   method: POST
   webhook: true
   toc: []
@@ -22,7 +22,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="http://localhost:3000/openapi.yml" webhooks={[{"name":"tag.create","method":"post"}]} showDescription />
+      <Comp document="https://pluralbuddy.app/openapi.yml" webhooks={[{"name":"tag.create","method":"post"}]} showDescription />
     </>
   );
 }
