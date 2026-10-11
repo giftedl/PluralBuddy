@@ -82,7 +82,7 @@ export async function handleDMReply(message: Message) {
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
-				allowed_mentions: { users: [messageObj.systemId] }, 
+				allowed_mentions: { parse: [] }, 
 			})
 			.catch(() => null);
 	} catch (_) {}
