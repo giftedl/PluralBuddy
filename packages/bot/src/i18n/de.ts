@@ -1,17 +1,17 @@
 import { emojis } from "@/lib/emojis";
 export default {
   INTRODUCTION_MESSAGE: `## Willkommen bei PluralBuddy
-PluralBuddy ist ein Bot, der entwickelt wurde, um die Lücke zwischen Qualität und Anpassbarkeit in der Kommunikation für Plurale auf Discord zu schließen.
+PluralBuddy ist ein Bot, der entwickelt wurde, um die Lücke zwischen Qualität und Anpassbarkeit im Plural Austausch für Discord Server und Benutzer zu schließen.
 
-:track_next: Klickt, zum Starten, auf die Schaltfläche Nächste Seite unten um euer System einzurichten.`,
+:track_next: Klicken Sie zum Starten auf die Schaltfläche Nächste Seite unten, um Ihr System einzurichten.`,
   IMPORT_MESSAGE: `## Einrichten Ihres Systems
-Ihr könnt ein neues System erstellen, sodass ihr eure Anteile und Tags selbst erstellen könnt.
-Zusätzlich könnt ihr auch Daten von einem anderen Bot wie PluralKit importieren.
--# Um von Tupperbox zu importieren, müsst ihr zuerst das System erstellen und dann \`{{ prefix }}system import\` ausführen (aufgrund technischer Limitierungen bei Tupperbox).`,
+Sie können ein neues System erstellen, mit dem Sie Ihre Änderungen und Tags selbst erstellen können.
+Zusätzlich können Sie auch Daten von einem anderen Bot wie PluralKit importieren.
+-# Um von Tupperbox zu importieren, da die Daten von Tupperbox nicht vorhanden sind, du musst das System erstellen und dann \`{{ prefix }}system import\` ausführen.`,
   PAGINATION_NEXT_PAGE: "Nächste Seite",
   PAGINATION_FINISH: "Ende",
-  NO_SERVER_DELETION: "PluralBuddy Express Anteile müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Ihr solltet jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
-  BLOCKED: "Ihr wurdet von {{ guild }} gesperrt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht mehr möglich.",
+  NO_SERVER_DELETION: "PluralBuddy Express Änderungen müssen tatsächlich auf einen Server eingeladen werden, damit Nachrichten aufgrund von Discord-Einschränkungen gelöscht werden können. Du solltest jedoch in der Lage sein ihn mit der rechten Maustaste zu löschen!",
+  BLOCKED: "Du wurdest von {{ guild }} gesperrt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht mehr möglich.",
   // Does not need to be translated
   BLOCK_PC: `Du wurdest von **Pridecord** gesperrt. Die Nutzung von PluralBuddy ist in dieser Gilde nicht möglich.
 
@@ -19,22 +19,22 @@ Zusätzlich könnt ihr auch Daten von einem anderen Bot wie PluralKit importiere
 > **Ablaufdatum:** {{ libbyExpirationDate }}
 > -# {{ reply }} Bitte beachte die Direktnachricht von <@1455014942888693792> bezüglich des Falls \`{{ libbyCaseId }} \`.`,
   PAGINATION_PREVIOUS_PAGE: "Vorherige Seite",
-  CREATING_NEW_SYSTEM_HEADER: "## Ein neues System erstellen",
-  ERROR_DISABLED_SYSTEM: "2f – Euer System ist deaktiviert. Ihr könnt keinen Proxy verwenden.",
-  OPTION_DISABLED: "Diese Option ist deaktiviert und kann nicht gewählt werden.",
-  TOO_MANY_BLOCKED_ITEMS: "Zu viele blockierte Items. Aufgrund von Einschränkungen von Discord können höchstens 25 Rollen und 25 Kanäle gleichzeitig blockiert werden.",
-  TOO_MANY_MANAGER_ITEMS: "Zu viele verwaltete Items. Aufgrund von Einschränkungen von Discord können höchstens 25 Verwaltungsrollen angenommen werden.",
+  CREATING_NEW_SYSTEM_HEADER: "## Ein neues System schaffen",
+  ERROR_DISABLED_SYSTEM: "2f – Ihr System ist deaktiviert. Sie können keinen Proxy verwenden.",
+  OPTION_DISABLED: "Diese Option kann nicht gewählt werden. Diese Option ist deaktiviert.",
+  TOO_MANY_BLOCKED_ITEMS: "Es gibt zu viele blocks Artikel. Du kannst nur 25 blocks Rollen und 25 blocks Kanäle gleichzeitig haben, aufgrund von Discord modale Einschränkungen.",
+  TOO_MANY_MANAGER_ITEMS: "Es gibt zu viele Manager Artikel. Aufgrund von Beschränkungen des Discord modal können Sie maximal 25 Manager Artikel gleichzeitig haben.",
   CREATING_NEW_SYSTEM_NAME_MESSAGE: `
-Systeme auf PluralBuddy benötigen einen **Systemnamen**. Dieser muss zwischen 3 und 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von eurem System identifiziert.`,
-  CREATING_NEW_SYSTEM_NAME_BUTTON: "Systemnamen festlegen*",
-  CREATING_NEW_SYSTEM_NAME_SET: "Systemname ist:",
-  CREATING_NEW_SYSTEM_TAG_BUTTON: "System Tag festlegen",
+Systeme auf PluralBuddy benötigen einen **System Name**. Dieser muss mindestens 3 und darf maximal 20 Zeichen lang sein. Systemnamen werden angezeigt, wenn jemand eine Nachricht von Ihrem System identifiziert.`,
+  CREATING_NEW_SYSTEM_NAME_BUTTON: "Setze Name*",
+  CREATING_NEW_SYSTEM_NAME_SET: "Name ist:",
+  CREATING_NEW_SYSTEM_TAG_BUTTON: "System Etikett festlegen",
   CREATING_NEW_SYSTEM_TAG_SET: "System Tag ist:",
   CREATING_NEW_SYSTEM_TAG_MESSAGE: `
-Dieser Server benötigt einen **System Tag** für Systeme, die hier schreiben. Um hier ein System zu erstellen, benötigt ihr einen System Tag.`,
-  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Privatsphäre festlegen",
+Dieser Server benötigt ein **System Tag** für Systeme, die hier proxying. Um hier ein System zu erstellen, benötigen Sie ein System Tag.`,
+  CREATING_NEW_SYSTEM_PRIVACY_BUTTON: "Datenschutzwerte festlegen",
   CREATING_NEW_SYSTEM_PRIVACY_MESSAGE: `
-Systeme können **Privatsphäre-Einstellungen** haben, welche beschreiben, wer welchen Teil eueres Systems sehen kann. Standardmäßig ist euer System privat - mit Ausnahme der automatischen Moderation und den Nachrichten die euer System sendet.`,
+Systeme können **Privatsphäre Werte** haben, welche Werte beschreiben, wer welchen Teil Ihres Systems sehen kann. Standardmäßig ist Ihr System neben der automatischen Moderation des Servers und der Meldung, die Ihr System sendet, komplett privat.`,
   CREATING_NEW_SYSTEM_PRIVACY_SET: "Werte der öffentlichen Privatsphäre sind:",
   CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC: "Wählen Sie die Datenschutzeinstellungen aus, die öffentlich zugänglich sein sollen.",
   CREATING_NEW_SYSTEM_SUCCESS: `Neues System erfolgreich erstellt!
@@ -288,17 +288,17 @@ PluralBuddy uses a **username/display name** system.
 > This bot was made as a faster, more controllable alternative to other plural bots.
 > To get started with using PluralBuddy, use %command%.
 
--# **CREDITS**
-**Programmed w/ :heart_hands: by @giftedly**
--# Developed all major parts of PluralBuddy
+> **Credits:**
+> %linein% Programmed w/ :heart_hands: by @giftedly 
+> **Translations:**
+> %linein% 🇩🇪 German translations by @mira.mizuki (thank you, fren)
 
 **OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
--# 🇪🇸 Spanish translations by @cosmic.rainbow.
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
