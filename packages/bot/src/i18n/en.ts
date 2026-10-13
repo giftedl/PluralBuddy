@@ -745,7 +745,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`,
 	SRV_CFG_PROXY_DELAY_SEC: `> It is not recommended to go over a 1 second proxy delay.
 > This server's proxy delay currently is **{{ delay }} seconds** ({{ delayMs }}ms)`,
-
+	SRV_CFG_PING_MODE: "**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
 	ERROR_LOG_TITLE: `## Error Log - {{ serverName }}`,
 	NO_ERRORS: "{{ catJamming }}   Nice! Your server hasn't ran into any errors!",
 	ERROR_TRIGGERED_BY: `Triggered by <@{{ userId }}>.`,
