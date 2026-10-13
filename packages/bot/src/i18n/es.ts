@@ -296,6 +296,7 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 **Traducido en Crowdin**
 -# 🇩🇪 Traducciones al alemán por @mira.mizuki (gracias, amigo/a)
 -# 🇪🇸 Traducciones al español de @cosmic.rainbow.
+-# 🇳🇴 Traducciones al noruego por @zeondev
 
 -# **ENLACES**
 > -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pluralbuddy.app)
@@ -500,9 +501,9 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
   DM_REPLIES_DESC: "Las respuestas por DM te enviarán un mensaje privado cuando alguien te responda. **Debes tener los DMs activados en al menos uno de los servidores en los que estoy o no podré contactarte.**",
   DISABLE_DM: "Desactivar respuestas por DM",
   ENABLE_DM: "Activar respuestas por DM",
-  DISABLE_SERVER_REPLYING: "Disable Server Replying",
-  ENABLE_SERVER_REPLYING: "Enable Server Replying",
-  SERVER_REPLYING_DESC: "Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
+  DISABLE_SERVER_REPLYING: "Desactivar respuesta del servidor",
+  ENABLE_SERVER_REPLYING: "Activar respuesta del servidor",
+  SERVER_REPLYING_DESC: "Hazte ping siempre que alguien responda a un mensaje proxy. Una alternativa a la función de respuestas DM.",
   BLOCK_USERS_DESC: `Puedes bloquear a usuarios específicos para que no te den toques. Actualmente, tienes {{ userCount }} usuario(s) bloqueado(s).`,
   EXPORT_NUDGE_BLOCKLIST: "Exportar lista de bloqueos de toques",
   VIEW_NUDGE_BLOCKLIST: "Ver lista de bloqueos de toques",
@@ -570,6 +571,7 @@ Descarga el archivo JSON que recibiste y usa el botón a continuación para subi
 > Tras recibir los datos de un nuevo mensaje, en condiciones óptimas, PluralBuddy suele enviar el proxy en <600ms. Sin embargo, si usas un bot de moderación más lento, puedes aumentar este retraso.`,
   SRV_CFG_PROXY_DELAY_SEC: `> No se recomienda superar 1 segundo de retraso.
 > El retraso actual en este servidor es de **{{ delay }} segundos** ({{ delayMs }}ms)`,
+  SRV_CFG_PING_MODE: "**Modo de respuesta de ping**\n> Elija si las respuestas del proxy preservan, siempre incluyen, omiten o revierten el comportamiento de ping original.",
   ERROR_LOG_TITLE: `## Registro de errores - {{ serverName }}`,
   NO_ERRORS: "{{ catJamming }} ¡Genial! ¡Tu servidor no ha registrado ningún error!",
   ERROR_TRIGGERED_BY: `Activado por <@{{ userId }}>.`,
