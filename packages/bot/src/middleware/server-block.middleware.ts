@@ -17,7 +17,13 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 			)?.g ?? (await getGuildFromId(middle.context.guildId ?? "")),
 		);
 	const { context: ctx } = middle;
-	const channel = await middle.context.channel();
+	const channel = await middle.context.channel()
+		.catch(() => null);
+
+	if (!channel) {
+		return middle.next();
+	}
+	
 	const isServerConfig =
 		("customId" in middle.context &&
 			middle.context.customId.startsWith("guilds/")) ||
