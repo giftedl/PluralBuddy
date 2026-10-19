@@ -2,7 +2,7 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { guildCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { ServerConfigView } from "@/views/server-cfg";
-import { Middlewares, ModalCommand, ModalContext } from "seyfert";
+import { Middlewares, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Middlewares(["ensureGuildPermissions"])
@@ -18,7 +18,7 @@ export default class RoleContentsForm extends ModalCommand {
 			InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationForm.substring(
 				ctx.customId,
 			)[0];
-		let newLocation = (ctx.interaction.getInputValue(
+		const newLocation = (ctx.interaction.getInputValue(
 			InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationSelection.create(),
 		) ?? ["top"]) as "top" | "bottom";
 

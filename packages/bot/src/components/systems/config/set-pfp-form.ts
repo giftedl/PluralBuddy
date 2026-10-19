@@ -26,7 +26,7 @@ export default class SetPFPForm extends ModalCommand {
 		const { system, storagePrefix } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -42,7 +42,7 @@ export default class SetPFPForm extends ModalCommand {
 		};
 
 		if (attachment.value.size > 5_000_000) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ATTACHMENT_TOO_LARGE",
 				),
@@ -67,13 +67,13 @@ export default class SetPFPForm extends ModalCommand {
 			);
 		} catch (error) {
 			if (error instanceof FileTooBigException)
-				return await ctx.editResponse({
+				return await ctx.editOrReply({
 					components: new AlertView(await ctx.userTranslations()).errorView(
 						"AFTER_COMPRESSION_TOO_BIG",
 					),
 					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 				});
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_FAILED_TO_UPLOAD_TO_GCP",
 				),
@@ -88,7 +88,7 @@ export default class SetPFPForm extends ModalCommand {
 			"discord",
 		);
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new SystemSettingsView(
 					await ctx.userTranslations(),

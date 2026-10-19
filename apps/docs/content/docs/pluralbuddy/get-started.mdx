@@ -10,6 +10,9 @@ Hello, and welcome to PluralBuddy! This page will show you how to get started wi
 
 <InlineTOC items={toc}>Table of Contents</InlineTOC>
 
+<Steps>
+
+<Step>
 ## Setting up a system
 
 First, you need to setup a system with the following command:
@@ -20,6 +23,9 @@ pb;setup
 
 [That command](/docs/pluralbuddy/commands/setup) will guide you through importing, or creating a new system on PluralBuddy.
 
+</Step>
+
+<Step>
 ## Creating a new alter
 
 Second, you need to create an alter to use in PluralBuddy.
@@ -38,6 +44,10 @@ pb;system create-alter solar 🌻 Solar
 
     This avoids common problems with requiring spaces in alter names when using their relevant commands.
 </Callout>
+
+</Step>
+
+<Step>
 
 ## Proxy as an alter
 
@@ -66,6 +76,9 @@ You can also set proxy tags, which are ways to specify based on a messages conte
 pb;edit-alter add-proxy-tags solar
 ```
 
+</Step>
+
+<Step>
 ## Set a banner and avatar
 
 When proxying as an alter, you can also have an avatar that appears in the webhook when a message is sent. You can also have a banner that appears in the profile of your alter.
@@ -82,3 +95,6 @@ pb;edit-alter banner solar https://link.to.website/
 <Callout title="Attachments">
     You can also just upload the picture that you'd like to use in the message of the command when using avatar or banner commands.
 </Callout>
+
+</Step>
+</Steps>

@@ -38,7 +38,7 @@ export default class SetGuildLogging extends ComponentCommand {
 										InteractionIdentifier.Guilds.FormSelection.LoggingChannelSelection.create(),
 									)
 									.setChannelTypes([ChannelType.GuildText]).data,
-								// @ts-ignore
+								// @ts-expect-error
 								required: false,
 							}),
 						)

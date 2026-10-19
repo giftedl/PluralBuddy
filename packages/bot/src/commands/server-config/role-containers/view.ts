@@ -4,7 +4,7 @@ import { AlertView } from "@/views/alert";
 import {
 	ActionRow,
 	Button,
-	CommandContext,
+	type CommandContext,
 	Container,
 	createRoleOption,
 	Declare,

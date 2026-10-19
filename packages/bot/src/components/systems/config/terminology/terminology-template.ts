@@ -1,4 +1,4 @@
-import { CacheFrom, ComponentCommand, ComponentContext } from "seyfert";
+import { CacheFrom, ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";

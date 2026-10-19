@@ -1,10 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, User, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
-import { MessageFlags } from "seyfert/lib/types";
-import { AlterView } from "@/views/alters";
 import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
 
 export default class ConfigureAlter extends ComponentCommand {
 	componentType = "Button" as const;
@@ -29,7 +29,7 @@ export default class ConfigureAlter extends ComponentCommand {
 		const alter = await query;
 
 		if (alter === null) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_DOESNT_EXIST",
 				),
@@ -37,7 +37,7 @@ export default class ConfigureAlter extends ComponentCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new AlterView(await ctx.userTranslations()).alterTopView(
 					"general",

@@ -10,8 +10,8 @@ import {
 	type ComponentContext,
 	RadioGroupOption,
 } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 
 @Middlewares(["ensureGuildPermissions"])
 export default class RoleGeneralLocationButton extends ComponentCommand {
@@ -51,16 +51,18 @@ export default class RoleGeneralLocationButton extends ComponentCommand {
 							new RadioGroup()
 								.setRequired(true)
 								.setOptions([
-									new RadioGroupOption()
-										.setValue("top")
-										.setDefault(role.containerLocation === "top")
-										.setLabel("Top")
-										.setDescription("Above the proxied message"),
-									new RadioGroupOption()
-										.setValue("bottom")
-										.setDefault(role.containerLocation === "bottom")
-										.setLabel("Bottom")
-										.setDescription("Below the proxied message"),
+									new RadioGroupOption({
+										value: "top",
+										default: role.containerLocation === "top",
+										label: "Top",
+										description: "Above the proxied message",
+									}),
+									new RadioGroupOption({
+										value: "bottom",
+										default: role.containerLocation === "bottom",
+										label: "Bottom",
+										description: "Below the proxied message",
+									}),
 								])
 								.setCustomId(
 									InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationSelection.create(),

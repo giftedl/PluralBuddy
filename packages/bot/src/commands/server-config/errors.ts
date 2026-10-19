@@ -1,6 +1,6 @@
 import { ServerConfigView } from "@/views/server-cfg";
 import {
-	CommandContext,
+	type CommandContext,
 	Declare,
 	Middlewares,
 	Options,

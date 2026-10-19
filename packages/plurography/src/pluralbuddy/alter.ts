@@ -53,7 +53,7 @@ export const PAlterObject = z
 			.array(),
 		color: z
 			.string()
-			.regex(/^#[0-9A-F]{6}$/i)
+			.regex(/^#[0-9A-Fa-f]{6}$/i)
 			.nullable(),
 		description: z.string().max(1000).nullable(),
 		created: z.coerce.date(),

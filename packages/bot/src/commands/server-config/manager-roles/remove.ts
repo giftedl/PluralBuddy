@@ -1,7 +1,7 @@
 import { guildCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
-	CommandContext,
+	type CommandContext,
 	createRoleOption,
 	createUserOption,
 	Declare,

@@ -7,8 +7,8 @@ import {
 	createBooleanOption,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemView } from "../../views/system";
-import { AlertView } from "../../views/alert";
+import { SystemView } from "@/views/system";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	public: createBooleanOption({
@@ -26,7 +26,8 @@ const options = {
 @Options(options)
 export default class SystemInfoCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
+		const isEphemeral = ctx.options.public !== true;
+		await ctx.deferReply(isEphemeral);
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {

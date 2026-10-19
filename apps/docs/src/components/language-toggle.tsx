@@ -1,13 +1,13 @@
 'use client';
-import { type ButtonHTMLAttributes, type HTMLAttributes } from 'react';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
+import { type ButtonHTMLAttributes, type HTMLAttributes } from 'react';
+import { cn } from '../lib/cn';
+import { buttonVariants } from './ui/button';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from './ui/popover';
-import { cn } from '../lib/cn';
-import { buttonVariants } from './ui/button';
 
 export type LanguageSelectProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -42,7 +42,7 @@ export function LanguageToggle(props: LanguageSelectProps): React.ReactElement {
               'p-2 text-start text-sm',
               item.locale === context.locale
                 ? 'bg-fd-primary/10 font-medium text-fd-primary'
-                : 'hover:bg-fd-accent hover:text-fd-accent-foreground',
+                : 'hover:bg-accent hover:text-accent-foreground',
             )}
             onClick={() => {
               context.onChange?.(item.locale);

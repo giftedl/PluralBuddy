@@ -2,6 +2,7 @@ import type { Message } from "seyfert/lib/structures";
 import { ComponentType } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { alterCollection, messagesCollection } from "@/mongodb";
+import { cacheSystemMap } from "./dm-replying";
 
 const replifyContents = (contents: string) =>
 	contents
@@ -65,15 +66,23 @@ export async function getReferencedMessageString(
 			}
 
 			if (alter !== null) {
-				userString = `@${alter?.username}`;
+				const possiblyCachedSystem = cacheSystemMap[message.id];
+				if (possiblyCachedSystem && possiblyCachedSystem.nudging?.serverReplying) {
+					userString = `@${alter.username} (<@${possiblyCachedSystem.userId}>)`;
+				} else {
+					userString = `@${alter.username}`;
+				}
+				
 				messageString = `[${
 					replifyContents(contents) === ""
 						? "Jump to message"
 						: replifyContents(contents)
 				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
+
+				delete cacheSystemMap[alter.systemId];
 			}
 		}
 	}
 
-	return `-# ${emojis.reply}  Replying to ${userString}: ${messageString}`;
+	return `-# ${emojis.reply} Replying to ${userString}: ${messageString}`;
 }

@@ -5,6 +5,7 @@ import { useTranslations } from '@fuma-translate/react';
 import { cva } from 'class-variance-authority';
 import Link from 'fumadocs-core/link';
 import { ChevronDown, Languages } from 'lucide-react';
+import { useScroll } from 'motion/react';
 import {
   type ComponentProps,
   createContext,
@@ -20,15 +21,15 @@ import { LinkItem, type LinkItemType } from '@/components/layouts/shared';
 import { buttonVariants } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/fuma-collapsible';
 import { cn } from '@/lib/cn';
+import { useIsScrollTop } from '@/lib/hooks/use-is-scroll-top';
 import { mergeRefs } from '@/lib/merge-refs';
-import { useIsScrollTop } from '@/lib/use-is-scroll-top';
 import { AuthComponents } from '../../docs/auth-components';
 import { useHomeLayout } from '..';
 
 export const navItemVariants = cva('[&_svg]:size-4', {
   variants: {
     variant: {
-      main: 'inline-flex items-center gap-1 p-2 text-fd-muted-foreground transition-colors hover:text-fd-accent-foreground data-[active=true]:text-fd-primary',
+      main: 'inline-flex items-center gap-1 p-2 text-fd-muted-foreground transition-colors hover:text-accent-foreground data-[active=true]:text-fd-primary',
       button: buttonVariants({
         color: 'secondary',
         className: 'gap-1.5',
@@ -48,17 +49,20 @@ const MobileNavigationMenuContext = createContext<{
   setOpen: (v: boolean) => void;
 } | null>(null);
 
-export function Header(props: ComponentProps<'header'>) {
+export function Header(props: ComponentProps<'header'> & { fixedMode: boolean }) {
   const {
     navItems,
     menuItems,
     slots,
     props: { nav },
   } = useHomeLayout();
+  const { fixedMode, ...restProps } = props;
   const headerRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const [open, setOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0)
   const t = useTranslations({ note: 'home layout header' });
+  const scrollState = useScroll();
   const transparentMode = nav?.transparentMode ?? 'none';
   const isTop = useIsScrollTop({ enabled: transparentMode === 'top' }) ?? true;
   const isNavTransparent = transparentMode === 'top' ? isTop : transparentMode === 'always';
@@ -72,7 +76,6 @@ export function Header(props: ComponentProps<'header'>) {
   });
 
   useEffect(() => {
-    setOpen(true)
     console.log(open)
     window.addEventListener('click', onClick);
 
@@ -80,6 +83,8 @@ export function Header(props: ComponentProps<'header'>) {
       window.removeEventListener('click', onClick);
     };
   }, []);
+
+  scrollState.scrollY.on("change", () => setScrollY(scrollState.scrollY.get()))
 
   const list = (
     <Primitive.List
@@ -149,77 +154,92 @@ export function Header(props: ComponentProps<'header'>) {
   );
 
   return (
-    <Collapsible
-      open={open}
-      onOpenChange={setOpen}
-      render={
-        <header
-          id="nd-nav"
-          {...props}
-          ref={mergeRefs(headerRef, props.ref)}
-          className={cn('sticky h-14 top-0 z-40', props.className)}
-        >
-          <Primitive.Root
-            className={(s) =>
-              cn(
-                'backdrop-blur-lg border-b transition-[box-shadow,background-color,border-radius]',
-                open && 'max-lg:shadow-lg max-lg:rounded-b-2xl',
-                (open || !isNavTransparent || s.open) && 'bg-fd-background/80',
-              )
-            }
-          >
-            {list}
-            <CollapsibleContent className="mx-auto max-w-(--fd-layout-width) lg:hidden">
-              <div className="flex flex-col pt-2 p-4 sm:flex-row sm:items-center sm:justify-end">
-                <MobileNavigationMenuContext value={useMemo(() => ({ setOpen }), [])}>
-                  {menuItems
-                    .filter((item) => !isSecondary(item))
-                    .map((item, i) => (
-                      <MobileNavigationMenuLinkItem key={i} item={item} className="sm:hidden" />
-                    ))}
-                  <div className="-ms-1.5 flex flex-row items-center gap-2 max-sm:mt-2">
-                    {menuItems.filter(isSecondary).map((item, i) => (
-                      <MobileNavigationMenuLinkItem
-                        key={i}
-                        item={item}
-                        className={cn(item.type === 'icon' && '-mx-1 first:ms-0')}
-                      />
-                    ))}
-                    <div role="separator" className="flex-1" />
-                    {slots.languageSelect && (
-                      <slots.languageSelect.root>
-                        <Languages className="size-5" />
-                        {slots.languageSelect.text && <slots.languageSelect.text />}
-                        <ChevronDown className="size-3 text-fd-muted-foreground" />
-                      </slots.languageSelect.root>
-                    )}
-                    {slots.themeSwitch && <slots.themeSwitch />}
-                    <AuthComponents style="docs" />
-                  </div>
-                </MobileNavigationMenuContext>
-              </div>
-            </CollapsibleContent>
-            <Primitive.Portal>
-              <Primitive.Positioner
-                side="bottom"
-                anchor={listRef}
-                collisionPadding={{ top: 5, bottom: 5 }}
-                className="z-40 box-border h-(--positioner-height) w-(--anchor-width) max-w-(--available-width) duration-(--duration) ease-(--easing) before:absolute before:content-[''] data-instant:transition-none data-[side=bottom]:before:top-[-10px] data-[side=bottom]:before:right-0 data-[side=bottom]:before:left-0 data-[side=bottom]:before:h-2.5 data-[side=left]:before:top-0 data-[side=left]:before:right-[-10px] data-[side=left]:before:bottom-0 data-[side=left]:before:w-2.5 data-[side=right]:before:top-0 data-[side=right]:before:bottom-0 data-[side=right]:before:left-[-10px] data-[side=right]:before:w-2.5 data-[side=top]:before:right-0 data-[side=top]:before:bottom-[-10px] data-[side=top]:before:left-0 data-[side=top]:before:h-2.5"
-                style={{
-                  ['--duration' as string]: '0.35s',
-                  ['--easing' as string]: 'cubic-bezier(0.22, 1, 0.36, 1)',
-                }}
-              >
-                <Primitive.Popup className="relative border h-(--popup-height) w-full rounded-xl bg-fd-popover/80 text-fd-popover-foreground backdrop-blur-md shadow-lg transition-[opacity,width,height] duration-(--duration) ease-(--easing) data-ending-style:opacity-0 data-ending-style:duration-150 data-starting-style:opacity-0">
-                  <Primitive.Viewport className="relative size-full overflow-hidden" />
-                </Primitive.Popup>
-              </Primitive.Positioner>
-            </Primitive.Portal>
-          </Primitive.Root>
-        </header>
-      }
-    />
-  );
+			<Collapsible
+				open={open}
+				onOpenChange={setOpen}
+				render={
+					<header
+						id="nd-nav"
+						{...restProps}
+						ref={mergeRefs(headerRef, props.ref)}
+						className={cn(
+							"h-14 top-0 z-40",
+							props.className,
+							fixedMode ? "fixed w-full" : "sticky",
+						)}
+					>
+						<Primitive.Root
+							className={(s) =>
+								cn(
+									"transition-[box-shadow,background-color,border-radius]",
+									open && "max-lg:shadow-lg max-lg:rounded-b-2xl",
+									(!fixedMode || scrollY > 75) &&
+										"backdrop-blur-lg bg-background/80",
+								)
+							}
+						>
+							{list}
+							<CollapsibleContent className="mx-auto max-w-(--fd-layout-width) lg:hidden">
+								<div className="flex flex-col pt-2 p-4 sm:flex-row sm:items-center sm:justify-end">
+									<MobileNavigationMenuContext
+										value={useMemo(() => ({ setOpen }), [])}
+									>
+										{menuItems
+											.filter((item) => !isSecondary(item))
+											.map((item, i) => (
+												<MobileNavigationMenuLinkItem
+													key={i}
+													item={item}
+													className="sm:hidden"
+												/>
+											))}
+										<div className="-ms-1.5 flex flex-row items-center gap-2 max-sm:mt-2">
+											{menuItems.filter(isSecondary).map((item, i) => (
+												<MobileNavigationMenuLinkItem
+													key={i}
+													item={item}
+													className={cn(
+														item.type === "icon" && "-mx-1 first:ms-0",
+													)}
+												/>
+											))}
+											<div role="separator" className="flex-1" />
+											{slots.languageSelect && (
+												<slots.languageSelect.root>
+													<Languages className="size-5" />
+													{slots.languageSelect.text && (
+														<slots.languageSelect.text />
+													)}
+													<ChevronDown className="size-3 text-fd-muted-foreground" />
+												</slots.languageSelect.root>
+											)}
+											{slots.themeSwitch && <slots.themeSwitch />}
+											<AuthComponents style="docs" />
+										</div>
+									</MobileNavigationMenuContext>
+								</div>
+							</CollapsibleContent>
+							<Primitive.Portal>
+								<Primitive.Positioner
+									side="bottom"
+									anchor={listRef}
+									collisionPadding={{ top: 5, bottom: 5 }}
+									className="z-40 box-border h-(--positioner-height) w-(--anchor-width) max-w-(--available-width) duration-(--duration) ease-(--easing) before:absolute before:content-[''] data-instant:transition-none data-[side=bottom]:before:top-[-10px] data-[side=bottom]:before:right-0 data-[side=bottom]:before:left-0 data-[side=bottom]:before:h-2.5 data-[side=left]:before:top-0 data-[side=left]:before:right-[-10px] data-[side=left]:before:bottom-0 data-[side=left]:before:w-2.5 data-[side=right]:before:top-0 data-[side=right]:before:bottom-0 data-[side=right]:before:left-[-10px] data-[side=right]:before:w-2.5 data-[side=top]:before:right-0 data-[side=top]:before:bottom-[-10px] data-[side=top]:before:left-0 data-[side=top]:before:h-2.5"
+									style={{
+										["--duration" as string]: "0.35s",
+										["--easing" as string]: "cubic-bezier(0.22, 1, 0.36, 1)",
+									}}
+								>
+									<Primitive.Popup className="relative border h-(--popup-height) w-full rounded-xl bg-fd-popover/80 text-fd-popover-foreground backdrop-blur-md shadow-lg transition-[opacity,width,height] duration-(--duration) ease-(--easing) data-ending-style:opacity-0 data-ending-style:duration-150 data-starting-style:opacity-0">
+										<Primitive.Viewport className="relative size-full overflow-hidden" />
+									</Primitive.Popup>
+								</Primitive.Positioner>
+							</Primitive.Portal>
+						</Primitive.Root>
+					</header>
+				}
+			/>
+		);
 }
 
 function isSecondary(item: LinkItemType): boolean {
@@ -260,7 +280,7 @@ function NavigationMenuLinkItem({
               external={child.external}
               {...rest}
               className={cn(
-                'flex flex-col gap-2 rounded-lg border bg-fd-card p-3 transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground',
+                'flex flex-col gap-2 rounded-lg border bg-fd-card p-3 transition-colors hover:bg-accent/80 hover:text-accent-foreground',
                 rest.className,
               )}
             >

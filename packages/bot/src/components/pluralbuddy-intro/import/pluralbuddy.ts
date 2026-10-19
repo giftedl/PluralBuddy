@@ -8,7 +8,7 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 
 export default class SetupImportPluralBuddy extends ComponentCommand {
 	componentType = "StringSelect" as const;

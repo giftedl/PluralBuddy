@@ -28,8 +28,8 @@ export function RoleContainerExample() {
 				lightTheme={resolvedTheme === "light"}
 			>
 				<DiscordMessage
-					author="Clementine"
-					avatar="https://pluralbuddy.giftedly.dev/clementine.jpeg"
+					author="💘 love | xe/xem"
+					avatar="/image/main-page/love-pfp.jpg"
 					bot={true}
 					className="px-3 "
 					lightTheme={resolvedTheme === "light"}
@@ -45,7 +45,7 @@ export function RoleContainerExample() {
 						</DiscordTextDisplay>
 					</DiscordContainer>
 					<DiscordTextDisplay className="block">
-						Hi! I'm Clementine!
+						hi, i'm love!
 					</DiscordTextDisplay>
 				</DiscordMessage>
 				<DiscordMessage
@@ -54,7 +54,7 @@ export function RoleContainerExample() {
 					className="block"
 				>
 					<DiscordTextDisplay className="block">
-						The role container doesn't continue across consecutive proxies.
+						the role container doesn't continue across consecutive proxies.
 					</DiscordTextDisplay>
 				</DiscordMessage>
 				<DiscordMessage
@@ -63,7 +63,7 @@ export function RoleContainerExample() {
 					className="block"
 				>
 					<DiscordTextDisplay className="block">
-						Did you know Clementine's profile is from{" "}
+						did you know love's profile is from{" "}
 						<DiscordLink
 							href="https://en.wikipedia.org/wiki/The_Fragrant_Flower_Blooms_with_Dignity"
 							target="_blank"

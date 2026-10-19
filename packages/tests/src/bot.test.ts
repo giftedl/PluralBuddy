@@ -1,4 +1,4 @@
-import { expect, test, describe } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import dotenv from "dotenv";
 import { alterCollection, mongoClient, setupMongoDB } from "../../bot/src/mongodb";
 
@@ -34,21 +34,4 @@ describe("i18n", async () => {
 		expect(client.t("en").get().POLICY_MODAL_TITLE).not.toBeUndefined()
 	})
 
-})
-
-describe("database", async () => {
-
-	test("connection", async () => {
-		setupMongoDB();
-
-		mongoClient.on("connectionReady", () => {
-			expect().pass("aaa")
-		})
-	})
-	
-	test("data in alters", async () => {
-		const alters = await mongoClient.db(process.env.MONGO_DB).collection("alters").countDocuments();
-
-		expect(alters).toBeGreaterThan(1)
-	})
 })

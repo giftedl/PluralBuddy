@@ -1,5 +1,11 @@
 "use client";
 
+import { OAuthClient } from "@better-auth/oauth-provider";
+import { Check, Copy } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
+import { useCopyToClipboard } from "@/lib/hooks/use-copy-to-clipboard";
 import { Input } from "../ui/input";
 import {
 	InputGroup,
@@ -7,12 +13,6 @@ import {
 	InputGroupButton,
 	InputGroupInput,
 } from "../ui/input-group";
-import { Check, Copy } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import { useCopyToClipboard } from "@/lib/use-copy-to-clipboard";
-import { authClient } from "@/lib/auth-client";
-import { OAuthClient } from "@better-auth/oauth-provider";
 
 export function ClientSecretInput({
 	application,

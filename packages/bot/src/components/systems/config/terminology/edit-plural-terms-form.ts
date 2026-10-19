@@ -1,5 +1,5 @@
 import { terminologyDefaults } from "plurography";
-import { CacheFrom, ModalCommand, ModalContext } from "seyfert";
+import { CacheFrom, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
@@ -16,7 +16,7 @@ export default class SetPronounsButton extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		let { system, terminology } = await ctx.retrievePUser();
+		const { system, terminology } = await ctx.retrievePUser();
 
 		if (system === undefined) {
 			return await ctx.write({

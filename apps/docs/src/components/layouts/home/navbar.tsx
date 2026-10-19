@@ -1,7 +1,7 @@
 'use client';
-import type { ComponentProps } from 'react';
-import Link, { type LinkProps } from 'fumadocs-core/link';
 import { NavigationMenu as Primitive } from '@base-ui/react/navigation-menu';
+import Link, { type LinkProps } from 'fumadocs-core/link';
+import type { ComponentProps } from 'react';
 import { cn } from '@/lib/cn';
 import { navItemVariants } from './slots/header';
 
@@ -72,7 +72,7 @@ export function NavbarMenuLink(props: LinkProps) {
         <Link
           {...props}
           className={cn(
-            'flex flex-col gap-2 rounded-lg border bg-fd-card p-3 transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground',
+            'flex flex-col gap-2 rounded-lg border bg-fd-card p-3 transition-colors hover:bg-accent/80 hover:text-accent-foreground',
             props.className,
           )}
         >

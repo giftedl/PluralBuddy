@@ -1,8 +1,8 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 export default class OptOutDMs extends ComponentCommand {
 	componentType = "Button" as const;
@@ -16,7 +16,7 @@ export default class OptOutDMs extends ComponentCommand {
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -34,7 +34,7 @@ export default class OptOutDMs extends ComponentCommand {
 		);
 
 		if (system.systemOperationDM) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).successView(
 					"OPTED_IN_OF_DMS",
 				),
@@ -42,7 +42,7 @@ export default class OptOutDMs extends ComponentCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: new AlertView(await ctx.userTranslations()).successView(
 				"OPTED_OUT_OF_DMS",
 			),

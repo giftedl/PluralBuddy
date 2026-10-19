@@ -2,7 +2,7 @@
 
 import {
 	Command,
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	Message,
@@ -63,7 +63,7 @@ export default class EditCommand extends Command {
 					);
 			}
 		};
-		let message = await getMessage();
+		const message = await getMessage();
 
 		if (message === null) {
 			return await ctx.editResponse({

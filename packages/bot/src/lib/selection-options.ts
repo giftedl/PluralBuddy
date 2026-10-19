@@ -159,7 +159,7 @@ export const tagColorSelection = (
 ) => [
 	...tagColors.map((color) =>
 		new StringSelectOption()
-			// @ts-ignore
+			// @ts-expect-error
 			.setLabel(translations[`TAG_COLOR_${color}`])
 			.setEmoji(getEmojiFromTagColor(color))
 			.setValue(

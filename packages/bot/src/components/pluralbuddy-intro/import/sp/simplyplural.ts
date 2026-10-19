@@ -5,8 +5,8 @@ import {
 	ComponentCommand,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../../lib/interaction-ids";
-import { PluralBuddyIntro } from "../../../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export default class PluralBuddyIntroNextPage extends ComponentCommand {
 	componentType = "StringSelect" as const;
@@ -19,7 +19,7 @@ export default class PluralBuddyIntroNextPage extends ComponentCommand {
 
 	async run(ctx: ComponentContext<typeof this.componentType>) {
 		await ctx.deferUpdate();
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new PluralBuddyIntro(
 					await ctx.userTranslations(),

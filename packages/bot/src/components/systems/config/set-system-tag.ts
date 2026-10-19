@@ -1,13 +1,13 @@
 import {
 	ComponentCommand,
+	type ComponentContext,
 	Label,
 	Modal,
 	TextInput,
-	type ComponentContext,
 } from "seyfert";
+import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { AlertView } from "@/views/alert";
-import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 
 export default class SetSystemTag extends ComponentCommand {
 	componentType = "Button" as const;
@@ -47,14 +47,22 @@ export default class SetSystemTag extends ComponentCommand {
 									)
 									.setLength({ min: 1, max: 2000 })
 									.setRequired(true)
-							: new TextInput()
-									.setStyle(TextInputStyle.Paragraph)
-									.setCustomId(
-										InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
-									)
-									.setLength({ min: 1, max: 2000 })
-									.setRequired(true)
-									.setValue(user.system.systemDisplayTag),
+							: !user.system.systemDisplayTag
+								? new TextInput()
+										.setStyle(TextInputStyle.Paragraph)
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
+										)
+										.setLength({ min: 1, max: 2000 })
+										.setRequired(true)
+								: new TextInput()
+										.setStyle(TextInputStyle.Paragraph)
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.FormSelection.SystemTagType.create(),
+										)
+										.setLength({ min: 1, max: 2000 })
+										.setRequired(true)
+										.setValue(user.system.systemDisplayTag),
 					),
 			]);
 

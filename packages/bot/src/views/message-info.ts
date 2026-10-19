@@ -4,7 +4,7 @@ import type { PAlter, PMessage, PSystem } from "plurography";
 import { TranslatedView } from "./translated-view";
 import {
 	Container,
-	Message,
+	type Message,
 	Separator,
 	TextDisplay,
 	User,

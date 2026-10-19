@@ -1,14 +1,17 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
+import { assetStringGeneration } from "plurography";
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
+import { FileTooBigException } from "@/lib/file-too-big";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { writeBack } from "@/lib/pk-sync-engine";
 import { getMaxAlterPublicValue } from "@/lib/privacy-bitmask";
 import { alterCollection } from "@/mongodb";
+import { uploadAttachment } from "@/object-storage";
 import { AlterProtectionFlags, PAlterObject } from "@/types/alter";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
@@ -31,9 +34,16 @@ export default class CreateNewAlterForm extends ModalCommand {
 			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(),
 			true,
 		);
+		const proxyTag = ctx.interaction.getInputValue(
+			InteractionIdentifier.Systems.Configuration.FormSelection.ProxyType.create(),
+			false,
+		);
+		const avatar = ctx.interaction.getFiles(
+			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create(),
+			false,
+		);
 
 		const user = await ctx.retrievePUser();
-		const server = await ctx.retrievePGuild();
 
 		if (user.system === undefined) {
 			return await ctx.ephemeral({
@@ -52,9 +62,72 @@ export default class CreateNewAlterForm extends ModalCommand {
 				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
-		
+
+		const alterId = Number(DiscordSnowflake.generate());
+		let avatarAsString = null;
+		let proxyTagSafe = null;
+
+		if (avatar !== undefined && avatar[0] !== undefined) {
+			const objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
+
+			try {
+				avatarAsString = await uploadAttachment(
+					avatar[0],
+					objectName,
+					{
+						authorId: ctx.author.id,
+						alterId: String(alterId),
+						type: "profile-picture",
+					},
+					undefined,
+					{ width: 512, height: 512 },
+				);
+			} catch (error) {
+				if (error instanceof FileTooBigException)
+					return await ctx.editOrReply({
+						components: new AlertView(await ctx.userTranslations()).errorView(
+							"AFTER_COMPRESSION_TOO_BIG",
+						),
+						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+					});
+				// ctx.client.logger.fatal(error);
+				return await ctx.editOrReply({
+					components: new AlertView(await ctx.userTranslations()).errorView(
+						"ERROR_FAILED_TO_UPLOAD_TO_GCP",
+					),
+					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				});
+			}
+		}
+
+		(() => {if (proxyTag !== undefined && (proxyTag.includes("text") || proxyTag.includes("Text"))) {
+
+			// Get the prefix and suffix based on "text" position
+			const textIndex =
+				proxyTag.indexOf("text") === -1
+					? proxyTag.indexOf("Text")
+					: proxyTag.indexOf("text");
+			const prefix = (proxyTag as string).substring(0, textIndex);
+			const suffix = (proxyTag as string).substring(textIndex + 4);
+
+			if (prefix.length > 20 || suffix.length > 20) {
+				return;
+			}
+			if (prefix === "" && suffix === "") {
+				return;
+			}
+
+			const id = DiscordSnowflake.generate();
+
+			proxyTagSafe = {
+				prefix,
+				suffix,
+				id: String(id),
+			};
+		}})()
+
 		const alter = PAlterObject.safeParse({
-			alterId: Number(DiscordSnowflake.generate()),
+			alterId: alterId,
 			systemId: user.system.associatedUserId,
 
 			username,
@@ -64,7 +137,8 @@ export default class CreateNewAlterForm extends ModalCommand {
 			pronouns: null,
 			description: null,
 			created: new Date(),
-			avatarUrl: null,
+			proxyTags: proxyTagSafe === null ? [] : [proxyTagSafe],
+			avatarUrl: avatarAsString,
 			webhookAvatarUrl: null,
 			banner: null,
 			lastMessageTimestamp: null,

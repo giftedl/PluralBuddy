@@ -1,9 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ComponentCommand, type ComponentContext } from "seyfert";
-import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 import { MessageFlags } from "seyfert/lib/types";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 
 export default class PluralBuddyIntroNextPage extends ComponentCommand {
 	componentType = "Button" as const;

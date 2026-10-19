@@ -3,13 +3,13 @@ import { type Attachment, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { FileTooBigException } from "@/lib/file-too-big";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
 import { alterCollection } from "@/mongodb";
 import { getOldObject, uploadAttachment } from "@/object-storage";
 import { assetStringGeneration } from "@/types/operation";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
-import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetPFPForm extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -77,7 +77,7 @@ export default class SetPFPForm extends ModalCommand {
 			);
 		} catch (error) {
 			if (error instanceof FileTooBigException)
-				return await ctx.editResponse({
+				return await ctx.editOrReply({
 					components: new AlertView(await ctx.userTranslations()).errorView(
 						"AFTER_COMPRESSION_TOO_BIG",
 					),

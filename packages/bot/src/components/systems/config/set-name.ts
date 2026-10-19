@@ -8,8 +8,8 @@ import {
 	type ComponentContext,
 } from "seyfert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { AlertView } from "../../../views/alert";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
 
 export default class SetName extends ComponentCommand {
 	componentType = "Button" as const;

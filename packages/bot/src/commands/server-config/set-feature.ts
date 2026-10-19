@@ -5,7 +5,7 @@ import { ServerConfigView } from "@/views/server-cfg";
 import { friendlyFeatureIndex } from "../../../../plurography/src/pluralbuddy/guild";
 import { GuildFlags } from "plurography";
 import {
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	IgnoreCommand,
@@ -49,7 +49,7 @@ export default class SetLogChannel extends SubCommand {
 
 		if (!featureFlag) throw new Error("No feature flag.");
 
-		// @ts-ignore
+		// @ts-expect-error
 		const flagParsed = GuildFlags[featureFlag];
 
 		const guildObj = await ctx.retrievePGuild();

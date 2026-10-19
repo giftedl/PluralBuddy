@@ -1,0 +1,68 @@
+name: pluralbuddy
+version: "3"
+services:
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+    ports:
+      - 12345:12345
+    command: "run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy"
+    volumes:
+      - ${PWD}/config.alloy:/etc/alloy/config.alloy
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  redis:
+    image: redis:7.2
+    env_file: ".env"
+    container_name: pluralbuddy-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - pluralbuddy_redis-data-sfx87qgyqks6reh7nvjxe1ud:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USERNAME=${REDIS_USERNAME}
+    restart: unless-stopped
+  
+  bot:
+    image: ghcr.io/giftedl/pluralbuddy/bot:latest
+    env_file: ".env"
+    container_name: pluralbuddy-bot
+    labels:
+      - "diun.enable=true"
+    # Backend, internal API
+    ports:
+      - '3030:3030'
+    environment:
+      # Databases
+      - REDIS=redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@pluralbuddy-redis:6379/0
+      - MONGO=${MONGO}
+      - MONGO_DB=${MONGO_DB}
+
+      # Discord
+      - BOT_TOKEN=${BOT_TOKEN}
+      - PK_TOKEN_KEY=${PK_TOKEN_KEY}
+
+      # Version Control
+      - BRANCH=${BRANCH}
+      - EMOJI_PROFILE=${BRANCH}
+
+      # R2
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
+      - ACCOUNT_ID=${ACCOUNT_ID}
+      - BUCKET_NAME=${BUCKET_NAME}
+
+      # Misc
+      - BRANCH=${BRANCH}
+      - LINK_SCRAPER_API=${LINK_SCRAPER_API}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - CROWDIN_API_KEY=${CROWDIN_API_KEY}
+      - CROWDIN_PROJ_ID=${CROWDIN_PROJ_ID}
+      - CROWDIN_FILE_ID=${CROWDIN_FILE_ID}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://${CURB}:4318
+
+volumes:
+  pluralbuddy_redis-data-sfx87qgyqks6reh7nvjxe1ud:
+    driver: local

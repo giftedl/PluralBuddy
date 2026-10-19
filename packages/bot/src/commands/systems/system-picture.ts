@@ -21,14 +21,14 @@ import {
 	getOldObject,
 	uploadAttachment,
 } from "@/object-storage";
-import { autocompleteAlters } from "../../lib/autocomplete-alters";
-import { alterCollection } from "../../mongodb";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { alterCollection } from "@/mongodb";
 import {
 	assetStringGeneration,
 	operationStringGeneration,
-} from "../../types/operation";
-import { AlertView } from "../../views/alert";
-import { LoadingView } from "../../views/loading";
+} from "@/types/operation";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 const options = {
 	"system-avatar-text": createStringOption({
@@ -99,7 +99,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		const objectName = `${user.storagePrefix}/${assetStringGeneration(32)}}`;
+		const objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
 
 		if (attachmentText === undefined) {
 			try {
@@ -125,6 +125,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 						),
 						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 					});
+				console.error(error)
 				return await ctx.editResponse({
 					components: new AlertView(await ctx.userTranslations()).errorView(
 						"ERROR_FAILED_TO_UPLOAD_TO_GCP",

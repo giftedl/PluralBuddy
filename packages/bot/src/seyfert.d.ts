@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import type { Client, ParseClient, ParseGlobalMiddlewares, ParseLocales, ParseMiddlewares } from "seyfert";
+import type { Client, ParseClient, ParseGlobalMiddlewares, ParseLocales, SeyfertRegistry } from "seyfert";
 import type { Pi18nCache } from "./cache/i18n";
 import type { PGuildCache } from "./cache/plural-guild";
 import type { SimilarWebhookResource } from "./cache/similar-webhooks";
@@ -13,6 +13,13 @@ import type { middlewares } from "./middleware";
 
 
 declare module "seyfert" {
+	interface SeyfertRegistry {
+		client: ParseClient<Client<true>>;
+		middlewares: typeof middlewares;
+		langs: ParseLocales<typeof English>;
+	} 
+
+
 	interface ExtendContext extends ReturnType<typeof extendedContext> {}
 	interface Cache {
 		statistic: StatisticResource;
@@ -22,13 +29,5 @@ declare module "seyfert" {
 		terminology: PTerminologyCache;
 		i18n: Pi18nCache;
 	}
-
-	interface UsingClient extends ParseClient<Client<true>> {}
-
-	// Register the middlewares on seyfert types
-	interface RegisteredMiddlewares
-		extends ParseMiddlewares<typeof middlewares> {}
 	interface GlobalMetadata extends ParseGlobalMiddlewares<typeof middlewares> {}
-
-	interface DefaultLocale extends ParseLocales<typeof English> {}
 }

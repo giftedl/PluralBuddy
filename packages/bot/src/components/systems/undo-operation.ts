@@ -7,17 +7,17 @@ import {
 	Container,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { getOperationById } from "../../types/operation";
 import {
+	type APIContainerComponent,
 	ButtonStyle,
 	MessageFlags,
-	type APIContainerComponent,
 } from "seyfert/lib/types";
-import { emojis } from "../../lib/emojis";
-import { AlertView } from "../../views/alert";
-import { LoadingView } from "../../views/loading";
 import { getUserById, writeUserById } from "@/types/user";
+import { emojis } from "@/lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { getOperationById } from "@/types/operation";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class UndoOperationButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -34,7 +34,7 @@ export default class UndoOperationButton extends ComponentCommand {
 		const operation = await getOperationById(operationId as string);
 
 		if (operation === null) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					new Container(
 						ctx.interaction.message.components[0]?.toJSON() as APIContainerComponent,

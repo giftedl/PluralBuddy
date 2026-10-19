@@ -11,10 +11,10 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
-import { privacySelection } from "../../../lib/selection-options";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
+import { privacySelection } from "@/lib/selection-options";
 
 export default class NameCNS extends ComponentCommand {
 	componentType = "Button" as const;

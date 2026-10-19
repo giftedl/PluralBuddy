@@ -1,6 +1,6 @@
 'use client';
-import * as React from 'react';
 import * as Primitive from '@radix-ui/react-navigation-menu';
+import * as React from 'react';
 import { cn } from '../lib/cn';
 
 const NavigationMenu = Primitive.Root;
@@ -28,7 +28,7 @@ const NavigationMenuTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <Primitive.Trigger
     ref={ref}
-    className={cn('data-[state=open]:bg-fd-accent/50', className)}
+    className={cn('data-[state=open]:bg-accent/50', className)}
     {...props}
   >
     {children}

@@ -68,7 +68,7 @@ export default class NextPageAP extends ComponentCommand {
 		// Re-add it to the array
 		otherAlterPagination.push(corresponding);
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...(await new SystemSettingsView(
 					await ctx.userTranslations(),

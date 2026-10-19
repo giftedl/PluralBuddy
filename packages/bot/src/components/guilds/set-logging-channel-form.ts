@@ -2,7 +2,7 @@ import {
 	ComponentCommand,
 	Middlewares,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	type AllChannels,
 	type ComponentContext,
 } from "seyfert";

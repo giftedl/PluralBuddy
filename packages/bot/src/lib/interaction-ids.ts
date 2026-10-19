@@ -1,4 +1,3 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 // biome-ignore lint/suspicious/noExplicitAny: buh?
 export class InteractionObj<K extends (...args: any[]) => string> {
@@ -99,6 +98,8 @@ export const InteractionIdentifier = {
 	EditMenu: {
 		EditContextForm: createFromAdditionalArg("edit/set-form/context"),
 		EditContextType: createStatic("edit/type-form/context"),
+
+		EditMessageReaction: createFromAdditionalArg("edit/reaction"),
 	},
 	Nudge: {
 		Snooze: createStatic("nudge/snooze"),
@@ -108,6 +109,7 @@ export const InteractionIdentifier = {
 		RemoveBlock: createStatic("nudge/remove"),
 		AddBlock: createStatic("nudge/add"),
 		ToggleDMReplies: createFromAdditionalArg("nudge/toggle-dm-replies"),
+		ToggleServerReplies: createFromAdditionalArg("nudge/toggle-server-replies"),
 
 		RemoveNudgeForm: createStatic("nudge/set-form/remove"),
 		RemoveNudgeType: createStatic("nudge/type-form/remove"),
@@ -131,6 +133,7 @@ export const InteractionIdentifier = {
 			ToggleSystemTagRequirement: createStatic(
 				"guilds/general/toggle-system-tag",
 			),
+			SetPingMode: createStatic("guilds/general/set-ping-mode"),
 		},
 		RolesTab: {
 			Index: createStatic("guilds/roles/index"),
@@ -261,14 +264,26 @@ export const InteractionIdentifier = {
 		Configuration: {
 			TerminologyTab: {
 				Index: createStatic("systems/config/terminology/index"),
-				EditNormalTerms: createStatic("systems/config/terminology/edit-normal-terms"),
-				EditNormalTermsForm: createStatic("systems/config/terminology/edit-normal-terms-form"),
+				EditNormalTerms: createStatic(
+					"systems/config/terminology/edit-normal-terms",
+				),
+				EditNormalTermsForm: createStatic(
+					"systems/config/terminology/edit-normal-terms-form",
+				),
 
-				EditPluralTerms: createStatic("systems/config/terminology/edit-plural-terms"),
-				EditPluralTermsForm: createStatic("systems/config/terminology/edit-plural-terms-form"),
+				EditPluralTerms: createStatic(
+					"systems/config/terminology/edit-plural-terms",
+				),
+				EditPluralTermsForm: createStatic(
+					"systems/config/terminology/edit-plural-terms-form",
+				),
 
-				EditCapitalTerms: createStatic("systems/config/terminology/edit-capital-terms"),
-				EditCapitalTermsForm: createStatic("systems/config/terminology/edit-capital-terms-form"),
+				EditCapitalTerms: createStatic(
+					"systems/config/terminology/edit-capital-terms",
+				),
+				EditCapitalTermsForm: createStatic(
+					"systems/config/terminology/edit-capital-terms-form",
+				),
 
 				Alter: createStatic("systems/config/terminology/alters"),
 				Tags: createStatic("systems/config/terminology/tags"),
@@ -276,7 +291,7 @@ export const InteractionIdentifier = {
 				System: createStatic("system/config/terminology/system"),
 				DisplayTag: createStatic("systems/config/terminology/display-tag"),
 
-				TemplatesSelect: createStatic("systems/config/terminology/templates")
+				TemplatesSelect: createStatic("systems/config/terminology/templates"),
 			},
 			ConfigureAlter: createFromAdditionalArg("systems/config/config-alter"),
 			ConfigureTag: createFromAdditionalArg("systems/config/config-tag"),
@@ -684,7 +699,9 @@ export const InteractionIdentifier = {
 			Name: createFromAdditionalArg("setup/create-new-system/name"),
 			Privacy: createFromAdditionalArg("setup/create-new-system/privacy"),
 			SystemTag: createFromAdditionalArg("setup/create-new-system/system-tag"),
-			Terminology: createFromAdditionalArg("setup/create-new-system/terminology")
+			Terminology: createFromAdditionalArg(
+				"setup/create-new-system/terminology",
+			),
 		},
 		FormSelection: {
 			NameType: createStatic("setup/create-new-system/type-form/name"),
@@ -701,7 +718,9 @@ export const InteractionIdentifier = {
 			ImportType: createStatic("setup/create-new-system/type-form/import"),
 			PkForm: createStatic("setup/create-new-system/set-form/pk-import"),
 			PkType: createStatic("setup/create-new-system/type-form/pk-import"),
-			PkTerminologyCheckboxType: createStatic("setup/create-new-system/type-form/pk-terms"),
+			PkTerminologyCheckboxType: createStatic(
+				"setup/create-new-system/type-form/pk-terms",
+			),
 			PkRawTextType: createStatic(
 				"setup/create-new-system/type-form/pk-raw-text",
 			),

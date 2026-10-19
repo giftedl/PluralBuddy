@@ -1,12 +1,12 @@
 import {
 	ChannelSelectMenu,
 	ComponentCommand,
+	type ComponentContext,
 	Label,
 	Middlewares,
 	Modal,
 	RoleSelectMenu,
 	UserSelectMenu,
-	type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 
@@ -28,16 +28,13 @@ export default class AddChannelButton extends ComponentCommand {
 				.setComponents([
 					new Label()
 						.setComponent(
-							new ChannelSelectMenu({
-								...new ChannelSelectMenu()
+								new ChannelSelectMenu()
 									.setCustomId(
 										InteractionIdentifier.Guilds.FormSelection.AddBlockChannelSelection.create(),
 									)
 									.setDefaultChannels(guild.blockedChannels)
-									.setValuesLength({ min: 0, max: 25 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
-								required: false,
-							}),
+									.setValuesLength({ min: 0, max: 25 })
+									.setRequired(false)
 						)
 						.setLabel("Block Channels")
 						.setDescription("Set all applicable blocked channels."),

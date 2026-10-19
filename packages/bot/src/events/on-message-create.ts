@@ -8,12 +8,12 @@ import {
 	Container,
 	createEvent,
 	type DefaultLocale,
-	Message,
+	type Message,
 	type MessageStructure,
 	StringSelectMenu,
 	StringSelectOption,
 	TextDisplay,
-	WebhookMessage,
+	type WebhookMessage,
 	type WebhookMessageStructure,
 } from "seyfert";
 import type { ResolverProps, SendResolverProps } from "seyfert/lib/common";
@@ -25,7 +25,7 @@ import {
 	type RESTPostAPIWebhookWithTokenJSONBody,
 	type RESTPostAPIWebhookWithTokenQuery,
 } from "seyfert/lib/types";
-import { latencyDataPoints } from "@/analytics";
+import { discordApiLatency } from "@/analytics";
 import { helpPages } from "@/commands/help";
 import { getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { blockedChannel, blockedRole } from "@/lib/blocked";
@@ -91,9 +91,9 @@ export type PWebhook = {
 export default createEvent({
 	data: { name: "messageCreate", once: false },
 	run: async (message: Message) => {
-		latencyDataPoints.push(
+		discordApiLatency.observe(
 			Date.now() -
-				// @ts-ignore
+				// @ts-expect-error
 				message.createdTimestamp,
 		);
 		handleDMReply(message);
@@ -189,7 +189,7 @@ export default createEvent({
 		if (await isValidDm(message)) {
 			message.reply({
 				components: [
-					// @ts-ignore
+					// @ts-expect-error
 					...new AlertView(locale).errorView("NO_DM_CHANNELS"),
 				],
 				flags: MessageFlags.IsComponentsV2,
@@ -356,7 +356,7 @@ export default createEvent({
 			// Only find the alters that we need
 			for (let i = 0; i < user.system.alterIds.length; i++) {
 				const alterIdStr = user.system.alterIds[i]?.toString() ?? "";
-				let proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
+				const proxyObject = await message.client.cache.alterProxy.get(alterIdStr);
 
 				let reformedProxyTags: { prefix: string; suffix: string }[] = [];
 

@@ -22,7 +22,7 @@ export default class ToggleFeatureFlag extends ComponentCommand {
 
 		if (!featureFlag) throw new Error("No feature flag.");
 
-		// @ts-ignore
+		// @ts-expect-error
 		const flagParsed = GuildFlags[featureFlag];
 
 		const guildObj = await ctx.retrievePGuild();

@@ -35,7 +35,7 @@ export default class ManageManagersButton extends ComponentCommand {
 									)
 									.setDefaultRoles(guild.managerRoles)
 									.setValuesLength({ min: 0, max: 25 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
+								// @ts-expect-error lol seyfert forgor to add the required boolean to select menus
 								required: false,
 							}),
 						)

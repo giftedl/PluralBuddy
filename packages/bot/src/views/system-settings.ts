@@ -3,7 +3,7 @@
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import type { FindCursor, WithId } from "mongodb";
 import {
-	PImportTranscript,
+	type PImportTranscript,
 	type POperation,
 	type PUser,
 	possibleConverters,

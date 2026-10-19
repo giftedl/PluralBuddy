@@ -8,9 +8,9 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { AlertView } from "../../views/alert";
-import { SystemSettingsView } from "../../views/system-settings";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
 
 export default class ConfigureSystem extends ComponentCommand {
 	componentType = "Button" as const;
@@ -29,7 +29,7 @@ export default class ConfigureSystem extends ComponentCommand {
 			)[0];
 
 		if (ctx.author.id !== originalUserId) {
-			return ctx.editResponse({
+			return ctx.editOrReply({
 				components: [
 					new Container().setComponents(
 						new TextDisplay().setContent(
@@ -44,7 +44,7 @@ export default class ConfigureSystem extends ComponentCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -52,7 +52,7 @@ export default class ConfigureSystem extends ComponentCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new SystemSettingsView(
 					await ctx.userTranslations(),

@@ -9,9 +9,9 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export default class NameCNS extends ComponentCommand {
 	componentType = "Button" as const;

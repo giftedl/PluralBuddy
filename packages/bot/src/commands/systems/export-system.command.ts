@@ -1,11 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { AttachmentBuilder, type CommandContext, Declare } from "seyfert";
-import { LoadingView } from "../../views/loading";
+import { AttachmentBuilder, type CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlertView } from "../../views/alert";
-import { buildExportPayload } from "../../lib/export";
-import { SubCommand } from "seyfert";
+import { buildExportPayload } from "@/lib/export";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 @Declare({
 	name: "export",
@@ -31,23 +30,29 @@ export default class ExportCommand extends SubCommand {
 			});
 		}
 
-		await ctx.followup({
-			files: [
-				new AttachmentBuilder()
-					.setName("system.json")
-					.setFile(
-						"buffer",
-						Buffer.from(await buildExportPayload(user.system)),
-					),
-			],
-			flags: MessageFlags.Ephemeral,
-		});
-
-		return await ctx.editResponse({
-			components: new AlertView(await ctx.userTranslations()).successView(
-				"SYSTEM_EXPORT_FINISHED",
-			),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+		return await ctx.ephemeral(
+			{
+				components: new AlertView(await ctx.userTranslations()).successView(
+					"SYSTEM_EXPORT_FINISHED",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			},
+			false,
+			async (ctx) => {
+				if (user.system)
+					await ctx.followup?.({
+						files: [
+							new AttachmentBuilder()
+								.setName("system.json")
+								.setFile(
+									"buffer",
+									Buffer.from(await buildExportPayload(user.system)),
+								),
+						],
+						flags: MessageFlags.Ephemeral,
+					});
+			},
+			ctx,
+		);
 	}
 }

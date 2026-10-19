@@ -21,7 +21,7 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -47,7 +47,7 @@ export default class ToggleDisableSystemButton extends ComponentCommand {
 				...(await new SystemSettingsView(
 					await ctx.userTranslations(),
 					getSystemFeatures(system)?.preferAccessiblity,
-				).generalSettings(system, ctx.guildId, 2)),
+				).generalSettings(system, ctx.guildId, 3)),
 			],
 			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
 		});

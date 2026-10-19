@@ -1,3 +1,20 @@
+import { DiscordSnowflake } from "@sapphire/snowflake";
+import {
+	PAlterObject,
+	type PSystem,
+	PSystemObject,
+	PTagObject,
+} from "plurography";
+import {
+	ActionRow,
+	Button,
+	ModalCommand,
+	type ModalContext,
+	TextDisplay,
+} from "seyfert";
+import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { sys } from "typescript";
+import z from "zod";
 import { emojis } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { mentionCommand } from "@/lib/mention-command";
@@ -7,23 +24,6 @@ import { alterCollection, tagCollection } from "@/mongodb";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import {
-	PAlterObject,
-	PSystemObject,
-	PTagObject,
-	type PSystem,
-} from "plurography";
-import {
-	ActionRow,
-	Button,
-	ModalCommand,
-	TextDisplay,
-	type ModalContext,
-} from "seyfert";
-import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { sys } from "typescript";
-import z from "zod";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -46,7 +46,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const system = await getSPSystem(token).catch((e) => null);
 
 		if (!system)
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorView("SP_ERROR"),
 					new ActionRow().addComponents(
@@ -65,7 +65,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const tags = await getSPTags(token, system.id).catch(() => null);
 
 		if (!alters || !tags)
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorView("SP_ERROR"),
 					new ActionRow().addComponents(
@@ -100,10 +100,12 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			public: 0,
 			subAccounts: [],
 			disabled: false,
+			flags: 0,
+			disabledGuilds: []
 		} satisfies PSystem);
 
 		if (newSystem.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorViewCustom(
 						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
@@ -214,7 +216,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			system: systemData,
 		});
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new AlertView(
 					await ctx.userTranslations(),

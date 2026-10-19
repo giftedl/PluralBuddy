@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import type React from "react"
 import { useInView } from "motion/react"
+import type React from "react"
+import { useEffect, useRef } from "react"
 import { annotate } from "rough-notation"
 import { type RoughAnnotation } from "rough-notation/lib/model"
+import { cn } from "@/lib/utils"
 
 type AnnotationAction =
   | "highlight"
@@ -23,6 +24,7 @@ interface HighlighterProps {
   animationDuration?: number
   iterations?: number
   padding?: number
+  className?: string
   multiline?: boolean
   isView?: boolean
 }
@@ -36,6 +38,7 @@ export function Highlighter({
   iterations = 2,
   padding = 2,
   multiline = true,
+  className,
   isView = false,
 }: HighlighterProps) {
   const elementRef = useRef<HTMLSpanElement>(null)
@@ -96,7 +99,7 @@ export function Highlighter({
   ])
 
   return (
-    <span ref={elementRef} className="relative inline-block bg-transparent">
+    <span ref={elementRef} className={cn("relative inline-block bg-transparent", className)}>
       {children}
     </span>
   )

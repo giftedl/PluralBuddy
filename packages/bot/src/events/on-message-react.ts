@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { ActionRow, Button, createEvent, TextDisplay } from "seyfert";
+import { ActionRow, Button, Container, createEvent, Section, TextDisplay } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
@@ -13,6 +13,7 @@ import {
 	messagesCollection,
 	userCollection,
 } from "@/mongodb";
+import { defaultPrefixes } from "@/types/guild";
 import { AlertView } from "@/views/alert";
 import { MessageInfo } from "@/views/message-info";
 import { client } from "..";
@@ -27,7 +28,8 @@ export default createEvent({
 			reaction.emoji.name !== "redTick" &&
 			reaction.emoji.name !== "x_red" &&
 			reaction.emoji.name !== "🔔" &&
-			reaction.emoji.name !== "❓"
+			reaction.emoji.name !== "❓" &&
+			reaction.emoji.name !== "📝"
 		)
 			return;
 
@@ -230,6 +232,68 @@ export default createEvent({
 							.setStyle(ButtonStyle.Secondary),
 					),
 				],
+			});
+		}
+		if (reaction.emoji.name === "📝") {
+			const nativeUser = await client.users.fetch(reaction.userId, true);
+			const user = await userCollection.findOne({ userId: message.systemId });
+			const alter = await alterCollection.findOne({ alterId: message.alterId });
+
+			if (
+				user === null ||
+				user.system === undefined ||
+				alter === null ||
+				reaction.guildId === undefined
+			) {
+				client.reactions.delete(
+					reaction.messageId,
+					reaction.channelId,
+					emojis.loading,
+					client.applicationId,
+				);
+				return await nativeUser.write({
+					components: [
+						new TextDisplay().setContent(
+							locale.REPLY_IN_RESPONSE.replace(
+								"{{ reply }}",
+								emojis.reply,
+							).replace(
+								"{{ link }}",
+								`https://discord.com/channels/${reaction.guildId}/${reaction.channelId}/${reaction.messageId}`,
+							),
+						),
+						...new AlertView(locale).errorView("DATA_DOESNT_EXIST"),
+					],
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			}
+
+			client.reactions.delete(
+				reaction.messageId,
+				reaction.channelId,
+				emojis.loading,
+				client.applicationId,
+			);
+			return await nativeUser.write({
+				components: [
+					new Container().setComponents(
+						new Section()
+							.setComponents(
+								new TextDisplay().setContent(locale.EDIT_REACTING_TOP.replace("{{ prefix }}", defaultPrefixes[
+									(process.env.BRANCH as "production" | "canary") ?? "production"
+								][0] ?? "")),
+							).setAccessory(
+								new Button()
+									.setCustomId(InteractionIdentifier.EditMenu.EditMessageReaction.create(messageId))
+									.setLabel(locale.EDIT_MESSAGE_BTN)
+									.setEmoji(emojis.wrenchWhite)
+									.setStyle(ButtonStyle.Primary)
+							)
+
+					)
+				],
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+				allowed_mentions: { parse: [] },
 			});
 		}
 		if (reaction.emoji.name === "❓") {

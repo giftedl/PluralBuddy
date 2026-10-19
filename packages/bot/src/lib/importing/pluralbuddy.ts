@@ -1,9 +1,14 @@
-import z from "zod";
-import { ImportEntry, ImportOutput } from ".";
-import { ImportNotation, type PAlter, type PTag } from "plurography";
 import { DiscordSnowflake } from "@sapphire/snowflake";
+import {
+	ImportNotation,
+	type PAlter,
+	PAlterObject,
+	type PTag,
+} from "plurography";
+import z from "zod";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { createRandomId } from "../random-id";
+import { ImportEntry, ImportOutput } from ".";
 
 const PluralBuddyImportEntry = z.object({
 	existing: ImportEntry,
@@ -87,7 +92,7 @@ export async function add(
 		)
 		.map(
 			(v, i) =>
-				({
+				PAlterObject.parse({
 					...v,
 					systemId: input.existing.userId,
 					lastMessageTimestamp: null,
@@ -128,16 +133,22 @@ export async function add(
 	if (newTags.length + input.existing.tags.length >= 1000)
 		throw new Error("Too many tags");
 
-	for (const replacedAlter of newAlters) {
-		await alterCollection.replaceOne(
-			{ alterId: replacedAlter.alterId },
-			replacedAlter,
-		);
-	}
+	console.log(newAlters.length);
 
-	for (const replacedTag of newTags) {
-		await tagCollection.replaceOne({ tagId: replacedTag.tagId }, replacedTag);
-	}
+	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
+	if (newTags.length > 0) await tagCollection.insertMany(newTags);
+
+	await userCollection.updateOne(
+		{
+			userId: input.existing.userId,
+		},
+		{
+			$push: {
+				"system.alterIds": { $each: newAlters.map((c) => c.alterId) },
+				"system.tagIds": { $each: newTags.map((c) => c.tagId) },
+			},
+		},
+	);
 
 	return ImportOutput.parse({
 		alters: newAlters,

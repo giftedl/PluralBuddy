@@ -1,6 +1,6 @@
 'use client';
 import { cva } from 'class-variance-authority';
-import { Moon, Sun, Airplay } from 'lucide-react';
+import { Airplay, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { type HTMLAttributes, useLayoutEffect, useState } from 'react';
 import { cn } from '../lib/cn';
@@ -10,7 +10,7 @@ const itemVariants = cva(
   {
     variants: {
       active: {
-        true: 'bg-fd-accent text-fd-accent-foreground',
+        true: 'bg-accent text-accent-foreground',
         false: 'text-fd-muted-foreground',
       },
     },

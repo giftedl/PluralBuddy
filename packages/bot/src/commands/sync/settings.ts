@@ -1,4 +1,4 @@
-import { CommandContext, Declare, SubCommand } from "seyfert";
+import { type CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { Shortcut } from "yunaforseyfert";
 import { getSystemFeatures } from "@/lib/get-system-flags";

@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@slipher/testing": "^1.0.0",
     "bot": "workspace:*",
     "dotenv": "^17.4.2",
     "seyfert": "^4.3.0"

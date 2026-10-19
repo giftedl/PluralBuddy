@@ -7,7 +7,7 @@ import {
 	type DefaultLocale,
 	type TopLevelBuilders,
 } from "seyfert";
-import { InteractionIdentifier, InteractionObj } from "../interaction-ids";
+import { InteractionIdentifier, type InteractionObj } from "../interaction-ids";
 import { ButtonStyle } from "seyfert/lib/types";
 
 type ExtractKeys<T> = T extends object

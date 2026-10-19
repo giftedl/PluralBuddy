@@ -1,22 +1,23 @@
 {
-    "title": "PluralBuddy",
-    "description": "The modern, fast plurality Discord bot",
-    "icon": "Handshake",
-    "root": true,
-    "pages": [
-      "index",
-      "---For Users---",
-      "get-started",
-      "user-concepts",
-      "context-actions",
-      "express",
-      "commands",
-      "---For Server Administrators---",
-      "server-concepts",
-      "server-commands",
-      "---For Developers---",
-      "oauth-apps",
-      "ai-ap",
-      "api"
-    ]
-  }
+	"title": "PluralBuddy",
+	"description": "The modern, fast plurality Discord bot",
+	"icon": "Handshake",
+	"root": true,
+	"pages": [
+		"index",
+		"---For Users---",
+		"get-started",
+		"user-concepts",
+		"context-actions",
+		"express",
+		"3rd-party-integrations",
+		"commands",
+		"---For Server Administrators---",
+		"server-concepts",
+		"server-commands",
+		"---For Developers---",
+		"oauth-apps",
+		"ai-ap",
+		"api"
+	]
+}

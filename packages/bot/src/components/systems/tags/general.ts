@@ -1,8 +1,8 @@
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { tagCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 import { TagView } from "@/views/tags";
 
 export default class GeneralTagSettings extends ComponentCommand {
@@ -36,7 +36,7 @@ export default class GeneralTagSettings extends ComponentCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new TagView(await ctx.userTranslations()).tagTopView(
 					"general",

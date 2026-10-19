@@ -1,3 +1,4 @@
+import type { PUser } from "plurography";
 import { Button, Container, type Message, Section, TextDisplay } from "seyfert";
 import {
 	ButtonStyle,
@@ -8,12 +9,15 @@ import { client } from "@/index";
 import { messagesCollection, userCollection } from "@/mongodb";
 import { InteractionIdentifier } from "../interaction-ids";
 
+/** initial message ID -> user */
+export const cacheSystemMap: Record<string, PUser> = {};
+
 export async function handleDMReply(message: Message) {
 	if (!message.guildId) return;
-	if (!message.referencedMessage) return;
+	if (!message.messageReference) return;
 
 	const messageObj = await messagesCollection.findOne({
-		messageId: message.referencedMessage.id,
+		messageId: message.messageReference.messageId,
 	});
 
 	if (!messageObj) return;
@@ -22,6 +26,8 @@ export async function handleDMReply(message: Message) {
 	const authorObj = await userCollection.findOne({
 		userId: messageObj.systemId,
 	});
+	if (authorObj)
+		cacheSystemMap[message.id as string] = authorObj;
 	const authorMember = await client.members
 		.fetch(message.guildId, messageObj.systemId)
 		.catch(() => null);
@@ -38,6 +44,7 @@ export async function handleDMReply(message: Message) {
 		).includes(message.author.id)
 	)
 		return;
+
 
 	const memberPerms = await client.channels.memberPermissions(
 		message.channelId,
@@ -61,21 +68,21 @@ export async function handleDMReply(message: Message) {
 						new Section()
 							.setComponents(
 								new TextDisplay().setContent(
-									`<@${message.author.id}> replied to you in https://discord.com/channels/${message.guildId}/${message.channelId}, and you have DM replies on. [Message Link](<https://discord.com/channels/${message.guildId}/${message.channelId}/${message.id}>)`,
+									`<@${messageObj.systemId}>, <@${message.author.id}> replied to you here. [Message Link](<https://discord.com{message.guildId}/${message.channelId}/${message.id}>)`,
 								),
 							)
 							.setAccessory(
 								new Button()
 									.setStyle(ButtonStyle.Danger)
-									.setLabel("Disable DM replies")
+									.setLabel("Disable replies")
 									.setCustomId(
-										InteractionIdentifier.Nudge.ToggleDMReplies.create("true"),
+										InteractionIdentifier.Nudge.ToggleServerReplies.create("true"),
 									),
 							),
 					),
 				],
 				flags: MessageFlags.IsComponentsV2,
-				allowed_mentions: { parse: [] },
+				allowed_mentions: { parse: [] }, 
 			})
 			.catch(() => null);
 	} catch (_) {}

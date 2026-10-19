@@ -1,8 +1,20 @@
-import { PAlterObject } from "../../pluralbuddy/alter";
 import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { UnauthorizedSchema } from "../utils";
 import z from "zod";
+import { PAlterObject } from "../../pluralbuddy/alter";
 import { PTagObject, tagColors } from "../../pluralbuddy/tag";
+import { UnauthorizedSchema } from "../utils";
+
+const CreateTagParams = PTagObject.omit({
+	tagId: true,
+	tagFriendlyName: true,
+	tagColor: true,
+	systemId: true,
+	associatedAlters: true,
+	fields: true
+}).optional().and(z.object({
+	color: z.enum(tagColors),
+	displayName: z.string().max(100).min(3),
+}));
 
 export const register = (registry: OpenAPIRegistry) =>
 	registry.registerPath({
@@ -22,16 +34,13 @@ export const register = (registry: OpenAPIRegistry) =>
 				schema: {
 					type: "string",
 				},
-			}
+			},
 		],
 		request: {
 			body: {
 				content: {
 					"application/json": {
-						schema: z.object({
-							color: z.enum(tagColors),
-							displayName: z.string().max(100).min(3),
-						})
+						schema: CreateTagParams,
 					},
 				},
 			},

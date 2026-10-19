@@ -1,10 +1,12 @@
 import { getColor } from "colorthief";
+import { set } from "lodash";
 import {
-	ApplicationEmoji,
+	type ApplicationEmoji,
 	AttachmentBuilder,
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
+	createBooleanOption,
 	createStringOption,
 	Declare,
 	IgnoreCommand,
@@ -29,13 +31,17 @@ import { pendingIgnoreDeletion } from "@/events/on-message-delete";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { createError } from "@/lib/create-error";
 import { emojis } from "@/lib/emojis";
+import { getSystemFeatures } from "@/lib/get-system-flags";
 import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
-import { getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
+import {
+	getDisplayNameWebhook,
+	getSimilarWebhooks,
+	setLastLatchAlter,
+} from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
-import { w } from "@/webhooks";
 import { client } from "..";
 
 const options = {
@@ -43,6 +49,10 @@ const options = {
 		description: "Alter to reproxy as",
 		autocomplete: autocompleteAlters,
 		required: true,
+	}),
+	"change-latch": createBooleanOption({
+		description: "Update the alter latch to this alter",
+		required: false,
 	}),
 };
 
@@ -57,7 +67,7 @@ export default class ReproxyCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { system } = await ctx.retrievePUser();
-		const { alter: alterName } = ctx.options;
+		const { alter: alterName, "change-latch": changeLatch } = ctx.options;
 
 		const systemId = ctx.author.id;
 
@@ -153,27 +163,49 @@ export default class ReproxyCommand extends Command {
 		}
 
 		const webhook = similarWebhooks[0];
-
-		const username = `${alter.nameMap.find((c) => c.server === ctx.guildId)?.name ?? alter?.displayName ?? ""} ${(system?.displayTagMap ?? {})[ctx.guildId ?? ""] ?? system?.systemDisplayTag ?? ""}`;
+		const user = await ctx.retrievePUser();
+		if (!user) throw new Error("No user.");
+		const displayName =
+			getDisplayNameWebhook(alter, originalMessage, user) ?? alter.username;
 
 		pendingIgnoreDeletion.push(message.messageId);
 
 		const processedEmojis: ApplicationEmoji[] = [];
+		const componentList = (await Promise.all(
+			[
+				...(originalMessage.components.map((v) =>
+					v.toBuilder(),
+				) as TopLevelBuilders[]),
+				...(originalMessage.content !== ""
+					? [new TextDisplay().setContent(originalMessage.content)]
+					: []),
+			]
+				.filter((v) => v !== undefined)
+				.map(async (v) => {
+					if (v.data.type === ComponentType.TextDisplay && v.data.content) {
+						const processEmoji = await processEmojis(v.data.content);
+						processedEmojis.push(...processEmoji.emojis);
 
+						(v as TextDisplay).setContent(processEmoji.newMessage);
+					}
+					return v;
+				}),
+		)) as TopLevelBuilders[];
+
+		const attachments = await Promise.all(
+			originalMessage.attachments.map(async (v) =>
+				new AttachmentBuilder()
+					.setFile("buffer", await (await fetch(v.url)).arrayBuffer())
+					.setName(v.filename),
+			),
+		);
 		webhook.messages
 			.write({
 				body: {
-					...getModernComponentsMappings([
-						...(originalMessage.components.map((v) =>
-							v.toBuilder(),
-						) as TopLevelBuilders[]),
-						...(originalMessage.content !== ""
-							? [new TextDisplay().setContent(originalMessage.content)]
-							: []),
-					]),
+					...getModernComponentsMappings(componentList),
 					allowed_mentions: { parse: [] },
-					attachments: originalMessage.attachments,
-					username: username.substring(0, 80),
+					files: attachments,
+					username: displayName.substring(0, 80),
 					avatar_url:
 						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
 						alter?.avatarUrl ??
@@ -186,19 +218,12 @@ export default class ReproxyCommand extends Command {
 			})
 			.catch((v) => console.error(v))
 			.then((sentMessage) => {
-				if (
-					(
-						system.systemAutoproxy.find((v) => v.serverId === ctx.guildId) ?? {
-							autoproxyMode: "off",
-						}
-					).autoproxyMode === "latch"
-				)
-					setLastLatchAlter(
-						ctx.guildId ?? "",
-						ctx.channelId ?? "",
-						system,
-						alter,
-					);
+				setLastLatchAlter(
+					ctx.guildId ?? "",
+					ctx.channelId ?? "",
+					system,
+					alter,
+				);
 
 				messagesCollection.replaceOne(
 					{ messageId: message.messageId },

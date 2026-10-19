@@ -1,4 +1,4 @@
-import { AutoLoad, Command, CommandContext, Declare } from "seyfert";
+import { AutoLoad, Command, type CommandContext, Declare } from "seyfert";
 
 @Declare({
 	name: "sync",

@@ -97,7 +97,7 @@ SimplyPlural has been discontinued.`,
 	ERROR_ALTER_DOESNT_EXIST:
 		"2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
 	ERROR_ALTER_DOESNT_EXIST_SUGGESTION:
-		"2n – That alter could not be found. Did you mean \`%suggestion%\`?",
+		"2n – That alter could not be found. Did you mean `%suggestion%`?",
 	ERROR_TAG_DOESNT_EXIST:
 		"2o – This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
 
@@ -133,9 +133,9 @@ SimplyPlural has been discontinued.`,
 
 	PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
 	PLURALBUDDY_IMPORT_ERROR:
-		"2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
+		"2q – There was some error(s) while parsing that:\n\n```\n%zod_errors%\n```",
 	PLURALBUDDY_OPTIONS_ERROR:
-		"2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
+		"2r – There was some error(s) while evaluating the arguments to that command:\n\n```\n%options_errors%\n```",
 
 	CREATE_NEW_ALTER_DONE:
 		"Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
@@ -238,6 +238,7 @@ PluralBuddy uses a **username/display name** system.
 	ALTER_SET_DESCRIPTION: "Set Description",
 	ALTER_SET_ORDER_STRING: "Set Order String",
 	ALTER_SET_PFP: "Set Profile Picture",
+	ALTER_CREATE_PFP_DESC: "(new!) Optional.",
 	ALTER_SET_PFP_SE: "Is server-specific",
 	ALTER_SET_PFP_SE_DESC:
 		"This profile picture will only be specific to this server.",
@@ -363,7 +364,7 @@ PluralBuddy uses a **username/display name** system.
 	SERVER_TOO_BIG:
 		"This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
 	OPERATION_DISCORD_AP:
-		"Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+		"Switched in %server_name% (`%server_id%`) • %discord% Discord",
 	CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
 	NO_PERMISSIONS_PROXY:
 		"I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
@@ -384,7 +385,6 @@ PluralBuddy uses a **username/display name** system.
 	UNABLE_TO_BE_FUNNY: "You are not permitted to use the funny commands.",
 	DISABLED_DM_REPLIES:
 		"Successfully toggled DM replies off. Use `pb;nudge-preferences` to re-enable them.",
-
 	ABOUT_PB: `-# **DEVELOPMENT INFO**
 > PluralBuddy Build %version% · \`%branch%\`
 
@@ -398,11 +398,13 @@ PluralBuddy uses a **username/display name** system.
 -# Developed all major parts of PluralBuddy
 
 **OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
--# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇩🇪 German translations by @.ayake & @mira.mizuki
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
+-# 🇳🇴 Norweigan translations by @zeondev
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -441,7 +443,7 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
 	OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
 	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
-	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+	OPERATION_FALLBACK: "Set `%property%` to `%value%`",
 	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
 	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
 		"Toggled displaying pronouns on the system.",
@@ -451,8 +453,7 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
 	OPERATION_FLIPPED_CASE_INSENS_PROXIES:
 		"Toggled case insensitive proxying on this system.",
-	OPERATION_FLIPPED_PUBLIC_DEFAULT:
-		"Toggled public defaulting on this system.",
+	OPERATION_FLIPPED_PUBLIC_DEFAULT: "Toggled public defaulting on this system.",
 
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
@@ -673,6 +674,9 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 		"DM replies will send you a DM when somebody replies to you. **You must have DM's enabled in atleast one of your servers I'm in or else I will not be able to reach you.**",
 	DISABLE_DM: "Disable DM Replies",
 	ENABLE_DM: "Enable DM Replies",
+	DISABLE_SERVER_REPLYING: "Disable Server Replying",
+	ENABLE_SERVER_REPLYING: "Enable Server Replying",
+	SERVER_REPLYING_DESC: "Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
 	BLOCK_USERS_DESC: `You can block users from nudging you specifically. Currently, you have {{ userCount }} user(s) blocked.`,
 	EXPORT_NUDGE_BLOCKLIST: "Export Nudge Blocklist",
 	VIEW_NUDGE_BLOCKLIST: "View Nudge Blocklist",
@@ -741,7 +745,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`,
 	SRV_CFG_PROXY_DELAY_SEC: `> It is not recommended to go over a 1 second proxy delay.
 > This server's proxy delay currently is **{{ delay }} seconds** ({{ delayMs }}ms)`,
-
+	SRV_CFG_PING_MODE: "**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
 	ERROR_LOG_TITLE: `## Error Log - {{ serverName }}`,
 	NO_ERRORS: "{{ catJamming }}   Nice! Your server hasn't ran into any errors!",
 	ERROR_TRIGGERED_BY: `Triggered by <@{{ userId }}>.`,
@@ -755,7 +759,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 	FEATURE_D: "Disable",
 	FEATURE_E: "Enable",
 
-	ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+	ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
 	ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
 > The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
 	ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",
@@ -834,8 +838,7 @@ There is an example below of what an example proxy with this role would look lik
 	REPLACE_DESC:
 		"Replace will replace existing data in your system with data. Does not make new system data.",
 	REPLACE_NAME: "Replace",
-	ADD_DESC:
-		"Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
+	ADD_DESC: "Add will add new tags and alters from another bot.",
 	ADD_NAME: "Add",
 	FULL_IMPORT_DESC:
 		"Full import mode will both replace existing alters and add new ones.",
@@ -855,7 +858,7 @@ There is an example below of what an example proxy with this role would look lik
 
 	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
 	AWAKE:
-		"Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
+		"Hi! I'm awake, running PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
 
 	LINK_INVITE: "Invite",
 	LINK_SUPPORT: "Support",
@@ -959,10 +962,8 @@ Your system is using the front state of **{{ mode }}**.`,
 		"Successfully toggled preferring accessiblity. (Enabled)",
 	PREFER_ACCESSIBLITY_D:
 		"Successfully toggled preferring accessiblity. (Disabled)",
-	PUBLIC_DEFAULT_E:
-		"Successfully toggled public defaulting. (Enabled)",
-	PUBLIC_DEFAULT_D:
-		"Successfully toggled public defaulting. (Disabled)",
+	PUBLIC_DEFAULT_E: "Successfully toggled public defaulting. (Enabled)",
+	PUBLIC_DEFAULT_D: "Successfully toggled public defaulting. (Disabled)",
 
 	NOT_FRIDAY:
 		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
@@ -1078,10 +1079,23 @@ PluralBuddy can sync your PluralKit members either one-way or two-way, automatic
 
 	TEMPLATE_PLACEHOLDER: "Choose your favorite plurality product...",
 
-	TERMINOLOGY_EXPLANER: "PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
+	TERMINOLOGY_EXPLANER:
+		"PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
 	SUCCESSFULLY_APPLIED_TEMPLATE: "Successfully applied that template!",
 	USE_PLURALKIT_TERMINOLOGY_TITLE: "Use PluralKit-style Terminology (new!)",
-	USE_PLURALKIT_TERMINOLOGY_DESC: "Use terminology similar to represented in PluralKit (ie. member, group).",
+	USE_PLURALKIT_TERMINOLOGY_DESC:
+		"Use terminology similar to represented in PluralKit (ie. member, group).",
 
-	ALTER_TAG_COUNT_TOO_HIGH: "-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high.",
+	ALTER_TAG_COUNT_TOO_HIGH:
+		"-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high.",
+
+	EDIT_REACTING_TOP: `-# For future reference, you can reply to a message with \`{{ prefix }}edit\` to edit that message.
+	
+You are attempting to edit a message with the 📝 emoji. Please enter the contents of the new message contents with the button below.`,
+
+	EDIT_MESSAGE_BTN: "Edit Message",
+
+	PT_CREATE_NEW: "Create New Proxy Tag",
+	PT_DELETE: "Delete Proxy Tag",
+	PT_LIMIT: "-# You can create up to 6 proxy tags.",
 };

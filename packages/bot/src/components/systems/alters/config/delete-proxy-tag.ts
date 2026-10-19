@@ -4,10 +4,10 @@ import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { writeBack } from "@/lib/pk-sync-engine";
 import { w } from "@/webhooks";
-import { InteractionIdentifier } from "../../../../lib/interaction-ids";
-import { alterCollection } from "../../../../mongodb";
-import { AlertView } from "../../../../views/alert";
-import { AlterView } from "../../../../views/alters";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
 
 export default class DeleteProxyTag extends ComponentCommand {
 	componentType = "Button" as const;

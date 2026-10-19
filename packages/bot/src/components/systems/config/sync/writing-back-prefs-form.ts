@@ -9,7 +9,7 @@ import {
 	Button,
 	Container,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	Separator,
 	TextDisplay,
 } from "seyfert";
@@ -41,7 +41,7 @@ export default class SetPronounsButton extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
 			return await ctx.write({
@@ -52,7 +52,7 @@ export default class SetPronounsButton extends ModalCommand {
 			});
 		}
 
-		let enabled = 
+		const enabled = 
 			ctx.interaction.getInputValue(
 				InteractionIdentifier.Systems.Configuration.SyncPreferences.EnableWriteBackSync.create(),
 			) ?? false;

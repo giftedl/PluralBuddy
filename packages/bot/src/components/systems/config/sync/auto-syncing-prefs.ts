@@ -1,7 +1,7 @@
 import {
 	Checkbox,
 	ComponentCommand,
-	ComponentContext,
+	type ComponentContext,
 	Label,
 	Modal,
 	TextDisplay,

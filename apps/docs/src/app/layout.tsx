@@ -3,6 +3,7 @@ import "./global.css";
 import { TreeContextProvider } from "@fumadocs/base-ui/contexts/tree";
 import { i18nProvider } from '@fumadocs/base-ui/i18n';
 import { NextProvider } from "fumadocs-core/framework/next";
+
 import { Viewport } from "next";
 import { headers } from "next/headers";
 import { cache } from "react";

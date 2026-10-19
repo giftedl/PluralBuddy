@@ -1,14 +1,19 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import {
 	ComponentCommand,
+	type ComponentContext,
+	FileUpload,
 	Label,
 	Modal,
 	TextDisplay,
 	TextInput,
-	type ComponentContext,
 } from "seyfert";
+import {
+	type APIFileUploadComponent,
+	MessageFlags,
+	TextInputStyle,
+} from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { AlertView } from "@/views/alert";
 
 export default class CreateNewAlterBtn extends ComponentCommand {
@@ -78,9 +83,37 @@ export default class CreateNewAlterBtn extends ComponentCommand {
 									InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterDisplayNameType.create(),
 								),
 						),
-					new TextDisplay().setContent(
-						(await ctx.userTranslations()).ALTER_AFTER,
-					),
+
+					new Label()
+						.setLabel((await ctx.userTranslations()).PT_CREATE_NEW)
+						.setDescription(
+							(await ctx.userTranslations()).ALTER_CREATE_PFP_DESC,
+						)
+						.setComponent(
+							new TextInput()
+								.setStyle(TextInputStyle.Short)
+								.setRequired(false)
+								.setLength({ max: 100, min: 0 })
+								.setCustomId(
+									InteractionIdentifier.Systems.Configuration.FormSelection.ProxyType.create(),
+								),
+						),
+					new Label()
+						.setLabel((await ctx.userTranslations()).ALTER_SET_PFP)
+						.setDescription(
+							(await ctx.userTranslations()).ALTER_CREATE_PFP_DESC,
+						)
+						.setComponent(
+							new FileUpload({
+								...new FileUpload()
+									.setRequired(false)
+									.setMaxValues(1)
+									.setCustomId(
+										InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPFPType.create(),
+									).data,
+								file_types: ["image"],
+							} as APIFileUploadComponent),
+						),
 				]),
 		);
 	}

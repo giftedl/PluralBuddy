@@ -44,6 +44,9 @@ export default class SetPronounsButton extends ModalCommand {
 
 		system = newSystem;
 
+		if (!system)
+			throw new Error("No system?")
+
 		return await ctx.interaction.update({
 			components: [
 				...new SystemSettingsView(

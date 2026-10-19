@@ -1,7 +1,7 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import {
 	ComponentCommand,
-	ComponentContext,
+	type ComponentContext,
 	Label,
 	Modal,
 	ModalCommand,

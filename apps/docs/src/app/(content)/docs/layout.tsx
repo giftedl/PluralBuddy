@@ -1,3 +1,4 @@
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { DocsLayout } from "@/components/layouts/docs";
 import { HeroPattern } from "@/components/layouts/docs/hero-pattern";
 import { baseOptions } from "@/lib/layout.shared";
@@ -55,7 +56,7 @@ export default async function Layout({
 			}}
 		>
 			<HeroPattern />
-			{children}
+			<NuqsAdapter>{children}</NuqsAdapter>
 		</DocsLayout>
 	);
 }

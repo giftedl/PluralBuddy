@@ -22,14 +22,14 @@ import {
 	uploadAttachment,
 } from "@/object-storage";
 import { w } from "@/webhooks";
-import { autocompleteAlters } from "../../lib/autocomplete-alters";
-import { alterCollection } from "../../mongodb";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { alterCollection } from "@/mongodb";
 import {
 	assetStringGeneration,
 	operationStringGeneration,
-} from "../../types/operation";
-import { AlertView } from "../../views/alert";
-import { LoadingView } from "../../views/loading";
+} from "@/types/operation";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 const options = {
 	"alter-name": createStringOption({
@@ -168,7 +168,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 		}
 
-		let objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
+		const objectName = `${user.storagePrefix}/${assetStringGeneration(32)}`;
 
 		if (attachmentText === undefined) {
 			try {

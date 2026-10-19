@@ -3,7 +3,7 @@
 import { userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { NudgePreferences } from "@/views/nudge-preferences";
-import { Command, CommandContext, Declare } from "seyfert";
+import { Command, type CommandContext, Declare } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
@@ -16,7 +16,7 @@ import { MessageFlags } from "seyfert/lib/types";
 export default class NudgePreferencesCommand extends Command {
 	override async run(ctx: CommandContext) {
 		await ctx.deferReply(true);
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		// Database migration (12/04/25)
 		if (user.nudging === undefined) {
@@ -27,20 +27,20 @@ export default class NudgePreferencesCommand extends Command {
 						nudging: {
 							blockedUsers: [],
 							currentlyEnabled: true,
-							dmReply: false,
+							dmReply: false,       
+							serverReplying: false,  
 						},
 					},
 				},
 			);
 
-			// Set user in memory
 			user.nudging = {
 				blockedUsers: [],
 				currentlyEnabled: true,
 				dmReply: false,
+				serverReplying: false,
 			};
 		}
-		// End database migration
 
 		return await ctx.ephemeral(
 			{

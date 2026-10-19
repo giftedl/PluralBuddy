@@ -1,7 +1,7 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { guildCollection } from "@/mongodb";
 import { ServerConfigView } from "@/views/server-cfg";
-import { GuildRole, Middlewares, ModalCommand, ModalContext } from "seyfert";
+import { type GuildRole, Middlewares, ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Middlewares(["ensureGuildPermissions"])

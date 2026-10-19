@@ -111,7 +111,7 @@ export default class EditAlterPrivacyCommand extends SubCommand {
 
 		let newPublic = alter.public ?? 0;
 		const flagValue =
-			// @ts-ignore
+			// @ts-expect-error
 			AlterProtectionFlags[alterPrivacySubject.toUpperCase() as string];
 
 		if (alterPrivacySubjectChoice === "public") {

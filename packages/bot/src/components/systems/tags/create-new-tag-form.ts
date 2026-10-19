@@ -75,7 +75,7 @@ export default class CreateNewAlterForm extends ModalCommand {
 		});
 
 		if (tag.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new SystemSettingsView(
 						await ctx.userTranslations(),
@@ -114,7 +114,7 @@ ${z.prettifyError(tag.error)}
 			userId: ctx.author.id
 		})
 
-		await ctx.editResponse({
+		await ctx.editOrReply({
 			components: await new SystemSettingsView(
 				await ctx.userTranslations(),
 				getSystemFeatures(user.system)?.preferAccessiblity,

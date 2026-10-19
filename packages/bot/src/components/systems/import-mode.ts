@@ -1,16 +1,16 @@
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { mongoClient } from "@/mongodb";
-import { AlertView } from "@/views/alert";
 import { type ImportStage, ImportStageObject } from "plurography";
 import {
 	Button,
 	ComponentCommand,
+	type ComponentContext,
 	Container,
 	Section,
 	TextDisplay,
-	type ComponentContext,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { mongoClient } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 export default class ImportMode extends ComponentCommand {
 	componentType = "StringSelect" as const;
@@ -26,7 +26,7 @@ export default class ImportMode extends ComponentCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -49,7 +49,7 @@ export default class ImportMode extends ComponentCommand {
 			importMode: mode,
 		});
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				new Container().setComponents(
 					new Section()

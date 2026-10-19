@@ -3,7 +3,7 @@ import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
 import parse from "parse-duration";
 import {
-	CommandContext,
+	type CommandContext,
 	createNumberOption,
 	createStringOption,
 	Declare,

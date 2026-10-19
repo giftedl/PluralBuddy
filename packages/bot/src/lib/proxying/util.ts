@@ -105,7 +105,7 @@ export const getDisplayNameWebhook = (
 	message: Message,
 	user: PUser,
 ) => {
-	let body = `${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""}${getSystemFeatures(user.system!!).includePronouns && checkAlter.pronouns !== null ? ` (${checkAlter?.pronouns})` : ""}`;
+	let body = `${checkAlter.nameMap.find((c) => c.server === message.guildId)?.name ?? checkAlter?.displayName ?? ""}${getSystemFeatures(user.system!).includePronouns && checkAlter.pronouns !== null ? ` (${checkAlter?.pronouns})` : ""}`;
 	const tagElement =
 		(user.system?.displayTagMap ?? {})[message.guildId ?? ""] ??
 		user.system?.systemDisplayTag ??

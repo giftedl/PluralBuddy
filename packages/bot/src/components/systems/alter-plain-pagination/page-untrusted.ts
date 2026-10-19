@@ -4,7 +4,7 @@ import {
 	ComponentCommand,
 	type ComponentContext,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
@@ -50,6 +50,7 @@ export default class NextPageAP extends ModalCommand {
 
 		const alters = await alterCollection
 			.find({ systemId: user.system.associatedUserId })
+   .sort({ username: 1 })
 			.limit(90)
 			.skip((Number(page ?? "1") - 1) * 90)
 			.toArray();

@@ -1,8 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import { addBreadcrumb, captureEvent } from "@sentry/bun";
 import { getColor } from "colorthief";
 import {
 	type ApplicationEmoji,
+	Attachment,
 	AttachmentBuilder,
 	Container,
 	Embed,
@@ -21,6 +23,8 @@ import type { MediaGalleryComponent } from "seyfert/lib/components/MediaGallery"
 import type { TextDisplayComponent } from "seyfert/lib/components/TextDisplay";
 import type { Message } from "seyfert/lib/structures";
 import {
+	type APIMediaGalleryComponent,
+	AttachmentFlags,
 	ComponentType,
 	MessageFlags,
 	Spacing,
@@ -117,6 +121,7 @@ export async function proxy(
 						.setSpoiler(attachment.spoilered),
 				);
 	}
+	const stickerItems: AttachmentBuilder[] = [];
 	if ((message.stickerItems ?? []).length > 0) {
 		components.push(
 			...(message.stickerItems ?? []).map((c) =>
@@ -124,6 +129,14 @@ export async function proxy(
 					new MediaGalleryItem().setMedia(
 						`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=256`,
 					),
+				),
+			),
+		);
+		stickerItems.push(
+			...(message.stickerItems ?? []).map((c) =>
+				new AttachmentBuilder().setFile(
+					"url",
+					`https://media.discordapp.net/stickers/${c.id}.${c.formatType === StickerFormatType.GIF ? "gif" : c.formatType === StickerFormatType.PNG ? "png" : c.formatType === StickerFormatType.APNG ? "png" : "lottie"}?size=256`,
 				),
 			),
 		);
@@ -142,7 +155,27 @@ export async function proxy(
 	if (await message.fetch().catch(() => null)) {
 		// Send the message with file attachments included
 
-		console.log();
+		addBreadcrumb({
+			category: "proxying",
+			message: `Attempting to proxy message ID: ${message.id}`,
+			level: "info",
+		});
+
+		const isNativelyMentioning = message.referencedMessage
+			? message.referencedMessage?.webhookId !== undefined
+				? true
+				: message.referencedMessage &&
+					message.mentions.users
+						.map((v) => v.id)
+						.includes(message.referencedMessage.author.id)
+			: true;
+		const pingMode = guild.pingMode ?? "unaffected";
+		const isToMention =
+			pingMode === "unaffected"
+				? isNativelyMentioning
+				: pingMode === "opposite"
+					? !isNativelyMentioning
+					: pingMode === "always-on";
 
 		try {
 			webhook.messages
@@ -155,22 +188,26 @@ export async function proxy(
 						]),
 						username: username.substring(0, 80),
 						avatar_url: picture,
-						files: fileAttachments.map((c, i) =>
-							new AttachmentBuilder()
-								.setFile("buffer", c.buff)
-								.setName(`${c.name}`),
-						),
-						allowed_mentions:
-							message.referencedMessage &&
-							!message.mentions.users
-								.map((v) => v.id)
-								.includes(message.referencedMessage.author.id)
-								? {
-										parse: [],
-									}
-								: {
-										parse: ["users"],
-									},
+						files: [
+							...fileAttachments.map((c, i) =>
+								new AttachmentBuilder()
+									.setName(`${c.name}`)
+									.setSpoiler(c.spoilered)
+									.setFile("buffer", c.buff),
+							),
+							...(components.length === 2 &&
+							(components[1]?.data.type === ComponentType.MediaGallery ||
+								components[1]?.data.type === ComponentType.File)
+								? stickerItems
+								: []),
+						],
+						allowed_mentions: isToMention
+							? {
+									parse: ["users"],
+								}
+							: {
+									parse: [],
+								},
 						embeds:
 							components.length === 0
 								? [
@@ -214,7 +251,7 @@ export async function proxy(
 							referencedMessage: message.referencedMessage?.id,
 						},
 						type: "message.create",
-						userId: systemId
+						userId: systemId,
 					});
 					messagesCollection.insertOne({
 						messageId: sentMessage?.id ?? "0",
@@ -349,11 +386,14 @@ export async function proxy(
 			client.cache.similarWebhookResource.remove(message.channelId);
 		}
 
-		await message.delete().catch((_) => null).then(async () => {
-			const user = await getUserById(message.author.id);
+		await message
+			.delete()
+			.catch((_) => null)
+			.then(async () => {
+				const user = await getUserById(message.author.id);
 
-			await automaticallySync(user);
-		});;
+				await automaticallySync(user);
+			});
 	}
 }
 
@@ -367,9 +407,30 @@ export const getModernComponentsMappings = (
 ): ApplicableWebhookWritePayload["body"] => {
 	if (
 		components.length === 2 &&
-		components[1]?.data.type === ComponentType.MediaGallery
+		components[1]?.data.type === ComponentType.TextDisplay &&
+		components[1]?.data.content?.startsWith("https://klipy.com/gifs")
 	) {
+		return {
+			content: `${(components[0] as TextDisplay)?.data.content}\n${(components[1] as TextDisplay)?.data.content}`,
+		};
 	}
+
+	const isSticker = (i: number) =>
+		components[i]?.data.type === ComponentType.MediaGallery &&
+		(
+			((components[i].toJSON() as MediaGalleryComponent).items ?? [])[0]?.media
+				.url ?? ""
+		).startsWith("https://media.discordapp.net/stickers/");
+	const stickerURLs = [isSticker(0)]
+		.map((v, i) => {
+			if (v)
+				return ((components[i]?.toJSON() as MediaGalleryComponent).items ??
+					[])[0]?.media.url;
+			return "";
+		})
+		.filter((v) => v !== undefined)
+		.join("\n");
+
 	return components.length === 1 &&
 		components[0]?.data.type === ComponentType.TextDisplay
 		? {
@@ -385,26 +446,43 @@ export const getModernComponentsMappings = (
 					components[1]?.data.type === ComponentType.File)
 			? {
 					content:
-						components[0] !== undefined && "content" in components[0].data
+						((components[0] !== undefined && "content" in components[0].data
 							? (components[0].data.content ?? "").startsWith("# <")
 								? (components[0].data.content ?? "").slice(1)
 								: components[0].data.content
-							: "",
-					attachments: fileComponents
-						.filter((v, pos) => {
-							return fileComponents.indexOf(v) === pos;
-						})
-						.map((v, i) => ({ filename: v.name, id: String(i) })),
+							: "") ?? "") + stickerURLs,
+					attachments: isSticker(1)
+						? []
+						: fileComponents
+								.filter((v, pos) => {
+									return fileComponents.indexOf(v) === pos;
+								})
+								.map((v, i) =>
+									new AttachmentBuilder()
+										.setName(`${v.name}`)
+										.setSpoiler(v.spoilered)
+										.setFile("buffer", Buffer.from([]))
+										.toJSON(),
+								),
 				}
 			: components.length === 1 &&
-					components[0]?.data.type === ComponentType.File
+					(components[0]?.data.type === ComponentType.File ||
+						components[0]?.data.type === ComponentType.MediaGallery)
 				? {
-						content: "",
-						attachments: fileComponents
-							.filter((v, pos) => {
-								return fileComponents.indexOf(v) === pos;
-							})
-							.map((v, i) => ({ filename: v.name, id: String(i) })),
+						content: stickerURLs,
+						attachments: isSticker(0)
+							? []
+							: fileComponents
+									.filter((v, pos) => {
+										return fileComponents.indexOf(v) === pos;
+									})
+									.map((v, i) =>
+										new AttachmentBuilder()
+											.setName(`${v.name}`)
+											.setSpoiler(v.spoilered)
+											.setFile("buffer", Buffer.from([]))
+											.toJSON(),
+									),
 					}
 				: {
 						components,

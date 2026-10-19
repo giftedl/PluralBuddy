@@ -1,7 +1,7 @@
 import {
 	AttachmentBuilder,
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
 	Declare,
 	MediaGallery,
@@ -14,6 +14,8 @@ import { AlertView } from "@/views/alert";
 @Declare({
 	name: "ydi",
 	description: "your did it",
+	contexts: ["Guild", "BotDM", "PrivateChannel"],
+	integrationTypes: ["GuildInstall", "UserInstall"],
 })
 export default class WhoAskedCommand extends Command {
 	override async run(ctx: CommandContext) {

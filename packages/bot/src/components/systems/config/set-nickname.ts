@@ -7,9 +7,9 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
-import { AlertView } from "../../../views/alert";
+import { AlertView } from "@/views/alert";
 
 export default class SetName extends ComponentCommand {
 	componentType = "Button" as const;

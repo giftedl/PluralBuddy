@@ -9,12 +9,12 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
-import { privacySelection } from "../../../lib/selection-options";
-import { AlertView } from "../../../views/alert";
-import { has } from "../../../lib/privacy-bitmask";
-import { SystemProtectionFlags } from "../../../types/system";
+import { privacySelection } from "@/lib/selection-options";
+import { AlertView } from "@/views/alert";
+import { has } from "@/lib/privacy-bitmask";
+import { SystemProtectionFlags } from "@/types/system";
 
 export default class SetName extends ComponentCommand {
 	componentType = "Button" as const;

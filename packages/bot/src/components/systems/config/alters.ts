@@ -28,7 +28,7 @@ export default class AlterTab extends ComponentCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...(await new SystemSettingsView(
 					await ctx.userTranslations(),

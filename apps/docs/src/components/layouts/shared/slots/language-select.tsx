@@ -47,7 +47,7 @@ export function LanguageSelect({
               'px-2 py-1.5 text-start text-sm rounded-lg transition-colors',
               item.locale === context.locale
                 ? 'bg-fd-primary/10 text-fd-primary'
-                : 'text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground',
+                : 'text-fd-muted-foreground hover:bg-accent hover:text-accent-foreground',
             )}
             onClick={() => {
               // context.onChange?.(item.locale);

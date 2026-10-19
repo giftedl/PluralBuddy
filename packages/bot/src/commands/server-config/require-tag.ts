@@ -3,7 +3,7 @@ import { AlertView } from "@/views/alert";
 import { ServerConfigView } from "@/views/server-cfg";
 import { GuildFlags } from "plurography";
 import {
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	Middlewares,

@@ -1,14 +1,14 @@
 'use client';
 
 import { useTranslations } from '@fuma-translate/react';
-import { cn } from '@/lib/cn';
-import { isActive } from '@/lib/urls';
 import { useFooterItems } from '@fumadocs/base-ui/utils/use-footer-items';
 import { usePathname } from 'fumadocs-core/framework';
 import Link from 'fumadocs-core/link';
 import type * as PageTree from 'fumadocs-core/page-tree';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { type ComponentProps, useMemo } from 'react';
+import { cn } from '@/lib/cn';
+import { isActive } from '@/lib/urls';
 
 type Item = Pick<PageTree.Item, 'name' | 'description' | 'url'>;
 
@@ -63,7 +63,7 @@ function FooterItem({ item, index }: { item: Item; index: 0 | 1 }) {
     <Link
       href={item.url}
       className={cn(
-        'flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground @max-lg:col-span-full',
+        'flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-accent/80 hover:text-accent-foreground @max-lg:col-span-full',
         index === 1 && 'text-end',
       )}
     >

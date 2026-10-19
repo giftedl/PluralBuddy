@@ -1,4 +1,4 @@
-import { ImportNotation, possibleConverters } from "plurography";
+import { type ImportNotation, possibleConverters } from "plurography";
 import {
 	AttachmentBuilder,
 	ComponentCommand,
@@ -29,7 +29,7 @@ export default class PluralKitExternalExporting extends ComponentCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -59,7 +59,7 @@ export default class PluralKitExternalExporting extends ComponentCommand {
 			flags: MessageFlags.Ephemeral,
 		});
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: new AlertView(await ctx.userTranslations()).successView(
 				"SYSTEM_EXPORT_FINISHED",
 			),

@@ -5,11 +5,11 @@ import {
 	ComponentCommand,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { LoadingView } from "../../../views/loading";
 import { MessageFlags } from "seyfert/lib/types";
-import { AlertView } from "../../../views/alert";
-import { buildExportPayload } from "../../../lib/export";
+import { buildExportPayload } from "@/lib/export";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class ExportSystemButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -29,7 +29,7 @@ export default class ExportSystemButton extends ComponentCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -49,7 +49,7 @@ export default class ExportSystemButton extends ComponentCommand {
 			flags: MessageFlags.Ephemeral,
 		});
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: new AlertView(await ctx.userTranslations()).successView(
 				"SYSTEM_EXPORT_FINISHED",
 			),

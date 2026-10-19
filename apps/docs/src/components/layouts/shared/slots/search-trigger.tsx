@@ -1,11 +1,11 @@
 'use client';
-import type { ComponentProps } from 'react';
-import { Search } from 'lucide-react';
-import { useTranslations } from '@fuma-translate/react';
-import { cn } from '@/lib/cn';
-import { type ButtonProps, buttonVariants } from '@/components/ui/button';
 import { Dialog } from '@base-ui/react/dialog';
+import { useTranslations } from '@fuma-translate/react';
 import { useSearchContext } from '@fumadocs/base-ui/contexts/search';
+import { Search } from 'lucide-react';
+import type { ComponentProps } from 'react';
+import { type ButtonProps, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/cn';
 
 export interface SearchTriggerProps extends Omit<ComponentProps<'button'>, 'color'>, ButtonProps {
   hideIfDisabled?: boolean;
@@ -56,7 +56,7 @@ export function FullSearchTrigger({ hideIfDisabled, ...props }: FullSearchTrigge
       data-search-full=""
       {...props}
       className={cn(
-        'inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 p-1.5 ps-2 text-sm text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground',
+        'inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 p-1.5 ps-2 text-sm text-fd-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground',
         props.className,
       )}
     >

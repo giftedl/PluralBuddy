@@ -1,8 +1,9 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
+import type { Document } from "bson";
 import type { AutocompleteInteraction } from "seyfert";
-import { getUserById } from "../types/user";
 import { alterCollection } from "../mongodb";
+import { getUserById } from "../types/user";
 
 export async function autocompleteAlters(
 	ctx: AutocompleteInteraction<boolean>,

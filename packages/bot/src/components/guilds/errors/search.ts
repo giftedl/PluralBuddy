@@ -1,16 +1,16 @@
+import { GuildErrorTypes } from "plurography";
 import {
 	ChannelSelectMenu,
 	ComponentCommand,
+	type ComponentContext,
 	Label,
 	Modal,
 	RoleSelectMenu,
 	StringSelectMenu,
 	StringSelectOption,
 	UserSelectMenu,
-	type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { GuildErrorTypes } from "plurography";
 
 export default class SearchForm extends ComponentCommand {
 	componentType = "Button" as const;
@@ -28,28 +28,22 @@ export default class SearchForm extends ComponentCommand {
 				.setComponents([
 					new Label()
 						.setComponent(
-							new UserSelectMenu({
-								...new UserSelectMenu()
-									.setCustomId(
-										InteractionIdentifier.Guilds.FormSelection.SearchingErrorsUserSelection.create(),
-									)
-									.setValuesLength({ min: 0, max: 1 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
-								required: false,
-							}),
+							new UserSelectMenu()
+								.setCustomId(
+									InteractionIdentifier.Guilds.FormSelection.SearchingErrorsUserSelection.create(),
+								)
+								.setValuesLength({ min: 0, max: 1 })
+								.setRequired(false),
 						)
 						.setLabel((await ctx.userTranslations()).AFFECTED_USER),
 					new Label()
 						.setComponent(
-							new ChannelSelectMenu({
-								...new ChannelSelectMenu()
-									.setCustomId(
-										InteractionIdentifier.Guilds.FormSelection.SearchingErrorsChannelSelection.create(),
-									)
-									.setValuesLength({ min: 0, max: 1 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
-								required: false,
-							}),
+							new ChannelSelectMenu()
+								.setCustomId(
+									InteractionIdentifier.Guilds.FormSelection.SearchingErrorsChannelSelection.create(),
+								)
+								.setValuesLength({ min: 0, max: 1 })
+								.setRequired(false),
 						)
 						.setLabel((await ctx.userTranslations()).AFFECTED_CHANNEL),
 					new Label()

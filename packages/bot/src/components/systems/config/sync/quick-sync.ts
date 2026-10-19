@@ -4,14 +4,14 @@ import {
 	PluralKitGroup,
 	PluralKitMember,
 } from "plurography";
-import { ComponentCommand, ComponentContext } from "seyfert";
+import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import type { z } from "zod";
-import { build, logger } from "@/index";
+import { build, client, logger } from "@/index";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { pk } from "@/lib/pk-api";
-import { runSandboxActions } from "@/lib/pk-sync-engine";
+import { clearProxyCacheIfNeeded, runSandboxActions } from "@/lib/pk-sync-engine";
 import { decryptToken } from "@/lib/pk-token-encryption";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -28,7 +28,7 @@ export default class QuickSync extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
+		const { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
 
 		if (systemPB === undefined) {
 			return await ctx.write({
@@ -93,6 +93,7 @@ export default class QuickSync extends ComponentCommand {
 			}),
 		);
 
+		transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v))
 
 		if (transcript.tags.add.length > 0)
 			await tagCollection.insertMany(transcript.tags.add);

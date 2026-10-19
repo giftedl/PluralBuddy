@@ -1,5 +1,5 @@
 import {
-	CommandContext,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,
@@ -29,7 +29,7 @@ export default class ListPrefixesCommand extends SubCommand {
 				new Container()
 					.setComponents(
 						new TextDisplay().setContent(
-							"\`                                                           \`\n" +
+							"`                                                           `\n" +
 								[
 									...guildObj.blockedChannels.map((c) => {
 										return { id: c, type: "channel" };

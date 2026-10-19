@@ -1,18 +1,18 @@
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
 	AlterProtectionFlags,
+	type PAlter,
 	PAlterObject,
+	type PTag,
 	PTagObject,
 	TagProtectionFlags,
 	TupperBoxSystem,
-	type PAlter,
-	type PTag,
 } from "plurography";
-import { ImportEntry, ImportOutput } from ".";
 import z from "zod";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { combine } from "../privacy-bitmask";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { combine } from "../privacy-bitmask";
 import { createRandomId } from "../random-id";
+import { ImportEntry, ImportOutput } from ".";
 
 const TupperBoxImportEntry = z.object({
 	existing: ImportEntry,
@@ -91,6 +91,7 @@ export async function replace(
 						public: pluralbuddy.public,
 						avatarUrlMap: {},
 						fields: {},
+						flags: 0
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}
@@ -216,6 +217,7 @@ export async function add(
 						public: 0,
 						avatarUrlMap: {},
 						fields: {},
+						flags: 0
 					} satisfies PAlter),
 					originalPkId: member.id,
 				}

@@ -2,7 +2,7 @@
 
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
-import { CommandContext, Declare, SubCommand } from "seyfert";
+import { type CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({

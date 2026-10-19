@@ -2,7 +2,7 @@ import {
 	ComponentCommand,
 	Middlewares,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";

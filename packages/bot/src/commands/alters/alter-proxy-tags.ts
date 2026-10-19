@@ -8,11 +8,11 @@ import {
 } from "seyfert";
 import { SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemSettingsView } from "../../views/system-settings";
-import { alterCollection } from "../../mongodb";
-import { AlertView } from "../../views/alert";
-import { AlterView } from "../../views/alters";
-import { autocompleteAlters } from "../../lib/autocomplete-alters";
+import { SystemSettingsView } from "@/views/system-settings";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
+import { AlterView } from "@/views/alters";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
 
 const options = {
 	"alter-name": createStringOption({

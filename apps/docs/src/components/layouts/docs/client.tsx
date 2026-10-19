@@ -1,31 +1,31 @@
 'use client';
 
-import { type ComponentProps, createContext, type FC, use, useMemo } from 'react';
-import { cn } from '@/lib/cn';
+import { TreeContextProvider, useTreePath } from '@fumadocs/base-ui/contexts/tree';
 import { usePathname } from 'fumadocs-core/framework';
 import Link from 'fumadocs-core/link';
-import { useIsScrollTop } from '@/lib/use-is-scroll-top';
+import { type ComponentProps, createContext, type FC, use, useMemo } from 'react';
 import type { LinkItemType } from '@/components/layouts/shared';
+import { cn } from '@/lib/cn';
+import { useIsScrollTop } from '@/lib/hooks/use-is-scroll-top';
 import {
-  Sidebar,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-  type SidebarProps,
-  type SidebarProviderProps,
-} from './slots/sidebar';
-import type { DocsLayoutProps } from '.';
-import {
-  baseSlots,
-  isLayoutTabActive,
-  useLinkItems,
-  type LayoutTab,
   type BaseSlots,
   type BaseSlotsProps,
+  baseSlots,
+  isLayoutTabActive,
+  type LayoutTab,
+  useLinkItems,
 } from '../shared';
-import { TreeContextProvider, useTreePath } from '@fumadocs/base-ui/contexts/tree';
-import { Header } from './slots/header';
+import type { DocsLayoutProps } from '.';
 import { Container } from './slots/container';
+import { Header } from './slots/header';
+import {
+  Sidebar,
+  type SidebarProps,
+  SidebarProvider,
+  type SidebarProviderProps,
+  SidebarTrigger,
+  useSidebar,
+} from './slots/sidebar';
 
 export interface DocsSlots extends BaseSlots {
   container: FC<ComponentProps<'div'>>;
@@ -158,7 +158,7 @@ function LayoutTabs({
           key={i}
           href={tab.url}
           className={cn(
-            'inline-flex border-b-2 border-transparent transition-colors items-center pb-1.5 font-medium gap-2 text-fd-muted-foreground text-sm text-nowrap hover:text-fd-accent-foreground',
+            'inline-flex border-b-2 border-transparent transition-colors items-center pb-1.5 font-medium gap-2 text-fd-muted-foreground text-sm text-nowrap hover:text-accent-foreground',
             tab.unlisted && selected !== tab && 'hidden',
             selected === tab && 'border-fd-primary text-fd-primary',
           )}

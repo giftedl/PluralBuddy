@@ -1,16 +1,16 @@
 'use client';
+import { useTranslations } from '@fuma-translate/react';
 import { cva } from 'class-variance-authority';
 import { Airplay, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { type ComponentProps, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { cn } from '@/lib/cn';
-import { useTranslations } from '@fuma-translate/react';
 
 const itemVariants = cva('size-6.5 p-1.5 text-fd-muted-foreground', {
   variants: {
     active: {
-      true: 'bg-fd-accent text-fd-accent-foreground',
+      true: 'bg-accent text-accent-foreground',
       false: 'text-fd-muted-foreground',
     },
   },

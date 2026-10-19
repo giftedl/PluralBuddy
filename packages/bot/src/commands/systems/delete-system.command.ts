@@ -12,10 +12,10 @@ import {
 	TextDisplay,
 	Message,
 } from "seyfert";
-import { AlertView } from "../../views/alert";
+import { AlertView } from "@/views/alert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { emojis } from "../../lib/emojis";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { emojis } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
 
 const options = {

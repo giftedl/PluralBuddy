@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "packages": {
+  "scripts": {
     "build": "bunx tsc --outDir dist",
     "prepublishOnly": "bun run build"
   },

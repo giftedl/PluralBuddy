@@ -1,7 +1,7 @@
 import {
 	Button,
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,

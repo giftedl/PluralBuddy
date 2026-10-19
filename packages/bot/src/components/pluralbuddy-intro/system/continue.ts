@@ -15,12 +15,13 @@ import {
 import { ButtonStyle, MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { writeUserById } from "../../../types/user";
-import { AlertView } from "../../../views/alert";
-import { LoadingView } from "../../../views/loading";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 import { createdSystems } from "../create-new-system";
+import { terminologyDefaults } from "plurography";
 
 export default class NameCNS extends ComponentCommand {
 	componentType = "Button" as const;
@@ -54,15 +55,15 @@ export default class NameCNS extends ComponentCommand {
 			userId: ctx.author.id,
 			blocked: false,
 			storagePrefix: user.storagePrefix,
-			terminology: terminology,
-			// @ts-ignore
+			terminology: terminology ?? terminologyDefaults,
+			// @ts-expect-error
 			system: {
 				associatedUserId: ctx.author.id,
 				...temporarySystem,
 			},
 		});
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new AlertView(await ctx.userTranslations()).successViewCustom(
 					(await ctx.userTranslations()).CREATING_NEW_SYSTEM_SUCCESS.replaceAll(

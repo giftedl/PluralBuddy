@@ -11,7 +11,7 @@ import {
 	ActionRow,
 	Button,
 	CacheFrom,
-	CommandContext,
+	type CommandContext,
 	Container,
 	type DefaultLocale,
 	extendContext,
@@ -23,17 +23,19 @@ import {
 import type {
 	InteractionCreateBodyRequest,
 	InteractionMessageUpdateBodyRequest,
+	MessageWebhookCreateBodyRequest,
 } from "seyfert/lib/common";
 import {
 	type APIInteraction,
 	ButtonStyle,
 	MessageFlags,
 } from "seyfert/lib/types";
-import { client, policyModal } from ".";
+import { client } from ".";
 import { emojis } from "./lib/emojis";
 import { InteractionIdentifier } from "./lib/interaction-ids";
 import { getLanguageByUserId, langMemoryCache } from "./lib/lang";
 import { userCollection } from "./mongodb";
+import { policyModal } from "./policyModal";
 import { defaultPrefixes, getGuildFromId, PGuildObject } from "./types/guild";
 import { getUserById, terminologyMemoryCache } from "./types/user";
 import { LoadingView } from "./views/loading";
@@ -47,6 +49,7 @@ export const extendedContext = extendContext((interaction) => {
 		afterSendTask?: (actions: {
 			editMessage: (body: InteractionCreateBodyRequest) => void;
 			reply?: (body: InteractionCreateBodyRequest) => void;
+			followup?: (body: MessageWebhookCreateBodyRequest) => void;
 		}) => void,
 		ctx?: CommandContext,
 	) => {
@@ -62,6 +65,7 @@ export const extendedContext = extendContext((interaction) => {
 					afterSendTask({
 						reply: writtenMessage?.write,
 						editMessage: interaction.editResponse,
+						followup: interaction.followup,
 					});
 				return writtenMessage;
 			}
@@ -124,6 +128,7 @@ export const extendedContext = extendContext((interaction) => {
 								reply: interaction.message?.reply,
 								editMessage: (body: InteractionCreateBodyRequest) =>
 									modal.editMessage("@original", body),
+								followup: modal.followup,
 							});
 
 						return writtenMessage;
@@ -143,12 +148,12 @@ export const extendedContext = extendContext((interaction) => {
 				if (i.isButton()) {
 					message.delete().catch((_) => null);
 					const writtenMessage = await i.write(body, true);
-
 					if (afterSendTask)
 						afterSendTask({
 							reply: interaction.message?.reply,
 							editMessage: (body: InteractionCreateBodyRequest) =>
 								i.editMessage("@original", body),
+							followup: (body) => client.interactions.followup(i.token, body),
 						});
 
 					return writtenMessage;
@@ -164,6 +169,7 @@ export const extendedContext = extendContext((interaction) => {
 			afterSendTask({
 				editMessage: (body: InteractionCreateBodyRequest) =>
 					interaction.editMessage("@original", body),
+				followup: (body) => client.interactions.followup(interaction.token, body),
 			});
 
 		return writtenMessage;
@@ -268,6 +274,9 @@ const replaceTranslations = (
 		return false;
 	};
 	const clonedTranslations = cloneDeep(translations);
+
+	if (terminology === null)
+		terminology = terminologyDefaults
 
 	const replace = () =>
 		Object.keys(clonedTranslations).forEach((c: string) => {

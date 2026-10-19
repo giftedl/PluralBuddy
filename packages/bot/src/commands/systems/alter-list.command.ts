@@ -101,6 +101,7 @@ export default class AlterListCommand extends SubCommand {
 		if (plain === true) {
 			const alters = await alterCollection
 				.find({ systemId: user.system.associatedUserId })
+    .sort({ username: 1 })
 				.limit(90)
 				.toArray();
 			return await ctx.ephemeral(

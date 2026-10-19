@@ -2,10 +2,10 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 const variants = {
   primary: 'bg-fd-primary text-fd-primary-foreground hover:bg-fd-primary/80',
-  outline: 'border hover:bg-fd-accent hover:text-fd-accent-foreground',
-  ghost: 'hover:bg-fd-accent hover:text-fd-accent-foreground',
+  outline: 'border hover:bg-accent hover:text-accent-foreground',
+  ghost: 'hover:bg-accent hover:text-accent-foreground',
   secondary:
-    'border bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent hover:text-fd-accent-foreground',
+    'border bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-accent hover:text-accent-foreground',
 } as const;
 
 export const buttonVariants = cva(

@@ -56,15 +56,24 @@ export default class SetUsernameButton extends ComponentCommand {
 						(await ctx.userTranslations()).ALTER_SEARCH_STRING_FORM_LABEL,
 					)
 					.setComponent(
-						new TextInput()
-							.setStyle(TextInputStyle.Short)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagOrderStringType.create(),
-							)
-							.setLength({ max: 4 })
-							.setRequired(true)
-							.setValue(tag.orderString)
-							.setPlaceholder("2a"),
+						!tag.orderString
+							? new TextInput()
+									.setStyle(TextInputStyle.Short)
+									.setCustomId(
+										InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagOrderStringType.create(),
+									)
+									.setLength({ max: 4 })
+									.setRequired(true)
+									.setPlaceholder("2a")
+							: new TextInput()
+									.setStyle(TextInputStyle.Short)
+									.setCustomId(
+										InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagOrderStringType.create(),
+									)
+									.setLength({ max: 4 })
+									.setRequired(true)
+									.setValue(tag.orderString)
+									.setPlaceholder("2a"),
 					),
 			]);
 

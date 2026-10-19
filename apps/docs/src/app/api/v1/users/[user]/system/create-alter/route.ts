@@ -1,17 +1,38 @@
-import { authenticateOAuth } from "@/lib/oauth";
-import { createOAuthFunction } from "@/server/wrapper";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { NextRequest, NextResponse } from "next/server";
-import { PAlter, PAlterObject, PUser } from "plurography";
+import { createRandomId, PAlter, PAlterObject, PUser } from "plurography";
 import z from "zod";
+import { authenticateOAuth } from "@/lib/oauth";
+import { createOAuthFunction } from "@/server/wrapper";
 
-const CreateAlterParams = z.object({
-	username: z
-		.string()
-		.max(100)
-		.regex(/^[^\s@\\/]+$/),
-	displayName: z.string().max(100),
-});
+const CreateAlterParams = PAlterObject.omit({
+	alterId: true,
+	systemId: true,
+	lastMessageTimestamp: true,
+	created: true,
+	fields: true,
+	messageCount: true,
+	tagIds: true,
+	proxyTags: true,
+})
+	.partial()
+	.and(
+		z.object({
+			username: z
+				.string()
+				.max(100)
+				.regex(/^[^\s@\\/]+$/),
+			displayName: z.string().max(100),
+			proxyTags: z
+				.object({
+					prefix: z.string().max(100),
+					suffix: z.string().max(100),
+				})
+				.array()
+				.default([])
+				.optional(),
+		}),
+	);
 
 export const POST = createOAuthFunction<
 	{ user: string },
@@ -49,8 +70,6 @@ export const POST = createOAuthFunction<
 			alterId: Number(DiscordSnowflake.generate()),
 			systemId: user.userId,
 
-			username: input.username,
-			displayName: input.displayName,
 			nameMap: [],
 			color: null,
 			pronouns: null,
@@ -63,7 +82,17 @@ export const POST = createOAuthFunction<
 			messageCount: 0,
 			alterMode: "webhook",
 			public: 0,
-		});
+			avatarUrlMap: {},
+			tagIds: [],
+			flags: 0,
+			fields: {},
+			...input,
+			proxyTags: (input.proxyTags ?? []).map((v, i) => ({
+				prefix: v.prefix,
+				suffix: v.suffix,
+				id: createRandomId(i).toString(),
+			})),
+		} satisfies PAlter);
 
 		if (!alter.data || alter.error) {
 			return ctx.error({

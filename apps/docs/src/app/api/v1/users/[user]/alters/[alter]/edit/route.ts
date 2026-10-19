@@ -1,5 +1,7 @@
-import { createOAuthFunction } from "@/server/wrapper";
+import { isEqual } from "lodash";
 import { PAlterObject } from "plurography";
+import { api } from "@/lib/rpc";
+import { createOAuthFunction } from "@/server/wrapper";
 
 const AlterEditInput = PAlterObject.omit({
 	alterId: true,
@@ -39,6 +41,12 @@ export const POST = createOAuthFunction<
 		}
 
 		const { fields, tagIds, ...omittedData } = await ctx.body();
+
+		if (!isEqual(omittedData.proxyTags, alterObj.proxyTags)) {
+			await api.cache.$delete({
+				json: { type: "alterProxy", key: String(alterObj.alterId) },
+			});
+		}
 
 		const successfulTags =
 			tagIds === undefined

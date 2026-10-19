@@ -38,6 +38,7 @@ export default class NextPageAP extends ComponentCommand {
 
 		const alters = await alterCollection
 			.find({ systemId: user.system.associatedUserId })
+   .sort({ username: 1 })
 			.limit(90)
 			.skip((Number(page ?? "1") - 1) * 90)
 			.toArray();

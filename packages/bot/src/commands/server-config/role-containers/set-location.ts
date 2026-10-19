@@ -1,7 +1,7 @@
 import {
 	ActionRow,
 	Button,
-	CommandContext,
+	type CommandContext,
 	Container,
 	createRoleOption,
 	createStringOption,
@@ -47,7 +47,7 @@ export default class ViewRoleContainer extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const guild = await ctx.retrievePGuild();
-		let { role, location } = ctx.options;
+		const { role, location } = ctx.options;
 		const roleData = guild.rolePreferences.find(
 			(c) => c.roleId === role.id,
 		) ?? { roleId: role.id };

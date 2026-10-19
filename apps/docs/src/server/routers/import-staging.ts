@@ -76,9 +76,7 @@ export const ImportStagingRouter = router({
 
 			if (!session) throw new Error("Session error.");
 
-			const mongo = new MongoClient(process.env.MONGO ?? "");
-			const staging = await mongo
-				.db(`${process.env.ENV}-pluralbuddy-app`)
+			const staging = await ctx.webDatabase
 				.collection<ImportStage>("import-staging")
 				.findOne(
 					// @ts-ignore
@@ -92,21 +90,18 @@ export const ImportStagingRouter = router({
 				throw new Error("Session doesn't match staging.");
 			}
 
-			await mongo
-				.db(`${process.env.ENV}-pluralbuddy-app`)
-				.collection<ImportStage>("import-staging")
-				.updateOne(
-					// @ts-ignore
-					{ "webhook.id": input.importStagingId },
-					{
-						$set: {
-							response: {
-								data: input.data,
-								dataType: input.from,
-							},
+			await ctx.webDatabase.collection<ImportStage>("import-staging").updateOne(
+				// @ts-ignore
+				{ "webhook.id": input.importStagingId },
+				{
+					$set: {
+						response: {
+							data: input.data,
+							dataType: input.from,
 						},
 					},
-				);
+				},
+			);
 
 			waitUntil(
 				api["import-staging-reminder"].$post({
@@ -123,8 +118,7 @@ export const ImportStagingRouter = router({
 
 			if (!session) throw new Error("Session error.");
 
-			const mongoClient = ctx.db;
-			const mongoDb = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
+			const mongoDb = ctx.webDatabase
 
 			let result = (await mongoDb
 				.collection<ImportStage>("import-staging")
@@ -147,7 +141,7 @@ export const ImportStagingRouter = router({
 				} as ImportStage;
 			}
 
-			waitUntil(mongoClient.close());
+			waitUntil(ctx.mongoClient.close());
 
 			return result;
 		}),

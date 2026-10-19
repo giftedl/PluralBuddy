@@ -117,7 +117,7 @@ export async function performTagProxy(
 			createProxyError(user, message, {
 				title: "Server requires Webhook Proxy Mode",
 				description:
-					"You cannot proxy with an alter that is on \`nickname\` mode, as this server requires the use of the Webhook Proxy Mode.",
+					"You cannot proxy with an alter that is on `nickname` mode, as this server requires the use of the Webhook Proxy Mode.",
 				type: "EnforcedProxyModeRegulation",
 			});
 		}
@@ -131,7 +131,7 @@ export async function performTagProxy(
 			createProxyError(user, message, {
 				title: "User Cannot Change Nickname",
 				description:
-					"You cannot proxy with an alter that is on \`nickname\` mode, when you do not have the Change Nickname (\`CHANGE_NICKNAME\`) permission yourself.",
+					"You cannot proxy with an alter that is on `nickname` mode, when you do not have the Change Nickname (`CHANGE_NICKNAME`) permission yourself.",
 				type: "UserPermissionsRequired",
 			});
 		}
@@ -146,7 +146,7 @@ export async function performTagProxy(
 			createProxyError(user, message, {
 				title: "Bot Cannot Change Nickname",
 				description:
-					"You cannot proxy with an alter that is on \`nickname\` mode, when the bot does not have the Manage Nicknames (\`MANAGE_NICKNAMES\`) permission. Please contact a server administrator if you believe this is incorrect.",
+					"You cannot proxy with an alter that is on `nickname` mode, when the bot does not have the Manage Nicknames (`MANAGE_NICKNAMES`) permission. Please contact a server administrator if you believe this is incorrect.",
 				type: "BotPermissionsRequired",
 			});
 		}
@@ -218,7 +218,7 @@ export async function performTagProxy(
 			createProxyError(user, message, {
 				title: "Server requires Nickname Proxy Mode",
 				description:
-					"You cannot proxy with an alter that is on \`webhook\` mode, as this server requires the use of the Nickname Proxy Mode.",
+					"You cannot proxy with an alter that is on `webhook` mode, as this server requires the use of the Nickname Proxy Mode.",
 				type: "EnforcedProxyModeRegulation",
 			});
 		}
@@ -229,7 +229,7 @@ export async function performTagProxy(
 			createProxyError(user, message, {
 				title: "Bot Cannot Efffectively Proxy",
 				description:
-					"This bot needs Manage Webhooks (\`MANAGE_WEBHOOKS\`) and (\`MANAGE_MESSAGES\`) to work properly. Please ask for an administrator to grant those permissions.",
+					"This bot needs Manage Webhooks (`MANAGE_WEBHOOKS`) and (`MANAGE_MESSAGES`) to work properly. Please ask for an administrator to grant those permissions.",
 				type: "BotPermissionsRequired",
 			});
 			return;

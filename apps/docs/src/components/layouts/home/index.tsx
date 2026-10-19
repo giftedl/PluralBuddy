@@ -1,15 +1,15 @@
 'use client';
 
-import type { BaseLayoutProps, NavOptions } from '@/components/layouts/shared';
 import { type ComponentProps, createContext, type FC, use } from 'react';
-import { baseSlots, useLinkItems, type BaseSlots, type BaseSlotsProps } from '@/components/layouts/shared';
-import type { LinkItemType } from '@/components/layouts/shared';
+import type { BaseLayoutProps, LinkItemType, NavOptions } from '@/components/layouts/shared';
+import { type BaseSlots, type BaseSlotsProps, baseSlots, useLinkItems } from '@/components/layouts/shared';
 import { Container } from './slots/container';
 import { Header } from './slots/header';
 
 export interface HomeLayoutProps extends BaseLayoutProps, ComponentProps<'main'> {
   nav?: Nav;
   slots?: Partial<HomeSlots>;
+  fixedMode?: boolean;
 }
 
 interface Nav extends NavOptions {
@@ -20,7 +20,7 @@ interface Nav extends NavOptions {
 }
 
 export interface HomeSlots extends BaseSlots {
-  header: FC<ComponentProps<'header'>>;
+  header: FC<ComponentProps<'header'> & { fixedMode: boolean }>;
   container: FC<ComponentProps<'main'>>;
 }
 
@@ -44,7 +44,7 @@ const { useBaseSlots } = baseSlots({
   },
 });
 
-export function HomeLayout(props: HomeLayoutProps) {
+export function HomeLayout(props: HomeLayoutProps = { fixedMode: false }) {
   const {
     nav: { enabled: navEnabled = true } = {},
     slots: defaultSlots,
@@ -54,6 +54,7 @@ export function HomeLayout(props: HomeLayoutProps) {
     links: _links,
     themeSwitch: _themeSwitch,
     searchToggle: _searchToggle,
+    fixedMode,
     ...rest
   } = props;
   const { baseSlots, baseProps } = useBaseSlots(props);
@@ -73,14 +74,14 @@ export function HomeLayout(props: HomeLayoutProps) {
       }}
     >
       <slots.container {...rest}>
-        {navEnabled && <slots.header />}
+        {navEnabled && <slots.header fixedMode={fixedMode ?? false} />}
         {children}
       </slots.container>
     </LayoutContext>
   );
 }
 
-function InlineHeader(props: ComponentProps<'header'>) {
+function InlineHeader(props: ComponentProps<'header'> & { fixedMode: boolean }) {
   const { nav } = useHomeLayout().props;
   if (nav?.component) return nav.component;
   return <Header {...props} />;

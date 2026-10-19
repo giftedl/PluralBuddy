@@ -7,13 +7,13 @@ import {
 	TextDisplay,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemSettingsView } from "../../../views/system-settings";
-import { AlertView } from "../../../views/alert";
 import { alterCollection, tagCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
 
 export default class ConfigureTag extends ComponentCommand {
 	componentType = "Button" as const;
@@ -43,7 +43,7 @@ export default class ConfigureTag extends ComponentCommand {
 				referencedMessage?.author.id ??
 				ctx.interaction.message.interactionMetadata?.user.id;
 			if (ctx.author.id !== originalUserId) {
-				return ctx.editResponse({
+				return ctx.editOrReply({
 					components: [
 						new Container().setComponents(
 							new TextDisplay().setContent(
@@ -69,7 +69,7 @@ export default class ConfigureTag extends ComponentCommand {
 		const tag = await query;
 
 		if (tag === null) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_TAG_DOESNT_EXIST",
 				),
@@ -77,7 +77,7 @@ export default class ConfigureTag extends ComponentCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new TagView(await ctx.userTranslations()).tagTopView(
 					"general",

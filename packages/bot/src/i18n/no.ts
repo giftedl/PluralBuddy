@@ -1,3 +1,4 @@
+import type { DefaultLocale } from "seyfert";
 import { emojis } from "@/lib/emojis";
 export default {
 	INTRODUCTION_MESSAGE: `## Velkommen til PluralBuddy
@@ -43,86 +44,94 @@ Denne serveren krever en **systemtagg** for systemer som proxyer here. For å la
 Systemer kan ha **personvernverider** som er verdier som beskriver hvem som kan se hvilke del av ditt system. Standard så er systemet ditt helt privat unntatt for server automatisk moderering, og meldingen som systemet ditt sender.`,
 	CREATING_NEW_SYSTEM_PRIVACY_SET: "Offtenlige personvernverider er:",
 	CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC:
-		"Select the privacy values you want open to the public.",
-	CREATING_NEW_SYSTEM_SUCCESS: `Successfully created new system!
-### Next Steps
-> - To create a new alter, try using %command1%
-> - To create a new tag, try using %command2%`,
+		"Velg de personvernsverdiene du vil ha åpent offentlig.",
+	CREATING_NEW_SYSTEM_SUCCESS: `Nytt system laget!
+### Neste steg:
+> - For å lage ett nytt alter, prøv å bruke %command1%
+> - For å lage en ny tag, prøv å bruke %command2%`,
 	SETUP_ERROR_SYSTEM_ALREADY_EXISTS:
-		"2b – You cannot setup a new system if a system under your account already exists.",
-	SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN: "Remove system & setup again",
+		"2b – Du kan ikke sette opp et nytt system hvis et system under din konto allerede eksisterer.",
+	SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN:
+		"Fjern system & starte oppsett på nytt",
 	ERROR_PAGINATION_TOO_OLD:
-		'2g – That alter pagination component is too old, you cannot proceed. Please hit the "Alters" tab at the top of the message to reset the pagination.',
+		'2g – Den alter paginasjonskomponentet er for gammelt, du kan ikke fortsette. Vennligst trykk på "Alter" fanen øverst på meldingen for å nullstille paginasjonen.',
 	ERROR_TAG_PAGINATION_TOO_OLD:
-		'2h – That tag pagination component is too old, you cannot proceed. Please hit the "Tags" tab at the top of the message to reset the pagination.',
+		'2h – Den tag paginasjonkomponenten er for gammel, du kan ikke fortsette. Vennligst trykk på "Tagger" fanen øverst på meldingen for å nullstille paginasjonen.',
 	ERROR_ASSIGN_PAGINATION_TOO_OLD:
-		"2i – That pagination component is too old, you cannot proceed. Please go back and hit the Assign button again to make the pagination component work again.",
-	ERROR_NO_ALTERS: "2w – You have no alters! Create one below!",
-	ERROR_NO_TAGS: "2x – You have no tags! Create one below!",
-	PK_IMPORT_START: "## PluralKit Importing",
-	SP_IMPORT_START: `## Simply Plural Importing
-	
-SimplyPlural has been discontinued.`,
+		"2i – Den paginasjonskomponenten er for gammel, du kan ikke fortsette. Vennligst gå tilbake og trykk Tilden-knappen igjen for å få paginasjonskomponenten til å fungere igjen.",
+	ERROR_NO_ALTERS: "2w – Du har ingen alter! Lag en under!",
+	ERROR_NO_TAGS: "2x – Du har ingen tagger! Lag en under!",
+	PK_IMPORT_START: "### PluralKit importering",
+	SP_IMPORT_START: `## Simply Plural importering
+
+SimplyPlural har blitt avviklet.`,
 	PAGE_NEW_SYS_TEXT:
-		"-# Page 3/3 · Some fields haven't been filled out. · * Required",
-	PAGE_NEW_SYS_TEXT_FILLED: "-# Page 3/3 · * Required",
-	IMPORT_PLURALKIT_DESCRIPTION: "Import from PluralKit",
-	IMPORT_TUPPERBOX_DESCRIPTION: "Import from TupperBox",
-	IMPORT_PLURALBUDDY_DESCRIPTION: "Import from PluralBuddy",
-	IMPORT_SIMPLYPLURAL_DESCRIPTION: "Import from SimplyPlural",
-	IMPORT_SOURCE_DESCRIPTION: "Import Source",
+		"-# Side 3/3 · Noen felter har ikke blitt fylt up. · * Påkrevd",
+	PAGE_NEW_SYS_TEXT_FILLED: "-# Side 3/3 · * Påkrevd",
+	IMPORT_PLURALKIT_DESCRIPTION: "Importer fra PluralKit",
+	IMPORT_TUPPERBOX_DESCRIPTION: "Importer fra TupperBox",
+	IMPORT_PLURALBUDDY_DESCRIPTION: "Importer fra PluralBuddy",
+	IMPORT_SIMPLYPLURAL_DESCRIPTION: "Importer fra SimplyPlural",
+	IMPORT_SOURCE_DESCRIPTION: "Importer Kilde",
 	IMPORT_TOKEN_DESCRIPTION: "SimplyPlural Token",
-	CREATE_NEW_SYS_DESCRIPTION: "Create New System",
+	CREATE_NEW_SYS_DESCRIPTION: "Lag Nytt System",
 	PLURALBUDDY_IMPORT_ERROR_TOO_LARGE:
-		"2j – Importing files cannot be larger than 2MB. Please contact support if you are genuinely trying to import a system larger than 2MB.",
+		"2j – Importerende filer kan ikke være større enn 2MB. Vennligst kontakt brukerstøtte om du faktisk prøver å importere ett system større en 2MB.",
 	ERROR_ATTACHMENT_TOO_LARGE:
-		"2j – Attachments for banners or profile pictures cannot be larger than 1MB.",
-	CREATE_NEW_ALTER_DESCRIPTION: "Create New Alter",
-	CREATE_NEW_TAG_DESCRIPTION: "Create New Tag",
+		"2j – Vedlegg for bannere eller profilbilder kan ikke være større enn 1MB.",
+	CREATE_NEW_ALTER_DESCRIPTION: "Lag Nytt Alter",
+	CREATE_NEW_TAG_DESCRIPTION: "Lag Ny Tag",
 	PLURALBUDDY_IMPORT_ERROR_INVALID_JSON:
-		"2k – The file you imported is not valid JSON.",
+		"2k – Filen du importerte er ikke gyldig JSON.",
 	ERROR_INTERACTION_TOO_OLD:
-		"2l – This interaction has no longer been kept track of. (Have you waited too long?)",
+		"2l - Denne interaksjonen er ikke lenger følgt av serveren. (Har du ventet for lenge?)",
 	ERROR_SYSTEM_DOESNT_EXIST:
-		"2m – This operation cannot be concluded because there is no system to operate on.",
+		"2m – Denne operasjonen kan ikke bli konkludert fordi det er ikke noe system å opårere på.",
+	ERROR_ALTER_OPERATION_DOESNT_EXIST:
+		"2m – This operation cannot be concluded because there is no alter operation to operate on.",
 	ERROR_ALTER_DOESNT_EXIST:
-		"2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
+		"2n – Denne operasjonen kan ikke bli konkludert fordi enten er det ikke noe alter å operere på, eller så er det ikke noe tilknyttet system til brukeren som startet forespørselen.",
 	ERROR_ALTER_DOESNT_EXIST_SUGGESTION:
-		"2n – That alter could not be found. Did you mean \`%suggestion%\`?",
+		"2n – Den alteren kunne ikke bli funnet. Mente du `%suggestion%`?",
 	ERROR_TAG_DOESNT_EXIST:
-		"2o – This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
-	CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
-	EDIT_SYSTEM_FORM_TITLE: "Editing System",
-	SYSTEM_PRONOUNS_FORM_LABEL: "Pronouns",
-	SYSTEM_DESCRIPTION_FORM_LABEL: "Description",
-	SYSTEM_SYSTEM_TAG_FORM_LABEL: "System Tag",
-	ALTER_SUCCESS_PRONOUNS: "Successfully set pronouns for @%alter% to %new%.",
+		"2o - Denne operasjonen kan ikke bli konkuldert fordi enten så er det ikke noe tag å operere på, eller så er det ikke noe system tilknyttet til brukeren som startet forespørselen.",
+	CREATING_NEW_SYSTEM_FORM_TITLE: "Angi System-Detaljer",
+	EDIT_SYSTEM_FORM_TITLE: "Redigerer System",
+	SYNCING_MANUALLY_TITLE: "Syncing Manually",
+	SYNCING_AUTOMATICALLY_TITLE: "Syncing Automatically",
+	WRITE_BACK_TITLE: "Writing Back",
+	SYSTEM_PRONOUNS_FORM_LABEL: "Pronomen",
+	SYSTEM_DESCRIPTION_FORM_LABEL: "Beskrivelse",
+	SYSTEM_SYSTEM_TAG_FORM_LABEL: "System-Tagg",
+	ALTER_SUCCESS_PRONOUNS: "Vellykket satte mål for @%alter% til %new%.",
 	ALTER_SUCCESS_PRIVACY:
-		"Successfully set the public privacy values for @%alter% to %new% (%number% total values).",
-	ALTER_SUCCESS_DESC: "Successfully set description for @%alter%.",
-	TAG_SUCCESS_ORDER: "Successfully set order string for @%tag%.",
-	PAGINATION_TITLE: "Page",
-	WAITING: "Loading...",
-	WAITING_LONG_TERM: "Loading... This will take a while. Please wait a moment.",
+		"Vellyket angitte de offentlig personvernverdiene for @%alter% til %new% (%number% totale verdier).",
+	ALTER_SUCCESS_DESC: "Beskrivelse ble satt for @%alter%.",
+	TAG_SUCCESS_ORDER: "Velykket satte rekkefølge-tekst for @%tag%.",
+	PAGINATION_TITLE: "Side",
+	WAITING: "Laster inn...",
+	WAITING_LONG_TERM:
+		"Laster inn... Dette tar nok en stund. Vennligst vent et øyeblikk.",
 	SUCCESSFULLY_IMPORTED:
-		"Successfully imported %alter_count% alter(s) for %system_name%.",
-	CREATING_NEW_PT_FORM_TITLE: "New proxy tag",
-	CREATING_NEW_PT_FORM_DESC: `PluralBuddy has similar proxy tag formatting in regards that it is similar to how other plurality bots format their proxy tags.
-> - **For example:** \`text :bob\` would be valid, and proxy messages ending with \`:bob\`.
-> - You can optionally show these tags with the "Show Proxy Tags" system setting on the second page!`,
+		"Vellyket importerte %alter_count% alter for %system_name%.",
+	CREATING_NEW_PT_FORM_TITLE: "Ny proxy tagg",
+	CREATING_NEW_PT_FORM_DESC: `Pluralbuddy har lignende proxy tag-formatering i forhold til at den er like hvordan andre flertalls-botter formaterer proxy taggene sine.
+> - **For eksempel:** \`text :bob\` ville vært gyldig, og proxy meldinger ender med \`bob\`.
+> - Du kan valgfritt vise disse tagene med "Vis Proxy Tags" systeminnstiligen på den andre siden!`,
 	CREATING_NEW_PT_FORM_LABEL: "Proxy Tag",
 	CREATING_NEW_PT_ERROR:
-		"2p – This is not formatted correctly. Remember, you need to have a prefix and a suffix separated by `text`.",
+		"2p – Dette er ikke formatert riktig. Husk, du må ha et prefiks og et suffiks avskilt av `text`.",
 	CREATING_NEW_PT_TOO_MANY_CHARS:
-		"2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
-	SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
-	PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
+		"2y – Det er for mange tegn på enten prefiks eller suffiks-siden. Husk, du kan bare ha 20 tegn for prefikset & 20 tegn for suffiksen.",
+	SUCCESSFULLY_NEW_PT: "Vellykket opprettet en ny proxy-tag!",
+	PLURALBUDDY_IMPORT_DESC:
+		"Kopier og lim inn den eksporterte JSON dataen nedenfor:",
 	PLURALBUDDY_IMPORT_ERROR:
-		"2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
+		"2q – Det var feil under analyseringen:\n\n```\n%zod_errors%\n```",
 	PLURALBUDDY_OPTIONS_ERROR:
-		"2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
+		"2r – Det var feil under evalueringen av argumentene til den kommandoen:\n\n```\n%options_errors%\n```",
 	CREATE_NEW_ALTER_DONE:
-		"Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
+		"Opprettet et nytt alter i ditt system. Bruk `%prefix%alter %alter_id%` for more details.",
 	CREATE_NEW_ALTER_ADD:
 		"Performed the following additional operations on this alter:",
 	CREATE_NEW_ALTER_DESC: "Assigned description: {{ description }}",
@@ -208,16 +217,26 @@ PluralBuddy uses a **username/display name** system.
 -# Scroll down to see the rest of this modal.`,
 	ALTER_AFTER: `-# 🎀 Good job! Your alter is awesome!`,
 	ALTER_DISPLAY_NAME_FORM_LABEL: "Display Name",
+	ALTER_USERNAME_FORM_LABEL: "Username",
 	ALTER_SEARCH_STRING_FORM_LABEL: "Search String (max 4 chars.)",
 	ALTER_SET_PRONOUNS: "Set Pronouns",
+	TAG_DELETE: "Delete Tag",
 	ALTER_SET_DESCRIPTION: "Set Description",
 	ALTER_SET_ORDER_STRING: "Set Order String",
 	ALTER_SET_PFP: "Set Profile Picture",
+	ALTER_CREATE_PFP_DESC: "(new!) Optional.",
 	ALTER_SET_PFP_SE: "Is server-specific",
 	ALTER_SET_PFP_SE_DESC:
 		"This profile picture will only be specific to this server.",
 	ALTER_SET_TAG: "Set System Tag",
 	ALTER_SET_BANNER: "Set Banner",
+	TOKEN_INPUT: "PluralKit Token",
+	TOKEN_DESC: "Input the token from pk;token here.",
+	STORE_TOKEN_INPUT: "Store Token",
+	STORE_TOKEN_INPUT_DESC:
+		"The token will be autofilled everytime you sync and encrypted in the database.",
+	STORE_TOKEN_INPUT_DESC_2:
+		"-# Manually sync again to change the token or tell PluralBuddy to stop storing it by unchecking this box.",
 	INVALID_URL:
 		"This is not a valid URL. Make sure you aren't enclosing your URL in `<` or `>`",
 	ALTER_SET_PRIVACY: "Set Privacy",
@@ -317,7 +336,7 @@ PluralBuddy uses a **username/display name** system.
 	SERVER_TOO_BIG:
 		"This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
 	OPERATION_DISCORD_AP:
-		"Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+		"Switched in %server_name% (`%server_id%`) • %discord% Discord",
 	CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
 	NO_PERMISSIONS_PROXY:
 		"I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
@@ -351,11 +370,12 @@ PluralBuddy uses a **username/display name** system.
 -# Developed all major parts of PluralBuddy
 
 **OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -393,11 +413,17 @@ PluralBuddy uses a **username/display name** system.
 	OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
 	OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
 	OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
-	OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+	OPERATION_FALLBACK: "Set `%property%` to `%value%`",
 	OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
 	OPERATION_SYSTEM_TOGGLE_PRONOUNS:
 		"Toggled displaying pronouns on the system.",
 	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
+	OPERATION_SYSTEM_PREFER_ACCESSIBLITY:
+		"Toggled prefer accessiblity mode on the system.",
+	OPERATION_FLIPPED_DT: "Toggled left side display tags on the system.",
+	OPERATION_FLIPPED_CASE_INSENS_PROXIES:
+		"Toggled case insensitive proxying on this system.",
+	OPERATION_FLIPPED_PUBLIC_DEFAULT: "Toggled public defaulting on this system.",
 	EDIT_MESSAGE: "Editing message",
 	MESSAGE_CONTENTS: "New Message Contents",
 	BLOCKLIST_USER: "Blocklist User ID",
@@ -533,6 +559,10 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 	OFF_DESC: "Disable auto-proxy in your system.",
 	DELETE_DESC:
 		"**This cannot be undone.** Deleting an alter will delete your alter and its data.",
+	KEEP_PROXY_TAGS_ALTER_DESC:
+		"Keeping proxy tags for this alter will show the proxy tags specifically for this alter. System settings will override this setting if that is currently set.",
+	KEEP_PROXY_TAGS_ALTER_BTN_E: "Enable Proxy Tags",
+	KEEP_PROXY_TAGS_ALTER_BTN_D: "Disable Proxy Tags",
 	PROXY_MODE_TITLE:
 		"### {{ circleQuestion }}   Proxy Mode · @{{ alterUsername }}",
 	SELECT_PM: "Please select the mode you would like to use below.",
@@ -561,12 +591,16 @@ ${emojis.reply} This is not a full list of information in PluralBuddy's policies
 -# This tags order string is: {{ order }}`,
 	S_PUBLIC_PROFILE_DESC_DESC: `You can set a description for your system. System descriptions can be at maximum 2,000 characters long.
 -# To view your description in full, run: {{ mention }}`,
+	DELETE_TAG_DESC:
+		"Deleting your tag will permanently remove it from all alters that its associated with, and this system.",
 	PUBLIC_PROFILE_COLOR_DESC:
 		"Setting a color for an alter shows that color for their rank container along with their public profile.",
 	PUBLIC_PROFILE_SYSTEM_TAG_DESC: `You can set a system tag for your system. System descriptions can be at maximum 75 characters long.
 -# {{ systemName }}'s system tag is: {{ displayTag }}`,
 	ALTER_TOP_VIEW: `-# @{{ alterUsername }} • ID: \`{{ alterId }}\``,
 	GENERAL_LABEL: "General",
+	TERMINOLOGY_LABEL: "Terminology",
+	EDIT_TERMINOLOGY_LABEL: "Editing Terminology",
 	TOP_BACK_LABEL: "Back",
 	ALTER_PROXY_TAGS_LABEL: "Proxy Tags",
 	PUBLIC_PROFILE_LABEL: "Public Profile",
@@ -661,7 +695,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > Feature flags allow you to control certain smaller features used on PluralBuddy.`,
 	FEATURE_D: "Disable",
 	FEATURE_E: "Enable",
-	ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+	ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
 	ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
 > The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
 	ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",
@@ -675,90 +709,114 @@ Please download the JSON file sent to you and use the button to upload the attac
 > PluralBuddy can place the container either below the message contents or above it.
 
 There is an example below of what an example proxy with this role would look like:`,
-  CONTENTS_EMPTY: "-# There is no role container for this role as the contents are empty.",
-  EXAMPLE_PROXY_TEXT: "Example proxy text. Hi!",
-  TAGS_PROFILE_LABEL: "**Tags:** ",
-  ALTERS_PROFILE_LABEL: "**Alters:** ",
-  GENERAL_SYSTEM_TITLE: `## {{ emoji }} General Settings - {{ systemName }}`,
-  TERMINOLOGY_SYSTEM_TITLE: `## {{ emoji }} Terminology - {{ systemName }}`,
-  TERMINOLOGY_DESC: `Terminology is the way that PluralBuddy refers to your system, and the terms that are used inside of it. All terms currently have a character limit of 15 characters. **Terms besides the default terminology are currently English-only.**`,
-  TEMPLATE_TERMINOLOGY_DESC: `You can reset your terminology with a specific template below.`,
-  SYSTEM_NAME_BTN: "Set System Name",
-  SYSTEM_NAME_DESC: "The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
-  SYSTEM_NICKNAME_FORMAT_BTN: "Set Nickname Format",
-  SYSTEM_NICKNAME_FORMAT_DESC: "The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
-  SYSTEM_PRIVACY_BTN: "Set System Privacy",
-  SYSTEM_PRIVACY_DESC: "By default, your system is completely private besides for server automatic moderation and if you use command publicly. \n(with `-public` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself.",
-  SYSTEM_AP_DESC: `You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
+	CONTENTS_EMPTY:
+		"-# There is no role container for this role as the contents are empty.",
+	EXAMPLE_PROXY_TEXT: "Example proxy text. Hi!",
+	TAGS_PROFILE_LABEL: "**Tags:** ",
+	ALTERS_PROFILE_LABEL: "**Alters:** ",
+	GENERAL_SYSTEM_TITLE: `## {{ emoji }} General Settings - {{ systemName }}`,
+	TERMINOLOGY_SYSTEM_TITLE: `## {{ emoji }} Terminology - {{ systemName }}`,
+	TERMINOLOGY_DESC: `Terminology is the way that PluralBuddy refers to your system, and the terms that are used inside of it. All terms currently have a character limit of 15 characters. **Terms besides the default terminology are currently English-only.**`,
+	TEMPLATE_TERMINOLOGY_DESC: `You can reset your terminology with a specific template below.`,
+	SYSTEM_NAME_BTN: "Set System Name",
+	SYSTEM_NAME_DESC:
+		"The title of your system is the first thing that identifies your system and is the appears on the overlying structure to all of your system members. They must be at least 3 characters long and shorter than 20 characters long.",
+	SYSTEM_NICKNAME_FORMAT_BTN: "Set Nickname Format",
+	SYSTEM_NICKNAME_FORMAT_DESC:
+		"The nickname format value is how your nickname is laid out when an alter uses the *Nickname* proxy mode. By default, its just the alters username, however you can customize that.",
+	SYSTEM_PRIVACY_BTN: "Set System Privacy",
+	SYSTEM_PRIVACY_DESC:
+		"By default, your system is completely private besides for server automatic moderation and if you use command publicly. \n(with `-public` at the end) Configuring this values tells PluralBuddy what to show to people that isn't yourself.",
+	SYSTEM_AP_DESC: `You can set the auto-proxy mode. There are three types of auto-proxy modes that are **global across the entire system**:
 > - *Alter Mode*: All messages sent from this system will proxy on an alter. Proxy tags added to the end of your message will mean nothing, as all messages will proxy with an alter regardless of proxy tags. **This requires to select an alter.**
 > - *Latch Mode*: The alter from the last proxied messages featuring proxy tags will be selected for future messages. A starting alter is not required, however can be set.
 > - *Off*: Using proxy tags will proxy an alter, otherwise a normal message is sent.`,
-  EXPORT_SYS_BTN: "Export System",
-  EXPORT_SYS_DESC: "Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
-  EXTERNAL_EXPORT_SYS_DESC: "You can externally export to another service by hitting the service you'd like to export to below:",
-  IMPORT_SYS_BTN: "Import System",
-  IMPORT_SYS_DESC: "Importing your system will allow you to take data from other bots in various import modes.",
-  DANGER_ZONE_TITLE: "## Danger Zone",
-  SYSTEM_E: "Enable System",
-  SYSTEM_D: "Disable System",
-  SYSTEM_D_DESC: "Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
-  DELETE_SYS_BTN: "Delete System",
-  DELETE_SYS_DESC: "**This cannot be undone**. Deleting your system will **delete your system data __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
-  ALTERS_TITLE: "## Alters",
-  NO_PUBLIC_ALTERS_DESC: "*There are no public-facing alters in this page.*",
-  ALTERS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} alter(s) in {{ time }}ms{{ possibleSearchQuery }}`,
-  ALTERS_POSSIBLE_SQ: `· Querying for {{ query }}`,
-  ALTER_EDIT: "Edit Alter",
-  NEW_TAG_BTN: "Create new tag",
-  TAG_TITLE: "## Tags",
-  TAG_EDIT: "Edit Tag",
-  TAGS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} tag(s) in {{ time }}ms{{ possibleSearchQuery }}`,
-  S_PUBLIC_PROFILE_TITLE: `## Public Profile - @{{ systemName }}\nYour public profile is what your system looks like to other users when they identify your messages.`,
-  IMPORT_SETTINGS_TITLE: `## Import data from another bot`,
-  IMPORT_SETTINGS_DESC: `Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
-  REPLACE_DESC: "Replace will replace existing data in your system with data. Does not make new system data.",
-  REPLACE_NAME: "Replace",
-  ADD_DESC: "Add will add new tags and alters from another bot. Does not replace existing alter or tag data.",
-  ADD_NAME: "Add",
-  FULL_IMPORT_DESC: "Full import mode will both replace existing alters and add new ones.",
-  FULL_IMPORT_NAME: "Full Import",
-  DELETE_IMPORT_DESC: "Delete import mode will remove existing alters/tags missing from the import.",
-  DELETE_NAME: "Delete",
-  EXISTING_ALTER: "An alter with that username already exists. Pick another.",
-  ALTER_COUNT_LABEL: "**Alter Count:** ",
-  SELF_REACTION_ERR: "Unable to remove self-reaction",
-  SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
-  REACTION_ERR: "Unable to remove user reaction",
-  REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
-  AWAKE: "Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
-  LINK_INVITE: "Invite",
-  LINK_SUPPORT: "Support",
-  LINK_DOCS: "Docs",
-  DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
-  DISPLAY_TAG_ENFORCE_DESC: "This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> \"Public Profile\".",
-  NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
-  NOTIFIED_1: "-# You were notified of this action due to your association with your PluralBuddy alter.",
-  NOTIFIED_2: "-# Developed as open-source software @ [pluralbuddy.app](<https://pluralbuddy.app>)",
-  OPT_OUT_DMS: "Opt-out of DMs",
-  UNDO_BTN: "Undo Operation",
-  EXPIRED: "Expired",
-  NOT_ORIGINAL_RECIPIENT: "You are not the original recipient of the message.",
-  IMPORT_REQ_DESC: "In order to submit your import data from another bot, you must put it into the PluralBuddy dashboard.",
-  IMPORT_REQ_WAITING: "-# Waiting for response...\n-# This expires in 15 minutes.",
-  VIEW_DASH: "View on Dashboard",
-  INCLUDE_PROXY_TAGS_DESC: "Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
-  INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
-  INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
-  INCLUDE_PRONOUNS_DESC: "Including pronouns will add pronouns to the webhook name every time you proxy in parentheses.",
-  INCLUDE_PRONOUNS_BTN: "Include Pronouns",
-  INCLUDE_PRONOUNS_OFF_BTN: "Disable Including Pronouns",
-  PREFER_ACCESSIBLITY_BTN: "Prefer Accessiblity",
-  PREFER_ACCESSIBLITY_OFF_BTN: "Disable Prefer Accessibility",
-  PREFER_ACCESSIBLITY_DESC: "PluralBuddy will prefer accessiblity over looks/data visiblity. Some text may be farther apart, bold, or not visible in this mode.",
-  VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
-  ERROR_CREATING_WEBHOOK_TITLE: "Error while creating webhook for <#{{ channelId }}>",
-  ERROR_CREATING_WEBHOOK_DESC: "There was an error while creating the corresponding webhook for <#{{ channelId }}>. Check if PluralBuddy has the correct permissions in that channel.",
-  SET_LANGUAGE_DESC: `## {{ gear }} Set PluralBuddy language
+	EXPORT_SYS_BTN: "Export System",
+	EXPORT_SYS_DESC:
+		"Exporting the system will simply export all data from the system and send it to your DM's. Ensure your DM's are open to PluralBuddy before exporting.",
+	EXTERNAL_EXPORT_SYS_DESC:
+		"You can externally export to another service by hitting the service you'd like to export to below:",
+	IMPORT_SYS_BTN: "Import System",
+	IMPORT_SYS_DESC:
+		"Importing your system will allow you to take data from other bots in various import modes.",
+	DANGER_ZONE_TITLE: "## Danger Zone",
+	SYSTEM_E: "Enable System",
+	SYSTEM_D: "Disable System",
+	SYSTEM_D_DESC:
+		"Disabling a system will disable **proxying** in all servers and can be undone at a later date. **All of your alters, tags and other system assets will still be accessible, however __you WILL NOT be able to proxy__**.",
+	DELETE_SYS_BTN: "Delete System",
+	DELETE_SYS_DESC:
+		"**This cannot be undone**. Deleting your system will **delete your system data __along with all other alters, tags, and other system assets__**. **__USE THIS WITH CAUTION__**.",
+	ALTERS_TITLE: "## Alters",
+	NO_PUBLIC_ALTERS_DESC: "*There are no public-facing alters in this page.*",
+	ALTERS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} alter(s) in {{ time }}ms{{ possibleSearchQuery }}`,
+	ALTERS_POSSIBLE_SQ: `· Querying for {{ query }}`,
+	ALTER_EDIT: "Edit Alter",
+	NEW_TAG_BTN: "Create new tag",
+	TAG_TITLE: "## Tags",
+	TAG_EDIT: "Edit Tag",
+	TAGS_PAGINATION: `-# Page {{ page }}/{{ maxPage }} · Found {{ alters }}/{{ maxAlters }} tag(s) in {{ time }}ms{{ possibleSearchQuery }}`,
+	S_PUBLIC_PROFILE_TITLE: `## Public Profile - @{{ systemName }}\nYour public profile is what your system looks like to other users when they identify your messages.`,
+	IMPORT_SETTINGS_TITLE: `## Import data from another bot`,
+	IMPORT_SETTINGS_DESC: `Importing from another bot allows you to replace or add data from your other bots, or do both as a combination.`,
+	REPLACE_DESC:
+		"Replace will replace existing data in your system with data. Does not make new system data.",
+	REPLACE_NAME: "Replace",
+	ADD_DESC: "Add will add new tags and alters from another bot.",
+	ADD_NAME: "Add",
+	FULL_IMPORT_DESC:
+		"Full import mode will both replace existing alters and add new ones.",
+	FULL_IMPORT_NAME: "Full Import",
+	DELETE_IMPORT_DESC:
+		"Delete import mode will remove existing alters/tags missing from the import.",
+	DELETE_NAME: "Delete",
+	EXISTING_ALTER: "An alter with that username already exists. Pick another.",
+	ALTER_COUNT_LABEL: "**Alter Count:** ",
+	SELF_REACTION_ERR: "Unable to remove self-reaction",
+	SELF_REACTION_DESC:
+		"PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pluralbuddy.app/docs/pluralbuddy/context-actions>).",
+	REACTION_ERR: "Unable to remove user reaction",
+	REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
+	AWAKE:
+		"Hi! I'm awake, running PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
+	LINK_INVITE: "Invite",
+	LINK_SUPPORT: "Support",
+	LINK_DOCS: "Docs",
+	DISPLAY_TAG_ENFORCE: "Display Tag Enforcement Policy",
+	DISPLAY_TAG_ENFORCE_DESC:
+		'This user cannot proxy in this server without a system tag due to the system display tag enforcement policy. Enable system tags by going into `pb;system config` -> "Public Profile".',
+	NO_DM_CHANNELS: "You cannot proxy inside of DM channels. Sorry!",
+	NOTIFIED_1:
+		"-# You were notified of this action due to your association with your PluralBuddy alter.",
+	NOTIFIED_2:
+		"-# Developed as open-source software @ [pluralbuddy.app](<https://pluralbuddy.app>)",
+	OPT_OUT_DMS: "Opt-out of DMs",
+	UNDO_BTN: "Undo Operation",
+	EXPIRED: "Expired",
+	NOT_ORIGINAL_RECIPIENT: "You are not the original recipient of the message.",
+	IMPORT_REQ_DESC:
+		"In order to submit your import data from another bot, you must put it into the PluralBuddy dashboard.",
+	IMPORT_REQ_WAITING:
+		"-# Waiting for response...\n-# This expires in 15 minutes.",
+	VIEW_DASH: "View on Dashboard",
+	INCLUDE_PROXY_TAGS_DESC:
+		"Include proxy tags will remove the automatic omitting of proxy tags from the result message sent by PluralBuddy.",
+	INCLUDE_PROXY_TAGS_BTN: "Include Proxy Tags",
+	INCLUDE_PROXY_TAGS_OFF_BTN: "Disable Including Proxy Tags",
+	INCLUDE_PRONOUNS_DESC:
+		"Including pronouns will add pronouns to the webhook name every time you proxy in parentheses.",
+	INCLUDE_PRONOUNS_BTN: "Include Pronouns",
+	INCLUDE_PRONOUNS_OFF_BTN: "Disable Including Pronouns",
+	PREFER_ACCESSIBLITY_BTN: "Prefer Accessiblity",
+	PREFER_ACCESSIBLITY_OFF_BTN: "Disable Prefer Accessibility",
+	PREFER_ACCESSIBLITY_DESC:
+		"PluralBuddy will prefer accessiblity over looks/data visiblity. Some text may be farther apart, bold, or not visible in this mode.",
+	VALIDATION_TAG_ERROR: "There was an error while creating that tag:",
+	ERROR_CREATING_WEBHOOK_TITLE:
+		"Error while creating webhook for <#{{ channelId }}>",
+	ERROR_CREATING_WEBHOOK_DESC:
+		"There was an error while creating the corresponding webhook for <#{{ channelId }}>. Check if PluralBuddy has the correct permissions in that channel.",
+	SET_LANGUAGE_DESC: `## {{ gear }} Set PluralBuddy language
 You can set the language that PluralBuddy uses while using commands. If a string isn't found, there is a fallback to the English version.
 
 {{ languages }}`,
@@ -781,109 +839,152 @@ Your system is using the front state of **{{ mode }}**.`,
 	DISABLED_SERVER: `This server is disabled from proxying.`,
 	AP_AS: "-# **AUTO-PROXYING AS:**",
 	AP_INTEGRATION_AS: "-# **{{ provider }} FRONTING AS:**",
-	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pluralbuddy.app/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
+	PROVIDER_NOT_FOUND: `That auto-proxy provider was not found, or you didn't authorize with the [\`system:ai-ap\`](https://pb.giftedly.dev/docs/pluralbuddy/ai-ap) scope. Contact the developer of this integration if you believe this is incorrect.
 	
 -# Integration: \`{{ id }}\``,
 	AP_INVALID_SYNTAX: `Invalid autoproxy mode or provider \`{{ mode }}\`.
 
 **Auto-proxy Usage:**
-\`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
+\`pb;autoproxy [off|latch|alter|status|clear-latch|{{ aiap }}]\``,
 	AP_ALTER_INVALID_SYNTAX: `You must add an alter for the \`alter\` proxy mode.
 
 **Auto-proxy Usage:**
 \`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
 	AP_SYNTAX: `**Auto-proxy Usage:**
 \`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  SUCCESS_DISABLE_GUILD: "Successfully disabled proxying in **{{ guild }}**.",
-  SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
-  PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
-  PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
-  TOGGLED_INCLUDING_PROXY_TAGS_E: "Successfully toggled including proxy tags. (Enabled)",
-  TOGGLED_INCLUDING_PROXY_TAGS_D: "Successfully toggled including proxy tags. (Disabled)",
-  TOGGLED_INCLUDING_PRONOUNS_E: "Successfully toggled including pronouns. (Enabled)",
-  TOGGLED_INCLUDING_PRONOUNS_D: "Successfully toggled including pronouns. (Disabled)",
-  PREFER_ACCESSIBLITY_E: "Successfully toggled preferring accessiblity. (Enabled)",
-  PREFER_ACCESSIBLITY_D: "Successfully toggled preferring accessiblity. (Disabled)",
-  PUBLIC_DEFAULT_E: "Successfully toggled public defaulting. (Enabled)",
-  PUBLIC_DEFAULT_D: "Successfully toggled public defaulting. (Disabled)",
-  NOT_FRIDAY: "Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
-  EXPRESS_DISCONTINUED: "Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!",
-  NO_TYPING_STATUS: "Disabling the typing status will remove the typing status that appears when this system proxies. Typing statuses still may not appear if the server disabled it.",
-  NO_TYPING_STATUS_BTN: "Disable Typing Statuses",
-  NO_TYPING_STATUS_BTN_D: "Re-enable Typing Statuses",
-  TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
-  TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
-  CONFIGURE_SYSTEM: "Configure System",
-  SUCCESSFULLY_DELETED_TAG: "Successfully deleted **{{ tag }}** from your system.",
-  WARN_DELETE_TAG: "This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
-  ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag",
-  AFTER_COMPRESSION_TOO_BIG: "This file is still too big after being compressed and resized. Please make sure a minimal version of this file is smaller than 1MB.",
-  LEFT_SIDED_TAG_DESC: "Left sided tag mode will set the **display tag** of this system to the left as opposed to the default position of the right.",
-  LEFT_SIDED_TAG_BTN: "Enable Left Sided Tags",
-  LEFT_SIDED_TAG_BTN_D: "Disable Left Sided Tags",
-  CASE_INSENS_PROXIES_DESC: "Case insensitive proxy tags will allow messages to be classified as matching a proxy tag regardless of the message's capital casing.",
-  CASE_INSENS_PROXIES_BTN: "Enable Case Insensitive Proxy",
-  CASE_INSENS_PROXIES_BTN_D: "Disable Case Insensitive Proxy",
-  TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
-  TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
-  PK_TRANSCRIPT_VIEW: "View Sync Transcript",
-  PK_TRANSCRIPT_APPLY: "Apply Transcript Non-destructively",
-  PK_TRANSCRIPT_APPLY_DESTRUCTIVE: "Apply Transcript Destructively",
-  TRANSCRIPT_TOP: `## {{ circleQuestionWhite }}  Transcript Summary
+	SUCCESS_DISABLE_GUILD: "Successfully disabled proxying in **{{ guild }}**.",
+	SUCCESS_ENABLE_GUILD: "Successfully enabled proxying in **{{ guild }}**.",
+	PROXYING_ALREADY_ENABLED: "Proxying was already enabled in this server.",
+	PROXYING_ALREADY_DISABLED: "Proxying was already disabled in this server.",
+	TOGGLED_INCLUDING_PROXY_TAGS_E:
+		"Successfully toggled including proxy tags. (Enabled)",
+	TOGGLED_INCLUDING_PROXY_TAGS_D:
+		"Successfully toggled including proxy tags. (Disabled)",
+	TOGGLED_INCLUDING_PRONOUNS_E:
+		"Successfully toggled including pronouns. (Enabled)",
+	TOGGLED_INCLUDING_PRONOUNS_D:
+		"Successfully toggled including pronouns. (Disabled)",
+	PREFER_ACCESSIBLITY_E:
+		"Successfully toggled preferring accessiblity. (Enabled)",
+	PREFER_ACCESSIBLITY_D:
+		"Successfully toggled preferring accessiblity. (Disabled)",
+	PUBLIC_DEFAULT_E: "Successfully toggled public defaulting. (Enabled)",
+	PUBLIC_DEFAULT_D: "Successfully toggled public defaulting. (Disabled)",
+	NOT_FRIDAY:
+		"Flatworm Friday is only on Friday in New York, come back next Friday to Wall Street or use `--time-machine`.",
+	EXPRESS_DISCONTINUED:
+		"Sorry, PluralBuddy Express has been discontinued as of 08/11/26. Please use an alternative like [/plu/ral](https://plural.gg) instead! Express applications will still continue to send messages!",
+	NO_TYPING_STATUS:
+		"Disabling the typing status will remove the typing status that appears when this system proxies. Typing statuses still may not appear if the server disabled it.",
+	NO_TYPING_STATUS_BTN: "Disable Typing Statuses",
+	NO_TYPING_STATUS_BTN_D: "Re-enable Typing Statuses",
+	TOGGLED_TYPING_STATUS_E: "Successfully toggled typing status. (enabled)",
+	TOGGLED_TYPING_STATUS_D: "Successfully toggled typing status. (disabled)",
+	CONFIGURE_SYSTEM: "Configure System",
+	SUCCESSFULLY_DELETED_TAG:
+		"Successfully deleted **{{ tag }}** from your system.",
+	WARN_DELETE_TAG:
+		"This tag is associated to over 5 alters, are you sure you'd like to delete this tag from system?",
+	ACKNOWLEDGE_DELETE_TAG: "Confirmed, delete this tag",
+	AFTER_COMPRESSION_TOO_BIG:
+		"This file is still too big after being compressed and resized. Please make sure a minimal version of this file is smaller than 1MB.",
+	LEFT_SIDED_TAG_DESC:
+		"Left sided tag mode will set the **display tag** of this system to the left as opposed to the default position of the right.",
+	LEFT_SIDED_TAG_BTN: "Enable Left Sided Tags",
+	LEFT_SIDED_TAG_BTN_D: "Disable Left Sided Tags",
+	CASE_INSENS_PROXIES_DESC:
+		"Case insensitive proxy tags will allow messages to be classified as matching a proxy tag regardless of the message's capital casing.",
+	CASE_INSENS_PROXIES_BTN: "Enable Case Insensitive Proxy",
+	CASE_INSENS_PROXIES_BTN_D: "Disable Case Insensitive Proxy",
+	TOGGLED_LEFT_SIDED_TAGS_E: "Successfully toggled left sided tags. (enabled)",
+	TOGGLED_LEFT_SIDED_TAGS_D: "Successfully toggled left sided tags. (disabled)",
+	PK_TRANSCRIPT_VIEW: "View Sync Transcript",
+	PK_TRANSCRIPT_APPLY: "Apply Transcript Non-destructively",
+	PK_TRANSCRIPT_APPLY_DESTRUCTIVE: "Apply Transcript Destructively",
+	TRANSCRIPT_TOP: `## {{ circleQuestionWhite }}  Transcript Summary
 Actions to the right (destructive actions) will only be applied if you hit **Apply Transcript Destructively**. That will delete alters missing from PluralKit.`,
-  ALTERS_SEPARATOR: "-# **ALTERS**",
-  TAGS_SEPARATOR: "-# **TAGS**",
-  JUMP_TO_CUSTOM_PAGE: "Jump to custom page",
-  CUSTOM_PAGE_TITLE: "Custom Page",
-  CUSTOM_PAGE_DESC: "Maximum page you can go to is: {{ page }}.",
-  NOT_A_VALID_PAGE_COUNT: "That isn't a valid page count. Please only use numbers.",
-  PK_ERROR: `PluralKit's API has returned an error while attempting to sync.
+	ALTERS_SEPARATOR: "-# **ALTERS**",
+	TAGS_SEPARATOR: "-# **TAGS**",
+	JUMP_TO_CUSTOM_PAGE: "Jump to custom page",
+	CUSTOM_PAGE_TITLE: "Custom Page",
+	CUSTOM_PAGE_DESC: "Maximum page you can go to is: {{ page }}.",
+	NOT_A_VALID_PAGE_COUNT:
+		"That isn't a valid page count. Please only use numbers.",
+	PK_ERROR: `PluralKit's API has returned an error while attempting to sync.
 \`\`\`
 {{ error }}
 \`\`\`
 
 -# Please note that PluralKit errors are only in English.`,
-  PREPARING_WRITE: "Preparing to write to database...",
-  DELETING_ALTERS_STAGE: "Deleting operated alters...",
-  CREATING_ALTERS_STAGE: "Creating operated alters...",
-  UPDATING_ALTERS_STAGE: "Updating alter of {{ maxAlters }}...",
-  CLEANING_UP: "Cleaning up...",
-  DONE_SYNCING: "Sucessfully finished alter transcript operation `{{ id }}`.",
-  SYNC_PREF_TITLE: `## Sync Preferences
+	PREPARING_WRITE: "Preparing to write to database...",
+	DELETING_ALTERS_STAGE: "Deleting operated alters...",
+	DELETING_TAGS_STAGE: "Deleting operated tags...",
+	CREATING_ALTERS_STAGE: "Creating operated alters...",
+	CREATING_TAGS_STAGE: "Creating operated tags...",
+	UPDATING_ALTERS_STAGE: "Updating alter of {{ maxAlters }}...",
+	UPDATING_TAGS_STAGE: "Updating tag of {{ maxTags }}...",
+	CLEANING_UP: "Cleaning up...",
+	DONE_SYNCING: "Sucessfully finished alter transcript operation `{{ id }}`.",
+	SYNC_PREF_TITLE: `## Sync Preferences
 PluralBuddy can sync your PluralKit members either one-way or two-way, automatically or manually.`,
-  SYNC_MANUALLY: "Sync Manually",
-  SYNC_MANUALLY_DESC_1: "**Sync Manually**",
-  SYNC_MANUALLY_DESC_2: `PluralBuddy will ask for your PluralKit token or use your stored one, create an import transcript, and then will apply changes corresponding to your PluralKit system.`,
-  AUTO_SYNCING_TOGGLE: "Auto-syncing Preferences",
-  AUTO_SYNCING_DESC_1: `**Automatic Syncing**`,
-  AUTO_SYNCING_DESC_2: `PluralBuddy will use your stored token to automatically sync **once every 30 minutes when a message is proxied**. You must sync manually once & hit the store token button before this option is available.`,
-  WRITE_BACK_TOGGLE: "Write-back Preferences",
-  WRITE_BACK_DESC_1: `**Write-back Mode**`,
-  WRITE_BACK_DESC_2: `If write-back mode is enabled, when a change is made to your system, it will automatically be written back to the relevant PluralKit object. You must sync manually once & hit the store token button before this option is available.`,
-  SYNC_FOOTER: `-# PluralBuddy v{{ build }} - last synced: {{ lastSyncDate }}`,
-  SYNC_FOOTER_NEVER_SYNCED: `-# PluralBuddy v{{ build }} - last synced: never`,
-  ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
-  ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
-  DESTRUCTIVE_SWITCH: "Destructive Mode",
-  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
-  NORMAL_TERMS_TITLE: "**Singular Words or Features**",
-  NORMAL_TERMS_DESC: "Any word or feature that is just singular would be editable here.",
-  PLURAL_TERMS_TITLE: "**Plural Words or Features**",
-  PLURAL_TERMS_DESC: "Any word or feature that would be referred to as more than one would be editable here.",
-  CAPITAL_TERMS_TITLE: "**Capital Words or Features**",
-  CAPITAL_TERMS_DESC: "Any word or feature that is Capitalized would be editable here.",
-  EDIT_NORMAL_TERMS_BTN: "Edit Normal Terms",
-  EDIT_PLURAL_TERMS_BTN: "Edit Plural Terms",
-  EDIT_CAPITAL_TERMS_BTN: "Edit Capital Terms",
-  ALTER_DESCRIPTION: "A data structure describing entities or presences apart of a system.",
-  TAG_DESCRIPTION: "A data structure describing a collective of entities (or alters) inside of a system",
-  SYSTEM_DESCRIPTION: "A data structure embodying all alters, tags, and preferences associated with a user.",
-  PROXY_TAG_DESCRIPTION: "A list of prefixes and suffixes that are required to proxy with an alter.",
-  DISPLAY_TAG_DESCRIPTION: "A suffix or prefix (if left aligned) added to the webhook name when proxying.",
-  TEMPLATE_PLACEHOLDER: "Choose your favorite plurality product...",
-  TERMINOLOGY_EXPLANER: "PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
-  SUCCESSFULLY_APPLIED_TEMPLATE: "Successfully applied that template!",
-  USE_PLURALKIT_TERMINOLOGY_TITLE: "Use PluralKit-style Terminology (new!)",
-  USE_PLURALKIT_TERMINOLOGY_DESC: "Use terminology similar to represented in PluralKit (ie. member, group).",
-  ALTER_TAG_COUNT_TOO_HIGH: "-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high."
-};
+	SYNC_MANUALLY: "Sync Manually",
+	SYNC_MANUALLY_DESC_1: "**Sync Manually**",
+	SYNC_MANUALLY_DESC_2: `PluralBuddy will ask for your PluralKit token or use your stored one, create an import transcript, and then will apply changes corresponding to your PluralKit system.`,
+	AUTO_SYNCING_TOGGLE: "Auto-syncing Preferences",
+	AUTO_SYNCING_DESC_1: `**Automatic Syncing**`,
+	AUTO_SYNCING_DESC_2: `PluralBuddy will use your stored token to automatically sync **once every 30 minutes when a message is proxied**. You must sync manually once & hit the store token button before this option is available.`,
+	WRITE_BACK_TOGGLE: "Write-back Preferences",
+	WRITE_BACK_DESC_1: `**Write-back Mode**`,
+	WRITE_BACK_DESC_2: `If write-back mode is enabled, when a change is made to your system, it will automatically be written back to the relevant PluralKit object. You must sync manually once & hit the store token button before this option is available.`,
+	SYNC_FOOTER: `-# PluralBuddy v{{ build }} - last synced: {{ lastSyncDate }}`,
+	SYNC_FOOTER_NEVER_SYNCED: `-# PluralBuddy v{{ build }} - last synced: never`,
+	ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
+	ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
+	DESTRUCTIVE_SWITCH: "Destructive Mode",
+	DESTRUCTIVE_SWITCH_DESC:
+		"Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
+	NORMAL_TERMS_TITLE: "**Singular Words or Features**",
+	NORMAL_TERMS_DESC:
+		"Any word or feature that is just singular would be editable here.",
+	PLURAL_TERMS_TITLE: "**Plural Words or Features**",
+	PLURAL_TERMS_DESC:
+		"Any word or feature that would be referred to as more than one would be editable here.",
+	CAPITAL_TERMS_TITLE: "**Capital Words or Features**",
+	CAPITAL_TERMS_DESC:
+		"Any word or feature that is Capitalized would be editable here.",
+	EDIT_NORMAL_TERMS_BTN: "Edit Normal Terms",
+	EDIT_PLURAL_TERMS_BTN: "Edit Plural Terms",
+	EDIT_CAPITAL_TERMS_BTN: "Edit Capital Terms",
+	ALTER_DESCRIPTION:
+		"A data structure describing entities or presences apart of a system.",
+	TAG_DESCRIPTION:
+		"A data structure describing a collective of entities (or alters) inside of a system",
+	SYSTEM_DESCRIPTION:
+		"A data structure embodying all alters, tags, and preferences associated with a user.",
+	PROXY_TAG_DESCRIPTION:
+		"A list of prefixes and suffixes that are required to proxy with an alter.",
+	DISPLAY_TAG_DESCRIPTION:
+		"A suffix or prefix (if left aligned) added to the webhook name when proxying.",
+	TEMPLATE_PLACEHOLDER: "Choose your favorite plurality product...",
+	TERMINOLOGY_EXPLANER:
+		"PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
+	SUCCESSFULLY_APPLIED_TEMPLATE: "Successfully applied that template!",
+	USE_PLURALKIT_TERMINOLOGY_TITLE: "Use PluralKit-style Terminology (new!)",
+	USE_PLURALKIT_TERMINOLOGY_DESC:
+		"Use terminology similar to represented in PluralKit (ie. member, group).",
+	ALTER_TAG_COUNT_TOO_HIGH:
+		"-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high.",
+	EDIT_REACTING_TOP: `-# For future reference, you can reply to a message with \`{{ prefix }}edit\` to edit that message.
+	
+You are attempting to edit a message with the 📝 emoji. Please enter the contents of the new message contents with the button below.`,
+	EDIT_MESSAGE_BTN: "Edit Message",
+	PT_CREATE_NEW: "Create New Proxy Tag",
+	PT_DELETE: "Delete Proxy Tag",
+	PT_LIMIT: "-# You can create up to 6 proxy tags.",
+	DISABLE_SERVER_REPLYING: "Disable Server Replying",
+	ENABLE_SERVER_REPLYING: "Enable Server Replying",
+	SERVER_REPLYING_DESC:
+		"Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
+	SRV_CFG_PING_MODE:
+		"**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
+} satisfies DefaultLocale;

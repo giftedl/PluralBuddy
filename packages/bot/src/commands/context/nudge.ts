@@ -10,7 +10,7 @@ import {
 	Button,
 	ContextMenuCommand,
 	Declare,
-	MessageCommandInteraction,
+	type MessageCommandInteraction,
 } from "seyfert";
 import {
 	ApplicationCommandType,

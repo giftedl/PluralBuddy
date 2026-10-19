@@ -1,3 +1,4 @@
+import type { DefaultLocale } from "seyfert";
 import { emojis } from "@/lib/emojis";
 export default {
 	INTRODUCTION_MESSAGE: `## Bienvenido/a a PluralBuddy
@@ -76,7 +77,7 @@ SimplyPlural ha sido descontinuado.`,
 	PLURALBUDDY_IMPORT_ERROR_TOO_LARGE:
 		"2j – Los archivos a importar no pueden superar los 2MB. Por favor, contacta con soporte si realmente estás intentando importar un sistema superior a 2MB.",
 	ERROR_ATTACHMENT_TOO_LARGE:
-		"2j – Los archivos adjuntos para banners o imágenes de perfil no pueden superar los 1MB.",
+		"2j – Las imágenes sin comprimir deben tener un tamaño inferior a 5MB. (Tras la compresión, las imágenes solo pueden tener un tamaño máximo de 1MB)",
 	CREATE_NEW_ALTER_DESCRIPTION: "Crear nuevo alter",
 	CREATE_NEW_TAG_DESCRIPTION: "Crear nueva etiqueta",
 	PLURALBUDDY_IMPORT_ERROR_INVALID_JSON:
@@ -85,6 +86,8 @@ SimplyPlural ha sido descontinuado.`,
 		"2l – Ya no se realiza el seguimiento de esta interacción. (¿has esperado demasiado?)",
 	ERROR_SYSTEM_DOESNT_EXIST:
 		"2m – No se puede concluir esta operación porque no existe ningún sistema sobre el que operar.",
+	ERROR_ALTER_OPERATION_DOESNT_EXIST:
+		"2m - Esta operación no puede concluirse porque no hay ninguna operación Alter sobre la que operar.",
 	ERROR_ALTER_DOESNT_EXIST:
 		"2n – No se puede concluir esta operación porque no existe el alter o no hay ningún sistema asociado al usuario que realizó la solicitud.",
 	ERROR_ALTER_DOESNT_EXIST_SUGGESTION:
@@ -93,6 +96,9 @@ SimplyPlural ha sido descontinuado.`,
 		"2o – No se puede concluir esta operación porque no existe la etiqueta o no hay ningún sistema asociado al usuario que realizó la solicitud.",
 	CREATING_NEW_SYSTEM_FORM_TITLE: "Establecer detalles del sistema",
 	EDIT_SYSTEM_FORM_TITLE: "Editando sistema",
+	SYNCING_MANUALLY_TITLE: "Sincronización manual",
+	SYNCING_AUTOMATICALLY_TITLE: "Sincronización automática",
+	WRITE_BACK_TITLE: "Responder por escrito",
 	SYSTEM_PRONOUNS_FORM_LABEL: "Pronombres",
 	SYSTEM_DESCRIPTION_FORM_LABEL: "Descripción",
 	SYSTEM_SYSTEM_TAG_FORM_LABEL: "Etiqueta del sistema",
@@ -214,16 +220,26 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 -# Desplázate hacia abajo para ver el resto de este modal.`,
 	ALTER_AFTER: `-# 🎀 ¡Buen trabajo! ¡Tu alter es impresionante!`,
 	ALTER_DISPLAY_NAME_FORM_LABEL: "Nombre para mostrar",
+	ALTER_USERNAME_FORM_LABEL: "Nombre de usuario",
 	ALTER_SEARCH_STRING_FORM_LABEL: "Cadena de búsqueda (máx. 4 caracteres)",
 	ALTER_SET_PRONOUNS: "Establecer pronombres",
+	TAG_DELETE: "Eliminar Etiqueta",
 	ALTER_SET_DESCRIPTION: "Establecer descripción",
 	ALTER_SET_ORDER_STRING: "Establecer cadena de pedido",
 	ALTER_SET_PFP: "Establecer foto de perfil",
+	ALTER_CREATE_PFP_DESC: "(¡nuevo!) Opcional.",
 	ALTER_SET_PFP_SE: "Es específico de un servidor",
 	ALTER_SET_PFP_SE_DESC:
 		"Esta foto de perfil solo se utilizará específicamente en este servidor.",
 	ALTER_SET_TAG: "Establecer etiqueta del sistema",
 	ALTER_SET_BANNER: "Establecer banner",
+	TOKEN_INPUT: "Token de PluralKit",
+	TOKEN_DESC: "Introduzca aquí el token de pk;token.",
+	STORE_TOKEN_INPUT: "Almacenar token",
+	STORE_TOKEN_INPUT_DESC:
+		"El token se rellenará automáticamente cada vez que sincronice y encripte en la base de datos.",
+	STORE_TOKEN_INPUT_DESC_2:
+		"-# Sincronizar manualmente de nuevo para cambiar el token o decirle a PluralBuddy que deje de guardarlo desmarcando esta casilla.",
 	INVALID_URL:
 		"Esta no es una URL válida. Asegúrate de no envolver tu URL entre `<` o `>`",
 	ALTER_SET_PRIVACY: "Establecer privacidad",
@@ -361,11 +377,12 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 -# Desarrolló la mayor parte de PluralBuddy
 
 **Contribuciones de código abierto** - [PluralBuddy tiene licencia MIT](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
 -# Documentación: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Traducido en Crowdin**
 -# 🇩🇪 Traducciones al alemán por @mira.mizuki (gracias, amigo/a)
+-# 🇪🇸 Traducciones al español de @cosmic.rainbow.
 
 -# **ENLACES**
 > -# %github% [GitHub](https://github.com) · %docs% [Documentación](https://pluralbuddy.app)
@@ -414,6 +431,13 @@ PluralBuddy usa un sistema de **nombre de usuario/nombre para mostrar**.
 		"Se alternó la visibilidad de pronombres en el sistema.",
 	OPERATION_SYSTEM_TOGGLE_TYPING_STATUS:
 		"Se ha cambiado el estado de escritura en el sistema.",
+	OPERATION_SYSTEM_PREFER_ACCESSIBLITY:
+		"Se activó el modo de accesibilidad preferido en el sistema.",
+	OPERATION_FLIPPED_DT: "Etiquetas mostradas en el lado izquierdo del sistema.",
+	OPERATION_FLIPPED_CASE_INSENS_PROXIES:
+		"Se habilitó el proxy insensible a mayúsculas y minúsculas en este sistema.",
+	OPERATION_FLIPPED_PUBLIC_DEFAULT:
+		"Se activó la configuración pública predeterminada en este sistema.",
 	EDIT_MESSAGE: "Editando mensaje",
 	MESSAGE_CONTENTS: "Nuevo contenido del mensaje",
 	BLOCKLIST_USER: "ID de usuario a bloquear",
@@ -550,6 +574,10 @@ ${emojis.reply} Esta no es una lista completa de las políticas de PluralBuddy. 
 	OFF_DESC: "Desactivar el proxy automático en tu sistema.",
 	DELETE_DESC:
 		"**Esto no se puede deshacer.** Eliminar un alter borrará al alter y todos sus datos.",
+	KEEP_PROXY_TAGS_ALTER_DESC:
+		"Si se mantienen las etiquetas proxy para este alter, se mostrarán las etiquetas proxy específicas para este alter. La configuración del sistema anulará esta configuración si está establecida actualmente.",
+	KEEP_PROXY_TAGS_ALTER_BTN_E: "Habilitar etiquetas proxy",
+	KEEP_PROXY_TAGS_ALTER_BTN_D: "Deshabilitar etiquetas proxy",
 	PROXY_MODE_TITLE:
 		"### {{ circleQuestion }} Modo Proxy · @{{ alterUsername }}",
 	SELECT_PM: "Por favor, selecciona el modo que deseas usar a continuación.",
@@ -581,12 +609,16 @@ Tu perfil público es cómo se ve tu alter para otros usuarios cuando identifica
 -# Esta cadena de orden de etiquetas es: {{ order }}`,
 	S_PUBLIC_PROFILE_DESC_DESC: `Puedes establecer una descripción para tu sistema. Tienen un máximo de 2000 caracteres.
 -# Para ver tu descripción completa, ejecuta: {{ mention }}`,
+	DELETE_TAG_DESC:
+		"Eliminar la etiqueta la eliminará permanentemente de todos los alter con los que se asocia y este sistema.",
 	PUBLIC_PROFILE_COLOR_DESC:
 		"Establecer un color para un alter muestra ese color en su contenedor de rango y en su perfil público.",
 	PUBLIC_PROFILE_SYSTEM_TAG_DESC: `Puedes establecer una etiqueta de sistema para tu sistema. Las descripciones de sistema pueden tener un máximo de 75 caracteres.
 -# La etiqueta del sistema {{ systemName }} es: {{ displayTag }}`,
 	ALTER_TOP_VIEW: `-# @{{ alterUsername }}> • ID: \`{{ alterId }}\``,
 	GENERAL_LABEL: "General",
+	TERMINOLOGY_LABEL: "Terminología",
+	EDIT_TERMINOLOGY_LABEL: "Edición de la terminología",
 	TOP_BACK_LABEL: "Volver",
 	ALTER_PROXY_TAGS_LABEL: "Etiquetas proxy",
 	PUBLIC_PROFILE_LABEL: "Perfil público",
@@ -688,7 +720,7 @@ Descarga el archivo JSON que recibiste y usa el botón a continuación para subi
 > Las banderas de funciones te permiten controlar pequeñas características utilizadas en PluralBuddy.`,
 	FEATURE_D: "Desactivar",
 	FEATURE_E: "Activar",
-	ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+	ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
 	ROLE_CONFIG_TITLE: `## Configuración de rol - <@&{{ roleId }}>
 > La configuración de rol te permite añadir contenedores específicos a los mensajes proxy para indicar que provienen de un usuario con un rol determinado.`,
 	ROLE_CONTAINER_CONTENTS_BTN: "Editar contenido del contenedor",
@@ -708,6 +740,9 @@ A continuación hay un ejemplo de cómo se vería un mensaje proxy con este rol:
 	TAGS_PROFILE_LABEL: "**Etiquetas:** ",
 	ALTERS_PROFILE_LABEL: "**Alters:** ",
 	GENERAL_SYSTEM_TITLE: `## {{ emoji }} Configuración general - {{ systemName }}`,
+	TERMINOLOGY_SYSTEM_TITLE: `## {{ emoji }} Terminología - {{ systemName }}`,
+	TERMINOLOGY_DESC: `La terminología es la forma en que PluralBuddy se refiere a tu sistema y a los términos que se utilizan dentro del mismo. Actualmente, todos los términos tienen un límite de 15 caracteres. **Los términos que no pertenecen a la terminología predeterminada solo están disponibles en inglés.**`,
+	TEMPLATE_TERMINOLOGY_DESC: `Puedes restablecer tu terminología con una plantilla específica a continuación.`,
 	SYSTEM_NAME_BTN: "Establecer nombre del sistema",
 	SYSTEM_NAME_DESC:
 		"El título de tu sistema es lo primero que lo identifica y aparece en la estructura superior para todos los miembros. Debe tener entre 3 y 20 caracteres de longitud.",
@@ -753,8 +788,7 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
 	REPLACE_DESC:
 		"Reemplazar sustituirá los datos existentes en tu sistema con los datos nuevos. No crea un nuevo sistema.",
 	REPLACE_NAME: "Reemplazar",
-	ADD_DESC:
-		"Agregar añadirá nuevas etiquetas y alters desde otro bot. No reemplaza los datos existentes.",
+	ADD_DESC: "Add añadirá nuevas etiquetas y alters provenientes de otro bot.",
 	ADD_NAME: "Agregar",
 	FULL_IMPORT_DESC:
 		"El modo de importación completa reemplazará los alters existentes y agregará los nuevos.",
@@ -776,7 +810,7 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
 	LINK_DOCS: "Documentación",
 	DISPLAY_TAG_ENFORCE: "Política de aplicación de etiqueta visible",
 	DISPLAY_TAG_ENFORCE_DESC:
-		'Este usuario no puede enviar mensajes proxy en este servidor sin una etiqueta de sistema debido a la política del servidor. Activa las etiquetas de sistema yendo a `pb;system config` -> "Perfil público".',
+		"Este usuario no puede actuar como proxy en este servidor sin una etiqueta de sistema, debido a la política de aplicación de etiquetas de visualización del sistema. Habilite las etiquetas de sistema utilizando el botón de la derecha.",
 	NO_DM_CHANNELS:
 		"No puedes enviar mensajes proxy en canales de mensajes directos. ¡Lo sentimos!",
 	NOTIFIED_1:
@@ -800,6 +834,10 @@ Tu perfil público es cómo se ve tu sistema para otros usuarios cuando identifi
 		"Incluir pronombres añadirá los pronombres entre paréntesis al nombre del webhook cada vez que envíes un mensaje proxy.",
 	INCLUDE_PRONOUNS_BTN: "Incluir pronombres",
 	INCLUDE_PRONOUNS_OFF_BTN: "Desactivar inclusión de pronombres",
+	PREFER_ACCESSIBLITY_BTN: "Preferir accesibilidad",
+	PREFER_ACCESSIBLITY_OFF_BTN: "Deshabilitar Preferir accesibilidad",
+	PREFER_ACCESSIBLITY_DESC:
+		"PluralBuddy priorizará la accesibilidad sobre la apariencia y la visibilidad de los datos. En este modo, es posible que algunos textos aparezcan más separados, en negrita o no sean visibles.",
 	VALIDATION_TAG_ERROR: "Ocurrió un error al crear esa etiqueta:",
 	ERROR_CREATING_WEBHOOK_TITLE:
 		"Error al crear el webhook para <#{{ channelId }}>",
@@ -842,96 +880,147 @@ Tu sistema está utilizando el estado al frente de **{{ mode }}**.`,
 \`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
 	AP_SYNTAX: `**Uso de proxy automático:**
 \`pb;autoproxy [off|latch|alter|status|{{ aiap }}]\``,
-  SUCCESS_DISABLE_GUILD: "Se desactivó con éxito el proxy en **{{ guild }}**.",
-  SUCCESS_ENABLE_GUILD: "Se activó con éxito el proxy en **{{ guild }}**.",
-  PROXYING_ALREADY_ENABLED: "El proxy ya estaba activado en este servidor.",
-  PROXYING_ALREADY_DISABLED: "El proxy ya estaba desactivado en este servidor.",
-  TOGGLED_INCLUDING_PROXY_TAGS_E: "Se cambió la opción de incluir etiquetas proxy. (activado)",
-  TOGGLED_INCLUDING_PROXY_TAGS_D: "Se cambió la opción de incluir etiquetas proxy. (desactivado)",
-  TOGGLED_INCLUDING_PRONOUNS_E: "Se cambió la opción de incluir pronombres. (activado)",
-  TOGGLED_INCLUDING_PRONOUNS_D: "Se cambió la opción de incluir pronombres. (desactivado)",
-  PREFER_ACCESSIBLITY_E: "Se ha activado correctamente la opción de priorizar la accesibilidad. (Habilitado)",
-  PREFER_ACCESSIBLITY_D: "Se ha activado correctamente la opción de priorizar la accesibilidad. (Deshabilitado)",
-  PUBLIC_DEFAULT_E: "Successfully toggled public defaulting. (Enabled)",
-  PUBLIC_DEFAULT_D: "Successfully toggled public defaulting. (Disabled)",
-  NOT_FRIDAY: "Flatworm Friday solo se celebra los viernes en Nueva York, vuelve el próximo viernes a Wall Street o usa `--time-machine`.",
-  EXPRESS_DISCONTINUED: "Lo sentimos, PluralBuddy Express ha sido interrumpido desde el 08/11/26. ¡Utiliza una alternativa como [/plu/ral](https://plural.gg) en su lugar! ¡Las aplicaciones exprés seguirán enviando mensajes!",
-  NO_TYPING_STATUS: "Deshabilitar el estado de escritura eliminará el estado de escritura que aparece cuando este proxy del sistema. Los estados de escritura todavía no aparecen si el servidor lo desactiva.",
-  NO_TYPING_STATUS_BTN: "Deshabilitar estados de escritura",
-  NO_TYPING_STATUS_BTN_D: "Reactivar Estados de escritura",
-  TOGGLED_TYPING_STATUS_E: "Se ha cambiado correctamente el estado de escritura. (activado)",
-  TOGGLED_TYPING_STATUS_D: "Se ha cambiado correctamente el estado de escritura. (desactivado)",
-  CONFIGURE_SYSTEM: "Configurar el sistema",
-  SUCCESSFULLY_DELETED_TAG: "Se ha eliminado correctamente **{{ tag }}** de su sistema.",
-  WARN_DELETE_TAG: "Esta etiqueta está asociada a más de 5 alters, ¿estás seguro de que quieres eliminar esta etiqueta del sistema?",
-  ACKNOWLEDGE_DELETE_TAG: "Confirmado, eliminar esta etiqueta",
-  AFTER_COMPRESSION_TOO_BIG: "Este archivo sigue siendo demasiado grande incluso después de haber sido comprimido y redimensionado. Asegúrese de que una versión mínima de este archivo sea menor a 1MB.",
-  LEFT_SIDED_TAG_DESC: "El modo de etiqueta de lado izquierdo configurará la **etiqueta de visualización** de este sistema a la izquierda en lugar de la posición predeterminada a la derecha.",
-  LEFT_SIDED_TAG_BTN: "Habilitar etiquetas de lado izquierdo",
-  LEFT_SIDED_TAG_BTN_D: "Desactivar etiquetas de lado izquierdo",
-  CASE_INSENS_PROXIES_DESC: "Las etiquetas proxy que no distinguen entre mayúsculas y minúsculas permitirán que los mensajes se clasifiquen como coincidentes con una etiqueta proxy, independientemente de si el mensaje utiliza mayúsculas o minúsculas.",
-  CASE_INSENS_PROXIES_BTN: "Activar proxy de mayúsculas e insensibles",
-  CASE_INSENS_PROXIES_BTN_D: "Desactivar proxy de mayúsculas e insensibles",
-  TOGGLED_LEFT_SIDED_TAGS_E: "Se han activado correctamente las etiquetas del lado izquierdo. (habilitado)",
-  TOGGLED_LEFT_SIDED_TAGS_D: "Se activaron correctamente las etiquetas del lado izquierdo. (desactivado)",
-  PK_TRANSCRIPT_VIEW: "View Sync Transcript",
-  PK_TRANSCRIPT_APPLY: "Apply Transcript Non-destructively",
-  PK_TRANSCRIPT_APPLY_DESTRUCTIVE: "Apply Transcript Destructively",
-  TRANSCRIPT_TOP: `## {{ circleQuestionWhite }}  Transcript Summary
-Actions to the right (destructive actions) will only be applied if you hit **Apply Transcript Destructively**. That will delete alters missing from PluralKit.`,
-  ALTERS_SEPARATOR: "-# **ALTERS**",
-  TAGS_SEPARATOR: "-# **TAGS**",
-  JUMP_TO_CUSTOM_PAGE: "Ir a página personalizada",
-  CUSTOM_PAGE_TITLE: "Página personalizada",
-  CUSTOM_PAGE_DESC: "La página máxima a la que puedes ir es: {{ page }}.",
-  NOT_A_VALID_PAGE_COUNT: "No es un recuento de página válido. Por favor, use sólo números.",
-  PK_ERROR: `PluralKit's API has returned an error while attempting to sync.
+	SUCCESS_DISABLE_GUILD: "Se desactivó con éxito el proxy en **{{ guild }}**.",
+	SUCCESS_ENABLE_GUILD: "Se activó con éxito el proxy en **{{ guild }}**.",
+	PROXYING_ALREADY_ENABLED: "El proxy ya estaba activado en este servidor.",
+	PROXYING_ALREADY_DISABLED: "El proxy ya estaba desactivado en este servidor.",
+	TOGGLED_INCLUDING_PROXY_TAGS_E:
+		"Se cambió la opción de incluir etiquetas proxy. (activado)",
+	TOGGLED_INCLUDING_PROXY_TAGS_D:
+		"Se cambió la opción de incluir etiquetas proxy. (desactivado)",
+	TOGGLED_INCLUDING_PRONOUNS_E:
+		"Se cambió la opción de incluir pronombres. (activado)",
+	TOGGLED_INCLUDING_PRONOUNS_D:
+		"Se cambió la opción de incluir pronombres. (desactivado)",
+	PREFER_ACCESSIBLITY_E:
+		"Se ha activado correctamente la opción de priorizar la accesibilidad. (Habilitado)",
+	PREFER_ACCESSIBLITY_D:
+		"Se ha activado correctamente la opción de priorizar la accesibilidad. (Deshabilitado)",
+	PUBLIC_DEFAULT_E:
+		"Se ha activado correctamente la configuración pública predeterminada. (Habilitado)",
+	PUBLIC_DEFAULT_D:
+		"Se ha desactivado correctamente la configuración pública predeterminada. (Deshabilitado)",
+	NOT_FRIDAY:
+		"Flatworm Friday solo se celebra los viernes en Nueva York, vuelve el próximo viernes a Wall Street o usa `--time-machine`.",
+	EXPRESS_DISCONTINUED:
+		"Lo sentimos, PluralBuddy Express ha sido interrumpido desde el 08/11/26. ¡Utiliza una alternativa como [/plu/ral](https://plural.gg) en su lugar! ¡Las aplicaciones exprés seguirán enviando mensajes!",
+	NO_TYPING_STATUS:
+		"Deshabilitar el estado de escritura eliminará el estado de escritura que aparece cuando este proxy del sistema. Los estados de escritura todavía no aparecen si el servidor lo desactiva.",
+	NO_TYPING_STATUS_BTN: "Deshabilitar estados de escritura",
+	NO_TYPING_STATUS_BTN_D: "Reactivar Estados de escritura",
+	TOGGLED_TYPING_STATUS_E:
+		"Se ha cambiado correctamente el estado de escritura. (activado)",
+	TOGGLED_TYPING_STATUS_D:
+		"Se ha cambiado correctamente el estado de escritura. (desactivado)",
+	CONFIGURE_SYSTEM: "Configurar el sistema",
+	SUCCESSFULLY_DELETED_TAG:
+		"Se ha eliminado correctamente **{{ tag }}** de su sistema.",
+	WARN_DELETE_TAG:
+		"Esta etiqueta está asociada a más de 5 alters, ¿estás seguro de que quieres eliminar esta etiqueta del sistema?",
+	ACKNOWLEDGE_DELETE_TAG: "Confirmado, eliminar esta etiqueta",
+	AFTER_COMPRESSION_TOO_BIG:
+		"Este archivo sigue siendo demasiado grande incluso después de haber sido comprimido y redimensionado. Asegúrese de que una versión mínima de este archivo sea menor a 1MB.",
+	LEFT_SIDED_TAG_DESC:
+		"El modo de etiqueta de lado izquierdo configurará la **etiqueta de visualización** de este sistema a la izquierda en lugar de la posición predeterminada a la derecha.",
+	LEFT_SIDED_TAG_BTN: "Habilitar etiquetas de lado izquierdo",
+	LEFT_SIDED_TAG_BTN_D: "Desactivar etiquetas de lado izquierdo",
+	CASE_INSENS_PROXIES_DESC:
+		"Las etiquetas proxy que no distinguen entre mayúsculas y minúsculas permitirán que los mensajes se clasifiquen como coincidentes con una etiqueta proxy, independientemente de si el mensaje utiliza mayúsculas o minúsculas.",
+	CASE_INSENS_PROXIES_BTN: "Activar proxy de mayúsculas e insensibles",
+	CASE_INSENS_PROXIES_BTN_D: "Desactivar proxy de mayúsculas e insensibles",
+	TOGGLED_LEFT_SIDED_TAGS_E:
+		"Se han activado correctamente las etiquetas del lado izquierdo. (habilitado)",
+	TOGGLED_LEFT_SIDED_TAGS_D:
+		"Se activaron correctamente las etiquetas del lado izquierdo. (desactivado)",
+	PK_TRANSCRIPT_VIEW: "Ver transcripción de sincronización",
+	PK_TRANSCRIPT_APPLY: "Aplicar transcripción de forma no destructiva",
+	PK_TRANSCRIPT_APPLY_DESTRUCTIVE: "Aplicar transcripción de forma destructiva",
+	TRANSCRIPT_TOP: `## {{ circleQuestionWhite }}  Resumen de la transcripción
+Las acciones de la derecha (acciones destructivas) solo se aplicarán si pulsas **Aplicar transcripción destructiva**. Esto eliminará las entradas alternativas que falten en PluralKit.`,
+	ALTERS_SEPARATOR: "-# **ALTERS**",
+	TAGS_SEPARATOR: "-# **ETIQUETAS**",
+	JUMP_TO_CUSTOM_PAGE: "Ir a página personalizada",
+	CUSTOM_PAGE_TITLE: "Página personalizada",
+	CUSTOM_PAGE_DESC: "La página máxima a la que puedes ir es: {{ page }}.",
+	NOT_A_VALID_PAGE_COUNT:
+		"No es un recuento de página válido. Por favor, use sólo números.",
+	PK_ERROR: `La API de PluralKit ha devuelto un error al intentar sincronizar.
 \`\`\`
 {{ error }}
 \`\`\`
 
--# Please note that PluralKit errors are only in English.`,
-  PREPARING_WRITE: "Preparing to write to database...",
-  DELETING_ALTERS_STAGE: "Deleting operated alters...",
-  CREATING_ALTERS_STAGE: "Creating operated alters...",
-  UPDATING_ALTERS_STAGE: "Updating alter of {{ maxAlters }}...",
-  CLEANING_UP: "Cleaning up...",
-  DONE_SYNCING: "Sucessfully finished alter transcript operation `{{ id }}`.",
-  SYNC_PREF_TITLE: `## Sync Preferences
-PluralBuddy can sync your PluralKit members either one-way or two-way, automatically or manually.`,
-  SYNC_MANUALLY: "Sync Manually",
-  SYNC_MANUALLY_DESC_1: "**Sync Manually**",
-  SYNC_MANUALLY_DESC_2: `PluralBuddy will ask for your PluralKit token or use your stored one, create an import transcript, and then will apply changes corresponding to your PluralKit system.`,
-  AUTO_SYNCING_TOGGLE: "Auto-syncing Preferences",
-  AUTO_SYNCING_DESC_1: `**Automatic Syncing**`,
-  AUTO_SYNCING_DESC_2: `PluralBuddy will use your stored token to automatically sync **once every 30 minutes when a message is proxied**. You must sync manually once & hit the store token button before this option is available.`,
-  WRITE_BACK_TOGGLE: "Write-back Preferences",
-  WRITE_BACK_DESC_1: `**Write-back Mode**`,
-  WRITE_BACK_DESC_2: `If write-back mode is enabled, when a change is made to your system, it will automatically be written back to the relevant PluralKit object. You must sync manually once & hit the store token button before this option is available.`,
-  SYNC_FOOTER: `-# PluralBuddy v{{ build }} - last synced: {{ lastSyncDate }}`,
-  SYNC_FOOTER_NEVER_SYNCED: `-# PluralBuddy v{{ build }} - last synced: never`,
-  ENABLE_AUTO_SWITCH: "Enable Automatic Syncing",
-  ENABLE_WRITE_BACK_SWITCH: "Enable Write Back",
-  DESTRUCTIVE_SWITCH: "Destructive Mode",
-  DESTRUCTIVE_SWITCH_DESC: "Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
-  NORMAL_TERMS_TITLE: "**Singular Words or Features**",
-  NORMAL_TERMS_DESC: "Any word or feature that is just singular would be editable here.",
-  PLURAL_TERMS_TITLE: "**Plural Words or Features**",
-  PLURAL_TERMS_DESC: "Any word or feature that would be referred to as more than one would be editable here.",
-  CAPITAL_TERMS_TITLE: "**Capital Words or Features**",
-  CAPITAL_TERMS_DESC: "Any word or feature that is Capitalized would be editable here.",
-  EDIT_NORMAL_TERMS_BTN: "Edit Normal Terms",
-  EDIT_PLURAL_TERMS_BTN: "Edit Plural Terms",
-  EDIT_CAPITAL_TERMS_BTN: "Edit Capital Terms",
-  ALTER_DESCRIPTION: "A data structure describing entities or presences apart of a system.",
-  TAG_DESCRIPTION: "A data structure describing a collective of entities (or alters) inside of a system",
-  SYSTEM_DESCRIPTION: "A data structure embodying all alters, tags, and preferences associated with a user.",
-  PROXY_TAG_DESCRIPTION: "A list of prefixes and suffixes that are required to proxy with an alter.",
-  DISPLAY_TAG_DESCRIPTION: "A suffix or prefix (if left aligned) added to the webhook name when proxying.",
-  TEMPLATE_PLACEHOLDER: "Choose your favorite plurality product...",
-  TERMINOLOGY_EXPLANER: "PluralBuddy allows you to use and create custom sets of terminology for you to use. You can use some templates below, or when you create your system, you can set your own terminology.",
-  SUCCESSFULLY_APPLIED_TEMPLATE: "Successfully applied that template!",
-  USE_PLURALKIT_TERMINOLOGY_TITLE: "Use PluralKit-style Terminology (new!)",
-  USE_PLURALKIT_TERMINOLOGY_DESC: "Use terminology similar to represented in PluralKit (ie. member, group).",
-  ALTER_TAG_COUNT_TOO_HIGH: "-# This import cannot be done destructive and/or non-destructively due to the alter or tag count combined with the transcript being too high."
-};
+-# Tenga en cuenta que los errores de PluralKit solo están en inglés.`,
+	PREPARING_WRITE: "Preparando escribir en la base de datos...",
+	DELETING_ALTERS_STAGE: "Eliminar operaciones Alters...",
+	DELETING_TAGS_STAGE: "Eliminando etiquetas operadas...",
+	CREATING_ALTERS_STAGE: "Creación operaciones alters...",
+	CREATING_TAGS_STAGE: "Creando etiquetas operadas...",
+	UPDATING_ALTERS_STAGE: "Actualizando alter de {{ maxAlters }}...",
+	UPDATING_TAGS_STAGE: "Actualizando etiqueta de {{ maxTags }}...",
+	CLEANING_UP: "Limpiando...",
+	DONE_SYNCING:
+		"Se ha finalizado con éxito la operación de transcripción alter `{{ id }}`.",
+	SYNC_PREF_TITLE: `## Preferencias de sincronización
+PluralBuddy puede sincronizar los miembros de tu PluralKit de forma unidireccional o bidireccional, de forma automática o manual.`,
+	SYNC_MANUALLY: "Sincronizar Manualmente",
+	SYNC_MANUALLY_DESC_1: "**Sincronizar Manualmente**",
+	SYNC_MANUALLY_DESC_2: `PluralBuddy te pedirá tu token de PluralKit o utilizará el que tengas almacenado, creará una transcripción de importación y, a continuación, aplicará los cambios correspondientes a tu sistema PluralKit.`,
+	AUTO_SYNCING_TOGGLE: "Preferencias de sincronización automática",
+	AUTO_SYNCING_DESC_1: `**Sincronización automática**`,
+	AUTO_SYNCING_DESC_2: `PluralBuddy utilizará tu token almacenado para sincronizar automáticamente **cada 30 minutos cuando se envíe un mensaje**. Debes sincronizar manualmente una vez y pulsar el botón para guardar el token antes de que esta opción esté disponible.`,
+	WRITE_BACK_TOGGLE: "Preferencias de Reescribir",
+	WRITE_BACK_DESC_1: `**Modo de reescritura**`,
+	WRITE_BACK_DESC_2: `Si la función de escritura diferida está activada, cuando se realice un cambio en su sistema, este se guardará automáticamente en el objeto PluralKit correspondiente. Para que esta opción esté disponible, debe sincronizar manualmente una vez y pulsar el botón para guardar el token.`,
+	SYNC_FOOTER: `-# PluralBuddy v{{ build }} - última sincronización: {{ lastSyncDate }}`,
+	SYNC_FOOTER_NEVER_SYNCED: `-# PluralBuddy v{{ build }} - última sincronización: nunca`,
+	ENABLE_AUTO_SWITCH: "Habilitar sincronización automática",
+	ENABLE_WRITE_BACK_SWITCH: "Activar reescritura",
+	DESTRUCTIVE_SWITCH: "Modo destructivo",
+	DESTRUCTIVE_SWITCH_DESC:
+		"Destructive mode will delete alters not present in PluralKit, automatically, without your consent.",
+	NORMAL_TERMS_TITLE: "**Palabras o características singulares**",
+	NORMAL_TERMS_DESC:
+		"Cualquier palabra o característica que sea singular se podrá editar aquí.",
+	PLURAL_TERMS_TITLE: "**Palabras o características en plural**",
+	PLURAL_TERMS_DESC:
+		"Cualquier palabra o característica a la que se haga referencia con más de un nombre se podrá editar aquí.",
+	CAPITAL_TERMS_TITLE: "**Palabras o características en Capitales**",
+	CAPITAL_TERMS_DESC:
+		"Cualquier palabra o característica que esté en mayúsculas se podrá editar aquí.",
+	EDIT_NORMAL_TERMS_BTN: "Editar Términos Normales",
+	EDIT_PLURAL_TERMS_BTN: "Editar Términos Plurales",
+	EDIT_CAPITAL_TERMS_BTN: "Editar Términos Capital",
+	ALTER_DESCRIPTION:
+		"Una estructura de datos que describe entidades o presencias que forman parte de un sistema.",
+	TAG_DESCRIPTION:
+		"Una estructura de datos que describe un conjunto de entidades (o alters) dentro de un sistema",
+	SYSTEM_DESCRIPTION:
+		"Una estructura de datos que incorpora todos los alters, etiquetas y preferencias asociados con un usuario.",
+	PROXY_TAG_DESCRIPTION:
+		"Una lista de prefijos y sufijos necesarios para usar un proxy con un alter.",
+	DISPLAY_TAG_DESCRIPTION:
+		"Un sufijo o prefijo (si está alineado a la izquierda) que se agrega al nombre del webhook al usar un proxy.",
+	TEMPLATE_PLACEHOLDER: "Elige tu producto plural favorito...",
+	TERMINOLOGY_EXPLANER:
+		"PluralBuddy te permite usar y crear conjuntos de terminología personalizados. Puedes usar algunas de las plantillas que aparecen a continuación o, al crear tu sistema, definir tu propia terminología.",
+	SUCCESSFULLY_APPLIED_TEMPLATE: "¡La plantilla se aplicó correctamente!",
+	USE_PLURALKIT_TERMINOLOGY_TITLE:
+		"Usar Terminología al estilo PluralKit (¡nuevo!)",
+	USE_PLURALKIT_TERMINOLOGY_DESC:
+		"Utilice una terminología similar a la representada en PluralKit (es decir, miembro, grupo).",
+	ALTER_TAG_COUNT_TOO_HIGH:
+		"-# Esta importación no se puede realizar de forma destructiva y/o no destructiva debido a que el recuento de Alter o etiquetas combinado con la transcripción es demasiado alto.",
+	EDIT_REACTING_TOP: `Para futuras ocasiones, puedes responder a un mensaje con \`{{ prefix }}edit\` para editarlo.
+
+Estás intentando editar un mensaje marcado con el emoji 📝. Por favor, introduce el contenido del nuevo mensaje usando el botón de abajo.`,
+	EDIT_MESSAGE_BTN: "Editar mensaje",
+	PT_CREATE_NEW: "Crear nueva etiqueta de proxy",
+	PT_DELETE: "Eliminar etiqueta de proxy",
+	PT_LIMIT: "-# Puedes crear hasta 6 etiquetas proxy.",
+	DISABLE_SERVER_REPLYING: "Disable Server Replying",
+	ENABLE_SERVER_REPLYING: "Enable Server Replying",
+	SERVER_REPLYING_DESC:
+		"Get pinged whenever someone replies to a proxied message. An alternative to the DM Replies feature.",
+	SRV_CFG_PING_MODE:
+		"**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
+} satisfies DefaultLocale;

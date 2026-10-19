@@ -9,7 +9,7 @@ import {
 	Button,
 	Container,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	Separator,
 	TextDisplay,
 } from "seyfert";
@@ -42,7 +42,7 @@ export default class SetPronounsButton extends ModalCommand {
 	}
 
 	override async run(ctx: ModalContext) {
-		let { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
+		const { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
 
 		if (systemPB === undefined) {
 			return await ctx.write({
@@ -168,7 +168,7 @@ export default class SetPronounsButton extends ModalCommand {
 								await ctx.userTranslations()
 							).PK_ERROR.replace(
 								"{{ error }}",
-								(v._zod.output as { message: string | undefined }).message ??
+								(v._zod.output as { message: string | undefined } | undefined)?.message ??
 									"??",
 							),
 						)),

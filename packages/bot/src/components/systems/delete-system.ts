@@ -10,13 +10,13 @@ import {
 	type ComponentContext,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
-import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import { LoadingView } from "../../views/loading";
-import { writeUserById } from "../../types/user";
-import { AlertView } from "../../views/alert";
-import { buildExportPayload } from "../../lib/export";
-import { alterCollection, tagCollection } from "../../mongodb";
+import { buildExportPayload } from "@/lib/export";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export default class DeleteSystemButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -34,7 +34,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),
@@ -65,7 +65,7 @@ export default class DeleteSystemButton extends ComponentCommand {
 		await alterCollection.deleteMany({ systemId: ctx.author.id });
 		await tagCollection.deleteMany({ systemId: ctx.author.id });
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: new AlertView(await ctx.userTranslations()).successView(
 				"SYSTEM_DELETION_FINISHED",
 			),

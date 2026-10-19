@@ -1,14 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import {writeBack} from "@/lib/pk-sync-engine.ts";
 import { alterCollection, tagCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import { TagView } from "@/views/tags";
 import { w } from "@/webhooks";
-import {writeBack} from "@/lib/pk-sync-engine.ts";
 
 export default class SetPronounsButton extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -68,7 +68,7 @@ export default class SetPronounsButton extends ModalCommand {
                 type: "tag",
                 id: tag.fields["@/converter/pk"],
                 change: {
-                    tagDescription: tagDescription,
+                    tagDescription: typeof tagDescription === "string" ? tagDescription : tagDescription[0],
                 },
                 syncConfig: (await ctx.retrievePUser()).syncConfiguration,
             });

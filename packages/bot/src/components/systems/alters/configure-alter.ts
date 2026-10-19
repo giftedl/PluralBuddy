@@ -7,10 +7,10 @@ import {
 	TextDisplay,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemSettingsView } from "../../../views/system-settings";
-import { AlertView } from "../../../views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
+import { AlertView } from "@/views/alert";
 import { alterCollection } from "@/mongodb";
 import { AlterView } from "@/views/alters";
 

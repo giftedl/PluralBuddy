@@ -2,7 +2,7 @@ import { ServerConfigView } from "@/views/server-cfg";
 import {
 	AutoLoad,
 	Command,
-	CommandContext,
+	type CommandContext,
 	Declare,
 	Groups,
 	Middlewares,

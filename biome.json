@@ -3,7 +3,14 @@
     "assist": {
         "actions": {
             "source": {
-                "organizeImports": "on"
+                "organizeImports": "off"
+            }
+        }
+    },
+    "linter": {
+        "rules": {
+            "correctness": {
+                "useExhaustiveDependencies": "warn"
             }
         }
     }

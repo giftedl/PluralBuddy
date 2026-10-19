@@ -1,10 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import { ComponentCommand, type ComponentContext } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
 import { writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 
 export default class DisableNudgingButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -14,7 +14,7 @@ export default class DisableNudgingButton extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		// Database migration (12/04/25)
 		if (user.nudging === undefined) {
@@ -26,6 +26,7 @@ export default class DisableNudgingButton extends ComponentCommand {
 							blockedUsers: [],
 							currentlyEnabled: true,
 							dmReply: false,
+							serverReplying: false,
 						},
 					},
 				},
@@ -36,6 +37,7 @@ export default class DisableNudgingButton extends ComponentCommand {
 				blockedUsers: [],
 				currentlyEnabled: true,
 				dmReply: false,
+				serverReplying: false,
 			};
 		}
 		// End database migration

@@ -1,12 +1,12 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 import { MessageFlags } from "seyfert/lib/types";
 import { createdSystems } from "../create-new-system";
-import { combine } from "../../../lib/privacy-bitmask";
-import { SystemProtectionFlags } from "../../../types/system";
+import { combine } from "@/lib/privacy-bitmask";
+import { SystemProtectionFlags } from "@/types/system";
 
 export default class NameInteractionFormCNS extends ModalCommand {
 	override filter(context: ModalContext) {

@@ -5,7 +5,7 @@ import { userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import type { PAutoProxy } from "plurography";
 import {
-	CommandContext,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,

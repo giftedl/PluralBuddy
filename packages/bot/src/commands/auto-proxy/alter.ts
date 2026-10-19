@@ -7,7 +7,7 @@ import { alterCollection, userCollection } from "@/mongodb";
 import type { PAutoProxy } from "@/types/auto-proxy";
 import { AlertView } from "@/views/alert";
 import {
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	SubCommand,

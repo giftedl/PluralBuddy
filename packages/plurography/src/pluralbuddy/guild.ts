@@ -55,6 +55,7 @@ export const PGuildObject = z
 		flags: z.number().optional().default(0).catch(0),
 		logChannel: z.string().optional().nullable().catch(undefined),
 		proxyDelay: z.number().max(2500).optional().catch(0),
+		pingMode: z.enum(["unaffected", "always-on", "always-off", "opposite"]).optional(),
 
 		rolePreferences: z
 			.object({

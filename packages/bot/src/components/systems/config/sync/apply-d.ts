@@ -1,13 +1,15 @@
 import { ObjectId } from "bson";
 import {
 	ComponentCommand,
-	ComponentContext,
+	type ComponentContext,
 	ModalCommand,
 	ModalContext,
 } from "seyfert";
 import { ComponentHandler } from "seyfert/lib/components/handler";
 import { MessageFlags } from "seyfert/lib/types";
+import { client } from "@/index";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { clearProxyCacheIfNeeded } from "@/lib/pk-sync-engine";
 import {
 	alterCollection,
 	alterOperationCollection,
@@ -28,7 +30,7 @@ export default class SetPronounsButton extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		if (user.system === undefined) {
 			return await ctx.write({
@@ -56,7 +58,7 @@ export default class SetPronounsButton extends ComponentCommand {
 		});
 
 		if (!id || !alterOperation) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_ALTER_OPERATION_DOESNT_EXIST",
 				),
@@ -109,6 +111,9 @@ export default class SetPronounsButton extends ComponentCommand {
 				},
 				systemId: alterOperation.userId,
 			});
+
+
+		[...alterOperation.alters.remove, ...alterOperation.alters.update].forEach((v) => clearProxyCacheIfNeeded(v))
 
 
 		await ctx.interaction.editResponse({

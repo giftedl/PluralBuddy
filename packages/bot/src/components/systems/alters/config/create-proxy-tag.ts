@@ -8,7 +8,7 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../../lib/interaction-ids";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
 
 export default class CreateProxyTag extends ComponentCommand {

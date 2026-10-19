@@ -41,10 +41,13 @@ const getDiscordCommandData = unstable_cache(
 );
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
+	const searchParams = (await props.searchParams).s
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 	if (!page) notFound();
+	
 	console.log(page.data.toc)
+	console.log(searchParams)
 
 	const commandData = page.data["_discord-embed-name"]
 		? await getDiscordCommandData({
@@ -106,8 +109,10 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 					</Container>
 				</DressedEmbedLayout>
 			)}
-			<DocsTitle>{page.data.title}</DocsTitle>
-			<DocsDescription>{page.data.description}</DocsDescription>
+			<div className="flex flex-col gap-1">
+				<DocsTitle>{page.data.title}</DocsTitle>
+				<DocsDescription>{page.data.description}</DocsDescription>
+			</div>
 			<Separator />
 			<DocsBody>
 				<MDX
@@ -161,7 +166,7 @@ export async function generateMetadata(props: {
 	const image = ["/og/docs", ...(params.slug ?? []), "image.png"].join("/");
 
 	return {
-		title: page.data.title,
+		title: `${page.data.title} – PluralBuddy`,
 		description: page.data.description,
 		openGraph: {
 			images: image,

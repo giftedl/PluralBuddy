@@ -10,6 +10,7 @@ import { TupperBoxSystem } from "../tupperbox";
 import OpenPluralConverter from "./openplural";
 import PluralBuddyConverter from "./pluralbuddy";
 import PluralKitConverter from "./pluralkit";
+import PluralPortConverter from "./pluralport";
 import TupperBoxConverter from "./tupperbox";
 
 export { OpenPluralConverter };
@@ -43,7 +44,7 @@ export const possibleConverters: Record<
 		converter: ClassOf<Converter<ConverterInput>>;
 		name: string;
 		description: string;
-		parserZod: z.ZodObject,
+		parserZod: z.ZodObject | z.ZodIntersection,
 	}
 > = {
 	pluralbuddy: {
@@ -52,10 +53,17 @@ export const possibleConverters: Record<
 		converter: PluralBuddyConverter,
 		parserZod: ImportNotation,
 	},
+	pluralport: {
+		name: "PluralPort",
+		description:
+			"Open source plurality spec in collaboration with plurality developers - Sheaf & Prism supported",
+		converter: PluralPortConverter,
+		parserZod: OpenPluralExport,
+	},
 	openplural: {
 		name: "OpenPlural",
 		description:
-			"Open source plurality spec in collaboration with plurality developers - Sheaf & Prism supported",
+			"Legacy version of PluralPort.",
 		converter: OpenPluralConverter,
 		parserZod: OpenPluralExport,
 	},

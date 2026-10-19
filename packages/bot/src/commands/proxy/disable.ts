@@ -1,4 +1,4 @@
-import { CommandContext, Declare, Options, SubCommand } from "seyfert";
+import { type CommandContext, Declare, Options, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";

@@ -3,12 +3,12 @@
 import { ModalCommand, type ModalContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { combine } from "../../../lib/privacy-bitmask";
-import { createSystemOperation } from "../../../lib/system-operation";
-import { type PSystem, SystemProtectionFlags } from "../../../types/system";
-import { AlertView } from "../../../views/alert";
-import { SystemSettingsView } from "../../../views/system-settings";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { combine } from "@/lib/privacy-bitmask";
+import { createSystemOperation } from "@/lib/system-operation";
+import { type PSystem, SystemProtectionFlags } from "@/types/system";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
 export default class SetNameForm extends ModalCommand {
 	override filter(context: ModalContext) {
 		return InteractionIdentifier.Systems.Configuration.FormSelection.PrivacyForm.startsWith(

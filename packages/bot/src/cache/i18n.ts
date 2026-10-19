@@ -1,5 +1,5 @@
 import type { PGuild } from "plurography";
-import { BaseResource, CacheFrom } from "seyfert";
+import { BaseResource, type CacheFrom } from "seyfert";
 import type { MakeDeepPartial } from "seyfert/lib/common";
 
 type Plurali18nObject = {

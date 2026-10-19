@@ -3,9 +3,9 @@
 import type { PTerminology } from "plurography";
 import { CheckboxGroup, CheckboxGroupOption, ComponentCommand, type ComponentContext, Label, Modal, TextDisplay } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { InteractionIdentifier } from "../../lib/interaction-ids";
-import type { PSystem } from "../../types/system";
-import { PluralBuddyIntro } from "../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import type { PSystem } from "@/types/system";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export const createdSystems: Map<string, Partial<(PSystem & { terminology: PTerminology })>> = new Map();
 

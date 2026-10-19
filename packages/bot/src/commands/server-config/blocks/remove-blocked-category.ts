@@ -6,7 +6,7 @@ import {
 	Group,
 	SubCommand,
 	Declare,
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Options,
 	createChannelOption,

@@ -2,11 +2,11 @@ import { emojis } from "@/lib/emojis";
 import { AlertView } from "@/views/alert";
 import {
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
 	Declare,
 	LocalesT,
-	Message,
+	type Message,
 	TextDisplay,
 } from "seyfert";
 import { MessageFlags, PermissionFlagsBits } from "seyfert/lib/types";

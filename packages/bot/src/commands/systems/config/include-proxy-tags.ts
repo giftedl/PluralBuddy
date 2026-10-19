@@ -2,7 +2,7 @@ import { getSystemFeatures } from "@/lib/get-system-flags";
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
 import { SystemFlags } from "plurography";
-import { CommandContext, Declare, Group, SubCommand } from "seyfert";
+import { type CommandContext, Declare, Group, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { Shortcut } from "yunaforseyfert";
 

@@ -1,8 +1,37 @@
-import { PAlterObject } from "../../pluralbuddy/alter";
 import type { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { UnauthorizedSchema } from "../utils";
 import z from "zod";
+import { PAlterObject } from "../../pluralbuddy/alter";
+import { UnauthorizedSchema } from "../utils";
 
+const CreateAlterParams = PAlterObject.omit({
+	alterId: true,
+	systemId: true,
+	lastMessageTimestamp: true,
+	created: true,
+	fields: true,
+	messageCount: true,
+	tagIds: true,
+	proxyTags: true,
+})
+	.partial()
+	.and(
+		z.object({
+			username: z
+				.string()
+				.max(100)
+				.regex(/^[^\s@\\/]+$/),
+			displayName: z.string().max(100),
+			proxyTags: z
+				.object({
+					prefix: z.string().max(100),
+					suffix: z.string().max(100),
+				})
+				.array()
+				.default([])
+				.optional(),
+		}),
+	);
+	
 export const register = (registry: OpenAPIRegistry) =>
 	registry.registerPath({
 		method: "post",
@@ -21,19 +50,13 @@ export const register = (registry: OpenAPIRegistry) =>
 				schema: {
 					type: "string",
 				},
-			}
+			},
 		],
 		request: {
 			body: {
 				content: {
 					"application/json": {
-						schema: z.object({
-							username: z
-								.string()
-								.max(100)
-								.regex(/^[^\s@\\/]+$/),
-							displayName: z.string().max(100),
-						})
+						schema: CreateAlterParams,
 					},
 				},
 			},
@@ -54,7 +77,12 @@ export const register = (registry: OpenAPIRegistry) =>
 						schema: z.object({
 							errors: z.array(
 								z.object({
-									type: z.enum(["not-matching-oauth", "zod", "too-many-alters", "duplicate"]),
+									type: z.enum([
+										"not-matching-oauth",
+										"zod",
+										"too-many-alters",
+										"duplicate",
+									]),
 									friendly: z.string(),
 								}),
 							),

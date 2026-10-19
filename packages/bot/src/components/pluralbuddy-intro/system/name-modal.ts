@@ -1,8 +1,8 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { ModalCommand, type ModalContext } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 import { MessageFlags } from "seyfert/lib/types";
 import { createdSystems } from "../create-new-system";
 

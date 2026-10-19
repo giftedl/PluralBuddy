@@ -8,8 +8,8 @@ import {
     Groups,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
-import { SystemView } from "../../views/system";
-import { AlertView } from "../../views/alert";
+import { SystemView } from "@/views/system";
+import { AlertView } from "@/views/alert";
 
 @Declare({
 	name: "system",

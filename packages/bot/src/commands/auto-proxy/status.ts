@@ -3,7 +3,7 @@ import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import {
-	CommandContext,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,

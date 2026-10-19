@@ -4,7 +4,7 @@ import { ServerConfigView } from "@/views/server-cfg";
 import {
 	Middlewares,
 	ModalCommand,
-	ModalContext,
+	type ModalContext,
 	type AllChannels,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";

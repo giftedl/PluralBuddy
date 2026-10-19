@@ -8,8 +8,8 @@ import {
 	Modal,
 	TextInput,
 } from "seyfert";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 
 export default class TagCNS extends ComponentCommand {
 	componentType = "Button" as const;
@@ -28,7 +28,7 @@ export default class TagCNS extends ComponentCommand {
 		const form = new Modal()
 			.setCustomId(
 				InteractionIdentifier.Setup.FormSelection.TagForm.create(
-					oldInteractionId,
+					oldInteractionId[0] ?? "",
 				),
 			)
 			.setTitle((await ctx.userTranslations()).CREATING_NEW_SYSTEM_FORM_TITLE)

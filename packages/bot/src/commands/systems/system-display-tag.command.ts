@@ -3,7 +3,7 @@
 import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
 import {
-	CommandContext,
+	type CommandContext,
 	createBooleanOption,
 	createStringOption,
 	Declare,

@@ -3,8 +3,8 @@
 import {
 	ContextMenuCommand,
 	Declare,
-	MenuCommandContext,
-	MessageCommandInteraction,
+	type MenuCommandContext,
+	type MessageCommandInteraction,
 } from "seyfert";
 import { ApplicationCommandType, MessageFlags } from "seyfert/lib/types";
 import { getSimilarWebhooks } from "@/lib/proxying/util";

@@ -2,7 +2,7 @@ import { createSystemOperation } from "@/lib/system-operation";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 import {
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	Options,

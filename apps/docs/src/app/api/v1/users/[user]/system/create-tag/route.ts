@@ -5,10 +5,17 @@ import z from "zod";
 import { authenticateOAuth } from "@/lib/oauth";
 import { createOAuthFunction } from "@/server/wrapper";
 
-const CreateTagParams = z.object({
+const CreateTagParams = PTagObject.omit({
+	tagId: true,
+	tagFriendlyName: true,
+	tagColor: true,
+	systemId: true,
+	associatedAlters: true,
+	fields: true
+}).optional().and(z.object({
 	color: z.enum(tagColors),
 	displayName: z.string().max(100).min(3),
-});
+}));
 
 export const POST = createOAuthFunction<
 	{ user: string },
@@ -39,10 +46,9 @@ export const POST = createOAuthFunction<
 			tagColor: input.color,
 
 			associatedAlters: [],
-
-			/** @see {@link TagProtectionFlags} */
-			public: 0,
-		});
+			fields: {},
+			...input
+		} satisfies PTag);
 
 		if (!tag.data || tag.error) {
 			return ctx.error({

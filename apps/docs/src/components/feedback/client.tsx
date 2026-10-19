@@ -1,7 +1,8 @@
 'use client';
-import { cn } from '../../lib/cn';
-import { buttonVariants } from '../ui/button';
+import { cva } from 'class-variance-authority';
+import type { FeedbackBlockProps } from 'fumadocs-core/mdx-plugins/remark-feedback-block';
 import { CornerDownRightIcon, MessageSquare, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import {
   ReactNode,
   type SyntheticEvent,
@@ -10,27 +11,26 @@ import {
   useState,
   useTransition,
 } from 'react';
-import { Collapsible, CollapsibleContent } from '../ui/collapsible';
-import { cva } from 'class-variance-authority';
-import { usePathname } from 'next/navigation';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import type { FeedbackBlockProps } from 'fumadocs-core/mdx-plugins/remark-feedback-block';
-import {
-  actionResponse,
-  blockFeedback,
-  pageFeedback,
-  type ActionResponse,
-  type BlockFeedback,
-  type PageFeedback,
-} from './schema';
 import { z } from 'zod/mini';
+import { cn } from '../../lib/cn';
+import { buttonVariants } from '../ui/button';
+import { Collapsible, CollapsibleContent } from '../ui/collapsible';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import {
+  type ActionResponse,
+  actionResponse,
+  type BlockFeedback,
+  blockFeedback,
+  type PageFeedback,
+  pageFeedback,
+} from './schema';
 
 const rateButtonVariants = cva(
   'inline-flex items-center gap-2 px-3 py-2 rounded-full font-medium border text-sm [&_svg]:size-4 disabled:cursor-not-allowed',
   {
     variants: {
       active: {
-        true: 'bg-fd-accent text-fd-accent-foreground [&_svg]:fill-current',
+        true: 'bg-accent text-accent-foreground [&_svg]:fill-current',
         false: 'text-fd-muted-foreground',
       },
     },
@@ -241,14 +241,14 @@ export function FeedbackBlock({
           className={cn(
             'absolute -inset-1 rounded-sm pointer-events-none transition-colors duration-100 z-[-1]',
             open
-              ? 'bg-fd-accent'
-              : 'group-hover/feedback:bg-fd-accent group-hover/feedback:delay-100',
+              ? 'bg-accent'
+              : 'group-hover/feedback:bg-accent group-hover/feedback:delay-100',
           )}
         />
         <PopoverTrigger
           className={cn(
             buttonVariants({ variant: 'secondary', size: 'sm' }),
-            'absolute -top-7 end-0 backdrop-blur-sm text-fd-muted-foreground gap-1.5 transition-all duration-100 data-[state=open]:bg-fd-accent data-[state=open]:text-fd-accent-foreground',
+            'absolute -top-7 end-0 backdrop-blur-sm text-fd-muted-foreground gap-1.5 transition-all duration-100 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
             !open &&
               'opacity-0 pointer-events-none group-hover/feedback:pointer-events-auto group-hover/feedback:opacity-100 group-hover/feedback:delay-100 hover:pointer-events-auto hover:opacity-100 hover:delay-100',
           )}

@@ -14,6 +14,7 @@ export default class OffAutoProxy extends ComponentCommand {
 			context.interaction.values[0] as string,
 		);
 	}
+	
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
 		const { system } = await ctx.retrievePUser();

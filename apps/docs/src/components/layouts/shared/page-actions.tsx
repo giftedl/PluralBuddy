@@ -1,12 +1,12 @@
 'use client';
-import { type ComponentProps, useMemo, useState } from 'react';
-import { Check, ChevronDown, Copy, ExternalLinkIcon, TextIcon } from 'lucide-react';
-import { cn } from '@/lib/cn';
-import { useCopyButton } from '@/lib/use-copy-button';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { buttonVariants } from '@/components/ui/button';
-import { usePathname } from 'fumadocs-core/framework';
 import { useTranslations } from '@fuma-translate/react';
+import { usePathname } from 'fumadocs-core/framework';
+import { Check, ChevronDown, Copy, ExternalLinkIcon, TextIcon } from 'lucide-react';
+import { type ComponentProps, useMemo, useState } from 'react';
+import { buttonVariants } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/cn';
+import { useCopyButton } from '@/lib/hooks/use-copy-button';
 
 const cache = new Map<string, Promise<string>>();
 
@@ -234,7 +234,7 @@ export function ViewOptionsPopover({
               color: 'secondary',
               size: 'sm',
             }),
-            'gap-2 data-[popup-open]:bg-fd-accent data-[popup-open]:text-fd-accent-foreground',
+            'gap-2 data-[popup-open]:bg-accent data-[popup-open]:text-accent-foreground',
             typeof props.className === 'function' ? props.className(state) : props.className,
           )
         }
@@ -249,7 +249,7 @@ export function ViewOptionsPopover({
             href={item.href}
             rel="noreferrer noopener"
             target="_blank"
-            className="text-sm p-2 rounded-lg inline-flex items-center gap-2 hover:text-fd-accent-foreground hover:bg-fd-accent [&_svg]:size-4"
+            className="text-sm p-2 rounded-lg inline-flex items-center gap-2 hover:text-accent-foreground hover:bg-accent [&_svg]:size-4"
           >
             {item.icon}
             {item.title}

@@ -27,11 +27,12 @@ import { getSpecificAutoProxy, getWiderAutoProxy } from "@/lib/autoproxy-util";
 import { emojis } from "@/lib/emojis";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { writeBack } from "@/lib/pk-sync-engine";
+import { getMaxAlterPublicValue } from "@/lib/privacy-bitmask";
 import { w } from "@/webhooks";
-import { alterCollection, tagCollection, userCollection } from "../../mongodb";
-import { PAlterObject } from "../../types/alter";
-import { getUserById, writeUserById } from "../../types/user";
-import { AlertView } from "../../views/alert";
+import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { PAlterObject } from "@/types/alter";
+import { getUserById, writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	username: createStringOption({
@@ -165,7 +166,7 @@ export default class CreateAlterCommand extends SubCommand {
 			messageCount: 0,
 			alterMode: "webhook",
 			public: getSystemFeatures(user.system).publicDefault
-				? Object.keys(AlterProtectionFlags).reduce((prev, cur) => prev + cur)
+				? getMaxAlterPublicValue()
 				: 0,
 			tagIds: assignableTag !== null ? [assignableTag.tagId] : [],
 		});

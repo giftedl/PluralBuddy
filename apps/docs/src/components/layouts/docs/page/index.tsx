@@ -1,4 +1,7 @@
 'use client';
+import { useTranslations } from '@fuma-translate/react';
+import type { TOCItemType } from 'fumadocs-core/toc';
+import { Edit } from 'lucide-react';
 import {
   type ComponentProps,
   createContext,
@@ -8,22 +11,19 @@ import {
   useEffect,
   useState,
 } from 'react';
+import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
-import { useTranslations } from '@fuma-translate/react';
+import { Breadcrumb, type BreadcrumbProps } from './slots/breadcrumb';
+import { Container } from './slots/container';
+import { Footer, type FooterProps } from './slots/footer';
 import {
   TOC,
   TOCPopover,
-  TOCProvider,
-  type TOCProviderProps,
   type TOCPopoverProps,
   type TOCProps,
+  TOCProvider,
+  type TOCProviderProps,
 } from './slots/toc';
-import { Footer, type FooterProps } from './slots/footer';
-import { Breadcrumb, type BreadcrumbProps } from './slots/breadcrumb';
-import { Container } from './slots/container';
-import type { TOCItemType } from 'fumadocs-core/toc';
-import { buttonVariants } from '@/components/ui/button';
-import { Edit } from 'lucide-react';
 
 export interface DocsPageProps extends ComponentProps<'article'> {
   toc?: TOCItemType[];
@@ -221,6 +221,6 @@ export function PageLastUpdate({
   );
 }
 
-export { type BreadcrumbProps, Breadcrumb as PageBreadcrumb } from './slots/breadcrumb';
-export { type FooterProps, Footer as PageFooter } from './slots/footer';
 export { MarkdownCopyButton, ViewOptionsPopover } from '@/components/layouts/shared/page-actions';
+export { Breadcrumb as PageBreadcrumb, type BreadcrumbProps } from './slots/breadcrumb';
+export { Footer as PageFooter, type FooterProps } from './slots/footer';

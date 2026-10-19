@@ -1,4 +1,4 @@
-import { ActionRow, Button, ComponentCommand, ComponentContext } from "seyfert";
+import { ActionRow, Button, ComponentCommand, type ComponentContext } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";

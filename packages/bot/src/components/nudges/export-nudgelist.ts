@@ -1,14 +1,13 @@
-import {
+import {AttachmentBuilder, 
 	ComponentCommand,
+	type ComponentContext,
 	Container,
 	Separator,
-	TextDisplay,
-	type ComponentContext,
+	TextDisplay
 } from "seyfert";
+import { MessageFlags, Spacing } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
-import { AttachmentBuilder } from "seyfert";
-import { MessageFlags, Spacing } from "seyfert/lib/types";
 
 export default class ExportNudgelist extends ComponentCommand {
 	componentType = "Button" as const;
@@ -20,7 +19,7 @@ export default class ExportNudgelist extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		// Database migration (12/04/25)
 		if (user.nudging === undefined) {
@@ -32,6 +31,7 @@ export default class ExportNudgelist extends ComponentCommand {
 							blockedUsers: [],
 							currentlyEnabled: true,
 							dmReply: false,
+							serverReplying: false,
 						},
 					},
 				},
@@ -42,6 +42,7 @@ export default class ExportNudgelist extends ComponentCommand {
 				blockedUsers: [],
 				currentlyEnabled: true,
 				dmReply: false,
+				serverReplying: false
 			};
 		}
 		// End database migration

@@ -1,7 +1,7 @@
 import {
 	AttachmentBuilder,
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
 	createBooleanOption,
 	Declare,
@@ -30,7 +30,7 @@ const options = {
 @Options(options)
 export default class WhoAskedCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
-		const roles = await ctx.member?.roles?.list();
+		const roles = await ctx.member?.roles?.list().catch(() => []);
 		const date = new Date().toLocaleDateString("en-US", {
 			timeZone: "America/New_York",
 			weekday: "long",

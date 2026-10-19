@@ -123,7 +123,7 @@ export default class PluralKitConverter
 			created: alter.created,
 			pronouns: alter.pronouns,
 			avatarUrl: alter.avatar_url ?? alter.webhook_avatar_url,
-			webhookAvatarUrl: null,
+			webhookAvatarUrl: alter.webhook_avatar_url,
 			banner: alter.banner,
 			lastMessageTimestamp: alter.last_message_timestamp ?? new Date(),
 			messageCount: alter.message_count,
@@ -199,11 +199,17 @@ export default class PluralKitConverter
 		}
 
 		return {
+			username: alter.name
+				.replaceAll(" ", "")
+				.replaceAll("/", "")
+				.replaceAll("\\", "")
+				.replaceAll("@", ""),
 			displayName: alter.display_name ?? alter.name,
 			color: alter.color !== null ? `#${alter.color}` : null,
 			description: alter.description,
 			pronouns: alter.pronouns,
 			avatarUrl: alter.avatar_url ?? alter.webhook_avatar_url,
+			webhookAvatarUrl: alter.webhook_avatar_url,
 			banner: alter.banner,
 			proxyTags: alter.proxy_tags.map((tag, i) => {
 				const date = new Date();
@@ -593,6 +599,8 @@ export default class PluralKitConverter
 		} satisfies PluralKitSystemType);
 	}
 	fromAlter(data: PAlter): z.infer<typeof PluralKitMember> {
+        data.fields = data.fields ?? {}
+		
 		return PluralKitMember.parse({
 			id: makePkId(6),
 			uuid: crypto.randomUUID(),
@@ -601,7 +609,7 @@ export default class PluralKitConverter
 			color: data.color !== null ? data.color.slice(1) : null,
 			birthday: data.fields["@/birthday"] ?? null,
 			avatar_url: data.avatarUrl,
-			webhook_avatar_url: null,
+			webhook_avatar_url: data.webhookAvatarUrl,
 			pronouns: data.pronouns ? data.pronouns?.substring(0, 100) : null,
 			banner: data.banner,
 			description: data.description,

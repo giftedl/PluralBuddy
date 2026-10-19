@@ -4,8 +4,8 @@ import {
 	ContextMenuCommand,
 	Declare,
 	Label,
-	MenuCommandContext,
-	MessageCommandInteraction,
+	type MenuCommandContext,
+	type MessageCommandInteraction,
 	Modal,
 	TextInput,
 } from "seyfert";

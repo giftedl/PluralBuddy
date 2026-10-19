@@ -7,10 +7,10 @@ import {
 	TextInput,
 	type ComponentContext,
 } from "seyfert";
-import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { AlertView } from "@/views/alert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection, tagCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 export default class SetUsernameButton extends ComponentCommand {
 	componentType = "Button" as const;
@@ -64,14 +64,22 @@ export default class SetUsernameButton extends ComponentCommand {
 									)
 									.setLength({ max: 2000 })
 									.setRequired(true)
-							: new TextInput()
-									.setStyle(TextInputStyle.Paragraph)
-									.setCustomId(
-										InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDescriptionType.create(),
-									)
-									.setLength({ max: 2000 })
-									.setRequired(true)
-									.setValue(tag.tagDescription),
+							: !tag.tagDescription
+								? new TextInput()
+										.setStyle(TextInputStyle.Paragraph)
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDescriptionType.create(),
+										)
+										.setLength({ max: 2000 })
+										.setRequired(true)
+								: new TextInput()
+										.setStyle(TextInputStyle.Paragraph)
+										.setCustomId(
+											InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagDescriptionType.create(),
+										)
+										.setLength({ max: 2000 })
+										.setRequired(true)
+										.setValue(tag.tagDescription),
 					),
 			]);
 

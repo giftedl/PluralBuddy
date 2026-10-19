@@ -2,7 +2,7 @@ import type {
 	ApplicableWebhookEditPayload,
 	ApplicableWebhookWritePayload,
 } from "@/events/on-message-create";
-import { BaseResource, CacheFrom, Webhook, type ReturnCache } from "seyfert";
+import { BaseResource, type CacheFrom, type Webhook, type ReturnCache } from "seyfert";
 import type { MakeDeepPartial, SendResolverProps } from "seyfert/lib/common";
 import type {
 	APIWebhook,

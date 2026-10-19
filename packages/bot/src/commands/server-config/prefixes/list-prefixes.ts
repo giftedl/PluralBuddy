@@ -1,5 +1,5 @@
 import {
-	CommandContext,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,

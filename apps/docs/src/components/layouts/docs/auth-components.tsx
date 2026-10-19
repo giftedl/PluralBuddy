@@ -2,6 +2,11 @@
 
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { BadgeCheck, Clapperboard, Code, LogIn, LogOut, Plug, Settings } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { SignedIn, SignedOut } from "@/components/auth/signed-in";
 import { buttonVariants } from "@/components/ui/button";
 import {
 	Popover,
@@ -9,16 +14,10 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Discord } from "@/components/ui/svgs/discord";
-import { cn } from "@/lib/cn";
-
-import { BadgeCheck, Clapperboard, Code, LogIn, LogOut, Plug, Settings } from "lucide-react";
-import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
-import { SignedIn, SignedOut } from "@/components/auth/signed-in";
-import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
+import { Discord } from "@/components/ui/svgs/discord";
+import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/cn";
 
 export function AuthComponents({ style }: { style: "main" | "docs" }) {
 	const session = authClient.useSession();
@@ -58,7 +57,7 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 					</PopoverTrigger>
 					<PopoverContent>
 						<button
-							className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg cursor-pointer w-full"
+							className="p-2 flex items-center gap-3 hover:bg-accent rounded-lg cursor-pointer w-full"
 							onClick={() =>
 								authClient.signIn.social({
 									provider: "discord",
@@ -96,7 +95,7 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 					<PopoverContent className="grid grid-cols-1 gap-2">
 						<Link href="/app/settings">
 							<button
-								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
+								className="p-2 flex items-center gap-3 hover:bg-accent rounded-lg w-full cursor-pointer"
 								type="button"
 							>
 								<Settings size={16} /> Settings
@@ -104,7 +103,7 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 						</Link>
 						<Link href="/developers/applications">
 							<button
-								className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full cursor-pointer"
+								className="p-2 flex items-center gap-3 hover:bg-accent rounded-lg w-full cursor-pointer"
 								type="button"
 							>
 								<Code size={16} /> Developers
@@ -112,7 +111,7 @@ export function AuthComponents({ style }: { style: "main" | "docs" }) {
 						</Link>
 						<Separator />
 						<button
-							className="p-2 flex items-center gap-3 hover:bg-fd-accent rounded-lg w-full text-red-400 cursor-pointer"
+							className="p-2 flex items-center gap-3 hover:bg-accent rounded-lg w-full text-red-400 cursor-pointer"
 							onClick={() => authClient.signOut()}
 							type="button"
 						>

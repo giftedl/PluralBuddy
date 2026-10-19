@@ -39,7 +39,7 @@ export default createEvent({
 				webhook.messages.edit({
 					messageId: nativeMessage.id,
 					body: {
-						// @ts-ignore
+						// @ts-expect-error
 						components: nativeMessage.components.slice(1),
 					},
 					query: parent !== null ? { thread_id: channel.id } : {},

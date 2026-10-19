@@ -1,10 +1,5 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardTitle,
-} from "@/components/ui/card";
-import { DynamicPageTitle } from "../../dynamic-title";
+import React from "react";
+import { AppPortal } from "svix-react";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -12,15 +7,20 @@ import {
 	BreadcrumbList,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
-import { AppPortal } from "svix-react";
+import { DynamicPageTitle } from "../../dynamic-title";
 
 import "svix-react/style.css";
-import { useTRPCClient } from "@/server/client";
-import Link from "next/link";
 import { ExternalLink } from "lucide-react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useTRPCClient } from "@/server/client";
 
 export default function WebhooksAppPage() {
 	return (
@@ -79,5 +79,5 @@ const SvixEmbed = () => {
 		run.then((v) => setAppPortal(v));
 	}, [t]);
 
-	return <AppPortal url={appPortal} darkMode={resolvedTheme === "dark"} />;
+	return <AppPortal style={{height: "3200px"}} url={appPortal} darkMode={resolvedTheme === "dark"}  />;
 };

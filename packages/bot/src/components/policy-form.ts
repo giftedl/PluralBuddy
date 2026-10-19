@@ -1,7 +1,11 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
-import { assetStringGeneration } from "plurography";
-import { ModalCommand, ModalContext, type ComponentContext } from "seyfert";
+import { assetStringGeneration, PUserObject, terminologyDefaults } from "plurography";
+import {
+	ModalCommand,
+	type ModalContext,
+	type ComponentContext,
+} from "seyfert";
 
 export default class AcceptPolicy extends ModalCommand {
 	override filter(context: ModalContext) {
@@ -11,9 +15,15 @@ export default class AcceptPolicy extends ModalCommand {
 	override async run(ctx: ModalContext) {
 		await userCollection.updateOne(
 			{ userId: ctx.author.id },
-			{ $set: { policyStatus: 1, storagePrefix: assetStringGeneration(8) } },
+			{
+				$set: PUserObject.parse({
+					userId: ctx.author.id,
+					policyStatus: 1,
+					terminology: terminologyDefaults
+				}),
+			},
 			{ upsert: true },
-		);
+		)
 		const newCustomId = InteractionIdentifier.PolicyForm.substring(
 			ctx.customId ?? "",
 		).join("-");

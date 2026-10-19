@@ -1,6 +1,6 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { PluralKitSystem, terminologyDefaults } from "plurography";
+import { PluralKitConverter, PluralKitSystem, terminologyDefaults } from "plurography";
 import {
 	ActionRow,
 	Button,
@@ -27,10 +27,10 @@ import {
 	terminologyMemoryCache,
 	writeUserById,
 } from "@/types/user";
-import { InteractionIdentifier } from "../../../../lib/interaction-ids";
-import { type PSystem, PSystemObject } from "../../../../types/system";
-import { AlertView } from "../../../../views/alert";
-import { LoadingView } from "../../../../views/loading";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { type PSystem, PSystemObject } from "@/types/system";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -65,7 +65,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 			const MAX_FILE_SIZE = 2 * 1024 * 1024;
 			if (file[0].size > MAX_FILE_SIZE) {
-				return await ctx.editResponse({
+				return await ctx.editOrReply({
 					components: [
 						...new AlertView(await ctx.userTranslations()).errorView(
 							"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
@@ -90,7 +90,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		try {
 			JSON.parse(fileData);
 		} catch (error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorView(
 						"PLURALBUDDY_IMPORT_ERROR_INVALID_JSON",
@@ -110,7 +110,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const parsed = PluralKitSystem.safeParse(JSON.parse(fileData));
 
 		if (parsed.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorViewCustom(
 						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
@@ -157,7 +157,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		} satisfies PSystem);
 
 		if (newSystem.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorViewCustom(
 						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
@@ -239,7 +239,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 					),
 					avatarUrlMap: {},
 					fields: {
-						"@pk": member.id.substring(0, 30),
+						"@/converter/pk": member.uuid,
 					},
 					flags: 0,
 				} satisfies PAlter),
@@ -304,22 +304,20 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		systemData.tagIds = parsedGroupsSafe
 			.filter((v) => v.success)
 			.map((v) => v.data.tagId);
+			
+		const newExport = new PluralKitConverter().toImport(parsed.data);
 
 		if (parsedSafe.filter((v) => v.zodData.success).length !== 0)
 			await alterCollection.insertMany(
-				parsedSafe
-					.map((v) => v.zodData)
-					.filter((v) => v.success)
-					.map((v) => v.data),
+				newExport.alters
 			);
 		if (parsedGroupsSafe.filter((v) => v.success).length !== 0)
-			await tagCollection.insertMany(
-				parsedGroupsSafe.filter((v) => v.success).map((v) => v.data),
-			);
+			await tagCollection.insertMany(newExport.tags);
+
 
 		await writeUserById(ctx.author.id, {
 			...(await getUserById(ctx.author.id)),
-			system: systemData,
+			system: newExport.system ?? systemData,
 		});
 
 		ctx.client.logger.info("Possible PK errors (Zod): {errors}", {
@@ -350,7 +348,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			});
 		}
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...new AlertView(
 					await ctx.userTranslations(),

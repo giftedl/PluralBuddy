@@ -315,6 +315,8 @@ export default class OpenPluralConverter
 		handleAsset?: (url: string) => string,
 		systemId = crypto.randomUUID(),
 	) {
+        data.fields = data.fields ?? {}
+		
 		return OpenPluralMember.parse({
 			id: crypto.randomUUID(),
 			name: data.username,

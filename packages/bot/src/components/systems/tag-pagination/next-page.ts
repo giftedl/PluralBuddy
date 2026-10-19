@@ -54,7 +54,7 @@ export default class NextPageTagPagination extends ComponentCommand {
 		// Re-add it to the array
 		tagsPagination.push(corresponding);
 
-		return await ctx.editResponse({
+		return await ctx.editOrReply({
 			components: [
 				...(await new SystemSettingsView(
 					await ctx.userTranslations(),

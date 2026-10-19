@@ -1,13 +1,13 @@
 "use client";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { type ComponentProps, type ReactNode, useMemo, useState } from "react";
 import Link from "fumadocs-core/link";
+import { useSidebar } from "fumadocs-ui/contexts/sidebar";
+import type { SidebarTab } from "fumadocs-ui/utils/get-sidebar-tabs";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { type ComponentProps, type ReactNode, useMemo, useState } from "react";
 import { cn } from "../lib/cn";
 import { isTabActive } from "../lib/is-active";
-import { useSidebar } from "fumadocs-ui/contexts/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import type { SidebarTab } from "fumadocs-ui/utils/get-sidebar-tabs";
 
 export interface Option extends SidebarTab {
 	props?: ComponentProps<"a">;
@@ -56,7 +56,7 @@ export function RootToggle({
 				<PopoverTrigger
 					{...props}
 					className={cn(
-						"flex items-center gap-2 rounded-lg p-2 border bg-fd-secondary/50 text-start text-fd-secondary-foreground transition-colors hover:bg-fd-accent data-[state=open]:bg-fd-accent data-[state=open]:text-fd-accent-foreground",
+						"flex items-center gap-2 rounded-lg p-2 border bg-fd-secondary/50 text-start text-fd-secondary-foreground transition-colors hover:bg-accent data-[state=open]:bg-accent data-[state=open]:text-accent-foreground",
 						props.className,
 					)}
 				>
@@ -76,7 +76,7 @@ export function RootToggle({
 							onClick={onClick}
 							{...item.props}
 							className={cn(
-								"flex items-center gap-2 rounded-lg p-1.5 hover:bg-fd-accent hover:text-fd-accent-foreground",
+								"flex items-center gap-2 rounded-lg p-1.5 hover:bg-accent hover:text-accent-foreground",
 								item.props?.className,
 							)}
 						>

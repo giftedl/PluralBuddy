@@ -12,10 +12,10 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 import { writeBack } from "@/lib/pk-sync-engine";
 import { w } from "@/webhooks";
-import { autocompleteAlters } from "../../lib/autocomplete-alters";
-import { alterCollection } from "../../mongodb";
-import { getUserById } from "../../types/user";
-import { AlertView } from "../../views/alert";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { alterCollection } from "@/mongodb";
+import { getUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	"alter-name": createStringOption({

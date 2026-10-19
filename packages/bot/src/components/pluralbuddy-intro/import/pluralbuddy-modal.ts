@@ -12,13 +12,13 @@ import {
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { z } from "zod";
 import { createRandomId } from "@/lib/random-id";
-import { ImportNotation } from "../../../lib/export";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { alterCollection, tagCollection } from "../../../mongodb";
-import { PSystemObject } from "../../../types/system";
-import { getUserById, writeUserById } from "../../../types/user";
-import { AlertView } from "../../../views/alert";
-import { LoadingView } from "../../../views/loading";
+import { ImportNotation } from "@/lib/export";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { alterCollection, tagCollection } from "@/mongodb";
+import { PSystemObject } from "@/types/system";
+import { getUserById, writeUserById } from "@/types/user";
+import { AlertView } from "@/views/alert";
+import { LoadingView } from "@/views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -43,7 +43,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		const MAX_FILE_SIZE = 2 * 1024 * 1024;
 		if (file.size > MAX_FILE_SIZE) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorView(
 						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
@@ -65,7 +65,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const parsed = ImportNotation.safeParse(JSON.parse(fileData));
 
 		if (parsed.error) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorViewCustom(
 						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
@@ -89,7 +89,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		const { data } = parsed;
 
 		if (data.system === null) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: [
 					...new AlertView(await ctx.userTranslations()).errorViewCustom(
 						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
@@ -176,7 +176,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			system: data.system,
 		});
 
-		await ctx.editResponse({
+		await ctx.editOrReply({
 			components: [
 				...new AlertView(await ctx.userTranslations()).successViewCustom(
 					(await ctx.userTranslations()).SUCCESSFULLY_IMPORTED.replace(

@@ -6,7 +6,7 @@ import {
 	Group,
 	SubCommand,
 	Declare,
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Options,
 } from "seyfert";
@@ -81,7 +81,7 @@ export default class AddPrefixCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const guildObj = await ctx.retrievePGuild();
-		const { prefix: prefix } = ctx.options;
+		const { prefix } = ctx.options;
 
 		guildObj.prefixes = guildObj.prefixes.filter((c) => c !== prefix);
 

@@ -3,8 +3,8 @@
 import { type CommandContext, Declare, SubCommand } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { getSystemFeatures } from "@/lib/get-system-flags";
-import { AlertView } from "../../views/alert";
-import { SystemSettingsView } from "../../views/system-settings";
+import { AlertView } from "@/views/alert";
+import { SystemSettingsView } from "@/views/system-settings";
 
 @Declare({
 	name: "terminology",

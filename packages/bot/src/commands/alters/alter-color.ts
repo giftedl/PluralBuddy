@@ -15,9 +15,9 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 import { writeBack } from "@/lib/pk-sync-engine";
 import { svix, w } from "@/webhooks";
-import { autocompleteAlters } from "../../lib/autocomplete-alters";
-import { alterCollection } from "../../mongodb";
-import { AlertView } from "../../views/alert";
+import { autocompleteAlters } from "@/lib/autocomplete-alters";
+import { alterCollection } from "@/mongodb";
+import { AlertView } from "@/views/alert";
 
 const options = {
 	"alter-name": createStringOption({

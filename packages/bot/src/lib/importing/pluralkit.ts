@@ -1,18 +1,18 @@
-import z from "zod";
-import { ImportEntry, ImportOutput } from ".";
+import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
 	AlterProtectionFlags,
+	type PAlter,
 	PAlterObject,
 	PluralKitSystem,
+	type PTag,
 	PTagObject,
 	TagProtectionFlags,
-	type PAlter,
-	type PTag,
 } from "plurography";
-import { DiscordSnowflake } from "@sapphire/snowflake";
-import { combine } from "../privacy-bitmask";
+import z from "zod";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
+import { combine } from "../privacy-bitmask";
 import { createRandomId } from "../random-id";
+import { ImportEntry, ImportOutput } from ".";
 
 const PluralKitImportEntry = z.object({
 	existing: ImportEntry,
@@ -107,6 +107,8 @@ export async function replace(
 							],
 						),
 						avatarUrlMap: {},
+						flags: 0,
+						fields: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},
@@ -159,6 +161,7 @@ export async function replace(
 								: []),
 						],
 					),
+					fields: {}, 
 				} satisfies PTag),
 		)
 		.filter((res) => res !== false);
@@ -261,6 +264,8 @@ export async function add(
 							],
 						),
 						avatarUrlMap: {},
+						flags: 0,
+						fields: {}
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},

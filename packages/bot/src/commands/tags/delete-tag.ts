@@ -1,7 +1,7 @@
 import {
 	ActionRow,
 	Button,
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	Options,

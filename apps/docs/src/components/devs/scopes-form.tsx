@@ -1,43 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { scopeList } from "./create-new-app-form";
-import {
-	Field,
-	FieldDescription,
-	FieldGroup,
-	FieldLabel,
-	FieldSet,
-} from "../ui/field";
-import { Checkbox } from "../ui/checkbox";
-import { Input } from "../ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "../ui/select";
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupButton,
-	InputGroupInput,
-} from "../ui/input-group";
-import { useCopyToClipboard } from "@/lib/use-copy-to-clipboard";
-import { Check, Copy, LayoutGrid } from "lucide-react";
-import {
-	Empty,
-	EmptyDescription,
-	EmptyHeader,
-	EmptyMedia,
-	EmptyTitle,
-} from "../ui/empty";
 import { OAuthClient } from "@better-auth/oauth-provider";
-import { Button } from "../ui/shadcn-button";
+import { Check, Copy, LayoutGrid } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { auth } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
+import { useCopyToClipboard } from "@/lib/hooks/use-copy-to-clipboard";
 import {
 	Card,
 	CardContent,
@@ -45,6 +14,37 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../ui/card";
+import { Checkbox } from "../ui/checkbox";
+import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "../ui/empty";
+import {
+	Field,
+	FieldDescription,
+	FieldGroup,
+	FieldLabel,
+	FieldSet,
+} from "../ui/field";
+import { Input } from "../ui/input";
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
+} from "../ui/input-group";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
+import { Button } from "../ui/shadcn-button";
+import { scopeList } from "./create-new-app-form";
 
 export function ScopesForm({ application }: { application: OAuthClient }) {
 	const [scopes, setScopes] = useState<string[]>(

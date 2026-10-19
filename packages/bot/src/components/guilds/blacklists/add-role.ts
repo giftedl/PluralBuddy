@@ -1,11 +1,11 @@
 import {
 	ComponentCommand,
+	type ComponentContext,
 	Label,
 	Middlewares,
 	Modal,
 	RoleSelectMenu,
 	UserSelectMenu,
-	type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 
@@ -27,16 +27,13 @@ export default class AddRoleButton extends ComponentCommand {
 				.setComponents([
 					new Label()
 						.setComponent(
-							new RoleSelectMenu({
-								...new RoleSelectMenu()
-									.setCustomId(
-										InteractionIdentifier.Guilds.FormSelection.AddBlockRoleSelection.create(),
-									)
-									.setDefaultRoles(guild.blockedRoles)
-									.setValuesLength({ min: 0, max: 25 }).data,
-								// @ts-ignore lol seyfert forgor to add the required boolean to select menus
-								required: false,
-							}),
+							new RoleSelectMenu()
+								.setCustomId(
+									InteractionIdentifier.Guilds.FormSelection.AddBlockRoleSelection.create(),
+								)
+								.setDefaultRoles(guild.blockedRoles)
+								.setValuesLength({ min: 0, max: 25 })
+								.setRequired(),
 						)
 						.setLabel("Block Roles")
 						.setDescription("Set all applicable blocked roles."),

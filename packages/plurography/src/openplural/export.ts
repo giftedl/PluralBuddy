@@ -17,7 +17,6 @@ import { OpenPluralTaxonomyTerm } from "./taxonomy-term";
 import { OpenPluralWarning } from "./warning";
 
 export const OpenPluralExport = z.object({
-	openplural_version: z.literal("0.1"),
 	exported_at: z.coerce.date(),
 	producer: z.object({
 		app: z.string(),
@@ -69,4 +68,8 @@ export const OpenPluralExport = z.object({
     warnings: OpenPluralWarning.array(),
     source_refs: OpenPluralSourceRef.array(),
     privacy: OpenPluralPrivacy,
-});
+}).and(z.object({
+	openplural_version: z.literal("0.1"),
+}).or(z.object({
+	pluralport_version: z.literal("0.1")
+})));

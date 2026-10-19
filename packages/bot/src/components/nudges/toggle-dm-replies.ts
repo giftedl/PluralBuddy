@@ -2,7 +2,7 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { NudgePreferences } from "@/views/nudge-preferences";
-import { ComponentCommand, ComponentContext } from "seyfert";
+import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export default class AddUserBlockListNudge extends ComponentCommand {
@@ -18,7 +18,7 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 		const silent = InteractionIdentifier.Nudge.ToggleDMReplies.substring(
 			ctx.customId,
 		)[0];
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		await writeUserById(user.userId, {
 			...user,

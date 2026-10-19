@@ -20,7 +20,7 @@ export default class PublicProfileBtn extends ComponentCommand {
 		const { system } = await ctx.retrievePUser();
 
 		if (system === undefined) {
-			return await ctx.editResponse({
+			return await ctx.editOrReply({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_SYSTEM_DOESNT_EXIST",
 				),

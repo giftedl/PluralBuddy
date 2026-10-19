@@ -1,6 +1,6 @@
 import {
 	Command,
-	CommandContext,
+	type CommandContext,
 	Container,
 	createStringOption,
 	Declare,
@@ -10,11 +10,11 @@ import {
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { DeclareParserConfig } from "yunaforseyfert";
-import { alterOptions, runAlterCommand } from "@/lib/ap-cmds/alter";
+import { type alterOptions, runAlterCommand } from "@/lib/ap-cmds/alter";
 import { runClearLatch } from "@/lib/ap-cmds/clear-latch";
-import { customOptions, runCustomProviderCommand } from "@/lib/ap-cmds/custom";
-import { latchOptions, runLatchCommand } from "@/lib/ap-cmds/latch";
-import { offOptions, runOffCommand } from "@/lib/ap-cmds/off";
+import { type customOptions, runCustomProviderCommand } from "@/lib/ap-cmds/custom";
+import { type latchOptions, runLatchCommand } from "@/lib/ap-cmds/latch";
+import { type offOptions, runOffCommand } from "@/lib/ap-cmds/off";
 import { runStatusCommand } from "@/lib/ap-cmds/status";
 import { getOAuthConsents } from "@/lib/oauth";
 import { parseOffScope, parseScope } from "@/lib/scope-parsing";
@@ -126,6 +126,10 @@ export default class AutoProxyCommand extends Command {
 
 			(ctx as CommandContext<typeof customOptions>).options.provider =
 				consent?.clientId ?? "";
+			const scope = parseScope(args.split(" ").slice(1).join(" "));
+
+			if (scope !== undefined)
+				(ctx as CommandContext<typeof customOptions>).options.scope = scope;
 
 			return await runCustomProviderCommand(
 				ctx as CommandContext<typeof customOptions>,

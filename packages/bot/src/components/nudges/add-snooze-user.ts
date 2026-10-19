@@ -1,16 +1,16 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import {
 	ComponentCommand,
+	type ComponentContext,
 	ModalCommand,
 	ModalContext,
-	type ComponentContext,
 } from "seyfert";
+import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { userCollection } from "@/mongodb";
 import { defaultUserStructure, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
-import { MessageFlags } from "seyfert/lib/types";
 import { NudgePreferences } from "@/views/nudge-preferences";
-import { userCollection } from "@/mongodb";
 
 export default class AddUserForm extends ComponentCommand {
 	componentType = "Button" as const;
@@ -35,6 +35,7 @@ export default class AddUserForm extends ComponentCommand {
 							blockedUsers: [],
 							currentlyEnabled: true,
 							dmReply: false,
+							serverReplying: false,
 						},
 					},
 				},
@@ -45,6 +46,7 @@ export default class AddUserForm extends ComponentCommand {
 				blockedUsers: [],
 				currentlyEnabled: true,
 				dmReply: false,
+				serverReplying: false,
 			};
 		}
 		// End database migration

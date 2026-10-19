@@ -11,8 +11,8 @@ import {
 } from "seyfert";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
 import { terminologyTemplates } from "@/lib/terminology-templates";
-import { InteractionIdentifier } from "../../../lib/interaction-ids";
-import { PluralBuddyIntro } from "../../../views/pluralbuddy-intro";
+import { InteractionIdentifier } from "@/lib/interaction-ids";
+import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 import { createdSystems } from "../create-new-system";
 
 export default class NameCNS extends ComponentCommand {

@@ -1,7 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	IgnoreCommand,

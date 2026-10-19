@@ -15,7 +15,7 @@ export default class DisableNudgingButton extends ComponentCommand {
 	}
 
 	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		let user = await ctx.retrievePUser();
+		const user = await ctx.retrievePUser();
 
 		await writeUserById(user.userId, {
 			...user,

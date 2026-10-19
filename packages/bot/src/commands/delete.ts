@@ -5,7 +5,7 @@ import { messagesCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
 	Command,
-	CommandContext,
+	type CommandContext,
 	createStringOption,
 	Declare,
 	LocalesT,
