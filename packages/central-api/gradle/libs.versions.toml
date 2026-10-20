@@ -1,0 +1,15 @@
+[versions]
+kotlin = "2.4.0"
+logback = "1.5.37"
+mongodb = "5.9.0"
+
+[libraries]
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+mongodb-bson = { module = "org.mongodb:bson", version.ref = "mongodb" }
+mongodb-driverCore = { module = "org.mongodb:mongodb-driver-core", version.ref = "mongodb" }
+mongodb-driverSync = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodb" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -1,0 +1,18 @@
+ktor:
+  deployment:
+    port: 8080
+  oidc:
+    pluralbuddy:
+      issuer: "https://pluralbuddy.app/api/auth"
+      clientId: "$CLIENT_ID"
+      clientSecret: "$CLIENT_SECRET"
+      scopes: ["openid", "profile", "system:admin", "offline_access"]
+  application:
+    modules:
+      - app.pluralbuddy.HttpKt.configureHttp
+      - app.pluralbuddy.SerializationKt.configureSerialization
+      - app.pluralbuddy.WebsocketsKt.configureWebsockets
+      - app.pluralbuddy.MongoKt.configureMongo
+      - app.pluralbuddy.StatusPagesKt.configureStatusPages
+      - app.pluralbuddy.RoutingKt.configureRouting
+      - app.pluralbuddy.services.AuthenticationRoutingKt.configureAuthenticationSecurity
