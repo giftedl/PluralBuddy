@@ -261,7 +261,7 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_WEB: "%clock% Expires in 30 minutes • %web% Web (via Exchange)",
   OPERATION_WEB_NEXT: "%clock% Expires in 30 minutes • %web% Web (via Next)",
   SERVER_TOO_BIG: "This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
-  OPERATION_DISCORD_AP: "Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+  OPERATION_DISCORD_AP: "Switched in %server_name% (`%server_id%`) • %discord% Discord",
   CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
   NO_PERMISSIONS_PROXY: "I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
   NICKNAME_MANUAL_PROXY: "You cannot proxy here since the alter you specified is using the Nickname proxy mode, and you cannot send a normal message when using the manual proxy command. Please use automatic proxying instead.",
@@ -289,16 +289,17 @@ PluralBuddy uses a **username/display name** system.
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
 
-**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+**OSS Contributions** - [PluralBuddy is Apache 2.0 licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
 
 -# **LINKS**
-> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pb.giftedly.dev)
-> -# [Terms of Service](<https://pb.giftedly.dev/docs/policies/terms>) · [Privacy Policy](<https://pb.giftedly.dev/docs/policies/privacy>)`,
+> -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
+> -# [Terms of Service](<https://pluralbuddy.app/docs/policies/terms>) · [Privacy Policy](<https://pluralbuddy.app/docs/policies/privacy>)`,
   TAG_ASSIGN_ALTER: "Assign Tag",
   SET_AUTO_PROXY_SRV: "Successfully set proxy mode to **%mode%** for your system in **%server_name%**.",
   SET_AUTO_PROXY_GLOBAL: "Successfully set proxy mode to **%mode%** for your system everywhere.",
@@ -322,7 +323,7 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
   OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
   OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
-  OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+  OPERATION_FALLBACK: "Set `%property%` to `%value%`",
   OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
   OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
   OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
@@ -560,6 +561,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`,
   SRV_CFG_PROXY_DELAY_SEC: `> It is not recommended to go over a 1 second proxy delay.
 > This server's proxy delay currently is **{{ delay }} seconds** ({{ delayMs }}ms)`,
+  SRV_CFG_PING_MODE: "**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
   ERROR_LOG_TITLE: `## Error Log - {{ serverName }}`,
   NO_ERRORS: "{{ catJamming }}   Nice! Your server hasn't ran into any errors!",
   ERROR_TRIGGERED_BY: `Triggered by <@{{ userId }}>.`,
@@ -570,7 +572,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > Feature flags allow you to control certain smaller features used on PluralBuddy.`,
   FEATURE_D: "Disable",
   FEATURE_E: "Enable",
-  ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+  ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
   ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
 > The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
   ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",
@@ -639,7 +641,7 @@ There is an example below of what an example proxy with this role would look lik
   SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "Unable to remove user reaction",
   REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
-  AWAKE: "Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
+  AWAKE: "Hi! I'm awake, running PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
   LINK_INVITE: "Invite",
   LINK_SUPPORT: "Support",
   LINK_DOCS: "Docs",
