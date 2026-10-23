@@ -70,7 +70,7 @@ SimplyPlural has been discontinued.`,
   ERROR_SYSTEM_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no system to operate on.",
   ERROR_ALTER_OPERATION_DOESNT_EXIST: "2m – This operation cannot be concluded because there is no alter operation to operate on.",
   ERROR_ALTER_DOESNT_EXIST: "2n – This operation cannot be concluded because either, there is no alter to operate on, or there is no system associated to the user who created the request.",
-  ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – That alter could not be found. Did you mean \`%suggestion%\`?",
+  ERROR_ALTER_DOESNT_EXIST_SUGGESTION: "2n – That alter could not be found. Did you mean `%suggestion%`?",
   ERROR_TAG_DOESNT_EXIST: "2o – This operation cannot be concluded because either, there is no tag to operate on, or there is no system associated to the user who created the request.",
   CREATING_NEW_SYSTEM_FORM_TITLE: "Set System Details",
   EDIT_SYSTEM_FORM_TITLE: "Editing System",
@@ -97,8 +97,8 @@ SimplyPlural has been discontinued.`,
   CREATING_NEW_PT_TOO_MANY_CHARS: "2y – There is too many characters on either the prefix or suffix side. Remember, you can only have 20 characters for the prefix & 20 characters for the suffix.",
   SUCCESSFULLY_NEW_PT: "Successfully created a new proxy tag!",
   PLURALBUDDY_IMPORT_DESC: "Copy and paste the exported JSON data below:",
-  PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n\`\`\`\n%zod_errors%\n\`\`\`",
-  PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n\`\`\`\n%options_errors%\n\`\`\`",
+  PLURALBUDDY_IMPORT_ERROR: "2q – There was some error(s) while parsing that:\n\n```\n%zod_errors%\n```",
+  PLURALBUDDY_OPTIONS_ERROR: "2r – There was some error(s) while evaluating the arguments to that command:\n\n```\n%options_errors%\n```",
   CREATE_NEW_ALTER_DONE: "Successfully created a new alter in your system. Use `%prefix%alter %alter_id%` for more details.",
   CREATE_NEW_ALTER_ADD: "Performed the following additional operations on this alter:",
   CREATE_NEW_ALTER_DESC: "Assigned description: {{ description }}",
@@ -261,7 +261,7 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_WEB: "%clock% Expires in 30 minutes • %web% Web (via Exchange)",
   OPERATION_WEB_NEXT: "%clock% Expires in 30 minutes • %web% Web (via Next)",
   SERVER_TOO_BIG: "This server is too big to use the /proxy command, as it is disabled for security reasons for servers with over 30 members. Please use automatic proxying instead.",
-  OPERATION_DISCORD_AP: "Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+  OPERATION_DISCORD_AP: "Switched in %server_name% (`%server_id%`) • %discord% Discord",
   CLEARED_LATCH: "Successfully cleared the **latch alter** in %server_name%.",
   NO_PERMISSIONS_PROXY: "I cannot proxy here since I do not have `Manage Webhooks` & `Manage Messages` permissions in this channel.",
   NICKNAME_MANUAL_PROXY: "You cannot proxy here since the alter you specified is using the Nickname proxy mode, and you cannot send a normal message when using the manual proxy command. Please use automatic proxying instead.",
@@ -289,12 +289,14 @@ PluralBuddy uses a **username/display name** system.
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
 
-**OSS Contributions** - [PluralBuddy is MIT licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
--# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco)
+**OSS Contributions** - [PluralBuddy is Apache 2.0 licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
 -# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
 
 **Translated on Crowdin**
--# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇩🇪 German translations by @.ayake & @mira.mizuki
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
+-# 🇳🇴 Norweigan translations by @zeondev
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -322,7 +324,7 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_DESCRIPTION: "Set system description to:\n > %description%",
   OPERATION_PRONOUNS: "Set system pronouns to %pronouns%.",
   OPERATION_LATCH_DELAY: "Set latch delay to %delay%.",
-  OPERATION_FALLBACK: "Set \`%property%\` to \`%value%\`",
+  OPERATION_FALLBACK: "Set `%property%` to `%value%`",
   OPERATION_SYSTEM_TOGGLE_PROXY_TAGS: "Toggled proxy tags on the system.",
   OPERATION_SYSTEM_TOGGLE_PRONOUNS: "Toggled displaying pronouns on the system.",
   OPERATION_SYSTEM_TOGGLE_TYPING_STATUS: "Toggled typing status on the system.",
@@ -560,6 +562,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > After PluralBuddy gains data of a new message being sent, in optimal conditions, PluralBuddy can usually proxy a message <600ms. However, if you use a moderation bot that may not be that fast, you can set this delay to a higher amount.`,
   SRV_CFG_PROXY_DELAY_SEC: `> It is not recommended to go over a 1 second proxy delay.
 > This server's proxy delay currently is **{{ delay }} seconds** ({{ delayMs }}ms)`,
+  SRV_CFG_PING_MODE: "**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
   ERROR_LOG_TITLE: `## Error Log - {{ serverName }}`,
   NO_ERRORS: "{{ catJamming }}   Nice! Your server hasn't ran into any errors!",
   ERROR_TRIGGERED_BY: `Triggered by <@{{ userId }}>.`,
@@ -570,7 +573,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > Feature flags allow you to control certain smaller features used on PluralBuddy.`,
   FEATURE_D: "Disable",
   FEATURE_E: "Enable",
-  ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+  ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
   ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
 > The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
   ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",
@@ -639,7 +642,7 @@ There is an example below of what an example proxy with this role would look lik
   SELF_REACTION_DESC: "PluralBuddy was unable to remove the loading emoji when attempting to perform a [Context Menu Action](<https://pb.giftedly.dev/docs/pluralbuddy/context-actions>).",
   REACTION_ERR: "Unable to remove user reaction",
   REPLY_IN_RESPONSE: "-# {{ reply }} In response to: {{ link }}",
-  AWAKE: "Hi! I'm awake, running PluralBuddy \`{{ buildNumber }}/{{ branch }}\`.",
+  AWAKE: "Hi! I'm awake, running PluralBuddy `{{ buildNumber }}/{{ branch }}`.",
   LINK_INVITE: "Invite",
   LINK_SUPPORT: "Support",
   LINK_DOCS: "Docs",
