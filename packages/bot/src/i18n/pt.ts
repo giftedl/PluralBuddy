@@ -260,7 +260,7 @@ PluralBuddy uses a **username/display name** system.
   OPERATION_WEB: "%clock% Expira em 30 minutos • %web% Web (via Exchange)",
   OPERATION_WEB_NEXT: "%clock% expira em 30 minutos • %web% Web (via Next)",
   SERVER_TOO_BIG: "Este servidor é muito grande para usar o comando /proxy, pois está desativado por razões de segurança para servidores com mais de 30 membros. Em vez disso, use o proxying automático.",
-  OPERATION_DISCORD_AP: "Switched in %server_name% (\`%server_id%\`) • %discord% Discord",
+  OPERATION_DISCORD_AP: "Switched in %server_name% (`%server_id%`) • %discord% Discord",
   CLEARED_LATCH: "Sucesso removendo **Integrante do modo trava** em %server_name%.",
   NO_PERMISSIONS_PROXY: "Eu não posso fazer proxy aqui, uma vez que eu não tenho as permissões `Gerenciar Webhooks` e `Gerenciar mensagens` neste canal.",
   NICKNAME_MANUAL_PROXY: "Você não pode fazer proxy ja que o integrante especificado está usando o modo proxy de apelido e você não pode enviar uma mensagem normal quando usar o comando proxy manual. Em vez disso, use o proxying automático.",
@@ -288,8 +288,13 @@ PluralBuddy uses a **username/display name** system.
 **Programmed w/ :heart_hands: by @giftedly**
 -# Developed all major parts of PluralBuddy
 
+**OSS Contributions** - [PluralBuddy is Apache 2.0 licensed](https://github.com/giftedl/PluralBuddy/blob/main/LICENSE)
+-# Bot: [@LTappleseed](https://github.com/LTappleseed) (@causticdisco), [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.)
+-# Docs: [@Cosmic-Foxes](https://github.com/Cosmic-Foxes) (@cosmic.rainbow.), [@Stjernesys](https://github.com/Stjernesys) (@thatskymaridelrosynthia)
+
 **Translated on Crowdin**
 -# 🇩🇪 German translations by @mira.mizuki (thank you, fren)
+-# 🇪🇸 Spanish translations by @cosmic.rainbow.
 
 -# **LINKS**
 > -# %github% [GitHub](https://github.com) · %docs% [Docs](https://pluralbuddy.app)
@@ -555,6 +560,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > Depois que PluralBuddy adquiri dados de uma nova mensagem sendo enviada, em condições perfeitas, PluralBuddy geralmente pode fazer o proxy de uma mensagem em <600ms. No entanto, se você usar um bot de moderação que é mais devagar que <600ms, você pode definir esse atraso para um valor mais alto.`,
   SRV_CFG_PROXY_DELAY_SEC: `> Não é recomendado passar o atraso de proxy de 1 segundo.
 > O atraso do proxy deste servidor é **{{ delay }} segundos** ({{ delayMs }}ms)`,
+  SRV_CFG_PING_MODE: "**Reply Ping Mode**\n> Choose whether proxy replies preserve, always include, omit, or reverse the original ping behavior.",
   ERROR_LOG_TITLE: `## Relatório de Erros - {{ serverName }}`,
   NO_ERRORS: "{{ catJamming }}   Legal! Seu servidor não encontrou nenhum erro!",
   ERROR_TRIGGERED_BY: `Causado por <@{{ userId }}>.`,
@@ -565,7 +571,7 @@ Please download the JSON file sent to you and use the button to upload the attac
 > essa função permitem que você controle certas funcionalidades menores usadas no PluralBuddy.`,
   FEATURE_D: "Desabilitar",
   FEATURE_E: "Habilitar",
-  ROLE_TOP: "-# <@&{{ roleId }}> • ID: \`{{ roleId }}\`",
+  ROLE_TOP: "-# <@&{{ roleId }}> • ID: `{{ roleId }}`",
   ROLE_CONFIG_TITLE: `## Role Configuration - <@&{{ roleId }}>
 > The role configuration allows you to add specific containers to proxied messages indicating they are from a user with a specific role.`,
   ROLE_CONTAINER_CONTENTS_BTN: "Edit Container Contents",
