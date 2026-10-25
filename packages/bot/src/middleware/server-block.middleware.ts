@@ -62,55 +62,21 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
 		) {
 			if (ctx instanceof ComponentContext && ctx.message) {
 				(ctx.message as Message).delete().catch((_) => null);
-
-				if (
-					process.env.LIBBY_DEBUG === "true" ||
-					ctx.guildId === process.env.LIBBY_SERVER_ID
-				) {
-					const caseObj = await getApplicableCase(ctx.author.id);
-
-					if (caseObj) {
-						try {
-							await (ctx.message as Message).author.write({
-								components: new AlertView(
-									await ctx.userTranslations(),
-								).errorViewCustom(
-									(await ctx.userTranslations()).BLOCK_PC.replace(
-										"{{ libbyReasoning }}",
-										caseObj.reasoning,
-									)
-										.replace("{{ reply }}", emojis.lineRight)
-										.replace(
-											"{{ libbyExpirationDate }}",
-											caseObj.expires
-												? `<t:${Math.floor(caseObj.expires.getTime() / 1000).toString()}:R>`
-												: "Never",
-										)
-										.replace("{{ libbyCaseId }}", caseObj.blacklistId),
-								),
-								flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-							});
-						} catch (_) {}
-
-						return await middle.stop();
-					}
-				}
-
-				try {
-					await (ctx.message as Message).author.write({
-						components: new AlertView(
-							await ctx.userTranslations(),
-						).errorViewCustom(
-							(await ctx.userTranslations()).BLOCKED.replace(
-								"{{ guild }}",
-								(await ctx.guild())?.name ?? "",
-							),
-						),
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					});
-				} catch (_) {}
-				return await middle.stop();
 			}
+			try {
+				await ctx.author.write({
+					components: new AlertView(
+						await ctx.userTranslations(),
+					).errorViewCustom(
+						(await ctx.userTranslations()).BLOCKED.replace(
+							"{{ guild }}",
+							(await ctx.guild())?.name ?? "",
+						),
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			} catch (_) {}
+			return await middle.stop();
 		}
 
 	return middle.next();

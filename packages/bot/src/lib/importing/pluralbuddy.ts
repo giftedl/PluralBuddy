@@ -42,7 +42,7 @@ export async function replace(
 
 	for (const replacedAlter of newAlters) {
 		await alterCollection.replaceOne(
-			{ alterId: replacedAlter.alterId },
+			{ $and: [{ alterId: replacedAlter.alterId }, { systemId: input.existing.userId }] },
 			replacedAlter,
 		);
 	}
@@ -69,7 +69,7 @@ export async function replace(
 
 	for (const replacedTag of newTags) {
 		await tagCollection.replaceOne(
-			{ tagId: replacedTag.tagId },
+			{ $and: [{ tagId: replacedTag.tagId }, { systemId: input.existing.userId }]},
 			airgapOne(input.existing.userId, replacedTag),
 		);
 	}

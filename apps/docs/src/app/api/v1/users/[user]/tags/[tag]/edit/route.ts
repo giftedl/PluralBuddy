@@ -16,7 +16,7 @@ export const POST = createOAuthFunction<
 >(
 	{
 		bodyResolver: TagEditInput,
-		scopes: ["alters:write", "system:admin"],
+		scopes: ["tags:write", "system:admin"],
 		expectSystem: true,
 		mustMatchOAuth: true,
 	},

@@ -60,7 +60,7 @@ export const POST = createOAuthFunction<unknown, typeof CreateSystemParams>(
 			{ userId: ctx.auth.accountId },
 			{
 				userId: ctx.auth.accountId,
-				blocked: false,
+				blocked: user?.blocked ?? false,
 				storagePrefix: user?.storagePrefix ?? assetStringGeneration(8),
 				terminology: user?.terminology ?? terminologyDefaults,
 				// @ts-ignore

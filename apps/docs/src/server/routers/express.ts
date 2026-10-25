@@ -168,49 +168,49 @@ export const ExpressRouter = router({
 	// 		return {};
 	// 	}),
 
-	edit: baseProcedure
-		.input(
-			z.object({
-				alter_id: z.string(),
-				options: z.object({
-					usesContainer: z.boolean().optional().default(false),
-					profileName: z.string().optional(),
-				}),
-			}),
-		)
-		.query(async ({ input, ctx }) => {
-			const session = ctx.session;
+	// edit: baseProcedure
+	// 	.input(
+	// 		z.object({
+	// 			alter_id: z.string(),
+	// 			options: z.object({
+	// 				usesContainer: z.boolean().optional().default(false),
+	// 				profileName: z.string().optional(),
+	// 			}),
+	// 		}),
+	// 	)
+	// 	.query(async ({ input, ctx }) => {
+	// 		const session = ctx.session;
 
-			if (!session) throw new Error("Session error.");
+	// 		if (!session) throw new Error("Session error.");
 
-			const client = new MongoClient(process.env.MONGO ?? "");
-			await client.connect();
+	// 		const client = new MongoClient(process.env.MONGO ?? "");
+	// 		await client.connect();
 
-			const db = client.db(
-				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
-			);
-			const applications = db.collection<PExpressApplication>("applications");
-			const owner = await getDiscordIdBySessionId(session.user.id);
-			const application = await applications
-				.find({ owner, alterId: Number(input.alter_id) })
-				.toArray();
+	// 		const db = client.db(
+	// 			`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
+	// 		);
+	// 		const applications = db.collection<PExpressApplication>("applications");
+	// 		const owner = await getDiscordIdBySessionId(session.user.id);
+	// 		const application = await applications
+	// 			.find({ owner, alterId: Number(input.alter_id) })
+	// 			.toArray();
 
-			if (!application) throw new Error("Doesn't exist");
+	// 		if (!application) throw new Error("Doesn't exist");
 
-			if (input.options.profileName === "")
-				input.options.profileName = undefined;
+	// 		if (input.options.profileName === "")
+	// 			input.options.profileName = undefined;
 
-			await applications.updateOne(
-				{
-					$and: [{ owner }, { alterId: Number(input.alter_id) }],
-				},
-				{
-					$set: input.options,
-				},
-			);
+	// 		await applications.updateOne(
+	// 			{
+	// 				$and: [{ owner }, { alterId: Number(input.alter_id) }],
+	// 			},
+	// 			{
+	// 				$set: input.options,
+	// 			},
+	// 		);
 
-			return { ...application, ...input.options };
-		}),
+	// 		return { ...application, ...input.options };
+	// 	}),
 });
 
 function hexToBuffer(hex: string) {

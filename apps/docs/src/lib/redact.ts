@@ -16,7 +16,12 @@ export function redactAlter(
 ): Redacted<PAlter> {
 	if (!alter) return null;
 
-	if (isSelf) return alter;
+	if (isSelf) return {
+		...alter,
+		fields: {
+			[clientId]: alter.fields[clientId],
+		},
+	};
 
 	if (!has(AlterProtectionFlags.VISIBILITY, alter.public)) {
 		return { redacted: true };
