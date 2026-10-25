@@ -37,6 +37,8 @@ export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
 export let analyticsCollection: Collection<PAnalytics>;
 
+const readOnly = true;
+
 export async function setupMongoDB() {
 	mongoClient = new MongoClient(process.env.MONGO ?? "");
 
@@ -105,6 +107,8 @@ export async function setupDatabases() {
 	frontsCollection = mainDb.collection("fronts");
 	importTranscriptCollection = mainDb.collection("import-transcripts");
 
-	await createPeriodicExpirationDates();
-	await setValidation();
+	if (!readOnly) {
+		await createPeriodicExpirationDates();
+		await setValidation();
+	}
 }

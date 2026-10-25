@@ -33,6 +33,8 @@ const options = {
 	}),
 };
 
+const publicAlterModeOnly = true;
+
 @Declare({
 	name: "alter",
 	description: "Query an alter",
@@ -54,7 +56,7 @@ export default class SystemCommand extends Command {
 
 		let query = null;
 		const userAlterMatch = /^(\d+)\/(.+)$/.exec(alterName);
-		if (userAlterMatch) {
+		if (userAlterMatch && !publicAlterModeOnly) {
 			// If format is <user-id>/<alter>, query from another system
 			const [_, otherSystemId, otherAlterName] = userAlterMatch;
 			query = alterCollection.findOne({
@@ -69,27 +71,49 @@ export default class SystemCommand extends Command {
 				// Otherwise, query for current user's alters
 				query = Number.isNaN(Number.parseInt(alterName))
 					? ((await alterCollection.findOne({
-							username: alterName,
-
-							systemId,
+							$and: [
+								{
+									username: alterName,
+								},
+								{
+									systemId,
+								},
+							],
 						})) ??
 						(await alterCollection.findOne({
-							username: { $regex: new RegExp(alterName, "i") },
-							systemId,
+							$and: [
+								{
+									username: { $regex: new RegExp(alterName, "i") },
+								},
+								{
+									systemId,
+								},
+							],
 						})))
 					: ((await alterCollection.findOne({
-							$or: [
-								{ username: { $regex: new RegExp(alterName, "i") } },
-								{ alterId: Number(alterName) },
+							$and: [
+								{
+									$or: [
+										{ username: { $regex: new RegExp(alterName, "i") } },
+										{ alterId: Number(alterName) },
+									],
+								},
+
+								{ systemId },
 							],
-							systemId,
 						})) ??
 						(await alterCollection.findOne({
-							$or: [
-								{ username: { $regex: new RegExp(alterName, "i") } },
-								{ alterId: Number(alterName) },
+							$and: [
+								{
+									$or: [
+										{ username: { $regex: new RegExp(alterName, "i") } },
+										{ alterId: Number(alterName) },
+									],
+								},
+								{
+									systemId,
+								},
 							],
-							systemId,
 						})));
 			} catch (_) {
 				return await ctx.ephemeral(

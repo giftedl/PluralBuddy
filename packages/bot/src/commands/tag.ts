@@ -52,15 +52,22 @@ export default class TagCommand extends Command {
 			// Otherwise, query for current user's tags
 			query = Number.isNaN(Number.parseInt(tagFriendlyName))
 				? tagCollection.findOne({
-						$or: [{ tagFriendlyName: tagFriendlyName }],
-						systemId,
+						$and: [
+							{
+								$or: [{ tagFriendlyName: tagFriendlyName }],
+							},
+							{ systemId },
+						],
 					})
 				: tagCollection.findOne({
+						$and: [
+							{
 						$or: [
 							{ tagFriendlyName: tagFriendlyName },
 							{ tagId: tagFriendlyName },
 						],
-						systemId,
+					}, {
+						systemId,}]
 					});
 		}
 		const tag = await query;
