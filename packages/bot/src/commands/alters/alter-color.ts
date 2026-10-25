@@ -73,7 +73,7 @@ export default class EditAlterColorCommand extends SubCommand {
 
 		if (color === undefined) {
 			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
+				{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 				{ $set: { color: null } },
 			);
 
@@ -109,7 +109,7 @@ export default class EditAlterColorCommand extends SubCommand {
 		}
 
 		await alterCollection.updateOne(
-			{ alterId: alter.alterId },
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{ $set: { color } },
 		);
 

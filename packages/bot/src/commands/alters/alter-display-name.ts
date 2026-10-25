@@ -129,7 +129,7 @@ ${alter.displayName}
 			if (nameMapHasServer) {
 				// Update the name for this server using $[<identifier>] and pass arrayFilters outside $set
 				await alterCollection.updateOne(
-					{ alterId: Number(alter.alterId), systemId },
+					{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 					{
 						$set: {
 							"nameMap.$[serverEntry].name": alterNewName as string,
@@ -150,7 +150,7 @@ ${alter.displayName}
 			} else {
 				// Append a new mapping to the nameMap array
 				await alterCollection.updateOne(
-					{ alterId: Number(alter.alterId), systemId },
+					{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 					{
 						$push: {
 							nameMap: {
@@ -180,7 +180,7 @@ ${alter.displayName}
 		} else {
 			// Not server specific
 			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
+				{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 				{ $set: { displayName: alterNewName } },
 			);
 

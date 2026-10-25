@@ -85,7 +85,7 @@ ${alter.description ?? "⛔ Your alter has no description."}
 		}
 
 		await alterCollection.updateOne(
-			{ alterId: alter.alterId },
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{ $set: { description: alterDescription } },
 		);
 

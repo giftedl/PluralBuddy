@@ -48,8 +48,14 @@ export const POST = createOAuthFunction<
 
 		await ctx.frontCollection.replaceOne(
 			{
-				clientId: ctx.auth.clientId,
-				systemId: ctx.auth.accountId,
+				$and: [
+					{
+						clientId: ctx.auth.clientId,
+					},
+					{
+						systemId: ctx.auth.accountId,
+					},
+				],
 			},
 			{
 				clientId: ctx.auth.clientId,

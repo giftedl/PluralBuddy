@@ -98,7 +98,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 
 			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
+				{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 				{ $set: { banner: null } },
 			);
 
@@ -173,7 +173,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 
 		await alterCollection.updateOne(
-			{ alterId: alter.alterId },
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{ $set: { banner: attachmentText } },
 		);
 

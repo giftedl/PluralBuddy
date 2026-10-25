@@ -72,7 +72,7 @@ export default class EditAlterNameCommand extends SubCommand {
 		}
 
 		await alterCollection.updateOne(
-			{ alterId: alter.alterId },
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{ $set: { username: alterNewName } },
 		);
 

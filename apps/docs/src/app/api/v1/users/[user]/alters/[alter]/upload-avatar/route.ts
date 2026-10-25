@@ -65,8 +65,14 @@ export const POST = createOAuthFunction<
 
 		await ctx.alterCollection.updateOne(
 			{
-				alterId: Number(ctx.urlData.params.alter),
-				systemId: ctx.auth.accountId,
+				$and: [
+					{
+						alterId: Number(ctx.urlData.params.alter),
+					},
+					{
+						systemId: ctx.auth.accountId,
+					},
+				],
 			},
 			{
 				$set: {

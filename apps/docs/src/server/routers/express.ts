@@ -174,7 +174,7 @@ export const ExpressRouter = router({
 				alter_id: z.string(),
 				options: z.object({
 					usesContainer: z.boolean().optional().default(false),
-					profileName: z.string().optional()
+					profileName: z.string().optional(),
 				}),
 			}),
 		)
@@ -202,8 +202,7 @@ export const ExpressRouter = router({
 
 			await applications.updateOne(
 				{
-					owner,
-					alterId: Number(input.alter_id),
+					$and: [{ owner }, { alterId: Number(input.alter_id) }],
 				},
 				{
 					$set: input.options,

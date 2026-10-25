@@ -85,7 +85,7 @@ ${alter.pronouns ?? "⛔ Your alter has no pronouns."}
 		}
 
 		await alterCollection.updateOne(
-			{ alterId: alter.alterId },
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{ $set: { pronouns: alterPronouns } },
 		);
 

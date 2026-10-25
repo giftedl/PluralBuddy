@@ -116,11 +116,11 @@ export default class AssignTag extends SubCommand {
 		}
 
 		await alterCollection.updateOne(
-			{ alterId: alter.alterId, systemId },
+			{ $and: [{ alterId: alter.alterId,}, { systemId }]},
 			{ $push: { tagIds: tag.tagId } },
 		);
 		await tagCollection.updateOne(
-			{ tagId: tag.tagId, systemId },
+			{ $and: [{ tagId: tag.tagId }, { systemId }] },
 			{ $push: { associatedAlters: alter.alterId.toString() } },
 		);
 

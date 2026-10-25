@@ -68,7 +68,7 @@ export default class ConfigureAlter extends ComponentCommand {
 			});
 		}
 
-		await tagCollection.deleteOne({ tagId: tag.tagId });
+		await tagCollection.deleteOne({ tagId: tag.tagId, systemId: systemId });
 		await userCollection.updateOne(
 			{ userId: ctx.author.id },
 			{ $pull: { "system.tagIds": tag.tagId } },

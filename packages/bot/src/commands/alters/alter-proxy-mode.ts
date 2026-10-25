@@ -87,7 +87,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
 		}
 
 		await alterCollection.updateOne(
-			{ alterId: Number(alter.alterId), systemId },
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{
 				$set: {
 					alterMode: alterProxy,

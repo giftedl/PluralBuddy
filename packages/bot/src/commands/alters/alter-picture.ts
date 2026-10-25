@@ -115,7 +115,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 				});
 
 			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
+				{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 				{
 					$set:
 						se && ctx.guildId
@@ -209,7 +209,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			});
 
 		await alterCollection.updateOne(
-			{ alterId: alter.alterId },
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{
 				$set:
 					se && ctx.guildId
