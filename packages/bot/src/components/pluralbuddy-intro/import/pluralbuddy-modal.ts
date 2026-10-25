@@ -15,7 +15,6 @@ import { createRandomId } from "@/lib/random-id";
 import { ImportNotation } from "@/lib/export";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection, tagCollection } from "@/mongodb";
-import { PSystemObject } from "@/types/system";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";

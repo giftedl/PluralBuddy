@@ -1,0 +1,115 @@
+name: Deploy Bot
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - gh-deploying
+    paths:
+      - packages/bot/**
+      - packages/plurography/**
+      - infra/*
+
+permissions:
+  packages: write
+
+jobs:
+  commit-hash:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_hash: ${{ steps.get_commit.outputs.commit_hash }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get commit hash
+        id: get_commit
+        run: echo "::set-output name=commit_hash::$(git rev-parse HEAD)"
+    
+  build-and-push-image:
+    needs: 
+      - commit-hash
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+      
+      - name: downcase REPO
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY@L}" >> "${GITHUB_ENV}"
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        if: github.ref == 'refs/heads/main'
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO }}/bot:latest
+            ghcr.io/${{ env.REPO }}/bot:${{ needs.commit-hash.outputs.commit_hash }}
+          build-args: GIT_COMMIT=${{ github.sha }} 
+
+      - name: Build and push Docker image (as PR/branch)
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        if: github.ref != 'refs/heads/main'
+        with:
+          context: .
+          push: false
+          tags: |
+            ghcr.io/${{ env.REPO }}/bot:latest-${{ github.head_ref }}
+            ghcr.io/${{ env.REPO }}/bot:${{ needs.commit-hash.outputs.commit_hash }}
+          build-args: GIT_COMMIT=${{ github.sha }} 
+          
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: 
+      - commit-hash
+      - build-and-push-image
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TS_AUTHKEY }}
+
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DOCKER_SSH_KEY }}
+
+      - name: Add remote server to known_hosts
+        run: |
+          ssh-keyscan -t rsa ${{ secrets.DOCKER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Replace infra files & build compose
+        id: vars
+        run: |
+          scp -r infra/* ${{ secrets.DOCKER_USER }}@${{ secrets.DOCKER_HOST }}:infra
+          ssh ${{ secrets.DOCKER_USER }}@${{ secrets.DOCKER_HOST }} << 'EOF'
+            cd infra
+            docker compose pull bot
+            docker compose up -d
+            docker container stop pluralbuddy-bot
+            docker container rm pluralbuddy-bot
+            docker compose up -d --remove-orphans
+          EOF
