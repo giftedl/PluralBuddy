@@ -39,7 +39,9 @@ export default class DeleteAlterCommand extends SubCommand {
 		const alter =
 			ctx.contextAlter() ??
 			(await (Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+				? alterCollection.findOne({
+						$and: [{ $or: [{ username: alterName }] }, { systemId }],
+					})
 				: alterCollection.findOne({
 						$or: [{ username: alterName }, { alterId: Number(alterName) }],
 						systemId,

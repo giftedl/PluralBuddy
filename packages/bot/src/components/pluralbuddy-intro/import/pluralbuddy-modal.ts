@@ -19,6 +19,7 @@ import { PSystemObject } from "@/types/system";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
+import { airgap, airgapSystem } from "@/lib/airgap-database";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -168,12 +169,13 @@ export default class PluralBuddyImportModal extends ModalCommand {
 		data.system.tagIds = newTags.map((v) => v.tagId);
 
 		if (patchedAlters.length > 0)
-			await alterCollection.insertMany(patchedAlters);
-		if (newTags.length > 0) await tagCollection.insertMany(newTags);
+			await alterCollection.insertMany(airgap(ctx.author.id, patchedAlters));
+		if (newTags.length > 0)
+			await tagCollection.insertMany(airgap(ctx.author.id, newTags));
 
 		await writeUserById(ctx.author.id, {
 			...(await getUserById(ctx.author.id)),
-			system: data.system,
+			system: airgapSystem(ctx.author.id, data.system),
 		});
 
 		await ctx.editOrReply({

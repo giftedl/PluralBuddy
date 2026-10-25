@@ -31,6 +31,7 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { type PSystem, PSystemObject } from "@/types/system";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
+import { airgap } from "@/lib/airgap-database";
 
 export default class PluralBuddyImportModal extends ModalCommand {
 	override filter(ctx: ModalContext) {
@@ -305,14 +306,14 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			.filter((v) => v.success)
 			.map((v) => v.data.tagId);
 			
-		const newExport = new PluralKitConverter().toImport(parsed.data);
+		const newExport = new PluralKitConverter().toImport(parsed.data, ctx.author.id);
 
 		if (parsedSafe.filter((v) => v.zodData.success).length !== 0)
 			await alterCollection.insertMany(
-				newExport.alters
+				airgap(ctx.author.id, newExport.alters)
 			);
 		if (parsedGroupsSafe.filter((v) => v.success).length !== 0)
-			await tagCollection.insertMany(newExport.tags);
+			await tagCollection.insertMany(airgap(ctx.author.id, newExport.tags));
 
 
 		await writeUserById(ctx.author.id, {

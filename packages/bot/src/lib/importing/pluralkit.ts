@@ -13,6 +13,7 @@ import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { combine } from "../privacy-bitmask";
 import { createRandomId } from "../random-id";
 import { ImportEntry, ImportOutput } from ".";
+import { airgap, airgapOne } from "../airgap-database";
 
 const PluralKitImportEntry = z.object({
 	existing: ImportEntry,
@@ -108,7 +109,7 @@ export async function replace(
 						),
 						avatarUrlMap: {},
 						flags: 0,
-						fields: {}
+						fields: {},
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},
@@ -119,8 +120,13 @@ export async function replace(
 		.map((c) => c.zodData)
 		.filter((v) => v.data !== undefined)) {
 		await alterCollection.replaceOne(
-			{ alterId: replacedAlter.data?.alterId },
-			replacedAlter.data,
+			{
+				$and: [
+					{ systemId: existing.userId },
+					{ alterId: replacedAlter.data?.alterId },
+				],
+			},
+			airgapOne(existing.userId, replacedAlter.data),
 		);
 	}
 
@@ -161,7 +167,7 @@ export async function replace(
 								: []),
 						],
 					),
-					fields: {}, 
+					fields: {},
 				} satisfies PTag),
 		)
 		.filter((res) => res !== false);
@@ -170,8 +176,13 @@ export async function replace(
 		(v) => v.data !== undefined,
 	))
 		await tagCollection.replaceOne(
-			{ tagId: replacedTag.data?.tagId },
-			replacedTag.data,
+			{
+				$and: [
+					{ systemId: existing.userId },
+					{ tagId: replacedTag.data?.tagId },
+				],
+			},
+			airgapOne(existing.userId, replacedTag.data),
 		);
 
 	return ImportOutput.parse({
@@ -265,7 +276,7 @@ export async function add(
 						),
 						avatarUrlMap: {},
 						flags: 0,
-						fields: {}
+						fields: {},
 					} satisfies PAlter),
 					originalPkId: member.id,
 				},
@@ -275,7 +286,8 @@ export async function add(
 		.filter((v) => v.data !== undefined)
 		.map((v) => v.data);
 
-	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
+	if (newAlters.length > 0)
+		await alterCollection.insertMany(airgap(input.existing.userId, newAlters));
 
 	const newTags = pk.groups
 		.filter((v) =>
@@ -320,7 +332,8 @@ export async function add(
 	if (newTags.length + input.existing.tags.length >= 1000)
 		throw new Error("Too many tags");
 
-	if (newTags.length > 0) await tagCollection.insertMany(newTags);
+	if (newTags.length > 0)
+		await tagCollection.insertMany(airgap(existing.userId, newTags));
 
 	await userCollection.updateOne(
 		{
@@ -381,7 +394,12 @@ export async function deleteM(
 	);
 
 	await alterCollection.deleteMany({
-		alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
+		$and: [
+			{
+				alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
+			},
+			{ systemId: input.existing.userId },
+		],
 	});
 
 	const pendingDeletedTags = input.existing.tags.filter((v) =>
@@ -389,7 +407,14 @@ export async function deleteM(
 	);
 
 	await tagCollection.deleteMany({
-		tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
+		$and: [
+			{
+				systemId: input.existing.userId,
+			},
+			{
+				tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
+			},
+		],
 	});
 
 	await userCollection.updateOne(

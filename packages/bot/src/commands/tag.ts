@@ -62,12 +62,15 @@ export default class TagCommand extends Command {
 				: tagCollection.findOne({
 						$and: [
 							{
-						$or: [
-							{ tagFriendlyName: tagFriendlyName },
-							{ tagId: tagFriendlyName },
+								$or: [
+									{ tagFriendlyName: tagFriendlyName },
+									{ tagId: tagFriendlyName },
+								],
+							},
+							{
+								systemId,
+							},
 						],
-					}, {
-						systemId,}]
 					});
 		}
 		const tag = await query;

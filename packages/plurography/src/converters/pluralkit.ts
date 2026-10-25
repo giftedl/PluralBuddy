@@ -31,9 +31,9 @@ export default class PluralKitConverter
 			import: PluralKitSystemType;
 		}>
 {
-	to(system: PluralKitSystemType): PSystem {
+	to(system: PluralKitSystemType, forceUserId?: string): PSystem {
 		return PSystemObject.parse({
-			associatedUserId: String(system.accounts[0]),
+			associatedUserId: String(forceUserId),
 			systemName: system.name ?? "Untitled System",
 			systemAvatar: system.avatar_url ?? undefined,
 			systemBanner: system.banner ?? undefined,
@@ -434,14 +434,14 @@ export default class PluralKitConverter
 		} satisfies Partial<z.infer<typeof PluralKitGroup>>;
 	}
 
-	toImport(data: PluralKitSystemType): z.infer<typeof ImportNotation> {
+	toImport(data: PluralKitSystemType, forceUserId?: string): z.infer<typeof ImportNotation> {
 		let alters = data.members.map((v, i) =>
-			this.toAlter(v, i, String(data.accounts[0])),
+			this.toAlter(v, i, String(forceUserId)),
 		);
 		let tags = data.groups.map((v, i) =>
-			this.toTag(v, i, String(data.accounts[0])),
+			this.toTag(v, i, String(forceUserId)),
 		);
-		const systemData = this.to(data);
+		const systemData = this.to(data, forceUserId);
 
 		systemData.alterIds = alters.map((v) => v.alterId);
 		systemData.tagIds = tags.map((v) => v.tagId);

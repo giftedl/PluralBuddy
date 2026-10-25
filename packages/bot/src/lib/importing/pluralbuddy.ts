@@ -9,6 +9,7 @@ import z from "zod";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { createRandomId } from "../random-id";
 import { ImportEntry, ImportOutput } from ".";
+import { airgap, airgapOne } from "../airgap-database";
 
 const PluralBuddyImportEntry = z.object({
 	existing: ImportEntry,
@@ -67,7 +68,10 @@ export async function replace(
 		);
 
 	for (const replacedTag of newTags) {
-		await tagCollection.replaceOne({ tagId: replacedTag.tagId }, replacedTag);
+		await tagCollection.replaceOne(
+			{ tagId: replacedTag.tagId },
+			airgapOne(input.existing.userId, replacedTag),
+		);
 	}
 
 	return ImportOutput.parse({
@@ -135,8 +139,10 @@ export async function add(
 
 	console.log(newAlters.length);
 
-	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
-	if (newTags.length > 0) await tagCollection.insertMany(newTags);
+	if (newAlters.length > 0)
+		await alterCollection.insertMany(airgap(input.existing.userId, newAlters));
+	if (newTags.length > 0)
+		await tagCollection.insertMany(airgap(input.existing.userId, newTags));
 
 	await userCollection.updateOne(
 		{
@@ -189,7 +195,12 @@ export async function deleteM(
 	);
 
 	await alterCollection.deleteMany({
-		alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
+		$and: [
+			{
+				alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
+			},
+			{ systemId: input.existing.userId }
+		],
 	});
 
 	const pendingDeletedTags = input.existing.tags.filter((v) =>
@@ -197,7 +208,14 @@ export async function deleteM(
 	);
 
 	await tagCollection.deleteMany({
-		tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
+		$and: [
+			{
+				tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
+			},
+			{
+				systemId: input.existing.userId,
+			},
+		],
 	});
 	await userCollection.updateOne(
 		{
