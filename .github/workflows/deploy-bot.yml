@@ -10,6 +10,7 @@ on:
       - packages/bot/**
       - packages/plurography/**
       - infra/*
+      - .github/workflows/deploy-bot.yml
 
 permissions:
   packages: write
@@ -89,7 +90,8 @@ jobs:
       - name: Tailscale
         uses: tailscale/github-action@v4
         with:
-          authkey: ${{ secrets.TS_AUTHKEY }}    
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          audience: ${{ secrets.TS_AUDIENCE }}
           tags: tag:ci
 
       - name: Set up SSH
