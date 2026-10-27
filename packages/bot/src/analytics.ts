@@ -79,21 +79,6 @@ export async function gatherStatisticalData() {
 	});
 }
 
-// export function startUptimeHeartbeat(client: UsingClient) {
-// 	const url = process.env.UPTIME_KUMA_PUSH_URL;
-// 	if (!url) return;
-
-// 	setInterval(() => {
-// 		const shards = [...client.gateway.values()];
-
-// 		if (shards.length === 0 || !shards.every((shard) => shard.isOpen)) return;
-
-// 		fetch(
-// 			`${url}?status=up&msg=OK&ping=${Math.round(client.gateway.latency)}`,
-// 		).catch((O_o) => {});
-// 	}, 1000 * 30);
-// }
-
 export function startStatisticalTimer() {
 	(async () => {
 		await gatherStatisticalData();
