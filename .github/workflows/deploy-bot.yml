@@ -89,8 +89,8 @@ jobs:
       - name: Tailscale
         uses: tailscale/github-action@v4
         with:
-          authkey: ${{ secrets.TS_AUTHKEY }}
-
+          authkey: ${{ secrets.TS_AUTHKEY }}    
+          tags: tag:ci
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
