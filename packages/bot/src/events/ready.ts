@@ -1,4 +1,4 @@
-import { startStatisticalTimer, startUptimeHeartbeat } from "@/analytics";
+import { startStatisticalTimer } from "@/analytics";
 import { initializeApplicationCommands } from "@/lib/mention-command";
 import { analyticsCollection } from "@/mongodb";
 import { createEvent } from "seyfert";
@@ -11,6 +11,6 @@ export default createEvent({
 
 		// The env is not needed for DEV.
 		// This is production only.
-		startUptimeHeartbeat(client);
+		// startUptimeHeartbeat(client);
 	},
 });
