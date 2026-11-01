@@ -37,7 +37,7 @@ export default class TagCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { "tag-name": tagFriendlyName } = ctx.options;
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 
 		let query = null;
 		const userTagMatch = /^(\d+)\/(.+)$/.exec(tagFriendlyName);
@@ -113,9 +113,9 @@ export default class TagCommand extends Command {
 				components: [
 					...new TagView(await ctx.userTranslations()).tagProfileView(
 						tag,
-						tag.systemId !== ctx.author.id,
+						tag.systemId !== await ctx.systemId(),
 					),
-					...(tag.systemId === ctx.author.id
+					...(tag.systemId === await ctx.systemId()
 						? new TagView(await ctx.userTranslations()).tagConfigureButton(tag)
 						: []),
 				],

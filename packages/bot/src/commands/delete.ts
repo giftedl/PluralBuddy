@@ -29,7 +29,7 @@ export default class DeleteCommand extends Command {
 			?.referencedMessage?.id;
 		const message = await messagesCollection.findOneAndDelete(
 			{
-				systemId: ctx.author.id,
+				systemId: await ctx.systemId(),
 				channelId: ctx.channelId,
 				...(referencedMessageId ? { messageId: referencedMessageId } : {}),
 			},
@@ -48,7 +48,7 @@ export default class DeleteCommand extends Command {
 		const { messageId } = message;
 
 		if (
-			message?.systemId !== ctx.author.id ||
+			message?.systemId !== await ctx.systemId() ||
 			message.guildId !== ctx.guildId
 		) {
 			return await ctx.editResponse({

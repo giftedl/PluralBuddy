@@ -78,7 +78,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			"alter-avatar-text": attachmentText,
 			se,
 		} = ctx.options;
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 
 		if (se && ctx.guildId === undefined) {
 			return await ctx.editResponse({
