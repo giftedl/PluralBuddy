@@ -29,6 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { AvatarCard } from "./avatar-card";
 import { DestructiveCard } from "./destructive-card";
+import { AccountLinksCard } from "./account-links-card";
 
 export default function ProfilePage() {
 	const trpcClient = useTRPCClient();
@@ -69,17 +70,20 @@ export default function ProfilePage() {
 			</Card>
 
 			{data?.noSystem !== undefined || data === undefined ? (
-				<Empty className="border border-dashed">
-					<EmptyHeader>
-						<EmptyMedia variant="icon">
-							<Cloud />
-						</EmptyMedia>
-						<EmptyTitle>No System</EmptyTitle>
-						<EmptyDescription>
-							Create a system on Discord to manage your entire system.
-						</EmptyDescription>
-					</EmptyHeader>
-				</Empty>
+				<>
+					<Empty className="border border-dashed">
+						<EmptyHeader>
+							<EmptyMedia variant="icon">
+								<Cloud />
+							</EmptyMedia>
+							<EmptyTitle>No System</EmptyTitle>
+							<EmptyDescription>
+								Create a system on Discord to manage your entire system.
+							</EmptyDescription>
+						</EmptyHeader>
+					</Empty>
+					<AccountLinksCard />
+				</>
 			) : (
 				<div className="max-md:space-y-3 items-center gap-6 w-full">
 					<Card className="w-full mb-4">
@@ -92,6 +96,7 @@ export default function ProfilePage() {
 					</Card>
 					<Separator className="mb-4" />
 					<div className="space-y-4">
+						<AccountLinksCard />
 						<AvatarCard data={data} sessionData={sessionData} />
 						<ProfileCard data={data} />
 					</div>
