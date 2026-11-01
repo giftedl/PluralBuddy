@@ -104,14 +104,14 @@ ${z.prettifyError(tag.error)}
 		writeBack({
 			type: "create-tag",
 			id: String(tag.data.tagId),
-			change: {...tag.data, userId: user.userId},
+			change: {...tag.data, userId: user.system.associatedUserId},
 			syncConfig: user.syncConfiguration,
 		});
 
-		w(ctx.author.id, "tag.create", {
+		w(user.system.associatedUserId, "tag.create", {
 			tag: tag.data,
 			type: "tag.create",
-			userId: ctx.author.id
+			userId: user.system.associatedUserId
 		})
 
 		await ctx.editOrReply({

@@ -27,8 +27,21 @@ export default class ConfigureSystem extends ComponentCommand {
 			InteractionIdentifier.Systems.ConfigurePublicProfile.substring(
 				ctx.customId,
 			)[0];
+		const user = await ctx.retrievePUser();
 
-		if (ctx.author.id !== originalUserId) {
+		if (user.system === undefined) {
+			return await ctx.editOrReply({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_SYSTEM_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+
+		if (
+			ctx.author.id !== originalUserId &&
+			!(user.system.verifiedSubAccounts ?? []).includes(ctx.author.id)
+		) {
 			return ctx.editOrReply({
 				components: [
 					new Container().setComponents(
@@ -38,17 +51,6 @@ export default class ConfigureSystem extends ComponentCommand {
 					),
 				],
 				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
-
-		const user = await ctx.retrievePUser();
-
-		if (user.system === undefined) {
-			return await ctx.editOrReply({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			});
 		}
 

@@ -1,5 +1,5 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { writeUserById } from "@/types/user";
+import { writePersonalSettingsById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { NudgePreferences } from "@/views/nudge-preferences";
 import { ComponentCommand, type ComponentContext } from "seyfert";
@@ -20,7 +20,7 @@ export default class AddUserBlockListNudge extends ComponentCommand {
 		)[0];
 		const user = await ctx.retrievePUser();
 
-		await writeUserById(user.userId, {
+		await writePersonalSettingsById(ctx.author.id, {
 			...user,
 			nudging: { ...user.nudging, dmReply: !user.nudging.dmReply },
 		});

@@ -141,7 +141,7 @@ export async function runStatusCommand(
 	) {
 		const fronts = await frontsCollection.findOne({
 			aiapId: currentAp?.autoproxyMode,
-			systemId: ctx.author.id,
+			systemId: await ctx.systemId(),
 		});
 		alterId = fronts?.alterId;
 		const appDb = mongoClient.db(process.env.WEBSITE_DB ?? "");
@@ -158,7 +158,7 @@ export async function runStatusCommand(
 		(alterId ?? currentAp.autoproxyAlter) !== undefined
 			? await alterCollection.findOne({
 					alterId: Number(alterId ?? currentAp.autoproxyAlter),
-					systemId: ctx.author.id,
+					systemId: await ctx.systemId(),
 				})
 			: null;
 

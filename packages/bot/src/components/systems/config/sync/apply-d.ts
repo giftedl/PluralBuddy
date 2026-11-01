@@ -54,7 +54,7 @@ export default class SetPronounsButton extends ComponentCommand {
 			)[0];
 		const alterOperation = await importTranscriptCollection.findOne({
 			_id: new ObjectId(id),
-			userId: ctx.author.id,
+			userId: await ctx.systemId(),
 		});
 
 		if (!id || !alterOperation) {
@@ -162,7 +162,10 @@ export default class SetPronounsButton extends ComponentCommand {
 				systemId: alterOperation.userId,
 			});
 
-		await userCollection.updateOne({ userId: ctx.author.id }, { $set: { "system": alterOperation.system.nondestructive } })
+		await userCollection.updateOne(
+			{ userId: await ctx.systemId() },
+			{ $set: { system: alterOperation.system.nondestructive } },
+		);
 
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
@@ -178,7 +181,7 @@ export default class SetPronounsButton extends ComponentCommand {
 
 		await importTranscriptCollection.deleteOne({ _id: new ObjectId(id) });
 		await userCollection.updateOne(
-			{ userId: ctx.author.id },
+			{ userId: await ctx.systemId() },
 			{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
 		);
 

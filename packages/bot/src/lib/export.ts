@@ -42,7 +42,7 @@ export async function buildExportPayload(system: PSystem) {
 		.toArray();
 
 	return JSON.stringify({
-		system,
+		system: { ...system, verifiedSubAccounts: [] },
 		alters,
 		tags,
 	});

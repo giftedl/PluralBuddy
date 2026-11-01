@@ -57,9 +57,9 @@ export default class DeleteSystemButton extends ComponentCommand {
 
 		await deleteAssetPrefix(user.storagePrefix);
 
-		await userCollection.deleteOne({ userId: ctx.author.id });
-		await alterCollection.deleteMany({ systemId: ctx.author.id });
-		await tagCollection.deleteMany({ systemId: ctx.author.id });
+		await userCollection.deleteOne({ userId: user.userId });
+		await alterCollection.deleteMany({ systemId: await ctx.systemId() });
+		await tagCollection.deleteMany({ systemId: await ctx.systemId() });
 
 		return await ctx.editOrReply({
 			components: new AlertView(await ctx.userTranslations()).successView(

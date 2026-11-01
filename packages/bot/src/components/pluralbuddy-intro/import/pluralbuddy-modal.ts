@@ -174,7 +174,12 @@ export default class PluralBuddyImportModal extends ModalCommand {
 
 		await writeUserById(ctx.author.id, {
 			...(await getUserById(ctx.author.id)),
-			system: airgapSystem(ctx.author.id, {...data.system, systemAutoproxy: [], subAccounts: []}),
+			system: airgapSystem(ctx.author.id, {
+				...data.system,
+				systemAutoproxy: [],
+				subAccounts: [],
+				verifiedSubAccounts: [],
+			}),
 		});
 
 		await ctx.editOrReply({

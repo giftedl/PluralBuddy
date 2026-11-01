@@ -19,7 +19,7 @@ export default class ConfigureAlter extends ComponentCommand {
 				ctx.customId,
 			)[0];
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = tagCollection.findOne({
 			tagId,
 			systemId,
@@ -36,7 +36,7 @@ export default class ConfigureAlter extends ComponentCommand {
 		}
 		await tagCollection.deleteOne({ tagId: tag.tagId, systemId: systemId });
 		await userCollection.updateOne(
-			{ userId: ctx.author.id },
+			{ userId: systemId },
 			{ $pull: { "system.tagIds": tag.tagId } },
 		);
 
