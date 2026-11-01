@@ -96,8 +96,8 @@ export const PSystemObject = z
 			.default(0),
 		disabledGuilds: z.string().array().optional().default([]),
 
-		/** WIP */
 		subAccounts: z.array(z.string()).default([]).optional(),
+		verifiedSubAccounts: z.array(z.string()).max(2).default([]),
 		disabled: z.boolean().default(false),
 	})
 	.meta({ id: "PSystem" });
