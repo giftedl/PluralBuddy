@@ -2,7 +2,7 @@ import z from "zod";
 import { baseProcedure } from "../init";
 import { router } from "../trpc";
 import { MongoClient } from "mongodb";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
+import { getSystemIdBySessionId } from "@/lib/discord-id";
 import { PAlter, PExpressApplication } from "plurography";
 import { APIApplication, APIUser } from "discord-api-types/v10";
 import { decryptExpressToken } from "@/lib/express-token-encryption";
@@ -30,7 +30,7 @@ export const AlterRouter = router({
 			);
 			const alters = db.collection<PAlter>("alters");
 			const applications = db.collection<PAlter>("applications");
-			const owner = await getDiscordIdBySessionId(session.user.id);
+			const owner = await getSystemIdBySessionId(session.user.id);
 			const altersList = await alters
 				.find({
 					systemId: owner,
@@ -72,7 +72,7 @@ export const AlterRouter = router({
         );
         const alters = db.collection<PAlter>("alters");
         const applications = db.collection<PExpressApplication>("applications");
-        const owner = await getDiscordIdBySessionId(session.user.id);
+        const owner = await getSystemIdBySessionId(session.user.id);
         const alter = await alters.findOne({ alterId: Number(input.id), systemId: owner });
     
         if (!alter) return null;
