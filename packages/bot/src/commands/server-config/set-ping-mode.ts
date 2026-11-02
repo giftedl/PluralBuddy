@@ -1,7 +1,7 @@
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { guildCollection } from "@/mongodb";
 import { ServerConfigView } from "@/views/server-cfg";
-import { Command, Middlewares, type CommandContext, type Options, OptionsBuilder } from "seyfert";
+import { Command, Declare, Middlewares, type CommandContext, OptionsBuilder } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
 
@@ -27,12 +27,13 @@ const options = {
 };
 
 @Middlewares(["ensureGuildPermissions"])
+@Declare({
+    name: "set-ping-mode",
+    description: "Set the ping mode for this server",
+    options,
+})
 export default class SetPingModeSlash extends Command {
-    name = "set-ping-mode";
-    description = "Set the ping mode for this server";
-    options = options;
-
-    override async run(ctx: CommandContext<typeof this.options>) {
+    override async run(ctx: CommandContext<typeof options>) {
         const pingMode = pingModeSchema.parse(ctx.options.mode);
         const guild = await ctx.retrievePGuild();
 
