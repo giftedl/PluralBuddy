@@ -11,7 +11,10 @@ import { build, client, logger } from "@/index";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { pk } from "@/lib/pk-api";
-import { clearProxyCacheIfNeeded, runSandboxActions } from "@/lib/pk-sync-engine";
+import {
+	clearProxyCacheIfNeeded,
+	runSandboxActions,
+} from "@/lib/pk-sync-engine";
 import { decryptToken } from "@/lib/pk-token-encryption";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
@@ -43,9 +46,9 @@ export default class QuickSync extends ComponentCommand {
 			syncConfiguration?.pluralkit?.token === undefined
 				? null
 				: await decryptToken(
-					syncConfiguration.pluralkit.token.i,
-					syncConfiguration.pluralkit.token.v,
-				);
+						syncConfiguration.pluralkit.token.i,
+						syncConfiguration.pluralkit.token.v,
+					);
 
 		if (!token) return await ctx.deferUpdate();
 
@@ -62,7 +65,7 @@ export default class QuickSync extends ComponentCommand {
 		const system = await pk(token).systemsCollection.findOne({ userId: "@me" });
 		const members = await pk(token).membersCollection.find({ userId: "@me" });
 		const groups = await pk(token).groupsCollection.find({ userId: "@me" });
-		logger?.info("found pk objects")
+		logger?.info("found pk objects");
 
 		const alters = await alterCollection
 			.find({ systemId: ctx.author.id })
@@ -82,37 +85,50 @@ export default class QuickSync extends ComponentCommand {
 		});
 
 		if (transcript.alters.add.length > 0)
-			await alterCollection.insertMany(transcript.alters.add);
+			await alterCollection
+				.insertMany(transcript.alters.add)
+				.catch((v) => console.error("error while inserting a's", v));
 
 		await Promise.all(
 			transcript.alters.update.map(async (element) => {
-				await alterCollection.replaceOne(
-					{ alterId: element.alterId, systemId: element.systemId },
-					element,
-				);
+				await alterCollection
+					.replaceOne(
+						{ alterId: element.alterId, systemId: element.systemId },
+						element,
+					)
+					.catch((v) => console.error("error while replacing", v));
 			}),
 		);
 
-		transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v))
+		transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v));
 
 		if (transcript.tags.add.length > 0)
 			await tagCollection.insertMany(transcript.tags.add);
 
 		await Promise.all(
 			transcript.tags.update.map(async (element) => {
-				await tagCollection.replaceOne(
-					{ tagId: element.tagId, systemId: element.systemId },
-					element,
-				);
+				await tagCollection
+					.replaceOne(
+						{ tagId: element.tagId, systemId: element.systemId },
+						element,
+					)
+					.catch((v) => console.error("error while updating", v));
 			}),
 		);
 
-		await userCollection.updateOne({ userId: ctx.author.id }, { $set: { "system": transcript.system.nondestructive } })
+		await userCollection
+			.updateOne(
+				{ userId: ctx.author.id },
+				{ $set: { system: transcript.system.nondestructive } },
+			)
+			.catch((v) => console.error("error while updating u1", v));
 
-		await userCollection.updateOne(
-			{ userId: ctx.author.id },
-			{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
-		);
+		await userCollection
+			.updateOne(
+				{ userId: ctx.author.id },
+				{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
+			)
+			.catch((v) => console.error("error while updating u2", v));
 
 		return await ctx.interaction.editResponse({
 			components: [
