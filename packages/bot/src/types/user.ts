@@ -20,9 +20,11 @@ export async function getUserById(id: string): Promise<PUser> {
 	const systemUser = linkedSystemUser ?? accountUser;
 
 	if (!systemUser) return defaultUserStructure(id);
+	const systemDefaults = defaultUserStructure(systemUser.userId);
 	const normalizedSystemUser = {
-		...defaultUserStructure(systemUser.userId),
+		...systemDefaults,
 		...systemUser,
+		userLang: systemUser.userLang ?? systemDefaults.userLang,
 	};
 	if (!linkedSystemUser || linkedSystemUser.userId === id) {
 		return {
@@ -34,9 +36,14 @@ export async function getUserById(id: string): Promise<PUser> {
 		};
 	}
 
+	const personalDefaults = defaultUserStructure(id);
 	const personalSettings: PUser = accountUser
-		? { ...defaultUserStructure(id), ...accountUser }
-		: defaultUserStructure(id);
+		? {
+				...personalDefaults,
+				...accountUser,
+				userLang: accountUser.userLang ?? personalDefaults.userLang,
+			}
+		: personalDefaults;
 	return {
 		...normalizedSystemUser,
 		userLang: personalSettings.userLang,
