@@ -1,10 +1,10 @@
 import { dash } from "@better-auth/infra";
 import { oauthProvider } from "@better-auth/oauth-provider";
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import { betterAuth } from "better-auth";
+import { betterAuth, JWTPayload } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { jwt, oidcProvider, openAPI } from "better-auth/plugins"
-import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
+import { jwt, oidcProvider, openAPI } from "better-auth/plugins";
+import { RESTGetAPICurrentUserResult } from "discord-api-types/v10";
 import { MongoClient } from "mongodb";
 
 const client = new MongoClient(process.env.MONGO ?? "");
@@ -15,20 +15,19 @@ export const auth = betterAuth({
 	advanced: {
 		ipAddress: {
 			ipAddressHeaders: ["x-vercel-forwarded-for", "x-forwarded-for"],
-		}
+		},
 	},
 	socialProviders: {
 		discord: {
 			enabled: true,
 			clientId: process.env.CLIENT_ID as string,
 			clientSecret: process.env.CLIENT_SECRET as string,
-			
-			prompt: "none&integration_type=1" as 'none',
+
+			prompt: "none&integration_type=1" as "none",
 			overrideUserInfoOnSignIn: true,
 			disableDefaultScope: true,
 			scope: ["identify", "applications.commands"],
 			getUserInfo: async (token) => {
-
 				// Custom implementation to get user info
 				const response = await fetch("https://discord.com/api/v10/users/@me", {
 					headers: {
@@ -52,7 +51,6 @@ export const auth = betterAuth({
 
 				return {
 					user: {
-						
 						id: profile.id,
 						name: profile.username,
 						email: `${profile.id}@redacted.giftedly.dev`,
@@ -69,14 +67,15 @@ export const auth = betterAuth({
 		jwt(),
 		dash(),
 		oauthProvider({
-			customAccessTokenClaims: ({user}) => {
+			customAccessTokenClaims: ({ user }) => {
 				return {
-					sub: user?.id
-				}
+					sub: user?.id,
+				};
 			},
+
 			validAudiences: [
 				process.env.BETTER_AUTH_URL ?? "",
-				"https://pb.giftedly.dev"
+				"https://pb.giftedly.dev",
 			],
 			loginPage: "/auth/sign-in",
 			consentPage: "/auth/consent",
@@ -93,18 +92,16 @@ export const auth = betterAuth({
 				"system:read",
 				"system:write",
 				"system:admin",
-				"system:ai-ap"
+				"system:ai-ap",
 			],
 			defaultScope: "profile",
 			silenceWarnings: {
-				oauthAuthServerConfig: true
+				oauthAuthServerConfig: true,
 			},
 			generateClientId() {
-				return DiscordSnowflake.generate().toString()
+				return DiscordSnowflake.generate().toString();
 			},
 		}),
 	],
-	disabledPaths: [
-	  "/token",
-	],
+	disabledPaths: ["/token"],
 });

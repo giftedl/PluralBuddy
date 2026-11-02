@@ -1,0 +1,27 @@
+# Website (APP/DOCS, Nextjs)
+
+FROM oven/bun:1.3.13 AS bun
+
+FROM node:24-slim AS base
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+WORKDIR /web
+
+FROM base AS build
+COPY . .
+RUN bun install
+
+ARG GIT_COMMIT
+
+ARG MONGO=mongodb://build-placeholder:27017
+ARG ENV=production
+ENV MONGO=$MONGO ENV=$ENV SOURCE_COMMIT=$GIT_COMMIT NEXT_TELEMETRY_DISABLED=1
+RUN cd apps/docs && bun run build
+
+FROM base AS release
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
+COPY --from=build --chown=node:node /web /web
+USER node
+WORKDIR /web/apps/docs
+EXPOSE 3000
+ENTRYPOINT [ "node", "node_modules/next/dist/bin/next", "start", "-p", "3000" ]
+
