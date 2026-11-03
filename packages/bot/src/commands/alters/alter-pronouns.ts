@@ -42,7 +42,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 		const { "alter-name": alterName, "alter-pronouns": alterPronouns } =
 			ctx.options;
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const alter =
 			ctx.contextAlter() ??
 			(await (Number.isNaN(Number.parseInt(alterName))

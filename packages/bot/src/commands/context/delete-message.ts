@@ -31,7 +31,7 @@ export default class DeleteMessageContextMenuCommand extends ContextMenuCommand 
 			});
 		}
 		if (
-			message?.systemId !== ctx.author.id ||
+			message?.systemId !== await ctx.systemId() ||
 			(message.guildId ?? undefined) !== (ctx.guildId ?? undefined)
 		) {
 			return await ctx.editResponse({

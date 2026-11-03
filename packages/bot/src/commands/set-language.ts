@@ -11,8 +11,7 @@ import {
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { langMemoryCache } from "@/lib/lang";
-import { userCollection } from "@/mongodb";
-import { writeUserById } from "@/types/user";
+import { writePersonalSettingsById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 
 const getFlagEmoji = (countryCode: string) => {
@@ -27,7 +26,7 @@ const options = {
 	language: createStringOption({
 		description: "Language to set to in PluralBuddy.",
 		autocomplete: async (ctx) => {
-			const { translationStatusApi, sourceFilesApi } = new CrowdinApi({
+			const { translationStatusApi } = new CrowdinApi({
 				token: process.env.CROWDIN_API_KEY ?? "",
 			});
 
@@ -62,7 +61,7 @@ export default class SetupCommand extends Command {
 		const user = await ctx.retrievePUser();
 		const { language } = ctx.options;
 
-		const { translationStatusApi, sourceFilesApi } = new CrowdinApi({
+		const { translationStatusApi } = new CrowdinApi({
 			token: process.env.CROWDIN_API_KEY ?? "",
 		});
 
@@ -71,7 +70,7 @@ export default class SetupCommand extends Command {
 				Number(process.env.CROWDIN_PROJ_ID ?? ""),
 				Number(process.env.CROWDIN_FILE_ID ?? ""),
 			)
-			.catch((v) => null);
+			.catch((_error) => null);
 
 		if (!language) {
 			return await ctx.ephemeral(
@@ -108,7 +107,7 @@ export default class SetupCommand extends Command {
 		ctx.client.cache.i18n.remove(ctx.author.id);
 		delete langMemoryCache[ctx.author.id];
 
-		await writeUserById(user.userId, {
+		await writePersonalSettingsById(ctx.author.id, {
 			...user,
 			userLang: language,
 		});

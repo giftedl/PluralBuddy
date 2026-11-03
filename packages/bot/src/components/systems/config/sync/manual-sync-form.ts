@@ -43,6 +43,7 @@ export default class SetPronounsButton extends ModalCommand {
 
 	override async run(ctx: ModalContext) {
 		const { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
+		const systemId = await ctx.systemId();
 
 		if (systemPB === undefined) {
 			return await ctx.write({
@@ -85,7 +86,7 @@ export default class SetPronounsButton extends ModalCommand {
 
 			await userCollection.updateOne(
 				{
-					userId: ctx.author.id,
+					userId: systemId,
 				},
 				{
 					$set: {
@@ -112,7 +113,7 @@ export default class SetPronounsButton extends ModalCommand {
 		if (!storeToken && syncConfiguration?.pluralkit?.token !== undefined) {
 			await userCollection.updateOne(
 				{
-					userId: ctx.author.id,
+					userId: systemId,
 				},
 				{
 					$unset: {
@@ -142,7 +143,7 @@ export default class SetPronounsButton extends ModalCommand {
 		});
 
 		const existingTranscript = await importTranscriptCollection.findOne({
-			userId: ctx.author.id,
+			userId: systemId,
 		});
 
 		if (existingTranscript) {
@@ -186,15 +187,15 @@ export default class SetPronounsButton extends ModalCommand {
 		});
 
 		const alters = await alterCollection
-			.find({ systemId: ctx.author.id })
+			.find({ systemId: await ctx.systemId() })
 			.toArray();
 		const tags = await tagCollection
-			.find({ systemId: ctx.author.id })
+			.find({ systemId: await ctx.systemId() })
 			.toArray();
 
 		const transcript = runSandboxActions({
 			pluralbuddy: { alters, tags, system: systemPB },
-			authorId: ctx.author.id,
+			authorId: systemId,
 			pluralkit: {
 				members: members,
 				system,
@@ -220,7 +221,7 @@ export default class SetPronounsButton extends ModalCommand {
 			},
 			system: transcript.system,
 
-			userId: ctx.author.id,
+			userId: systemId,
 			createdAt: new Date(),
 		} satisfies PImportTranscript);
 

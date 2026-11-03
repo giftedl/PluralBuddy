@@ -44,7 +44,7 @@ export default class EditContextForm extends ModalCommand {
 			});
 		}
 
-		if (message?.systemId !== ctx.author.id) {
+		if (message?.systemId !== await ctx.systemId()) {
 			return await ctx.write({
 				components: new AlertView(await ctx.userTranslations()).errorView(
 					"ERROR_OWN_MESSAGE",

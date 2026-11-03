@@ -11,6 +11,7 @@ export async function autocompleteTags(ctx: AutocompleteInteraction<boolean>) {
 	if (user.system === undefined) {
 		return ctx.respond([{ name: "You have no system.", value: "no" }]);
 	}
+	const systemId = user.system.associatedUserId;
 
 	const prompt = ctx.getInput();
 	const trimmedPrompt = prompt?.trim();
@@ -20,13 +21,13 @@ export async function autocompleteTags(ctx: AutocompleteInteraction<boolean>) {
 	const matchFilter: Document =
 		trimmedPrompt && trimmedPrompt.length > 0
 			? {
-					systemId: ctx.user.id,
+					systemId,
 					tagFriendlyName: {
 						$regex: trimmedPrompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
 						$options: "i",
 					},
 				}
-			: { systemId: ctx.user.id };
+			: { systemId };
 
 	const pipeline: Document[] = [
 		// Match alters for this system (and optionally by username)

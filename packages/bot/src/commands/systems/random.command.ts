@@ -113,9 +113,9 @@ export default class RandomSystemCommand extends SubCommand {
 						components: [
 							...new TagView(await ctx.userTranslations()).tagProfileView(
 								tagQuery,
-								tagQuery.systemId !== ctx.author.id,
+								tagQuery.systemId !== await ctx.systemId(),
 							),
-							...(tagQuery.systemId === ctx.author.id
+							...(tagQuery.systemId === await ctx.systemId()
 								? new TagView(await ctx.userTranslations()).tagConfigureButton(
 										tagQuery,
 									)
@@ -154,21 +154,21 @@ export default class RandomSystemCommand extends SubCommand {
 								await ctx.userTranslations(),
 							).alterProfileView(
 								alterQuery,
-								alterQuery.systemId !== ctx.author.id,
+								alterQuery.systemId !== await ctx.systemId(),
 							)),
-							...(publicMessage && alterQuery.systemId === ctx.author.id
+							...(publicMessage && alterQuery.systemId === await ctx.systemId()
 								? [
 										new TextDisplay().setContent(
 											`-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
 										),
 									]
 								: []),
-							...(!publicMessage && alterQuery.systemId === ctx.author.id
+							...(!publicMessage && alterQuery.systemId === await ctx.systemId()
 								? new AlterView(
 										await ctx.userTranslations(),
 									).alterConfigureButton(alterQuery)
 								: []),
-							...(!publicMessage && alterQuery.systemId === ctx.author.id
+							...(!publicMessage && alterQuery.systemId === await ctx.systemId()
 								? new AlterView(await ctx.userTranslations()).alterProxyModes(
 										alterQuery,
 										ctx.guildId,
@@ -217,21 +217,21 @@ export default class RandomSystemCommand extends SubCommand {
 						await ctx.userTranslations(),
 					).alterProfileView(
 						alterQuery,
-						alterQuery.systemId !== ctx.author.id,
+						alterQuery.systemId !== await ctx.systemId(),
 					)),
-					...(publicMessage && alterQuery.systemId === ctx.author.id
+					...(publicMessage && alterQuery.systemId === await ctx.systemId()
 						? [
 								new TextDisplay().setContent(
 									`-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
 								),
 							]
 						: []),
-					...(!publicMessage && alterQuery.systemId === ctx.author.id
+					...(!publicMessage && alterQuery.systemId === await ctx.systemId()
 						? new AlterView(await ctx.userTranslations()).alterConfigureButton(
 								alterQuery,
 							)
 						: []),
-					...(!publicMessage && alterQuery.systemId === ctx.author.id
+					...(!publicMessage && alterQuery.systemId === await ctx.systemId()
 						? new AlterView(await ctx.userTranslations()).alterProxyModes(
 								alterQuery,
 								ctx.guildId,

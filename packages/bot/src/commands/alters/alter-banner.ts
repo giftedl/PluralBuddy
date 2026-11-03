@@ -71,7 +71,7 @@ export default class EditAlterPictureCommand extends SubCommand {
 			"alter-banner": attachment,
 			"alter-banner-text": attachmentText,
 		} = ctx.options;
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 
 		const alter =
 			ctx.contextAlter() ??

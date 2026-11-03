@@ -39,7 +39,7 @@ export default class TagColorCommand extends SubCommand {
 		await ctx.deferReply(true);
 		const { "tag-name": tagName } = ctx.options;
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = Number.isNaN(Number.parseInt(tagName))
 			? tagCollection.findOne({ $or: [{ tagFriendlyName: tagName }], systemId })
 			: tagCollection.findOne({

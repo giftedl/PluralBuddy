@@ -38,7 +38,7 @@ export default class EditTagOrderStringCommand extends SubCommand {
 		const { "tag-name": tagName, "tag-order-string": tagOrderString } =
 			ctx.options;
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = Number.isNaN(Number.parseInt(tagName))
 			? tagCollection.findOne({ $or: [{ tagFriendlyName: tagName }], systemId })
 			: tagCollection.findOne({
