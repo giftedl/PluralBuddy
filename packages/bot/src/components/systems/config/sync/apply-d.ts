@@ -162,10 +162,12 @@ export default class SetPronounsButton extends ComponentCommand {
 				systemId: alterOperation.userId,
 			});
 
-		await userCollection.updateOne(
-			{ userId: await ctx.systemId() },
-			{ $set: { system: alterOperation.system.nondestructive } },
-		);
+		await userCollection
+			.updateOne(
+				{ userId: await ctx.systemId() },
+				{ $set: { system: alterOperation.system.nondestructive } },
+			)
+			.catch((v) => console.error("error while updating", v));
 
 		await ctx.interaction.editResponse({
 			components: new LoadingView(
