@@ -33,7 +33,7 @@ const options = {
 	}),
 };
 
-const publicAlterModeOnly = true;
+const publicAlterModeOnly = false;
 
 @Declare({
 	name: "alter",
