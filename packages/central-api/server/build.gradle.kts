@@ -5,9 +5,13 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-
 application {
     mainClass = "io.ktor.server.netty.EngineMain"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
 }
 
 kotlin {

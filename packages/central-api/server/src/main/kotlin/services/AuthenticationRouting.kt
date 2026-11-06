@@ -22,7 +22,7 @@ suspend fun Application.configureAuthenticationSecurity() {
         .getAs<OidcEnvConfig>()
 
     oidc.identityProvider("pluralbuddy") {
-        issuer = "http://localhost:3000/api/auth"
+        issuer = "https://pluralbuddy.app/api/auth"
 
         jwt {
             clockSkew = 30.seconds
