@@ -17,6 +17,7 @@ const replifyContents = (contents: string) =>
 		.replaceAll(/<@!?(\d+)>/g, "")
 		.replaceAll("@everyone", "--")
 		.replaceAll(/<#(.*)>/g, "")
+	    .replaceAll("```", "`")
 		.replaceAll(/<@&(.*)>/g, "");
 
 export async function getReferencedMessageString(
