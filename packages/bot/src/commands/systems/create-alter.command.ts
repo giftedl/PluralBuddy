@@ -110,7 +110,7 @@ export default class CreateAlterCommand extends SubCommand {
 
 		const existingAlter = await alterCollection.findOne({
 			username,
-			systemId: ctx.author.id,
+			systemId: await ctx.systemId(),
 		});
 
 		if (user.system === undefined) {
@@ -129,11 +129,11 @@ export default class CreateAlterCommand extends SubCommand {
 			const query = Number.isNaN(Number.parseInt(assign))
 				? tagCollection.findOne({
 						$or: [{ tagFriendlyName: assign }],
-						systemId: ctx.author.id,
+						systemId: await ctx.systemId(),
 					})
 				: tagCollection.findOne({
 						$or: [{ tagFriendlyName: assign }, { tagId: assign }],
-						systemId: ctx.author.id,
+						systemId: await ctx.systemId(),
 					});
 
 			assignableTag = await query;
@@ -189,7 +189,7 @@ ${z.prettifyError(alter.error)}
 			await tagCollection.updateOne(
 				{
 					tagId: assignableTag.tagId,
-					systemId: ctx.author.id,
+					systemId: await ctx.systemId(),
 				},
 				{
 					$push: {
@@ -211,7 +211,7 @@ ${z.prettifyError(alter.error)}
 		writeBack({
 			type: "create-alter",
 			id: String(alter.data.alterId),
-			change: { ...alter.data, userId: ctx.author.id },
+			change: { ...alter.data, userId: user.system.associatedUserId },
 			syncConfig: user.syncConfiguration,
 		});
 
@@ -301,8 +301,8 @@ ${z.prettifyError(alter.error)}
 			await successMessage(true);
 		}
 
-		w(ctx.author.id, "alter.create", {
-			userId: ctx.author.id,
+		w(user.system.associatedUserId, "alter.create", {
+			userId: user.system.associatedUserId,
 			type: "alter.create",
 			alter: alter.data,
 		});

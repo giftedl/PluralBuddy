@@ -49,7 +49,7 @@ export default class EditAlterDisplayNameCommand extends SubCommand {
 			"server-specific": se,
 		} = ctx.options;
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const alter =
 			ctx.contextAlter() ??
 			(await (Number.isNaN(Number.parseInt(alterName))

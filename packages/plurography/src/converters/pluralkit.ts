@@ -74,6 +74,7 @@ export default class PluralKitConverter
 			),
 			displayTagMap: {},
 			subAccounts: [],
+			verifiedSubAccounts: [],
 			disabled: false,
 			flags: 0,
 			disabledGuilds: [],

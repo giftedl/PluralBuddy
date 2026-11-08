@@ -25,7 +25,7 @@ export default class DeleteAlterButton extends ComponentCommand {
 				ctx.customId,
 			)[0];
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = alterCollection.findOne({
 			alterId: Number(alterId),
 			systemId,

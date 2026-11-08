@@ -24,7 +24,7 @@ export default class ExportNudgelist extends ComponentCommand {
 		// Database migration (12/04/25)
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
-				{ userId: user.userId },
+				{ userId: ctx.author.id },
 				{
 					$set: {
 						nudging: {

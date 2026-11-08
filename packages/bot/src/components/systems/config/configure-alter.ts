@@ -22,7 +22,7 @@ export default class ConfigureAlter extends ComponentCommand {
 			InteractionIdentifier.Systems.Configuration.ConfigureAlter.substring(
 				ctx.customId,
 			)[0];
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
 		});

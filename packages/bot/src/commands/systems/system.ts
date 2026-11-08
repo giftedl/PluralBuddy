@@ -50,7 +50,8 @@ export default class SystemCommand extends Command {
 				components: [
 					...new SystemView(await ctx.userTranslations()).systemProfileView(
 						user.system,
-						user.system.associatedUserId !== ctx.author.id,
+						user.system.associatedUserId !== ctx.author.id &&
+							!(user.system.verifiedSubAccounts ?? []).includes(ctx.author.id),
 					),
 					...new SystemView(await ctx.userTranslations()).systemConfigureButton(
 						user.system,

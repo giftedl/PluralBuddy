@@ -21,7 +21,7 @@ export default class ConfigureAlter extends ComponentCommand {
 			InteractionIdentifier.Systems.Configuration.ConfigureTag.substring(
 				ctx.customId,
 			)[0];
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = tagCollection.findOne({
 			$and: [{ tagId }, { systemId }],
 		});
