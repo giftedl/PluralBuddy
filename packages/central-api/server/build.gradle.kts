@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.mongodb.bson)
     implementation(libs.mongodb.driverCore)
     implementation(libs.mongodb.driverSync)
+    implementation(libs.mongodb.kotlinx)
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)

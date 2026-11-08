@@ -8,6 +8,7 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 mongodb-bson = { module = "org.mongodb:bson", version.ref = "mongodb" }
 mongodb-driverCore = { module = "org.mongodb:mongodb-driver-core", version.ref = "mongodb" }
 mongodb-driverSync = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongodb" }
+mongodb-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongodb" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

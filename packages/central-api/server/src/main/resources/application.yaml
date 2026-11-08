@@ -1,6 +1,9 @@
 ktor:
   deployment:
     port: 8080
+  central:
+    ktorEncryption: "$KTOR_ENCRYPTION"
+    clientUrl: "http://localhost:3000"
   oidc:
     pluralbuddy:
       issuer: "https://pluralbuddy.app/api/auth"
@@ -9,10 +12,9 @@ ktor:
       scopes: ["openid", "profile", "system:admin", "offline_access"]
   application:
     modules:
-      - app.pluralbuddy.HttpKt.configureHttp
-      - app.pluralbuddy.SerializationKt.configureSerialization
-      - app.pluralbuddy.WebsocketsKt.configureWebsockets
-      - app.pluralbuddy.MongoKt.configureMongo
-      - app.pluralbuddy.StatusPagesKt.configureStatusPages
-      - app.pluralbuddy.RoutingKt.configureRouting
+      - app.pluralbuddy.services.HttpUtilitiesKt.configureHttp
+      - app.pluralbuddy.services.SerializationKt.configureSerialization
+      - app.pluralbuddy.services.WebsocketsKt.configureWebsockets
+      - app.pluralbuddy.services.StatusCodesKt.configureStatusPages
+      - app.pluralbuddy.services.MongoDBKt.configureMongo
       - app.pluralbuddy.services.AuthenticationRoutingKt.configureAuthenticationSecurity
