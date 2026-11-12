@@ -4,8 +4,8 @@ description: Integrations can automatically push new changes to a specific auto-
 icon: BellDot
 ---
 
-**Automated Integrational Auto-Proxy** (also known as AI/AP), is a feature of integrations that lets you push certain alters up to front at certain times. 
-You choose one alter based on your users settings as a front tracker, push it to PluralBuddy, and then the user selects your integration as their auto-proxy mode, 
+**Automated Integrational Auto-Proxy** (also known as AI/AP), is a feature of integrations that lets you push certain alters up to front at certain times.
+You choose one alter based on your users settings as a front tracker, push it to PluralBuddy, and then the user selects your integration as their auto-proxy mode,
 and they will automatically proxy as your integrations last pushed alter.
 
 ![AI/AP Diagram](/image/ai-ap-diagram.png)
@@ -14,9 +14,11 @@ and they will automatically proxy as your integrations last pushed alter.
 
 A user first links the [OAuth Application](/docs/pluralbuddy/oauth-apps) of your integration to their system. This integration, contains the `system:ai-ap` scope,
 informing the user that this integration is a valid auto-proxy target. Then, if a user would like to auto-proxy as their alter stored in this integration, would be:
+
 ```
 pb;ap fronttracker
 ```
+
 where `fronttracker` is the AI/AP ID of the integration.
 
 Then, all messages sent from that point on from that system, will always be the latest alter pushed from the integration.
@@ -34,8 +36,8 @@ Remember, this is the ID that your user will have to input to select the alter t
 Use the [OAuth Application Guide](/docs/pluralbuddy/oauth-apps) to login a user with the OAuth scope atleast `system:ai-ap`.
 
 <Callout type="info">
-    You need a **PluralBuddy** alter ID to assign an alter to front. You may also need `alters:read` if you do not know the PluralBuddy alter IDs of the
-    associated alters in your store.
+  You need a **PluralBuddy** alter ID to assign an alter to front. You may also need `alters:read`
+  if you do not know the PluralBuddy alter IDs of the associated alters in your store.
 </Callout>
 
 ### 2. Push an alter

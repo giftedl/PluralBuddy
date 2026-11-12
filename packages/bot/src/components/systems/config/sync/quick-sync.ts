@@ -1,8 +1,8 @@
 import {
-	PImportTranscript,
-	PluralKitAPISystem,
-	PluralKitGroup,
-	PluralKitMember,
+  PImportTranscript,
+  PluralKitAPISystem,
+  PluralKitGroup,
+  PluralKitMember,
 } from "plurography";
 import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
@@ -19,109 +19,106 @@ import { LoadingView } from "@/views/loading";
 import { QuickSyncStatus, SystemSettingsView } from "@/views/system-settings";
 
 export default class QuickSync extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.SyncPreferences.QuickSync.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.SyncPreferences.QuickSync.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const { system: systemPB, syncConfiguration } = await ctx.retrievePUser();
 
-		if (systemPB === undefined) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (systemPB === undefined) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const token =
-			syncConfiguration?.pluralkit?.token === undefined
-				? null
-				: await decryptToken(
-					syncConfiguration.pluralkit.token.i,
-					syncConfiguration.pluralkit.token.v,
-				);
+    const token =
+      syncConfiguration?.pluralkit?.token === undefined
+        ? null
+        : await decryptToken(
+            syncConfiguration.pluralkit.token.i,
+            syncConfiguration.pluralkit.token.v,
+          );
 
-		if (!token) return await ctx.deferUpdate();
+    if (!token) return await ctx.deferUpdate();
 
-		await ctx.interaction.update({
-			components: [
-				...new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(systemPB)?.preferAccessiblity,
-				).syncSettings(await ctx.retrievePUser(), QuickSyncStatus.Loading),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+    await ctx.interaction.update({
+      components: [
+        ...new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(systemPB)?.preferAccessiblity,
+        ).syncSettings(await ctx.retrievePUser(), QuickSyncStatus.Loading),
+      ],
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
 
-		const system = await pk(token).systemsCollection.findOne({ userId: "@me" });
-		const members = await pk(token).membersCollection.find({ userId: "@me" });
-		const groups = await pk(token).groupsCollection.find({ userId: "@me" });
-		logger?.info("found pk objects")
+    const system = await pk(token).systemsCollection.findOne({ userId: "@me" });
+    const members = await pk(token).membersCollection.find({ userId: "@me" });
+    const groups = await pk(token).groupsCollection.find({ userId: "@me" });
+    logger?.info("found pk objects");
 
-		const alters = await alterCollection
-			.find({ systemId: ctx.author.id })
-			.toArray();
-		const tags = await tagCollection
-			.find({ systemId: ctx.author.id })
-			.toArray();
+    const alters = await alterCollection.find({ systemId: ctx.author.id }).toArray();
+    const tags = await tagCollection.find({ systemId: ctx.author.id }).toArray();
 
-		const transcript = runSandboxActions({
-			pluralbuddy: { alters, tags, system: systemPB },
-			authorId: ctx.author.id,
-			pluralkit: {
-				members: members,
-				system: system,
-				groups: groups,
-			},
-		});
+    const transcript = runSandboxActions({
+      pluralbuddy: { alters, tags, system: systemPB },
+      authorId: ctx.author.id,
+      pluralkit: {
+        members: members,
+        system: system,
+        groups: groups,
+      },
+    });
 
-		if (transcript.alters.add.length > 0)
-			await alterCollection.insertMany(transcript.alters.add);
+    if (transcript.alters.add.length > 0) await alterCollection.insertMany(transcript.alters.add);
 
-		await Promise.all(
-			transcript.alters.update.map(async (element) => {
-				await alterCollection.replaceOne(
-					{ alterId: element.alterId, systemId: element.systemId },
-					element,
-				);
-			}),
-		);
+    await Promise.all(
+      transcript.alters.update.map(async (element) => {
+        await alterCollection.replaceOne(
+          { alterId: element.alterId, systemId: element.systemId },
+          element,
+        );
+      }),
+    );
 
-		transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v))
+    transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v));
 
-		if (transcript.tags.add.length > 0)
-			await tagCollection.insertMany(transcript.tags.add);
+    if (transcript.tags.add.length > 0) await tagCollection.insertMany(transcript.tags.add);
 
-		await Promise.all(
-			transcript.tags.update.map(async (element) => {
-				await tagCollection.replaceOne(
-					{ tagId: element.tagId, systemId: element.systemId },
-					element,
-				);
-			}),
-		);
+    await Promise.all(
+      transcript.tags.update.map(async (element) => {
+        await tagCollection.replaceOne(
+          { tagId: element.tagId, systemId: element.systemId },
+          element,
+        );
+      }),
+    );
 
-		await userCollection.updateOne({ userId: ctx.author.id }, { $set: { "system": transcript.system.nondestructive } })
+    await userCollection.updateOne(
+      { userId: ctx.author.id },
+      { $set: { system: transcript.system.nondestructive } },
+    );
 
-		await userCollection.updateOne(
-			{ userId: ctx.author.id },
-			{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
-		);
+    await userCollection.updateOne(
+      { userId: ctx.author.id },
+      { $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
+    );
 
-		return await ctx.interaction.editResponse({
-			components: [
-				...(await new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(systemPB)?.preferAccessiblity,
-				).syncSettings(await ctx.retrievePUser(), QuickSyncStatus.Done)),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.interaction.editResponse({
+      components: [
+        ...(await new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(systemPB)?.preferAccessiblity,
+        ).syncSettings(await ctx.retrievePUser(), QuickSyncStatus.Done)),
+      ],
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 }

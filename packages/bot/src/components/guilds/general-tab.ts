@@ -6,33 +6,29 @@ import { ServerConfigView } from "@/views/server-cfg";
 
 @Middlewares(["ensureGuildPermissions"])
 export default class SetGuildPrefixes extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Guilds.GeneralTab.Index.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Guilds.GeneralTab.Index.startsWith(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const pluralGuild = await ctx.retrievePGuild();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const pluralGuild = await ctx.retrievePGuild();
 
-		return await ctx.interaction[ctx.isModal() ? "write" : "update"]({
-			components: [
-				...new ServerConfigView(await ctx.userTranslations()).topView(
-					"general",
-					pluralGuild.guildId,
-				),
-				...(await new ServerConfigView(
-					await ctx.userTranslations(),
-				).generalSettings(
-					pluralGuild,
-					(await ctx.getDefaultPrefix()) ?? "",
-					ctx.interaction?.message?.messageReference === undefined,
-				)),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] },
-		});
-	}
+    return await ctx.interaction[ctx.isModal() ? "write" : "update"]({
+      components: [
+        ...new ServerConfigView(await ctx.userTranslations()).topView(
+          "general",
+          pluralGuild.guildId,
+        ),
+        ...(await new ServerConfigView(await ctx.userTranslations()).generalSettings(
+          pluralGuild,
+          (await ctx.getDefaultPrefix()) ?? "",
+          ctx.interaction?.message?.messageReference === undefined,
+        )),
+      ],
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      allowed_mentions: { parse: [] },
+    });
+  }
 }

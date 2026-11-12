@@ -5,5 +5,4 @@
 
 import z from "zod";
 
-export const PrivacyLevel = z.enum([ "public", "private" ])
-
+export const PrivacyLevel = z.enum(["public", "private"]);

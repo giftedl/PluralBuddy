@@ -10,7 +10,7 @@ In addition to just being a login provider, it allows you to pull out data from 
 
 ## Getting Started
 
-First off, head over to the [PluralBuddy developer portal](/developers/applications) and create an application. It must contain all of the scopes you'd like to take off the user, or just standard ones if you need to have users login. 
+First off, head over to the [PluralBuddy developer portal](/developers/applications) and create an application. It must contain all of the scopes you'd like to take off the user, or just standard ones if you need to have users login.
 
 Some scopes are very similar to ones found on other applications using OAuth 2.1. For example, `offline_access` allows you to get a refresh token in the Token Endpoint below, which allows you to get access to the account for a longer amount of time (which is more useful if you are trying to get data from a system consistently).
 
@@ -24,19 +24,21 @@ The OpenID Configuration for PluralBuddy is located [here](/.well-known/openid-c
 GET /auth/oauth2/authorize
 ```
 
-| Search Query Value      | Description                                                     | Required |
-|-------------------------|-----------------------------------------------------------------|----------|
-| `client_id`             | Client ID provided in the developer dashboard found above.      | `true`   |
-| `response_type`         | Only `code` according to OAuth 2.1 spec                         | `true`   |
-| `redirect_uri`          | Redirect URL of application. Where do you want your user next?  | `true`   |
-| `scope`                 | Space-separated list of scopes used for the application.        | `true`   |
-| `code_challenge`        | PKCE (Proof Key for Code Exchange) challenge pair.              | `true`   |
-| `code_challenge_method` | Method for PKCE. `plain` not supported. Use `S256`.             | `true`   | 
+| Search Query Value      | Description                                                    | Required |
+| ----------------------- | -------------------------------------------------------------- | -------- |
+| `client_id`             | Client ID provided in the developer dashboard found above.     | `true`   |
+| `response_type`         | Only `code` according to OAuth 2.1 spec                        | `true`   |
+| `redirect_uri`          | Redirect URL of application. Where do you want your user next? | `true`   |
+| `scope`                 | Space-separated list of scopes used for the application.       | `true`   |
+| `code_challenge`        | PKCE (Proof Key for Code Exchange) challenge pair.             | `true`   |
+| `code_challenge_method` | Method for PKCE. `plain` not supported. Use `S256`.            | `true`   |
 
 <Callout type="warning" title="Regarding PKCE challenges">
-    PKCE Challenges are a required safety guard implemented in OAuth 2.1 to get any sort of authorization credentials.
-    For more detail, you can see more information [here](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1#section-4.1.1-9).
-        - [`pkce-challenge`](https://www.npmjs.com/package/pkce-challenge) on NPM (for JavaScript/TypeScript)
+  PKCE Challenges are a required safety guard implemented in OAuth 2.1 to get any sort of
+  authorization credentials. For more detail, you can see more information
+  [here](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1#section-4.1.1-9). -
+  [`pkce-challenge`](https://www.npmjs.com/package/pkce-challenge) on NPM (for
+  JavaScript/TypeScript)
 </Callout>
 
 Redirect your users to this URL to get consent or a new token to login with PluralBuddy. For example:
@@ -57,16 +59,16 @@ https://pluralbuddy.app/api/auth/oauth2/authorize
 POST /auth/oauth2/token
 ```
 
-| `application/x-www-form-urlencoded`      | Description                                                     | Required                         |
-|------------------------------------------|-----------------------------------------------------------------|----------------------------------|
-| `grant_type`                             | `authorization_code`/`client_credentials`/`refresh_token`       | `true`                           |
-| `code`                                   | Code search value from Redirect URI                             | depends on `authorization_code`  |
-| `client_id`                              | Client ID provided in the developer dashboard found above.      | `true`                           |
-| `client_secret`                          | OAuth2 client secret                                            | `true`                           |
-| `code_verifier`                          | Code verifier from PKCE                                         | depends on `authorization_code`  |
-| `resource`                               | Always `https://pluralbuddy.app`.                               | `true`                           |
-| `refresh_token`                          | Refresh token (for `refresh_token` grant)                       | depends on `refresh_token`       |
-| `redirect_uri`                           | Redirect URI (for `authorization_code` grant)                   | depends on `authorization_code`  |
+| `application/x-www-form-urlencoded` | Description                                                | Required                        |
+| ----------------------------------- | ---------------------------------------------------------- | ------------------------------- |
+| `grant_type`                        | `authorization_code`/`client_credentials`/`refresh_token`  | `true`                          |
+| `code`                              | Code search value from Redirect URI                        | depends on `authorization_code` |
+| `client_id`                         | Client ID provided in the developer dashboard found above. | `true`                          |
+| `client_secret`                     | OAuth2 client secret                                       | `true`                          |
+| `code_verifier`                     | Code verifier from PKCE                                    | depends on `authorization_code` |
+| `resource`                          | Always `https://pluralbuddy.app`.                          | `true`                          |
+| `refresh_token`                     | Refresh token (for `refresh_token` grant)                  | depends on `refresh_token`      |
+| `redirect_uri`                      | Redirect URI (for `authorization_code` grant)              | depends on `authorization_code` |
 
 Used to get back a code to use for PluralBuddy API endpoints. An example response would look like this:
 

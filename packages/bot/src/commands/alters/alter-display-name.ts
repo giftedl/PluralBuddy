@@ -1,14 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	type CommandContext,
-	Container,
-	createBooleanOption,
-	createStringOption,
-	Declare,
-	Options,
-	SubCommand,
-	TextDisplay,
+  type CommandContext,
+  Container,
+  createBooleanOption,
+  createStringOption,
+  Declare,
+  Options,
+  SubCommand,
+  TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
@@ -18,200 +18,196 @@ import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
-	"alter-name": createStringOption({
-		description: "The name of the alter to modify.",
-		required: true,
-		autocomplete: autocompleteAlters,
-	}),
-	"alter-new-name": createStringOption({
-		description: "The new display name for the alter.",
-		max_length: 100,
-	}),
-	"server-specific": createBooleanOption({
-		description: "Is this display name specific to this server?",
-		aliases: ["se"],
-	}),
+  "alter-name": createStringOption({
+    description: "The name of the alter to modify.",
+    required: true,
+    autocomplete: autocompleteAlters,
+  }),
+  "alter-new-name": createStringOption({
+    description: "The new display name for the alter.",
+    max_length: 100,
+  }),
+  "server-specific": createBooleanOption({
+    description: "Is this display name specific to this server?",
+    aliases: ["se"],
+  }),
 };
 
 @Declare({
-	name: "display-name",
-	description: "Edit the display name of an alter",
-	aliases: ["dn"],
-	contexts: ["BotDM", "Guild"],
+  name: "display-name",
+  description: "Edit the display name of an alter",
+  aliases: ["dn"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const {
-			"alter-name": alterName,
-			"alter-new-name": alterNewName,
-			"server-specific": se,
-		} = ctx.options;
+  override async run(ctx: CommandContext<typeof options>) {
+    await ctx.deferReply(true);
+    const {
+      "alter-name": alterName,
+      "alter-new-name": alterNewName,
+      "server-specific": se,
+    } = ctx.options;
 
-		const systemId = ctx.author.id;
-		const alter =
-			ctx.contextAlter() ??
-			(await (Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+    const systemId = ctx.author.id;
+    const alter =
+      ctx.contextAlter() ??
+      (await (Number.isNaN(Number.parseInt(alterName))
+        ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+        : alterCollection.findOne({
+            $or: [{ username: alterName }, { alterId: Number(alterName) }],
+            systemId,
+          })));
 
-		if (alter === null) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_ALTER_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (alter === null) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_ALTER_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		if (se && ctx.guildId === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"DN_ERROR_SE",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (se && ctx.guildId === undefined) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView("DN_ERROR_SE"),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		if (se && alterNewName === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: [
-						new Container().setComponents(
-							new TextDisplay().setContent(`\`\`\`
+    if (se && alterNewName === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: [
+            new Container().setComponents(
+              new TextDisplay().setContent(`\`\`\`
 ${alter.nameMap.find((c) => c.server === (ctx.guildId ?? ""))?.name ?? alter.displayName}
 \`\`\``),
-						),
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				},
-				true,
-				undefined,
-				ctx,
-			);
-		}
+            ),
+          ],
+          flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+        },
+        true,
+        undefined,
+        ctx,
+      );
+    }
 
-		if (alterNewName === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: [
-						new Container().setComponents(
-							new TextDisplay().setContent(`\`\`\`
+    if (alterNewName === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: [
+            new Container().setComponents(
+              new TextDisplay().setContent(`\`\`\`
 ${alter.displayName}
 \`\`\``),
-						),
-					],
-					flags: MessageFlags.IsComponentsV2,
-				},
-				true,
-				undefined,
-				ctx,
-			);
-		}
+            ),
+          ],
+          flags: MessageFlags.IsComponentsV2,
+        },
+        true,
+        undefined,
+        ctx,
+      );
+    }
 
-		if (se) {
-			// Server specific
-			const nameMapHasServer = alter.nameMap.some(
-				(nm) => nm.server === ctx.guildId,
-			);
+    if (se) {
+      // Server specific
+      const nameMapHasServer = alter.nameMap.some((nm) => nm.server === ctx.guildId);
 
-			let finishedNameMap = alter.nameMap;
+      let finishedNameMap = alter.nameMap;
 
-			if (nameMapHasServer) {
-				// Update the name for this server using $[<identifier>] and pass arrayFilters outside $set
-				await alterCollection.updateOne(
-					{ alterId: Number(alter.alterId), systemId },
-					{
-						$set: {
-							"nameMap.$[serverEntry].name": alterNewName as string,
-						},
-					},
-					{
-						arrayFilters: [{ "serverEntry.server": ctx.guildId }],
-					},
-				);
+      if (nameMapHasServer) {
+        // Update the name for this server using $[<identifier>] and pass arrayFilters outside $set
+        await alterCollection.updateOne(
+          { alterId: Number(alter.alterId), systemId },
+          {
+            $set: {
+              "nameMap.$[serverEntry].name": alterNewName as string,
+            },
+          },
+          {
+            arrayFilters: [{ "serverEntry.server": ctx.guildId }],
+          },
+        );
 
-				finishedNameMap = [
-					...finishedNameMap.filter((v) => ctx.guildId !== v.server),
-					{
-						server: ctx.guildId ?? "",
-						name: alterNewName,
-					},
-				];
-			} else {
-				// Append a new mapping to the nameMap array
-				await alterCollection.updateOne(
-					{ alterId: Number(alter.alterId), systemId },
-					{
-						$push: {
-							nameMap: {
-								server: ctx.guildId as string,
-								name: alterNewName as string,
-							},
-						},
-					},
-				);
+        finishedNameMap = [
+          ...finishedNameMap.filter((v) => ctx.guildId !== v.server),
+          {
+            server: ctx.guildId ?? "",
+            name: alterNewName,
+          },
+        ];
+      } else {
+        // Append a new mapping to the nameMap array
+        await alterCollection.updateOne(
+          { alterId: Number(alter.alterId), systemId },
+          {
+            $push: {
+              nameMap: {
+                server: ctx.guildId as string,
+                name: alterNewName as string,
+              },
+            },
+          },
+        );
 
-				finishedNameMap = [
-					...finishedNameMap,
-					{
-						server: ctx.guildId ?? "",
-						name: alterNewName,
-					},
-				];
-			}
+        finishedNameMap = [
+          ...finishedNameMap,
+          {
+            server: ctx.guildId ?? "",
+            name: alterNewName,
+          },
+        ];
+      }
 
-			w(ctx.author.id, "alter.update", {
-				type: "alter.update",
-				alter: {
-					...alter,
-					nameMap: finishedNameMap,
-				},
-			});
-		} else {
-			// Not server specific
-			await alterCollection.updateOne(
-				{ alterId: alter.alterId },
-				{ $set: { displayName: alterNewName } },
-			);
+      w(ctx.author.id, "alter.update", {
+        type: "alter.update",
+        alter: {
+          ...alter,
+          nameMap: finishedNameMap,
+        },
+      });
+    } else {
+      // Not server specific
+      await alterCollection.updateOne(
+        { alterId: alter.alterId },
+        { $set: { displayName: alterNewName } },
+      );
 
-			w(ctx.author.id, "alter.update", {
-				type: "alter.update",
-				alter: {
-					...alter,
-					displayName: alterNewName,
-				},
-			});
-			if (alter.fields["@/converter/pk"])
-				writeBack({
-					type: "alter",
-					id: alter.fields["@/converter/pk"],
-					change: {
-						displayName: alterNewName,
-					},
-					syncConfig: (await ctx.retrievePUser()).syncConfiguration,
-				});
-		}
+      w(ctx.author.id, "alter.update", {
+        type: "alter.update",
+        alter: {
+          ...alter,
+          displayName: alterNewName,
+        },
+      });
+      if (alter.fields["@/converter/pk"])
+        writeBack({
+          type: "alter",
+          id: alter.fields["@/converter/pk"],
+          change: {
+            displayName: alterNewName,
+          },
+          syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+        });
+    }
 
-		return await ctx.editResponse({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await ctx.userTranslations())[se ? "DN_SUCCESS_SS" : "DN_SUCCESS"]
-						.replace("%alter%", alter.username)
-						.replace("%new-display%", alterNewName)
-						.replace("%server%", (await ctx.guild())?.name ?? ""),
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.editResponse({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successViewCustom(
+          (await ctx.userTranslations())[se ? "DN_SUCCESS_SS" : "DN_SUCCESS"]
+            .replace("%alter%", alter.username)
+            .replace("%new-display%", alterNewName)
+            .replace("%server%", (await ctx.guild())?.name ?? ""),
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2,
+    });
+  }
 }

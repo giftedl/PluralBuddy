@@ -1,17 +1,17 @@
 import {
-	PImportTranscript,
-	PluralKitAPISystem,
-	PluralKitGroup,
-	PluralKitMember,
+  PImportTranscript,
+  PluralKitAPISystem,
+  PluralKitGroup,
+  PluralKitMember,
 } from "plurography";
 import {
-	ActionRow,
-	Button,
-	Container,
-	ModalCommand,
-	type ModalContext,
-	Separator,
-	TextDisplay,
+  ActionRow,
+  Button,
+  Container,
+  ModalCommand,
+  type ModalContext,
+  Separator,
+  TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import type { z } from "zod";
@@ -22,10 +22,10 @@ import { hexToBuffer } from "@/lib/hex-buffer-operation";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { runSandboxActions } from "@/lib/pk-sync-engine";
 import {
-	alterCollection,
-	importTranscriptCollection,
-	tagCollection,
-	userCollection,
+  alterCollection,
+  importTranscriptCollection,
+  tagCollection,
+  userCollection,
 } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
@@ -34,46 +34,46 @@ import { SystemSettingsView } from "@/views/system-settings";
 const API_PREFIX = "https://api.pluralkit.me/v2";
 
 export default class SetPronounsButton extends ModalCommand {
-	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.SyncPreferences.WriteBackForm.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ModalContext) {
+    return InteractionIdentifier.Systems.Configuration.SyncPreferences.WriteBackForm.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ModalContext) {
-		const user = await ctx.retrievePUser();
+  override async run(ctx: ModalContext) {
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (user.system === undefined) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const enabled = 
-			ctx.interaction.getInputValue(
-				InteractionIdentifier.Systems.Configuration.SyncPreferences.EnableWriteBackSync.create(),
-			) ?? false;
+    const enabled =
+      ctx.interaction.getInputValue(
+        InteractionIdentifier.Systems.Configuration.SyncPreferences.EnableWriteBackSync.create(),
+      ) ?? false;
 
-		await userCollection.updateOne(
-			{ userId: ctx.author.id },
-			{
-				$set: {
-					"syncConfiguration.pluralkit.writeBack.enabled": enabled,
-				},
-			},
-		);
+    await userCollection.updateOne(
+      { userId: ctx.author.id },
+      {
+        $set: {
+          "syncConfiguration.pluralkit.writeBack.enabled": enabled,
+        },
+      },
+    );
 
-		return await ctx.interaction.update({
-			components: [
-				...(await new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(user.system)?.preferAccessiblity,
-				).syncSettings(user)),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.interaction.update({
+      components: [
+        ...(await new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(user.system)?.preferAccessiblity,
+        ).syncSettings(user)),
+      ],
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 }

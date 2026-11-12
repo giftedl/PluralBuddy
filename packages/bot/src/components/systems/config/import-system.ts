@@ -6,32 +6,32 @@ import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 
 export default class PublicProfileBtn extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const user = await ctx.retrievePUser();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.ephemeral({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (user.system === undefined) {
+      return await ctx.ephemeral({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		return await ctx.write({
-			components: new SystemSettingsView(
-				await ctx.userTranslations(),
-				getSystemFeatures(user.system)?.preferAccessiblity,
-			).importSettings(user.system),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.write({
+      components: new SystemSettingsView(
+        await ctx.userTranslations(),
+        getSystemFeatures(user.system)?.preferAccessiblity,
+      ).importSettings(user.system),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 }

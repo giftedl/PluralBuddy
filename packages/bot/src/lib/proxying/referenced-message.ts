@@ -5,84 +5,70 @@ import { alterCollection, messagesCollection } from "@/mongodb";
 import { cacheSystemMap } from "./dm-replying";
 
 const replifyContents = (contents: string) =>
-	contents
-		.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
-		.substring(0, 74)
-		.replaceAll("https://", "")
-		.replaceAll("http://", "")
-		.replaceAll("discord.com", "discord")
-		.replaceAll("\n", "")
-		.replaceAll("]", "")
-		.replaceAll("[", "")
-		.replaceAll(/<@!?(\d+)>/g, "")
-		.replaceAll("@everyone", "--")
-		.replaceAll(/<#(.*)>/g, "")
-		.replaceAll(/<@&(.*)>/g, "");
+  contents
+    .replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
+    .substring(0, 74)
+    .replaceAll("https://", "")
+    .replaceAll("http://", "")
+    .replaceAll("discord.com", "discord")
+    .replaceAll("\n", "")
+    .replaceAll("]", "")
+    .replaceAll("[", "")
+    .replaceAll(/<@!?(\d+)>/g, "")
+    .replaceAll("@everyone", "--")
+    .replaceAll(/<#(.*)>/g, "")
+    .replaceAll(/<@&(.*)>/g, "");
 
-export async function getReferencedMessageString(
-	message: Message,
-	proxyWHId: string,
-) {
-	let userString = `<@${message.referencedMessage?.author.id}>`;
-	let messageString = `[${
-		replifyContents(message.referencedMessage?.content ?? "") === ""
-			? "Jump to message"
-			: replifyContents(message.referencedMessage?.content ?? "")
-	}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
+export async function getReferencedMessageString(message: Message, proxyWHId: string) {
+  let userString = `<@${message.referencedMessage?.author.id}>`;
+  let messageString = `[${
+    replifyContents(message.referencedMessage?.content ?? "") === ""
+      ? "Jump to message"
+      : replifyContents(message.referencedMessage?.content ?? "")
+  }](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 
-	if (message.referencedMessage?.webhookId === proxyWHId) {
-		const messageDb = await messagesCollection.findOne({
-			messageId: message.referencedMessage?.id,
-		});
+  if (message.referencedMessage?.webhookId === proxyWHId) {
+    const messageDb = await messagesCollection.findOne({
+      messageId: message.referencedMessage?.id,
+    });
 
-		if (messageDb !== null) {
-			const alter = await alterCollection.findOne({
-				alterId: messageDb.alterId,
-			});
-			let contents = message.referencedMessage.content;
+    if (messageDb !== null) {
+      const alter = await alterCollection.findOne({
+        alterId: messageDb.alterId,
+      });
+      let contents = message.referencedMessage.content;
 
-			if (
-				message.referencedMessage.components !== undefined &&
-				contents.length === 0
-			) {
-				if (
-					message.referencedMessage.components[0] !== undefined &&
-					message.referencedMessage.components[0].type ===
-						ComponentType.TextDisplay
-				) {
-					if (
-						!message.referencedMessage.components[0].content.startsWith(
-							`-# ${emojis.reply}`,
-						)
-					)
-						contents = message.referencedMessage.components[0].content;
-					else if (
-						message.referencedMessage.components[1] !== undefined &&
-						message.referencedMessage.components[1].type ===
-							ComponentType.TextDisplay
-					)
-						contents = message.referencedMessage.components[1].content;
-				}
-			}
+      if (message.referencedMessage.components !== undefined && contents.length === 0) {
+        if (
+          message.referencedMessage.components[0] !== undefined &&
+          message.referencedMessage.components[0].type === ComponentType.TextDisplay
+        ) {
+          if (!message.referencedMessage.components[0].content.startsWith(`-# ${emojis.reply}`))
+            contents = message.referencedMessage.components[0].content;
+          else if (
+            message.referencedMessage.components[1] !== undefined &&
+            message.referencedMessage.components[1].type === ComponentType.TextDisplay
+          )
+            contents = message.referencedMessage.components[1].content;
+        }
+      }
 
-			if (alter !== null) {
-				const possiblyCachedSystem = cacheSystemMap[message.id];
-				if (possiblyCachedSystem && possiblyCachedSystem.nudging?.serverReplying) {
-					userString = `@${alter.username} (<@${possiblyCachedSystem.userId}>)`;
-				} else {
-					userString = `@${alter.username}`;
-				}
-				
-				messageString = `[${
-					replifyContents(contents) === ""
-						? "Jump to message"
-						: replifyContents(contents)
-				}](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
+      if (alter !== null) {
+        const possiblyCachedSystem = cacheSystemMap[message.id];
+        if (possiblyCachedSystem && possiblyCachedSystem.nudging?.serverReplying) {
+          userString = `@${alter.username} (<@${possiblyCachedSystem.userId}>)`;
+        } else {
+          userString = `@${alter.username}`;
+        }
 
-				delete cacheSystemMap[alter.systemId];
-			}
-		}
-	}
+        messageString = `[${
+          replifyContents(contents) === "" ? "Jump to message" : replifyContents(contents)
+        }](<https://discord.com/channels/${message.guildId}/${message.referencedMessage?.channelId}/${message.referencedMessage?.id}>)${((message.referencedMessage?.content ?? "").replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:").length ?? 0) > 74 ? "…" : ""}`;
 
-	return `-# ${emojis.reply} Replying to ${userString}: ${messageString}`;
+        delete cacheSystemMap[alter.systemId];
+      }
+    }
+  }
+
+  return `-# ${emojis.reply} Replying to ${userString}: ${messageString}`;
 }

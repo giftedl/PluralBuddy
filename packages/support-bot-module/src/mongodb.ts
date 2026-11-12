@@ -1,14 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	type PTag,
-	type PGuild,
-	type PUser,
-	type PAlter,
-	type POperation,
-	type PMessage,
-	defaultUserStructure,
-    type PBlockNote,
+  type PTag,
+  type PGuild,
+  type PUser,
+  type PAlter,
+  type POperation,
+  type PMessage,
+  defaultUserStructure,
+  type PBlockNote,
 } from "plurography";
 import { type Collection, type Db, MongoClient } from "mongodb";
 
@@ -23,37 +23,34 @@ export let tagCollection: Collection<PTag>;
 export let operationCollection: Collection<POperation>;
 export let messagesCollection: Collection<PMessage>;
 
-export let noteCollection: Collection<PBlockNote>
+export let noteCollection: Collection<PBlockNote>;
 
 export async function setupMongoDB() {
-	mongoClient = new MongoClient(process.env.MONGO ?? "");
+  mongoClient = new MongoClient(process.env.MONGO ?? "");
 
-
-	await mongoClient.connect();
+  await mongoClient.connect();
 }
 
 export async function setupDatabases() {
-	mainDb = mongoClient.db(process.env.MONGO_DB);
-    supportDb = mongoClient.db(process.env.SUPPORT_MONGO_DB);
+  mainDb = mongoClient.db(process.env.MONGO_DB);
+  supportDb = mongoClient.db(process.env.SUPPORT_MONGO_DB);
 
-	guildCollection = mainDb.collection("guilds");
-	userCollection = mainDb.collection("users");
-	alterCollection = mainDb.collection("alters");
-	operationCollection = mainDb.collection("system-operations");
-	messagesCollection = mainDb.collection("messages");
-	tagCollection = mainDb.collection("tags");
+  guildCollection = mainDb.collection("guilds");
+  userCollection = mainDb.collection("users");
+  alterCollection = mainDb.collection("alters");
+  operationCollection = mainDb.collection("system-operations");
+  messagesCollection = mainDb.collection("messages");
+  tagCollection = mainDb.collection("tags");
 
-    noteCollection = supportDb.collection("block-notes");
+  noteCollection = supportDb.collection("block-notes");
 }
 
 export async function getUserById(id: string): Promise<PUser> {
-	return (
-		(await userCollection.findOne({ userId: id })) ?? defaultUserStructure(id)
-	);
+  return (await userCollection.findOne({ userId: id })) ?? defaultUserStructure(id);
 }
 
 export async function writeUserById(id: string, userObj: PUser) {
-	return await userCollection.findOneAndReplace({ userId: id }, userObj, {
-		upsert: true,
-	});
+  return await userCollection.findOneAndReplace({ userId: id }, userObj, {
+    upsert: true,
+  });
 }

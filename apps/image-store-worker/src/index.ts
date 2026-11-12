@@ -12,16 +12,16 @@
  */
 
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		const { pathname } = new URL(request.url);
+  async fetch(request, env, ctx): Promise<Response> {
+    const { pathname } = new URL(request.url);
 
-		if (pathname.startsWith("/c/")) {
-			return Response.redirect(`https://img.pbc.giftedly.dev/${pathname.slice(3)}`, 308)
-		}
-		if (pathname.startsWith("/p/")) {
-			return Response.redirect(`https://img.pb.giftedly.dev/${pathname.slice(3)}`, 308);
-		}
+    if (pathname.startsWith("/c/")) {
+      return Response.redirect(`https://img.pbc.giftedly.dev/${pathname.slice(3)}`, 308);
+    }
+    if (pathname.startsWith("/p/")) {
+      return Response.redirect(`https://img.pb.giftedly.dev/${pathname.slice(3)}`, 308);
+    }
 
-		return Response.redirect(`https://pluralbuddy.app/${pathname}`, 308);
-	},
+    return Response.redirect(`https://pluralbuddy.app/${pathname}`, 308);
+  },
 } satisfies ExportedHandler<Env>;

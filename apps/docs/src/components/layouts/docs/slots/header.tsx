@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import type { ComponentProps } from 'react';
-import { useDocsLayout } from '../client';
-import { cn } from '@/lib/cn';
-import { SidebarIcon } from 'lucide-react';
-import { buttonVariants } from '@/components/ui/button';
+import type { ComponentProps } from "react";
+import { useDocsLayout } from "../client";
+import { cn } from "@/lib/cn";
+import { SidebarIcon } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 
-export function Header(props: ComponentProps<'header'>) {
+export function Header(props: ComponentProps<"header">) {
   const {
     isNavTransparent,
     slots,
@@ -20,7 +20,7 @@ export function Header(props: ComponentProps<'header'>) {
       data-transparent={isNavTransparent}
       {...props}
       className={cn(
-        '[grid-area:header] sticky top-(--fd-docs-row-1) z-30 flex items-center ps-4 pe-2.5 border-b transition-colors backdrop-blur-sm h-(--fd-header-height) md:hidden max-md:layout:[--fd-header-height:--spacing(14)] data-[transparent=false]:bg-fd-background/80',
+        "[grid-area:header] sticky top-(--fd-docs-row-1) z-30 flex items-center ps-4 pe-2.5 border-b transition-colors backdrop-blur-sm h-(--fd-header-height) md:hidden max-md:layout:[--fd-header-height:--spacing(14)] data-[transparent=false]:bg-fd-background/80",
         props.className,
       )}
     >
@@ -33,9 +33,9 @@ export function Header(props: ComponentProps<'header'>) {
         <slots.sidebar.trigger
           className={cn(
             buttonVariants({
-              color: 'ghost',
-              size: 'icon-sm',
-              className: 'p-2',
+              color: "ghost",
+              size: "icon-sm",
+              className: "p-2",
             }),
           )}
         >

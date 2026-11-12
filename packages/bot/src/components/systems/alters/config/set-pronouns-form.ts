@@ -10,88 +10,88 @@ import { w } from "@/webhooks";
 import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetPronounsButton extends ModalCommand {
-	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPronounsForm.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ModalContext) {
+    return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPronounsForm.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ModalContext) {
-		const alterId =
-			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPronounsForm.substring(
-				ctx.customId,
-			)[0];
+  override async run(ctx: ModalContext) {
+    const alterId =
+      InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPronounsForm.substring(
+        ctx.customId,
+      )[0];
 
-		const systemId = ctx.author.id;
-		const query = alterCollection.findOne({
-			alterId: Number(alterId),
-			systemId,
-		});
-		let alter = await query;
+    const systemId = ctx.author.id;
+    const query = alterCollection.findOne({
+      alterId: Number(alterId),
+      systemId,
+    });
+    let alter = await query;
 
-		if (alter === null) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (alter === null) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_ALTER_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const newAlterUsername = ctx.interaction.getInputValue(
-			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPronounsType.create(),
-			true,
-		);
+    const newAlterUsername = ctx.interaction.getInputValue(
+      InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPronounsType.create(),
+      true,
+    );
 
-		await alterCollection.updateOne(
-			{ alterId: Number(alterId), systemId },
-			{
-				$set: {
-					pronouns: newAlterUsername as string,
-				},
-			},
-		);
+    await alterCollection.updateOne(
+      { alterId: Number(alterId), systemId },
+      {
+        $set: {
+          pronouns: newAlterUsername as string,
+        },
+      },
+    );
 
-		w(ctx.author.id, "alter.update", {
-			type: "alter.update",
-			alter: {
-				...alter,
-				pronouns: newAlterUsername,
-			},
-		});
+    w(ctx.author.id, "alter.update", {
+      type: "alter.update",
+      alter: {
+        ...alter,
+        pronouns: newAlterUsername,
+      },
+    });
 
-		if (alter.fields["@/converter/pk"])
-			writeBack({
-				type: "alter",
-				id: alter.fields["@/converter/pk"],
-				change: {
-					pronouns: newAlterUsername as string | undefined,
-				},
-				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
-			});
+    if (alter.fields["@/converter/pk"])
+      writeBack({
+        type: "alter",
+        id: alter.fields["@/converter/pk"],
+        change: {
+          pronouns: newAlterUsername as string | undefined,
+        },
+        syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+      });
 
-		alter =
-			(await alterCollection.findOne({
-				alterId: Number(alterId),
-				systemId,
-			})) ?? alter;
+    alter =
+      (await alterCollection.findOne({
+        alterId: Number(alterId),
+        systemId,
+      })) ?? alter;
 
-		return await ctx.interaction.update({
-			components: [
-				...new AlterView(await ctx.userTranslations()).alterTopView(
-					"public-settings",
-					alter.alterId.toString(),
-					alter.username,
-				),
-				...new AlterView(await ctx.userTranslations()).altersPublicView(
-					alter,
-					(await ctx.guild()) ?? { name: "", id: "" },
-					(await ctx.getDefaultPrefix()) ?? "",
+    return await ctx.interaction.update({
+      components: [
+        ...new AlterView(await ctx.userTranslations()).alterTopView(
+          "public-settings",
+          alter.alterId.toString(),
+          alter.username,
+        ),
+        ...new AlterView(await ctx.userTranslations()).altersPublicView(
+          alter,
+          (await ctx.guild()) ?? { name: "", id: "" },
+          (await ctx.getDefaultPrefix()) ?? "",
 
-					ctx.interaction?.message?.messageReference === undefined,
-				),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+          ctx.interaction?.message?.messageReference === undefined,
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

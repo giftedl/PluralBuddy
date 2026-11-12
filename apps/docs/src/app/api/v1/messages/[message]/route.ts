@@ -5,30 +5,28 @@ import { NextRequest } from "next/server";
 import { PMessage } from "plurography";
 
 export async function GET(
-	request: NextRequest,
-	{ params }: { params: Promise<{ message: string }> },
+  request: NextRequest,
+  { params }: { params: Promise<{ message: string }> },
 ) {
-	const { message: messageId } = await params;
+  const { message: messageId } = await params;
 
-	const oauthResponse = await userlessOAuth(request, []);
+  const oauthResponse = await userlessOAuth(request, []);
 
-	if ("response" in oauthResponse) return oauthResponse.response;
-	const client = new MongoClient(process.env.MONGO ?? "");
-	await client.connect();
+  if ("response" in oauthResponse) return oauthResponse.response;
+  const client = new MongoClient(process.env.MONGO ?? "");
+  await client.connect();
 
-	const db = client.db(
-		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
-	);
-	const messages = db.collection<PMessage>("messages");
-	const message = await messages.findOne({ messageId });
+  const db = client.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
+  const messages = db.collection<PMessage>("messages");
+  const message = await messages.findOne({ messageId });
 
-	if (!message) return Response.json({ message: null });
+  if (!message) return Response.json({ message: null });
 
-	waitUntil(client.close());
-	return Response.json({
-		message: {
-			...message,
-			endpoints: { system: `/api/exchange/users/${message.systemId}/system` },
-		},
-	});
+  waitUntil(client.close());
+  return Response.json({
+    message: {
+      ...message,
+      endpoints: { system: `/api/exchange/users/${message.systemId}/system` },
+    },
+  });
 }

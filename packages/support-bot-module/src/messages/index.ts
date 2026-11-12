@@ -3,5 +3,5 @@
 import { getInfoMessage } from "./info-message";
 
 export const messages = {
-    info: getInfoMessage
-}
+  info: getInfoMessage,
+};

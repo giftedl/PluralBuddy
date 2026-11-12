@@ -7,35 +7,33 @@ import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 
 export default class AlterTab extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.Alters.Index.equals(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.Alters.Index.equals(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		await ctx.deferUpdate();
-		const user = await ctx.retrievePUser();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    await ctx.deferUpdate();
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.followup({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (user.system === undefined) {
+      return await ctx.followup({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		return await ctx.editOrReply({
-			components: [
-				...(await new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(user.system)?.preferAccessiblity,
-				).altersSettings(user.system)),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.editOrReply({
+      components: [
+        ...(await new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(user.system)?.preferAccessiblity,
+        ).altersSettings(user.system)),
+      ],
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 }

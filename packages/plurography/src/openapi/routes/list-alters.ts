@@ -4,71 +4,70 @@ import { UnauthorizedSchema } from "../utils";
 import { PAlterObject } from "@/pluralbuddy/alter";
 
 export const register = (registry: OpenAPIRegistry) =>
-    registry.registerPath({
-        method: "get",
-        path: "/v1/users/{user}/system/list-alters",
-        summary: "List system alters",
+  registry.registerPath({
+    method: "get",
+    path: "/v1/users/{user}/system/list-alters",
+    summary: "List system alters",
+    description:
+      "List data about alters in a system. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
+    security: [{ oAuth2: ["alters:read"] }],
+    parameters: [
+      {
+        name: "user",
+        in: "path",
+        required: true,
         description:
-            "List data about alters in a system. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
-        security: [{ oAuth2: ["alters:read"] }],
-        parameters: [
-
-			{
-				name: "user",
-				in: "path",
-				required: true,
-				description:
-					"`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
-				schema: {
-					type: "string",
-				},
-			},
-            {
-                description:
-                    "How many entries to show at most if in a pagination. Can only be at most 250 alters.",
-                name: "max",
-                in: "query",
-                schema: { type: "number", maximum: 250 }
-            },
-            {
-                description: "How many entries to skip if in a pagination.",
-                name: "skip",
-                in: "query",
-                schema: { type: "number" }
-            },
-        ],
-        responses: {
-            "200": {
-                description: "Success.",
-                content: {
-                    "application/json": {
-                        schema: PAlterObject.array(),
-                    },
-                },
-            },
-            "400": {
-                description:
-                    "You can only show at most 30 alters in a current pagination or you aren't using the current OAuth user.",
-                content: {
-                    "application/json": {
-                        schema: z.object({
-                            errors: z.array(
-                                z.object({
-                                    type: z.enum(["not-matching-oauth", "max-too-high"]),
-                                    friendly: z.string(),
-                                }),
-                            ),
-                        }),
-                    },
-                },
-            },
-            "401": {
-                description: "No access token when authenticating.",
-                content: {
-                    "application/json": {
-                        schema: UnauthorizedSchema,
-                    },
-                },
-            },
+          "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
+        schema: {
+          type: "string",
         },
-    });
+      },
+      {
+        description:
+          "How many entries to show at most if in a pagination. Can only be at most 250 alters.",
+        name: "max",
+        in: "query",
+        schema: { type: "number", maximum: 250 },
+      },
+      {
+        description: "How many entries to skip if in a pagination.",
+        name: "skip",
+        in: "query",
+        schema: { type: "number" },
+      },
+    ],
+    responses: {
+      "200": {
+        description: "Success.",
+        content: {
+          "application/json": {
+            schema: PAlterObject.array(),
+          },
+        },
+      },
+      "400": {
+        description:
+          "You can only show at most 30 alters in a current pagination or you aren't using the current OAuth user.",
+        content: {
+          "application/json": {
+            schema: z.object({
+              errors: z.array(
+                z.object({
+                  type: z.enum(["not-matching-oauth", "max-too-high"]),
+                  friendly: z.string(),
+                }),
+              ),
+            }),
+          },
+        },
+      },
+      "401": {
+        description: "No access token when authenticating.",
+        content: {
+          "application/json": {
+            schema: UnauthorizedSchema,
+          },
+        },
+      },
+    },
+  });

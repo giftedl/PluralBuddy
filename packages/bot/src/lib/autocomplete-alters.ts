@@ -5,131 +5,126 @@ import type { AutocompleteInteraction } from "seyfert";
 import { alterCollection } from "../mongodb";
 import { getUserById } from "../types/user";
 
-export async function autocompleteAlters(
-	ctx: AutocompleteInteraction<boolean>,
-) {
-	const user = await getUserById(ctx.user.id);
+export async function autocompleteAlters(ctx: AutocompleteInteraction<boolean>) {
+  const user = await getUserById(ctx.user.id);
 
-	if (user.system === undefined) {
-		return ctx.respond([{ name: "You have no system.", value: "no" }]);
-	}
+  if (user.system === undefined) {
+    return ctx.respond([{ name: "You have no system.", value: "no" }]);
+  }
 
-	const prompt = ctx.getInput();
-	const trimmedPrompt = prompt?.trim();
+  const prompt = ctx.getInput();
+  const trimmedPrompt = prompt?.trim();
 
-	// Build MongoDB aggregation pipeline for filtering and sorting
-	// Build match filter conditionally
-	const matchFilter: Document =
-		trimmedPrompt && trimmedPrompt.length > 0
-			? {
-					systemId: ctx.user.id,
-					username: {
-						$regex: trimmedPrompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-						$options: "i",
-					},
-				}
-			: { systemId: ctx.user.id };
+  // Build MongoDB aggregation pipeline for filtering and sorting
+  // Build match filter conditionally
+  const matchFilter: Document =
+    trimmedPrompt && trimmedPrompt.length > 0
+      ? {
+          systemId: ctx.user.id,
+          username: {
+            $regex: trimmedPrompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+            $options: "i",
+          },
+        }
+      : { systemId: ctx.user.id };
 
-	const pipeline: Document[] = [
-		// Match alters for this system (and optionally by username)
-		{ $match: matchFilter },
-	];
+  const pipeline: Document[] = [
+    // Match alters for this system (and optionally by username)
+    { $match: matchFilter },
+  ];
 
-	if (trimmedPrompt && trimmedPrompt.length > 0) {
-		// Escape special regex characters in the prompt
-		const escapedPrompt = trimmedPrompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-		const promptLower = trimmedPrompt.toLowerCase();
+  if (trimmedPrompt && trimmedPrompt.length > 0) {
+    // Escape special regex characters in the prompt
+    const escapedPrompt = trimmedPrompt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const promptLower = trimmedPrompt.toLowerCase();
 
-		// Add relevance scoring based on match quality
-		pipeline.push({
-			$addFields: {
-				usernameLower: { $toLower: "$username" },
-			},
-		});
+    // Add relevance scoring based on match quality
+    pipeline.push({
+      $addFields: {
+        usernameLower: { $toLower: "$username" },
+      },
+    });
 
-		pipeline.push({
-			$addFields: {
-				relevanceScore: {
-					$cond: [
-						// Exact match: highest priority (score 1000)
-						{ $eq: ["$usernameLower", { $literal: promptLower }] },
-						1000,
-						{
-							$cond: [
-								// Starts with prompt: high priority (score 500 - length for shorter names)
-								{
-									$regexMatch: {
-										input: "$usernameLower",
-										regex: `^${escapedPrompt}`,
-										options: "i",
-									},
-								},
-								{ $subtract: [500, { $strLenCP: "$username" }] },
-								{
-									$cond: [
-										// Contains prompt: medium priority (score 100 - position - length)
-										{
-											$regexMatch: {
-												input: "$usernameLower",
-												regex: escapedPrompt,
-												options: "i",
-											},
-										},
-										{
-											$subtract: [
-												{
-													$subtract: [
-														100,
-														{
-															$indexOfCP: [
-																"$usernameLower",
-																{ $literal: promptLower },
-															],
-														},
-													],
-												},
-												{ $strLenCP: "$username" },
-											],
-										},
-										0,
-									],
-								},
-							],
-						},
-					],
-				},
-			},
-		});
+    pipeline.push({
+      $addFields: {
+        relevanceScore: {
+          $cond: [
+            // Exact match: highest priority (score 1000)
+            { $eq: ["$usernameLower", { $literal: promptLower }] },
+            1000,
+            {
+              $cond: [
+                // Starts with prompt: high priority (score 500 - length for shorter names)
+                {
+                  $regexMatch: {
+                    input: "$usernameLower",
+                    regex: `^${escapedPrompt}`,
+                    options: "i",
+                  },
+                },
+                { $subtract: [500, { $strLenCP: "$username" }] },
+                {
+                  $cond: [
+                    // Contains prompt: medium priority (score 100 - position - length)
+                    {
+                      $regexMatch: {
+                        input: "$usernameLower",
+                        regex: escapedPrompt,
+                        options: "i",
+                      },
+                    },
+                    {
+                      $subtract: [
+                        {
+                          $subtract: [
+                            100,
+                            {
+                              $indexOfCP: ["$usernameLower", { $literal: promptLower }],
+                            },
+                          ],
+                        },
+                        { $strLenCP: "$username" },
+                      ],
+                    },
+                    0,
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
 
-		// Sort by relevance score (descending), then alphabetically
-		pipeline.push({
-			$sort: {
-				relevanceScore: -1,
-				username: 1,
-			},
-		});
-	} else {
-		// No prompt: just sort alphabetically
-		pipeline.push({
-			$sort: { username: 1 },
-		});
-	}
+    // Sort by relevance score (descending), then alphabetically
+    pipeline.push({
+      $sort: {
+        relevanceScore: -1,
+        username: 1,
+      },
+    });
+  } else {
+    // No prompt: just sort alphabetically
+    pipeline.push({
+      $sort: { username: 1 },
+    });
+  }
 
-	// Limit to 25 results (Discord's autocomplete limit)
-	pipeline.push({ $limit: 25 });
+  // Limit to 25 results (Discord's autocomplete limit)
+  pipeline.push({ $limit: 25 });
 
-	pipeline.push({
-		$project: {
-			username: 1,
-			displayName: 1,
-		},
-	});
+  pipeline.push({
+    $project: {
+      username: 1,
+      displayName: 1,
+    },
+  });
 
-	const array = await alterCollection.aggregate(pipeline).toArray();
+  const array = await alterCollection.aggregate(pipeline).toArray();
 
-	return ctx.respond(
-		array.map((v) => {
-			return { name: `${v.username} – ${v.displayName}`, value: v.username };
-		}),
-	);
+  return ctx.respond(
+    array.map((v) => {
+      return { name: `${v.username} – ${v.displayName}`, value: v.username };
+    }),
+  );
 }

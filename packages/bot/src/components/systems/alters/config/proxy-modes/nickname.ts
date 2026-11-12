@@ -8,71 +8,67 @@ import { AlterView } from "@/views/alters";
 import { w } from "@/webhooks";
 
 export default class NicknameButton extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Nickname.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Nickname.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const alterId =
-			InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Nickname.substring(
-				ctx.customId,
-			)[0];
-		const systemId = ctx.author.id;
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const alterId = InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Nickname.substring(
+      ctx.customId,
+    )[0];
+    const systemId = ctx.author.id;
 
-		const query = alterCollection.findOne({
-			$and: [{ alterId: Number(alterId) }, { systemId }],
-		});
-		let alter = await query;
+    const query = alterCollection.findOne({
+      $and: [{ alterId: Number(alterId) }, { systemId }],
+    });
+    let alter = await query;
 
-		if (alter === null) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (alter === null) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_ALTER_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		await alterCollection.updateOne(
-			{ alterId: Number(alterId), systemId },
-			{
-				$set: {
-					alterMode: "nickname",
-				},
-			},
-		);
+    await alterCollection.updateOne(
+      { alterId: Number(alterId), systemId },
+      {
+        $set: {
+          alterMode: "nickname",
+        },
+      },
+    );
 
-		w(ctx.author.id, "alter.update", {
-			type: "alter.update",
-			alter: {
-				...alter,
-				alterMode: "nickname",
-			},
-		});
+    w(ctx.author.id, "alter.update", {
+      type: "alter.update",
+      alter: {
+        ...alter,
+        alterMode: "nickname",
+      },
+    });
 
-		alter =
-			(await alterCollection.findOne({
-				alterId: Number(alterId),
-				systemId,
-			})) ?? alter;
+    alter =
+      (await alterCollection.findOne({
+        alterId: Number(alterId),
+        systemId,
+      })) ?? alter;
 
-		return await ctx.interaction.update({
-			components: [
-				...new AlterView(await ctx.userTranslations()).alterTopView(
-					"general",
-					alter.alterId.toString(),
-					alter.username,
-				),
-				...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
-					alter,
-					ctx.guildId,
-				)),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.interaction.update({
+      components: [
+        ...new AlterView(await ctx.userTranslations()).alterTopView(
+          "general",
+          alter.alterId.toString(),
+          alter.username,
+        ),
+        ...(await new AlterView(await ctx.userTranslations()).alterGeneralView(alter, ctx.guildId)),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

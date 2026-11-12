@@ -1,15 +1,15 @@
 // Source - https://stackoverflow.com/a/76163982
 
 function convert(x: number) {
-	const h = ~~(x / 3600),
-		m = ~~((x - h * 3600) / 60),
-		s = x - h * 3600 - m * 60;
-	const words = ["hour", "minute", "second"];
-	return [h, m, s]
-		.map((x, i) => (!x ? "" : `${x} ${words[i]}${x !== 1 ? "s" : ""}`))
-		.filter((x) => x)
-		.join(", ")
-		.replace(/,([^,]*)$/, " and$1");
+  const h = ~~(x / 3600),
+    m = ~~((x - h * 3600) / 60),
+    s = x - h * 3600 - m * 60;
+  const words = ["hour", "minute", "second"];
+  return [h, m, s]
+    .map((x, i) => (!x ? "" : `${x} ${words[i]}${x !== 1 ? "s" : ""}`))
+    .filter((x) => x)
+    .join(", ")
+    .replace(/,([^,]*)$/, " and$1");
 }
 
 export default convert;

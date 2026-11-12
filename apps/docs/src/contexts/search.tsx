@@ -1,6 +1,6 @@
-'use client';
-import type { DefaultSearchDialogProps } from '@/components/search-default';
-import { Dialog } from '@base-ui/react/dialog';
+"use client";
+import type { DefaultSearchDialogProps } from "@/components/search-default";
+import { Dialog } from "@base-ui/react/dialog";
 import {
   type ComponentType,
   createContext,
@@ -12,7 +12,7 @@ import {
   useEffectEvent,
   useMemo,
   useState,
-} from 'react';
+} from "react";
 
 interface HotKey {
   display: ReactNode;
@@ -84,7 +84,7 @@ interface SearchContextType {
 }
 
 interface SearchIsOpenType {
-  setIsOpen: (initial: boolean) => boolean
+  setIsOpen: (initial: boolean) => boolean;
 }
 
 const SearchContext = createContext<SearchContextType>({
@@ -97,7 +97,7 @@ const SearchContext = createContext<SearchContextType>({
 
 const SearchIsOpen = createContext<SearchIsOpenType>({
   setIsOpen: () => false,
-})
+});
 
 export function useSearchContext(): SearchContextType {
   return use(SearchContext);
@@ -108,10 +108,10 @@ export function useIsOpenContext(): SearchIsOpenType {
 }
 
 function MetaOrControl() {
-  const [key, setKey] = useState('⌘');
+  const [key, setKey] = useState("⌘");
 
   useEffect(() => {
-    if (/Windows|Linux/i.test(window.navigator.userAgent)) setKey('Ctrl');
+    if (/Windows|Linux/i.test(window.navigator.userAgent)) setKey("Ctrl");
   }, []);
 
   return key;
@@ -123,8 +123,8 @@ const DEFAULT_HOT_KEYS: HotKey[] = [
     display: <MetaOrControl />,
   },
   {
-    key: 'k',
-    display: 'K',
+    key: "k",
+    display: "K",
   },
 ];
 
@@ -137,17 +137,17 @@ export function SearchProvider<DialogProps extends SharedProps = DefaultSearchDi
 }: SearchProviderProps<DialogProps>) {
   const [isOpen, setIsOpen] = useState(false);
   const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
-    if (hotKey.every((v) => (typeof v.key === 'string' ? e.key === v.key : v.key(e)))) {
-      console.log("ok", isOpen)
+    if (hotKey.every((v) => (typeof v.key === "string" ? e.key === v.key : v.key(e)))) {
+      console.log("ok", isOpen);
       setIsOpen((open) => !open);
       e.preventDefault();
     }
   });
 
   useEffect(() => {
-    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, []);
 

@@ -1,8 +1,7 @@
 import { createDexie, db, profileCacheDexieCollection } from "#/logic/dexie";
 
 export function useDexie() {
-    console.log(db)
-	if (!db) createDexie();
+  if (!db) createDexie();
 
-	return { db, profileCache: profileCacheDexieCollection };
+  return { db, profileCache: profileCacheDexieCollection };
 }

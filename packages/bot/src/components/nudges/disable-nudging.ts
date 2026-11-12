@@ -7,51 +7,49 @@ import { writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 
 export default class DisableNudgingButton extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Nudge.Snooze.startsWith(context.customId);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Nudge.Snooze.startsWith(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const user = await ctx.retrievePUser();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const user = await ctx.retrievePUser();
 
-		// Database migration (12/04/25)
-		if (user.nudging === undefined) {
-			await userCollection.updateOne(
-				{ userId: user.userId },
-				{
-					$set: {
-						nudging: {
-							blockedUsers: [],
-							currentlyEnabled: true,
-							dmReply: false,
-							serverReplying: false,
-						},
-					},
-				},
-			);
+    // Database migration (12/04/25)
+    if (user.nudging === undefined) {
+      await userCollection.updateOne(
+        { userId: user.userId },
+        {
+          $set: {
+            nudging: {
+              blockedUsers: [],
+              currentlyEnabled: true,
+              dmReply: false,
+              serverReplying: false,
+            },
+          },
+        },
+      );
 
-			// Set user in memory
-			user.nudging = {
-				blockedUsers: [],
-				currentlyEnabled: true,
-				dmReply: false,
-				serverReplying: false,
-			};
-		}
-		// End database migration
+      // Set user in memory
+      user.nudging = {
+        blockedUsers: [],
+        currentlyEnabled: true,
+        dmReply: false,
+        serverReplying: false,
+      };
+    }
+    // End database migration
 
-		await writeUserById(user.userId, {
-			...user,
-			nudging: { ...user.nudging, currentlyEnabled: false },
-		});
+    await writeUserById(user.userId, {
+      ...user,
+      nudging: { ...user.nudging, currentlyEnabled: false },
+    });
 
-		return await ctx.write({
-			components: new AlertView(await ctx.userTranslations()).successView(
-				"DISABLE_NUDGING_DONE",
-			),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.write({
+      components: new AlertView(await ctx.userTranslations()).successView("DISABLE_NUDGING_DONE"),
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

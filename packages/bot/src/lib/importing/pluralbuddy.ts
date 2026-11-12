@@ -1,232 +1,214 @@
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import {
-	ImportNotation,
-	type PAlter,
-	PAlterObject,
-	type PTag,
-} from "plurography";
+import { ImportNotation, type PAlter, PAlterObject, type PTag } from "plurography";
 import z from "zod";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { createRandomId } from "../random-id";
 import { ImportEntry, ImportOutput } from ".";
 
 const PluralBuddyImportEntry = z.object({
-	existing: ImportEntry,
-	import: ImportNotation,
+  existing: ImportEntry,
+  import: ImportNotation,
 });
 export type PBEntry = z.infer<typeof PluralBuddyImportEntry>;
 
 export async function replace(
-	input: z.infer<typeof PluralBuddyImportEntry>,
+  input: z.infer<typeof PluralBuddyImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
-	const newAlters = input.import.alters
-		.filter((v) => input.existing.alters.some((c) => c.username === v.username))
-		.map((v) => ({
-			existing: input.existing.alters.find((c) => c.username === v.username),
-			import: v,
-		}))
-		.map(
-			(v) =>
-				({
-					...v.import,
-					systemId: input.existing.userId,
-					lastMessageTimestamp: v.existing?.lastMessageTimestamp ?? null,
-					messageCount: v.existing?.messageCount ?? 3,
-					tagIds: v.existing?.tagIds ?? [],
-					created: v.existing?.created ?? new Date(),
+  const newAlters = input.import.alters
+    .filter((v) => input.existing.alters.some((c) => c.username === v.username))
+    .map((v) => ({
+      existing: input.existing.alters.find((c) => c.username === v.username),
+      import: v,
+    }))
+    .map(
+      (v) =>
+        ({
+          ...v.import,
+          systemId: input.existing.userId,
+          lastMessageTimestamp: v.existing?.lastMessageTimestamp ?? null,
+          messageCount: v.existing?.messageCount ?? 3,
+          tagIds: v.existing?.tagIds ?? [],
+          created: v.existing?.created ?? new Date(),
 
-					alterId: v.existing?.alterId ?? 2,
-				}) satisfies PAlter,
-		);
+          alterId: v.existing?.alterId ?? 2,
+        }) satisfies PAlter,
+    );
 
-	for (const replacedAlter of newAlters) {
-		await alterCollection.replaceOne(
-			{ alterId: replacedAlter.alterId },
-			replacedAlter,
-		);
-	}
+  for (const replacedAlter of newAlters) {
+    await alterCollection.replaceOne({ alterId: replacedAlter.alterId }, replacedAlter);
+  }
 
-	const newTags = input.import.tags
-		.filter((v) =>
-			input.existing.tags.some((c) => c.tagFriendlyName === v.tagFriendlyName),
-		)
-		.map((v) => ({
-			existing: input.existing.tags.find(
-				(c) => c.tagFriendlyName === v.tagFriendlyName,
-			),
-			import: v,
-		}))
-		.map(
-			(v) =>
-				({
-					...v.import,
-					systemId: v.existing?.systemId ?? "2",
-					tagId: v.existing?.tagId ?? "2",
-					associatedAlters: v.existing?.associatedAlters ?? [],
-				}) satisfies PTag,
-		);
+  const newTags = input.import.tags
+    .filter((v) => input.existing.tags.some((c) => c.tagFriendlyName === v.tagFriendlyName))
+    .map((v) => ({
+      existing: input.existing.tags.find((c) => c.tagFriendlyName === v.tagFriendlyName),
+      import: v,
+    }))
+    .map(
+      (v) =>
+        ({
+          ...v.import,
+          systemId: v.existing?.systemId ?? "2",
+          tagId: v.existing?.tagId ?? "2",
+          associatedAlters: v.existing?.associatedAlters ?? [],
+        }) satisfies PTag,
+    );
 
-	for (const replacedTag of newTags) {
-		await tagCollection.replaceOne({ tagId: replacedTag.tagId }, replacedTag);
-	}
+  for (const replacedTag of newTags) {
+    await tagCollection.replaceOne({ tagId: replacedTag.tagId }, replacedTag);
+  }
 
-	return ImportOutput.parse({
-		alters: newAlters,
-		tags: newTags,
-		userId: input.existing.userId,
-		affected: {
-			alters: newAlters.length,
-			tags: newTags.length,
-		},
-	} satisfies z.infer<typeof ImportOutput>);
+  return ImportOutput.parse({
+    alters: newAlters,
+    tags: newTags,
+    userId: input.existing.userId,
+    affected: {
+      alters: newAlters.length,
+      tags: newTags.length,
+    },
+  } satisfies z.infer<typeof ImportOutput>);
 }
 
 export async function add(
-	input: z.infer<typeof PluralBuddyImportEntry>,
+  input: z.infer<typeof PluralBuddyImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
-	const newAlters = input.import.alters
-		.filter((v) =>
-			input.existing.alters.length > 0
-				? input.existing.alters.some((c) => c.username !== v.username)
-				: true,
-		)
-		.map(
-			(v, i) =>
-				PAlterObject.parse({
-					...v,
-					systemId: input.existing.userId,
-					lastMessageTimestamp: null,
-					messageCount: 0,
-					tagIds: [],
-					created: new Date(),
+  const newAlters = input.import.alters
+    .filter((v) =>
+      input.existing.alters.length > 0
+        ? input.existing.alters.some((c) => c.username !== v.username)
+        : true,
+    )
+    .map(
+      (v, i) =>
+        PAlterObject.parse({
+          ...v,
+          systemId: input.existing.userId,
+          lastMessageTimestamp: null,
+          messageCount: 0,
+          tagIds: [],
+          created: new Date(),
 
-					alterId: Number(createRandomId(i)),
-				}) satisfies PAlter,
-		);
+          alterId: Number(createRandomId(i)),
+        }) satisfies PAlter,
+    );
 
-	if (newAlters.length + input.existing.alters.length >= 2000)
-		throw new Error("Too many alters");
+  if (newAlters.length + input.existing.alters.length >= 2000) throw new Error("Too many alters");
 
-	const newTags = input.import.tags
-		.filter((v) =>
-			input.existing.tags.length > 0
-				? input.existing.tags.some(
-						(c) => c.tagFriendlyName === v.tagFriendlyName,
-					)
-				: true,
-		)
-		.map((v) => ({
-			existing: input.existing.tags.find(
-				(c) => c.tagFriendlyName === v.tagFriendlyName,
-			),
-			import: v,
-		}))
-		.map(
-			(v) =>
-				({
-					...v.import,
-					systemId: v.existing?.systemId ?? "2",
-					tagId: v.existing?.tagId ?? "2",
-					associatedAlters: v.existing?.associatedAlters ?? [],
-				}) satisfies PTag,
-		);
-	if (newTags.length + input.existing.tags.length >= 1000)
-		throw new Error("Too many tags");
+  const newTags = input.import.tags
+    .filter((v) =>
+      input.existing.tags.length > 0
+        ? input.existing.tags.some((c) => c.tagFriendlyName === v.tagFriendlyName)
+        : true,
+    )
+    .map((v) => ({
+      existing: input.existing.tags.find((c) => c.tagFriendlyName === v.tagFriendlyName),
+      import: v,
+    }))
+    .map(
+      (v) =>
+        ({
+          ...v.import,
+          systemId: v.existing?.systemId ?? "2",
+          tagId: v.existing?.tagId ?? "2",
+          associatedAlters: v.existing?.associatedAlters ?? [],
+        }) satisfies PTag,
+    );
+  if (newTags.length + input.existing.tags.length >= 1000) throw new Error("Too many tags");
 
-	console.log(newAlters.length);
+  console.log(newAlters.length);
 
-	if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
-	if (newTags.length > 0) await tagCollection.insertMany(newTags);
+  if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
+  if (newTags.length > 0) await tagCollection.insertMany(newTags);
 
-	await userCollection.updateOne(
-		{
-			userId: input.existing.userId,
-		},
-		{
-			$push: {
-				"system.alterIds": { $each: newAlters.map((c) => c.alterId) },
-				"system.tagIds": { $each: newTags.map((c) => c.tagId) },
-			},
-		},
-	);
+  await userCollection.updateOne(
+    {
+      userId: input.existing.userId,
+    },
+    {
+      $push: {
+        "system.alterIds": { $each: newAlters.map((c) => c.alterId) },
+        "system.tagIds": { $each: newTags.map((c) => c.tagId) },
+      },
+    },
+  );
 
-	return ImportOutput.parse({
-		alters: newAlters,
-		tags: newTags,
-		userId: input.existing.userId,
-		affected: {
-			alters: newAlters.length,
-			tags: newTags.length,
-		},
-	} satisfies z.infer<typeof ImportOutput>);
+  return ImportOutput.parse({
+    alters: newAlters,
+    tags: newTags,
+    userId: input.existing.userId,
+    affected: {
+      alters: newAlters.length,
+      tags: newTags.length,
+    },
+  } satisfies z.infer<typeof ImportOutput>);
 }
 
 export async function both(
-	input: z.infer<typeof PluralBuddyImportEntry>,
+  input: z.infer<typeof PluralBuddyImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
-	const replaceInput = await replace(input);
-	const addInput = await add({
-		existing: replaceInput,
-		import: input.import,
-	});
+  const replaceInput = await replace(input);
+  const addInput = await add({
+    existing: replaceInput,
+    import: input.import,
+  });
 
-	return ImportOutput.parse({
-		alters: addInput?.alters ?? [],
-		tags: addInput?.tags ?? [],
-		userId: input.existing.userId,
-		affected: {
-			alters: replaceInput.affected.alters + addInput.affected.alters,
-			tags: replaceInput.affected.tags + addInput.affected.tags,
-		},
-	} satisfies z.infer<typeof ImportOutput>);
+  return ImportOutput.parse({
+    alters: addInput?.alters ?? [],
+    tags: addInput?.tags ?? [],
+    userId: input.existing.userId,
+    affected: {
+      alters: replaceInput.affected.alters + addInput.affected.alters,
+      tags: replaceInput.affected.tags + addInput.affected.tags,
+    },
+  } satisfies z.infer<typeof ImportOutput>);
 }
 
 export async function deleteM(
-	input: z.infer<typeof PluralBuddyImportEntry>,
+  input: z.infer<typeof PluralBuddyImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
-	const pendingDeletedAlters = input.existing.alters.filter((v) =>
-		input.import.alters.some((c) => c.username !== v.username),
-	);
+  const pendingDeletedAlters = input.existing.alters.filter((v) =>
+    input.import.alters.some((c) => c.username !== v.username),
+  );
 
-	await alterCollection.deleteMany({
-		alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
-	});
+  await alterCollection.deleteMany({
+    alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
+  });
 
-	const pendingDeletedTags = input.existing.tags.filter((v) =>
-		input.import.tags.some((c) => c.tagFriendlyName !== v.tagFriendlyName),
-	);
+  const pendingDeletedTags = input.existing.tags.filter((v) =>
+    input.import.tags.some((c) => c.tagFriendlyName !== v.tagFriendlyName),
+  );
 
-	await tagCollection.deleteMany({
-		tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
-	});
-	await userCollection.updateOne(
-		{
-			userId: input.existing.userId,
-		},
-		{
-			$pull: {
-				"system.alterIds": {
-					$each: pendingDeletedAlters.map((v) => v.alterId),
-				},
-				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
-			},
-		},
-	);
+  await tagCollection.deleteMany({
+    tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
+  });
+  await userCollection.updateOne(
+    {
+      userId: input.existing.userId,
+    },
+    {
+      $pull: {
+        "system.alterIds": {
+          $each: pendingDeletedAlters.map((v) => v.alterId),
+        },
+        "system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
+      },
+    },
+  );
 
-	return ImportOutput.parse({
-		alters: pendingDeletedAlters,
-		tags: pendingDeletedTags,
-		userId: input.existing.userId,
-		affected: {
-			alters: pendingDeletedAlters.length,
-			tags: pendingDeletedTags.length,
-		},
-	} satisfies z.infer<typeof ImportOutput>);
+  return ImportOutput.parse({
+    alters: pendingDeletedAlters,
+    tags: pendingDeletedTags,
+    userId: input.existing.userId,
+    affected: {
+      alters: pendingDeletedAlters.length,
+      tags: pendingDeletedTags.length,
+    },
+  } satisfies z.infer<typeof ImportOutput>);
 }
 
 export default {
-	replace,
-	add,
-	both,
-	deleteM,
+  replace,
+  add,
+  both,
+  deleteM,
 };

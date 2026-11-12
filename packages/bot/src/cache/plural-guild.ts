@@ -3,21 +3,17 @@ import { BaseResource, type CacheFrom } from "seyfert";
 import type { MakeDeepPartial } from "seyfert/lib/common";
 
 type PluralGuildObject = {
-	g: PGuild;
-	lastDrip: Date;
+  g: PGuild;
+  lastDrip: Date;
 };
 
 export class PGuildCache extends BaseResource<PluralGuildObject> {
-	override namespace = "pb-guild";
+  override namespace = "pb-guild";
 
-	override set(
-		from: CacheFrom,
-		id: string,
-		data: MakeDeepPartial<PluralGuildObject, "lastDrip">,
-	) {
-		return super.set(from, id, {
-			...data,
-			lastDrip: data.lastDrip ?? Date.now(),
-		});
-	}
+  override set(from: CacheFrom, id: string, data: MakeDeepPartial<PluralGuildObject, "lastDrip">) {
+    return super.set(from, id, {
+      ...data,
+      lastDrip: data.lastDrip ?? Date.now(),
+    });
+  }
 }

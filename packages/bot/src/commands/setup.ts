@@ -1,15 +1,15 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	ActionRow,
-	Button,
-	Command,
-	type CommandContext,
-	Container,
-	Declare,
-	Emoji,
-	LocalesT,
-	TextDisplay,
+  ActionRow,
+  Button,
+  Command,
+  type CommandContext,
+  Container,
+  Declare,
+  Emoji,
+  LocalesT,
+  TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { PluralBuddyIntro } from "../views/pluralbuddy-intro";
@@ -18,54 +18,47 @@ import { InteractionIdentifier } from "../lib/interaction-ids";
 import { emojis } from "../lib/emojis";
 
 @Declare({
-	name: "setup",
-	description: "Setup a PluralBuddy system.",
-	aliases: ["set"],
-	contexts: ["BotDM", "Guild"],
+  name: "setup",
+  description: "Setup a PluralBuddy system.",
+  aliases: ["set"],
+  contexts: ["BotDM", "Guild"],
 })
 export default class SetupCommand extends Command {
-	override async run(ctx: CommandContext) {
-		await ctx.deferReply(true);
-		const user = await ctx.retrievePUser();
+  override async run(ctx: CommandContext) {
+    await ctx.deferReply(true);
+    const user = await ctx.retrievePUser();
 
-		if (user.system !== undefined) {
-			return await ctx.ephemeral(
-				{
-					components: [
-						...new AlertView(await ctx.userTranslations()).errorView(
-							"SETUP_ERROR_SYSTEM_ALREADY_EXISTS",
-						),
-						new ActionRow().setComponents(
-							new Button()
-								.setEmoji(emojis.xWhite)
-								.setStyle(ButtonStyle.Danger)
-								.setLabel(
-									(await ctx.userTranslations())
-										.SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN,
-								)
-								.setCustomId(
-									InteractionIdentifier.Setup.RemoveOldSystem.create(),
-								),
-						),
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (user.system !== undefined) {
+      return await ctx.ephemeral(
+        {
+          components: [
+            ...new AlertView(await ctx.userTranslations()).errorView(
+              "SETUP_ERROR_SYSTEM_ALREADY_EXISTS",
+            ),
+            new ActionRow().setComponents(
+              new Button()
+                .setEmoji(emojis.xWhite)
+                .setStyle(ButtonStyle.Danger)
+                .setLabel((await ctx.userTranslations()).SETUP_ERROR_SYSTEM_ALREADY_EXISTS_BTN)
+                .setCustomId(InteractionIdentifier.Setup.RemoveOldSystem.create()),
+            ),
+          ],
+          flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		await ctx.ephemeral(
-			{
-				components: new PluralBuddyIntro(
-					await ctx.userTranslations(),
-				).pageOne(),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			},
-			undefined,
-			undefined,
-			ctx,
-		);
-	}
+    await ctx.ephemeral(
+      {
+        components: new PluralBuddyIntro(await ctx.userTranslations()).pageOne(),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      },
+      undefined,
+      undefined,
+      ctx,
+    );
+  }
 }

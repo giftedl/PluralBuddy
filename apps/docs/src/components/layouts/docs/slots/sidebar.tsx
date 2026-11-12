@@ -1,33 +1,40 @@
-'use client';
-import * as Base from '@fumadocs/base-ui/components/sidebar/base';
-import { createLinkItemRenderer } from '@fumadocs/base-ui/components/sidebar/link-item';
+"use client";
+import * as Base from "@fumadocs/base-ui/components/sidebar/base";
+import { createLinkItemRenderer } from "@fumadocs/base-ui/components/sidebar/link-item";
 import {
   createPageTreeRenderer,
   type SidebarPageTreeComponents,
-} from '@fumadocs/base-ui/components/sidebar/page-tree';
-import { useTreePath } from '@fumadocs/base-ui/contexts/tree';
-import { isLayoutTabActive, type LayoutTab, LinkItem } from '@fumadocs/base-ui/layouts/shared';
-import { cva } from 'class-variance-authority';
-import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
-import { Check, ChevronDown, ChevronsUpDown, Languages, SidebarIcon } from 'lucide-react';
-import { type ComponentProps, CSSProperties, type ReactNode, useMemo, useRef, useState } from 'react';
-import { SearchTrigger } from '@/components/layouts/shared/slots/search-trigger';
-import { buttonVariants } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/cn';
-import { mergeRefs } from '@/lib/merge-refs';
-import { AuthComponents } from '../auth-components';
-import { useDocsLayout } from '../client';
+} from "@fumadocs/base-ui/components/sidebar/page-tree";
+import { useTreePath } from "@fumadocs/base-ui/contexts/tree";
+import { isLayoutTabActive, type LayoutTab, LinkItem } from "@fumadocs/base-ui/layouts/shared";
+import { cva } from "class-variance-authority";
+import { usePathname } from "fumadocs-core/framework";
+import Link from "fumadocs-core/link";
+import { Check, ChevronDown, ChevronsUpDown, Languages, SidebarIcon } from "lucide-react";
+import {
+  type ComponentProps,
+  CSSProperties,
+  type ReactNode,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { SearchTrigger } from "@/components/layouts/shared/slots/search-trigger";
+import { buttonVariants } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/cn";
+import { mergeRefs } from "@/lib/merge-refs";
+import { AuthComponents } from "../auth-components";
+import { useDocsLayout } from "../client";
 
 const itemVariants = cva(
-  'relative flex flex-row items-center gap-2 rounded-lg p-2 text-start text-fd-muted-foreground wrap-anywhere [&_svg]:size-4 [&_svg]:shrink-0',
+  "relative flex flex-row items-center gap-2 rounded-lg p-2 text-start text-fd-muted-foreground wrap-anywhere [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        link: 'transition-colors hover:bg-accent/50 hover:text-accent-foreground/80 hover:transition-none data-[active=true]:bg-fd-primary/10 data-[active=true]:text-fd-primary data-[active=true]:hover:transition-colors',
+        link: "transition-colors hover:bg-accent/50 hover:text-accent-foreground/80 hover:transition-none data-[active=true]:bg-fd-primary/10 data-[active=true]:text-fd-primary data-[active=true]:hover:transition-colors",
         button:
-          'transition-colors hover:bg-accent/50 hover:text-accent-foreground/80 hover:transition-none',
+          "transition-colors hover:bg-accent/50 hover:text-accent-foreground/80 hover:transition-none",
       },
       highlight: {
         true: "data-[active=true]:before:content-[''] data-[active=true]:before:bg-fd-primary data-[active=true]:before:absolute data-[active=true]:before:w-px data-[active=true]:before:inset-y-2.5 data-[active=true]:before:inset-s-2.5",
@@ -36,7 +43,7 @@ const itemVariants = cva(
   },
 );
 
-export interface SidebarProps extends ComponentProps<'aside'> {
+export interface SidebarProps extends ComponentProps<"aside"> {
   components?: Partial<SidebarPageTreeComponents>;
   banner?: ReactNode;
   footer?: ReactNode;
@@ -63,14 +70,14 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
     slots,
     props: { tabs, nav, tabMode },
   } = useDocsLayout();
-  const iconLinks = menuItems.filter((item) => item.type === 'icon');
+  const iconLinks = menuItems.filter((item) => item.type === "icon");
   const viewport = (
     <Base.SidebarViewport>
       <div className="flex flex-col gap-0.5">
         {menuItems
-          .filter((v) => v.type !== 'icon')
+          .filter((v) => v.type !== "icon")
           .map((item, i, list) => (
-            <SidebarLinkItem key={i} item={item} className={cn(i === list.length - 1 && 'mb-4')} />
+            <SidebarLinkItem key={i} item={item} className={cn(i === list.length - 1 && "mb-4")} />
           ))}
         <SidebarPageTree {...components} />
       </div>
@@ -90,9 +97,9 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
               <SidebarCollapseTrigger
                 className={cn(
                   buttonVariants({
-                    color: 'ghost',
-                    size: 'icon-sm',
-                    className: 'mb-auto text-fd-muted-foreground',
+                    color: "ghost",
+                    size: "icon-sm",
+                    className: "mb-auto text-fd-muted-foreground",
                   }),
                 )}
               >
@@ -101,7 +108,7 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
             )}
           </div>
           {slots.searchTrigger && <slots.searchTrigger.full hideIfDisabled />}
-          {tabs.length > 0 && tabMode === 'auto' && <SidebarTabsDropdown tabs={tabs} />}
+          {tabs.length > 0 && tabMode === "auto" && <SidebarTabsDropdown tabs={tabs} />}
           {banner}
         </div>
         {viewport}
@@ -112,9 +119,10 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
                 variant="secondary"
                 className="text-fd-muted-foreground text-start justify-start bg-fd-secondary/50 mb-2"
               >
-                <div className='flex items-center gap-2'>
-                <Languages className="size-4.5" />
-                  <slots.languageSelect.text /></div>
+                <div className="flex items-center gap-2">
+                  <Languages className="size-4.5" />
+                  <slots.languageSelect.text />
+                </div>
                 <ChevronDown className="ms-auto size-3.5" />
               </slots.languageSelect.root>
             )}
@@ -123,7 +131,7 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
                 <LinkItem
                   key={i}
                   item={item}
-                  className={cn(buttonVariants({ size: 'icon-sm', color: 'ghost' }))}
+                  className={cn(buttonVariants({ size: "icon-sm", color: "ghost" }))}
                   aria-label={item.label}
                 >
                   {item.icon}
@@ -148,9 +156,9 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
                   item={item}
                   className={cn(
                     buttonVariants({
-                      size: 'icon-sm',
-                      color: 'ghost',
-                      className: 'p-2',
+                      size: "icon-sm",
+                      color: "ghost",
+                      className: "p-2",
                     }),
                   )}
                   aria-label={item.label}
@@ -161,19 +169,19 @@ export function Sidebar({ footer, banner, collapsible = true, components, ...res
             </div>
             {slots.languageSelect && (
               <slots.languageSelect.root>
-                <div 
-                className='flex items-center gap-1'>
-                <Languages className="size-4.5" />
-                  <slots.languageSelect.text /></div>
+                <div className="flex items-center gap-1">
+                  <Languages className="size-4.5" />
+                  <slots.languageSelect.text />
+                </div>
               </slots.languageSelect.root>
             )}
             {slots.themeSwitch && <slots.themeSwitch className="p-0" />}
             <SidebarTrigger
               className={cn(
                 buttonVariants({
-                  color: 'ghost',
-                  size: 'icon-sm',
-                  className: 'p-2',
+                  color: "ghost",
+                  size: "icon-sm",
+                  className: "p-2",
                 }),
               )}
             >
@@ -198,11 +206,11 @@ function SidebarCollapseTrigger(props: ComponentProps<typeof Base.SidebarCollaps
   return <Base.SidebarCollapseTrigger {...props} />;
 }
 
-export function SidebarTrigger(props: ComponentProps<'button'>) {
+export function SidebarTrigger(props: ComponentProps<"button">) {
   return <Base.SidebarTrigger {...props} />;
 }
 
-function SidebarContent({ ref: refProp, className, children, ...props }: ComponentProps<'aside'>) {
+function SidebarContent({ ref: refProp, className, children, ...props }: ComponentProps<"aside">) {
   const ref = useRef<HTMLElement>(null);
 
   return (
@@ -220,16 +228,16 @@ function SidebarContent({ ref: refProp, className, children, ...props }: Compone
               data-collapsed={collapsed}
               data-hovered={collapsed && hovered}
               className={cn(
-                'absolute flex flex-col w-full max-w-[350px] inset-s-0 inset-y-0 items-end bg-fd-background/10! backdrop-blur-lg text-sm border-e duration-250 *:w-(--fd-sidebar-width)',
+                "absolute flex flex-col w-full max-w-[350px] inset-s-0 inset-y-0 items-end bg-fd-background/10! backdrop-blur-lg text-sm border-e duration-250 *:w-(--fd-sidebar-width)",
                 collapsed && [
-                  'inset-y-2 rounded-xl transition-transform border w-(--fd-sidebar-width)',
+                  "inset-y-2 rounded-xl transition-transform border w-(--fd-sidebar-width)",
                   hovered
-                    ? 'shadow-lg translate-x-2 rtl:-translate-x-2'
-                    : '-translate-x-(--fd-sidebar-width) rtl:translate-x-full',
+                    ? "shadow-lg translate-x-2 rtl:-translate-x-2"
+                    : "-translate-x-(--fd-sidebar-width) rtl:translate-x-full",
                 ],
                 ref.current &&
-                  (ref.current.getAttribute('data-collapsed') === 'true') !== collapsed &&
-                  'transition-[width,inset-block,translate,background-color]',
+                  (ref.current.getAttribute("data-collapsed") === "true") !== collapsed &&
+                  "transition-[width,inset-block,translate,background-color]",
                 className,
               )}
               {...props}
@@ -241,16 +249,16 @@ function SidebarContent({ ref: refProp, className, children, ...props }: Compone
           <div
             data-sidebar-panel=""
             className={cn(
-              'fixed flex top-[calc(--spacing(4)+var(--fd-docs-row-3))] inset-s-4 shadow-lg transition-opacity rounded-xl p-0.5 border bg-fd-muted text-fd-muted-foreground z-10',
-              (!collapsed || hovered) && 'pointer-events-none opacity-0',
+              "fixed flex top-[calc(--spacing(4)+var(--fd-docs-row-3))] inset-s-4 shadow-lg transition-opacity rounded-xl p-0.5 border bg-fd-muted text-fd-muted-foreground z-10",
+              (!collapsed || hovered) && "pointer-events-none opacity-0",
             )}
           >
             <Base.SidebarCollapseTrigger
               className={cn(
                 buttonVariants({
-                  color: 'ghost',
-                  size: 'icon-sm',
-                  className: 'rounded-lg',
+                  color: "ghost",
+                  size: "icon-sm",
+                  className: "rounded-lg",
                 }),
               )}
             >
@@ -274,7 +282,7 @@ function SidebarDrawer({
       <Base.SidebarDrawerOverlay className="fixed z-40 inset-0 backdrop-blur-xs data-[state=open]:animate-fd-fade-in data-[state=closed]:animate-fd-fade-out" />
       <Base.SidebarDrawerContent
         className={cn(
-          'fixed text-[0.9375rem] flex flex-col shadow-lg border-s inset-e-0 inset-y-0 w-[85%] max-w-[380px] z-40 bg-fd-background data-[state=open]:animate-fd-sidebar-in data-[state=closed]:animate-fd-sidebar-out',
+          "fixed text-[0.9375rem] flex flex-col shadow-lg border-s inset-e-0 inset-y-0 w-[85%] max-w-[380px] z-40 bg-fd-background data-[state=open]:animate-fd-sidebar-in data-[state=closed]:animate-fd-sidebar-out",
           className,
         )}
         {...props}
@@ -285,14 +293,14 @@ function SidebarDrawer({
   );
 }
 
-function SidebarSeparator({ className, style, children, ...props }: ComponentProps<'p'>) {
+function SidebarSeparator({ className, style, children, ...props }: ComponentProps<"p">) {
   const depth = Base.useFolderDepth();
 
   return (
     <Base.SidebarSeparator
       className={cn(
-        'inline-flex items-center gap-2 mb-1 px-2 mt-6 empty:mb-0 [&_svg]:size-4 [&_svg]:shrink-0',
-        depth === 0 && 'first:mt-0',
+        "inline-flex items-center gap-2 mb-1 px-2 mt-6 empty:mb-0 [&_svg]:size-4 [&_svg]:shrink-0",
+        depth === 0 && "first:mt-0",
         className,
       )}
       style={{
@@ -316,7 +324,7 @@ function SidebarItem({
 
   return (
     <Base.SidebarItem
-      className={cn(itemVariants({ variant: 'link', highlight: depth >= 1 }), className)}
+      className={cn(itemVariants({ variant: "link", highlight: depth >= 1 }), className)}
       style={{
         paddingInlineStart: getItemOffset(depth),
         ...style,
@@ -339,9 +347,9 @@ function SidebarFolderTrigger({
     <Base.SidebarFolderTrigger
       className={(state) =>
         cn(
-          itemVariants({ variant: collapsible ? 'button' : null }),
-          'w-full',
-          typeof className === 'function' ? className(state) : className,
+          itemVariants({ variant: collapsible ? "button" : null }),
+          "w-full",
+          typeof className === "function" ? className(state) : className,
         )
       }
       style={{
@@ -364,7 +372,7 @@ function SidebarFolderLink({
 
   return (
     <Base.SidebarFolderLink
-      className={cn(itemVariants({ variant: 'link', highlight: depth > 1 }), 'w-full', className)}
+      className={cn(itemVariants({ variant: "link", highlight: depth > 1 }), "w-full", className)}
       style={{
         paddingInlineStart: getItemOffset(depth - 1),
         ...style,
@@ -387,10 +395,10 @@ function SidebarFolderContent({
     <Base.SidebarFolderContent
       className={(state) =>
         cn(
-          'relative flex flex-col gap-0.5 pt-0.5',
+          "relative flex flex-col gap-0.5 pt-0.5",
           depth === 1 &&
             "before:content-[''] before:absolute before:w-px before:inset-y-1 before:bg-fd-border before:inset-s-2.5",
-          typeof className === 'function' ? className(state) : className,
+          typeof className === "function" ? className(state) : className,
         )
       }
       {...props}
@@ -407,7 +415,7 @@ function SidebarTabsDropdown({
 }: {
   placeholder?: ReactNode;
   tabs: LayoutTab[];
-} & ComponentProps<'button'>) {
+} & ComponentProps<"button">) {
   const [open, setOpen] = useState(false);
   const { closeOnRedirect } = useSidebar();
   const pathname = usePathname();
@@ -442,7 +450,7 @@ function SidebarTabsDropdown({
         <PopoverTrigger
           {...props}
           className={cn(
-            'flex items-center gap-2 rounded-lg p-2 border bg-fd-secondary/50 text-start text-fd-secondary-foreground transition-colors hover:bg-accent data-[popup-open]:bg-accent data-[popup-open]:text-accent-foreground',
+            "flex items-center gap-2 rounded-lg p-2 border bg-fd-secondary/50 text-start text-fd-secondary-foreground transition-colors hover:bg-accent data-[popup-open]:bg-accent data-[popup-open]:text-accent-foreground",
             props.className,
           )}
         >
@@ -462,13 +470,20 @@ function SidebarTabsDropdown({
               onClick={onClick}
               {...item.props}
               className={cn(
-                'flex items-center gap-2 rounded-lg p-1.5 hover:bg-accent hover:text-accent-foreground',
+                "flex items-center gap-2 rounded-lg p-1.5 hover:bg-accent hover:text-accent-foreground",
                 item.props?.className,
               )}
             >
-              <div className="shrink-0 size-9 md:mb-auto md:size-5 empty:hidden text-(--tab-color)" style={{
-                "--tab-color": `var(--${(item.title as string).toLocaleLowerCase()}-color, var(--color-fd-foreground))`
-              } as CSSProperties}>{item.icon}</div>
+              <div
+                className="shrink-0 size-9 md:mb-auto md:size-5 empty:hidden text-(--tab-color)"
+                style={
+                  {
+                    "--tab-color": `var(--${(item.title as string).toLocaleLowerCase()}-color, var(--color-fd-foreground))`,
+                  } as CSSProperties
+                }
+              >
+                {item.icon}
+              </div>
               <div>
                 <p className="text-sm font-medium leading-none">{item.title}</p>
                 <p className="text-[0.8125rem] text-fd-muted-foreground mt-1 empty:hidden">
@@ -478,8 +493,8 @@ function SidebarTabsDropdown({
 
               <Check
                 className={cn(
-                  'shrink-0 ms-auto size-3.5 text-fd-primary',
-                  !isActive && 'invisible',
+                  "shrink-0 ms-auto size-3.5 text-fd-primary",
+                  !isActive && "invisible",
                 )}
               />
             </Link>

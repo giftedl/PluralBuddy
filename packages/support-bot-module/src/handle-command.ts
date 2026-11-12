@@ -4,7 +4,7 @@ import { HandleCommand } from "seyfert/lib/commands/handle";
 import { Yuna } from "yunaforseyfert";
 
 export default class SupportBuddyHandleCommand extends HandleCommand {
-    override argsParser = Yuna.parser({
-        useRepliedUserAsAnOption: { requirePing: false }
-    });
+  override argsParser = Yuna.parser({
+    useRepliedUserAsAnOption: { requirePing: false },
+  });
 }

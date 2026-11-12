@@ -1,11 +1,11 @@
-import React, { ComponentPropsWithoutRef, CSSProperties } from "react"
+import React, { ComponentPropsWithoutRef, CSSProperties } from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface RippleProps extends ComponentPropsWithoutRef<"div"> {
-  mainCircleSize?: number
-  mainCircleOpacity?: number
-  numCircles?: number
+  mainCircleSize?: number;
+  mainCircleOpacity?: number;
+  numCircles?: number;
 }
 
 export const Ripple = React.memo(function Ripple({
@@ -19,15 +19,15 @@ export const Ripple = React.memo(function Ripple({
     <div
       className={cn(
         "pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,white,transparent)] select-none",
-        className
+        className,
       )}
       {...props}
     >
       {Array.from({ length: numCircles }, (_, i) => {
-        const size = mainCircleSize + i * 70
-        const opacity = mainCircleOpacity - i * 0.03
-        const animationDelay = `${i * 0.06}s`
-        const borderStyle = "solid"
+        const size = mainCircleSize + i * 70;
+        const opacity = mainCircleOpacity - i * 0.03;
+        const animationDelay = `${i * 0.06}s`;
+        const borderStyle = "solid";
 
         return (
           <div
@@ -49,10 +49,10 @@ export const Ripple = React.memo(function Ripple({
               } as CSSProperties
             }
           />
-        )
+        );
       })}
     </div>
-  )
-})
+  );
+});
 
-Ripple.displayName = "Ripple"
+Ripple.displayName = "Ripple";

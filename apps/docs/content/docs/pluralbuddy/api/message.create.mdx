@@ -23,7 +23,11 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="https://pluralbuddy.app/openapi.yml" webhooks={[{"name":"message.create","method":"post"}]} showDescription />
+      <Comp
+        document="https://pluralbuddy.app/openapi.yml"
+        webhooks={[{ name: "message.create", method: "post" }]}
+        showDescription
+      />
     </>
   );
 }

@@ -3,23 +3,23 @@
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import type { FindCursor, WithId } from "mongodb";
 import {
-	type PImportTranscript,
-	type POperation,
-	type PUser,
-	possibleConverters,
-	SystemFlags,
+  type PImportTranscript,
+  type POperation,
+  type PUser,
+  possibleConverters,
+  SystemFlags,
 } from "plurography";
 import {
-	ActionRow,
-	Button,
-	Container,
-	type DefaultLocale,
-	Section,
-	SelectMenu,
-	Separator,
-	StringSelectMenu,
-	StringSelectOption,
-	TextDisplay,
+  ActionRow,
+  Button,
+  Container,
+  type DefaultLocale,
+  Section,
+  SelectMenu,
+  Separator,
+  StringSelectMenu,
+  StringSelectOption,
+  TextDisplay,
 } from "seyfert";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { mentionCommand } from "@/lib/mention-command";
@@ -30,1366 +30,1151 @@ import { AlterProtectionFlags, type PAlter } from "@/types/alter";
 import { build } from "..";
 import { emojis, getEmojiFromTagColor } from "../lib/emojis";
 import { InteractionIdentifier } from "../lib/interaction-ids";
-import {
-	friendlyProtectionSystem,
-	has,
-	listFromMaskSystems,
-} from "../lib/privacy-bitmask";
+import { friendlyProtectionSystem, has, listFromMaskSystems } from "../lib/privacy-bitmask";
 import type { PSystem } from "../types/system";
 import { AlertView } from "./alert";
 import { TranslatedView } from "./translated-view";
 
 export const alterPagination: {
-	id: string;
-	memoryPage: number;
-	documentCount: number;
-	searchQuery?: string | undefined;
-	queryType?: "username" | "display-name" | undefined;
+  id: string;
+  memoryPage: number;
+  documentCount: number;
+  searchQuery?: string | undefined;
+  queryType?: "username" | "display-name" | undefined;
 }[] = [];
 export const otherAlterPagination: {
-	id: string;
-	memoryPage: number;
-	documentCount: number;
-	searchQuery?: string | undefined;
-	queryType?: "username" | "display-name" | undefined;
-	userId: string;
+  id: string;
+  memoryPage: number;
+  documentCount: number;
+  searchQuery?: string | undefined;
+  queryType?: "username" | "display-name" | undefined;
+  userId: string;
 }[] = [];
 
 export const tagsPagination: {
-	id: string;
-	memoryPage: number;
-	documentCount: number;
-	searchQuery?: string | undefined;
+  id: string;
+  memoryPage: number;
+  documentCount: number;
+  searchQuery?: string | undefined;
 }[] = [];
 
 export enum QuickSyncStatus {
-	NotSyncing,
-	Loading,
-	Done,
+  NotSyncing,
+  Loading,
+  Done,
 }
 
 export class SystemSettingsView extends TranslatedView {
-	topView(
-		currentTab:
-			| "general"
-			| "alters"
-			| "tags"
-			| "public-settings"
-			| "terminology",
-		systemId: string,
-	) {
-		const page2Tabs = ["terminology"];
+  topView(
+    currentTab: "general" | "alters" | "tags" | "public-settings" | "terminology",
+    systemId: string,
+  ) {
+    const page2Tabs = ["terminology"];
 
-		if (page2Tabs.includes(currentTab))
-			return [
-				new Container().setComponents(
-					...(this.preferAccessiblity
-						? []
-						: [new TextDisplay().setContent(`-# ID: \`${systemId}\``)]),
-					new ActionRow().setComponents(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setEmoji(emojis.chevronLeft)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
-							),
-						new Button()
-							.setLabel(this.translations.TERMINOLOGY_LABEL)
-							.setStyle(
-								currentTab === "terminology"
-									? ButtonStyle.Success
-									: ButtonStyle.Secondary,
-							)
-							.setEmoji(
-								currentTab === "terminology"
-									? emojis.squareCheck
-									: emojis.squareDashed,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
-							),
-					),
-				),
-			];
+    if (page2Tabs.includes(currentTab))
+      return [
+        new Container().setComponents(
+          ...(this.preferAccessiblity
+            ? []
+            : [new TextDisplay().setContent(`-# ID: \`${systemId}\``)]),
+          new ActionRow().setComponents(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setEmoji(emojis.chevronLeft)
+              .setCustomId(InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create()),
+            new Button()
+              .setLabel(this.translations.TERMINOLOGY_LABEL)
+              .setStyle(currentTab === "terminology" ? ButtonStyle.Success : ButtonStyle.Secondary)
+              .setEmoji(currentTab === "terminology" ? emojis.squareCheck : emojis.squareDashed)
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
+              ),
+          ),
+        ),
+      ];
 
-		return [
-			new Container().setComponents(
-				...(this.preferAccessiblity
-					? []
-					: [new TextDisplay().setContent(`-# ID: \`${systemId}\``)]),
-				new ActionRow().setComponents(
-					new Button()
-						.setLabel(this.translations.GENERAL_LABEL)
-						.setStyle(
-							currentTab === "general"
-								? ButtonStyle.Success
-								: ButtonStyle.Secondary,
-						)
-						.setEmoji(
-							currentTab === "general"
-								? emojis.squareCheck
-								: emojis.squareDashed,
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
-						),
-					new Button()
-						.setLabel(this.translations.ALTERS_LABEL)
-						.setStyle(
-							currentTab === "alters"
-								? ButtonStyle.Success
-								: ButtonStyle.Secondary,
-						)
-						.setEmoji(
-							currentTab === "alters"
-								? emojis.squareCheck
-								: emojis.squareDashed,
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Alters.Index.create(),
-						),
-					new Button()
-						.setLabel(this.translations.TAGS_LABEL)
-						.setStyle(
-							currentTab === "tags"
-								? ButtonStyle.Success
-								: ButtonStyle.Secondary,
-						)
-						.setEmoji(
-							currentTab === "tags" ? emojis.squareCheck : emojis.squareDashed,
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Tags.Index.create(),
-						),
-					new Button()
-						.setLabel(this.translations.PUBLIC_PROFILE_LABEL)
-						.setStyle(
-							currentTab === "public-settings"
-								? ButtonStyle.Success
-								: ButtonStyle.Secondary,
-						)
-						.setEmoji(
-							currentTab === "public-settings"
-								? emojis.squareCheck
-								: emojis.squareDashed,
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.PublicProfile.Index.create(),
-						),
-					new Button()
-						.setStyle(ButtonStyle.Secondary)
-						.setEmoji(emojis.chevronRight)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create(),
-						),
-				),
-			),
-		];
-	}
+    return [
+      new Container().setComponents(
+        ...(this.preferAccessiblity
+          ? []
+          : [new TextDisplay().setContent(`-# ID: \`${systemId}\``)]),
+        new ActionRow().setComponents(
+          new Button()
+            .setLabel(this.translations.GENERAL_LABEL)
+            .setStyle(currentTab === "general" ? ButtonStyle.Success : ButtonStyle.Secondary)
+            .setEmoji(currentTab === "general" ? emojis.squareCheck : emojis.squareDashed)
+            .setCustomId(InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create()),
+          new Button()
+            .setLabel(this.translations.ALTERS_LABEL)
+            .setStyle(currentTab === "alters" ? ButtonStyle.Success : ButtonStyle.Secondary)
+            .setEmoji(currentTab === "alters" ? emojis.squareCheck : emojis.squareDashed)
+            .setCustomId(InteractionIdentifier.Systems.Configuration.Alters.Index.create()),
+          new Button()
+            .setLabel(this.translations.TAGS_LABEL)
+            .setStyle(currentTab === "tags" ? ButtonStyle.Success : ButtonStyle.Secondary)
+            .setEmoji(currentTab === "tags" ? emojis.squareCheck : emojis.squareDashed)
+            .setCustomId(InteractionIdentifier.Systems.Configuration.Tags.Index.create()),
+          new Button()
+            .setLabel(this.translations.PUBLIC_PROFILE_LABEL)
+            .setStyle(
+              currentTab === "public-settings" ? ButtonStyle.Success : ButtonStyle.Secondary,
+            )
+            .setEmoji(currentTab === "public-settings" ? emojis.squareCheck : emojis.squareDashed)
+            .setCustomId(InteractionIdentifier.Systems.Configuration.PublicProfile.Index.create()),
+          new Button()
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(emojis.chevronRight)
+            .setCustomId(InteractionIdentifier.Systems.Configuration.TerminologyTab.Index.create()),
+        ),
+      ),
+    ];
+  }
 
-	async generalSettingsPageOne({
-		system,
-		guildId,
-		$translations,
-	}: {
-		system: PSystem;
-		guildId: string | undefined;
-		$translations: DefaultLocale;
-	}) {
-		return [
-			new Container()
-				.setComponents(
-					new TextDisplay().setContent(
-						$translations.GENERAL_SYSTEM_TITLE.replace(
-							"{{ emoji }}",
-							emojis.settings,
-						).replace("{{ systemName }}", system.systemName),
-					),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel($translations.SYSTEM_NAME_BTN)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.GeneralTab.SetName.create(),
-								),
-						)
-						.setComponents(
-							new TextDisplay().setContent($translations.SYSTEM_NAME_DESC),
-						),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel($translations.SYSTEM_NICKNAME_FORMAT_BTN)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.GeneralTab.SetNicknameFormat.create(),
-								),
-						)
-						.setComponents(
-							new TextDisplay().setContent(
-								$translations.SYSTEM_NICKNAME_FORMAT_DESC,
-							),
-						),
-					new Separator(),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel($translations.SYSTEM_PRIVACY_BTN)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.create(),
-								),
-						)
-						.setComponents(
-							new TextDisplay().setContent(
-								// biome-ignore lint/style/useTemplate: a
-								$translations.SYSTEM_PRIVACY_DESC +
-								((system.public ?? 0) > 0
-									? `\n-# ${$translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem($translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
-									: ""),
-							),
-						),
+  async generalSettingsPageOne({
+    system,
+    guildId,
+    $translations,
+  }: {
+    system: PSystem;
+    guildId: string | undefined;
+    $translations: DefaultLocale;
+  }) {
+    return [
+      new Container()
+        .setComponents(
+          new TextDisplay().setContent(
+            $translations.GENERAL_SYSTEM_TITLE.replace("{{ emoji }}", emojis.settings).replace(
+              "{{ systemName }}",
+              system.systemName,
+            ),
+          ),
+          new Section()
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel($translations.SYSTEM_NAME_BTN)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.GeneralTab.SetName.create(),
+                ),
+            )
+            .setComponents(new TextDisplay().setContent($translations.SYSTEM_NAME_DESC)),
+          new Section()
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel($translations.SYSTEM_NICKNAME_FORMAT_BTN)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.GeneralTab.SetNicknameFormat.create(),
+                ),
+            )
+            .setComponents(new TextDisplay().setContent($translations.SYSTEM_NICKNAME_FORMAT_DESC)),
+          new Separator(),
+          new Section()
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel($translations.SYSTEM_PRIVACY_BTN)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.create(),
+                ),
+            )
+            .setComponents(
+              new TextDisplay().setContent(
+                // biome-ignore lint/style/useTemplate: a
+                $translations.SYSTEM_PRIVACY_DESC +
+                  ((system.public ?? 0) > 0
+                    ? `\n-# ${$translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionSystem($translations, listFromMaskSystems(system.public ?? 0)).join("`, `")}\``
+                    : ""),
+              ),
+            ),
 
-					new TextDisplay().setContent($translations.SYSTEM_AP_DESC),
+          new TextDisplay().setContent($translations.SYSTEM_AP_DESC),
 
-					new ActionRow().setComponents(
-						new StringSelectMenu()
-							.setPlaceholder(
-								guildId === undefined
-									? $translations.REQUIRED_SERVER_PROXY
-									: $translations.SELECT_DEFAULT_PROXY,
-							)
-							.setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
-							.setDisabled(guildId === undefined)
-							.setOptions([
-								new StringSelectOption()
-									.setValue(
-										InteractionIdentifier.Selection.AutoProxyModes.Latch.create(),
-									)
-									.setLabel($translations.LATCH_NAME)
-									.setDescription($translations.LATCH_DESC)
-									.setDefault(
-										system.systemAutoproxy.some(
-											(a) =>
-												a.serverId === guildId && a.autoproxyMode === "latch",
-										),
-									),
-								new StringSelectOption()
-									.setValue("--")
-									.setLabel($translations.ALTER_NAME)
-									.setDescription($translations.ALTER_DESC_DISABLED)
-									.setDefault(
-										system.systemAutoproxy.some(
-											(a) =>
-												a.serverId === guildId && a.autoproxyMode === "alter",
-										),
-									),
-								new StringSelectOption()
-									.setValue(
-										InteractionIdentifier.Selection.AutoProxyModes.Off.create(),
-									)
-									.setLabel($translations.OFF_NAME)
-									.setDescription($translations.OFF_DESC)
-									.setDefault(
-										system.systemAutoproxy.some(
-											(a) =>
-												a.serverId === guildId && a.autoproxyMode === "off",
-										),
-									),
-							]),
-					),
-				)
-				.setColor("#1190FF"),
-		];
-	}
+          new ActionRow().setComponents(
+            new StringSelectMenu()
+              .setPlaceholder(
+                guildId === undefined
+                  ? $translations.REQUIRED_SERVER_PROXY
+                  : $translations.SELECT_DEFAULT_PROXY,
+              )
+              .setCustomId(InteractionIdentifier.AutoProxy.AlterMenu.create())
+              .setDisabled(guildId === undefined)
+              .setOptions([
+                new StringSelectOption()
+                  .setValue(InteractionIdentifier.Selection.AutoProxyModes.Latch.create())
+                  .setLabel($translations.LATCH_NAME)
+                  .setDescription($translations.LATCH_DESC)
+                  .setDefault(
+                    system.systemAutoproxy.some(
+                      (a) => a.serverId === guildId && a.autoproxyMode === "latch",
+                    ),
+                  ),
+                new StringSelectOption()
+                  .setValue("--")
+                  .setLabel($translations.ALTER_NAME)
+                  .setDescription($translations.ALTER_DESC_DISABLED)
+                  .setDefault(
+                    system.systemAutoproxy.some(
+                      (a) => a.serverId === guildId && a.autoproxyMode === "alter",
+                    ),
+                  ),
+                new StringSelectOption()
+                  .setValue(InteractionIdentifier.Selection.AutoProxyModes.Off.create())
+                  .setLabel($translations.OFF_NAME)
+                  .setDescription($translations.OFF_DESC)
+                  .setDefault(
+                    system.systemAutoproxy.some(
+                      (a) => a.serverId === guildId && a.autoproxyMode === "off",
+                    ),
+                  ),
+              ]),
+          ),
+        )
+        .setColor("#1190FF"),
+    ];
+  }
 
-	async generalSettingsPageTwo({
-		system,
-		guildId,
-		$translations,
-	}: {
-		system: PSystem;
-		guildId: string | undefined;
-		$translations: DefaultLocale;
-	}) {
-		const keepProxyTags =
-			((system.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) === 0;
-		const includePronouns =
-			((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
-		const typingStatus =
-			((system.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) === 0;
-		const preferAccessiblity =
-			((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
-		const leftSidedTag =
-			((system.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) === 0;
-		const caseInsensitiveProxies =
-			((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
+  async generalSettingsPageTwo({
+    system,
+    guildId,
+    $translations,
+  }: {
+    system: PSystem;
+    guildId: string | undefined;
+    $translations: DefaultLocale;
+  }) {
+    const keepProxyTags = ((system.flags ?? 0) & SystemFlags.KEEP_PROXY_TAGS) === 0;
+    const includePronouns = ((system.flags ?? 0) & SystemFlags.INCLUDE_PRONOUNS) === 0;
+    const typingStatus = ((system.flags ?? 0) & SystemFlags.NO_TYPING_STATUS) === 0;
+    const preferAccessiblity = ((system.flags ?? 0) & SystemFlags.PREFER_ACCESSIBLITY) === 0;
+    const leftSidedTag = ((system.flags ?? 0) & SystemFlags.LEFT_SIDED_TAG) === 0;
+    const caseInsensitiveProxies =
+      ((system.flags ?? 0) & SystemFlags.CASE_INSENSITIVE_PROXIES) === 0;
 
-		return [
-			new Container().setColor("#1190FF").setComponents(
-				new TextDisplay().setContent(
-					$translations.GENERAL_SYSTEM_TITLE.replace(
-						"{{ emoji }}",
-						emojis.settings,
-					).replace("{{ systemName }}", system.systemName),
-				),
+    return [
+      new Container().setColor("#1190FF").setComponents(
+        new TextDisplay().setContent(
+          $translations.GENERAL_SYSTEM_TITLE.replace("{{ emoji }}", emojis.settings).replace(
+            "{{ systemName }}",
+            system.systemName,
+          ),
+        ),
 
-				new Section()
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(
-								keepProxyTags
-									? $translations.INCLUDE_PROXY_TAGS_BTN
-									: $translations.INCLUDE_PROXY_TAGS_OFF_BTN,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludeProxyTags.create(),
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent($translations.INCLUDE_PROXY_TAGS_DESC),
-					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(
-								typingStatus
-									? $translations.NO_TYPING_STATUS_BTN
-									: $translations.NO_TYPING_STATUS_BTN_D,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleTypingStatus.create(),
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent($translations.NO_TYPING_STATUS),
-					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(
-								includePronouns
-									? $translations.INCLUDE_PRONOUNS_BTN
-									: $translations.INCLUDE_PRONOUNS_OFF_BTN,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludePronouns.create(),
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent($translations.INCLUDE_PRONOUNS_DESC),
-					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(
-								preferAccessiblity
-									? $translations.PREFER_ACCESSIBLITY_BTN
-									: $translations.PREFER_ACCESSIBLITY_OFF_BTN,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.TogglePreferAccessiblity.create(),
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent(
-							$translations.PREFER_ACCESSIBLITY_DESC,
-						),
-					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(
-								leftSidedTag
-									? $translations.LEFT_SIDED_TAG_BTN
-									: $translations.LEFT_SIDED_TAG_BTN_D,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleLeftSidedTags.create(),
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent($translations.LEFT_SIDED_TAG_DESC),
-					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(
-								caseInsensitiveProxies
-									? $translations.CASE_INSENS_PROXIES_BTN
-									: $translations.CASE_INSENS_PROXIES_BTN_D,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleCaseInsensitiveProxies.create(),
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent(
-							$translations.CASE_INSENS_PROXIES_DESC,
-						),
-					),
-				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay().setContent(
-					`${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,
-				),
-				new ActionRow().setComponents(
-					new Button()
-						.setStyle(ButtonStyle.Secondary)
-						.setLabel($translations.EXPORT_SYS_BTN)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
-						),
-					new Button()
-						.setStyle(ButtonStyle.Secondary)
-						.setLabel($translations.IMPORT_SYS_BTN)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
-						),
-				),
-				new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
-				new ActionRow().setComponents(
-					new StringSelectMenu()
-						.setCustomId(
-							InteractionIdentifier.Systems.ExternalExporting.Selector.create(),
-						)
-						.setOptions(
-							Object.entries(possibleConverters).map(([k, v]) =>
-								new StringSelectOption()
-									.setLabel(v.name)
-									.setDescription(v.description)
-									.setValue(k),
-							),
-						),
-				),
-			),
-		];
-	}
+        new Section()
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(
+                keepProxyTags
+                  ? $translations.INCLUDE_PROXY_TAGS_BTN
+                  : $translations.INCLUDE_PROXY_TAGS_OFF_BTN,
+              )
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludeProxyTags.create(),
+              ),
+          )
+          .setComponents(new TextDisplay().setContent($translations.INCLUDE_PROXY_TAGS_DESC)),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(
+                typingStatus
+                  ? $translations.NO_TYPING_STATUS_BTN
+                  : $translations.NO_TYPING_STATUS_BTN_D,
+              )
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleTypingStatus.create(),
+              ),
+          )
+          .setComponents(new TextDisplay().setContent($translations.NO_TYPING_STATUS)),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(
+                includePronouns
+                  ? $translations.INCLUDE_PRONOUNS_BTN
+                  : $translations.INCLUDE_PRONOUNS_OFF_BTN,
+              )
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludePronouns.create(),
+              ),
+          )
+          .setComponents(new TextDisplay().setContent($translations.INCLUDE_PRONOUNS_DESC)),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(
+                preferAccessiblity
+                  ? $translations.PREFER_ACCESSIBLITY_BTN
+                  : $translations.PREFER_ACCESSIBLITY_OFF_BTN,
+              )
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.GeneralTab.TogglePreferAccessiblity.create(),
+              ),
+          )
+          .setComponents(new TextDisplay().setContent($translations.PREFER_ACCESSIBLITY_DESC)),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(
+                leftSidedTag
+                  ? $translations.LEFT_SIDED_TAG_BTN
+                  : $translations.LEFT_SIDED_TAG_BTN_D,
+              )
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleLeftSidedTags.create(),
+              ),
+          )
+          .setComponents(new TextDisplay().setContent($translations.LEFT_SIDED_TAG_DESC)),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(
+                caseInsensitiveProxies
+                  ? $translations.CASE_INSENS_PROXIES_BTN
+                  : $translations.CASE_INSENS_PROXIES_BTN_D,
+              )
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleCaseInsensitiveProxies.create(),
+              ),
+          )
+          .setComponents(new TextDisplay().setContent($translations.CASE_INSENS_PROXIES_DESC)),
+        new Separator().setSpacing(Spacing.Large),
+        new TextDisplay().setContent(
+          `${$translations.EXPORT_SYS_DESC}\n\n${$translations.IMPORT_SYS_DESC}`,
+        ),
+        new ActionRow().setComponents(
+          new Button()
+            .setStyle(ButtonStyle.Secondary)
+            .setLabel($translations.EXPORT_SYS_BTN)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.GeneralTab.ExportSystem.create(),
+            ),
+          new Button()
+            .setStyle(ButtonStyle.Secondary)
+            .setLabel($translations.IMPORT_SYS_BTN)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.GeneralTab.ImportSystem.create(),
+            ),
+        ),
+        new TextDisplay().setContent($translations.EXTERNAL_EXPORT_SYS_DESC),
+        new ActionRow().setComponents(
+          new StringSelectMenu()
+            .setCustomId(InteractionIdentifier.Systems.ExternalExporting.Selector.create())
+            .setOptions(
+              Object.entries(possibleConverters).map(([k, v]) =>
+                new StringSelectOption().setLabel(v.name).setDescription(v.description).setValue(k),
+              ),
+            ),
+        ),
+      ),
+    ];
+  }
 
-	async generalSettings(
-		system: PSystem,
-		guildId: string | undefined,
-		page: number,
-	) {
-		return await paginateComponents(
-			{
-				"Systems.Configuration.Pagination.PageOne": this.generalSettingsPageOne,
-				"Systems.Configuration.Pagination.PageTwo": this.generalSettingsPageTwo,
-				"Systems.Configuration.Pagination.PageThree":
-					this.generalSettingsPageThree,
-			},
-			{ system, guildId },
-			page,
-			this.translations,
-		);
-	}
+  async generalSettings(system: PSystem, guildId: string | undefined, page: number) {
+    return await paginateComponents(
+      {
+        "Systems.Configuration.Pagination.PageOne": this.generalSettingsPageOne,
+        "Systems.Configuration.Pagination.PageTwo": this.generalSettingsPageTwo,
+        "Systems.Configuration.Pagination.PageThree": this.generalSettingsPageThree,
+      },
+      { system, guildId },
+      page,
+      this.translations,
+    );
+  }
 
-	async generalSettingsPageThree({
-		system,
-		guildId,
-		$translations,
-	}: {
-		system: PSystem;
-		guildId: string | undefined;
-		$translations: DefaultLocale;
-	}) {
-		return [
-			new Container()
-				.setColor("#FF1717")
-				.setSpoiler(true)
-				.setComponents(
-					new TextDisplay().setContent($translations.DANGER_ZONE_TITLE),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setStyle(
-									system.disabled ? ButtonStyle.Primary : ButtonStyle.Danger,
-								)
-								.setLabel(
-									system.disabled
-										? $translations.SYSTEM_E
-										: $translations.SYSTEM_D,
-								)
-								.setCustomId(
-									InteractionIdentifier.Systems.ToggleDisableSystem.create(),
-								),
-						)
-						.setComponents(
-							new TextDisplay().setContent($translations.SYSTEM_D_DESC),
-						),
-					new Separator(),
-					new Section()
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Danger)
-								.setLabel($translations.DELETE_SYS_BTN)
-								.setCustomId(
-									InteractionIdentifier.Setup.RemoveOldSystem.create(),
-								),
-						)
-						.setComponents(
-							new TextDisplay().setContent($translations.DELETE_SYS_DESC),
-						),
-				),
-		];
-	}
+  async generalSettingsPageThree({
+    system,
+    guildId,
+    $translations,
+  }: {
+    system: PSystem;
+    guildId: string | undefined;
+    $translations: DefaultLocale;
+  }) {
+    return [
+      new Container()
+        .setColor("#FF1717")
+        .setSpoiler(true)
+        .setComponents(
+          new TextDisplay().setContent($translations.DANGER_ZONE_TITLE),
+          new Section()
+            .setAccessory(
+              new Button()
+                .setStyle(system.disabled ? ButtonStyle.Primary : ButtonStyle.Danger)
+                .setLabel(system.disabled ? $translations.SYSTEM_E : $translations.SYSTEM_D)
+                .setCustomId(InteractionIdentifier.Systems.ToggleDisableSystem.create()),
+            )
+            .setComponents(new TextDisplay().setContent($translations.SYSTEM_D_DESC)),
+          new Separator(),
+          new Section()
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Danger)
+                .setLabel($translations.DELETE_SYS_BTN)
+                .setCustomId(InteractionIdentifier.Setup.RemoveOldSystem.create()),
+            )
+            .setComponents(new TextDisplay().setContent($translations.DELETE_SYS_DESC)),
+        ),
+    ];
+  }
 
-	async otherAltersSettings(
-		system: PSystem,
-		pgObj?: (typeof alterPagination)[0],
-	) {
-		const altersPerPage = 5;
+  async otherAltersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
+    const altersPerPage = 5;
 
-		if (system.alterIds.length === 0) {
-			return [...new AlertView(this.translations).errorView("ERROR_NO_ALTERS")];
-		}
+    if (system.alterIds.length === 0) {
+      return [...new AlertView(this.translations).errorView("ERROR_NO_ALTERS")];
+    }
 
-		const time = Date.now();
-		const altersCursor = alterCollection
-			.find({
-				systemId: system.associatedUserId,
-				...(pgObj?.queryType === "display-name"
-					? { displayName: { $regex: pgObj?.searchQuery ?? "" } }
-					: pgObj?.queryType === "username"
-						? { username: { $regex: pgObj?.searchQuery ?? "" } }
-						: {}),
-			})
-			.sort({ username: 1 })
-			.limit(altersPerPage)
-			.skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
+    const time = Date.now();
+    const altersCursor = alterCollection
+      .find({
+        systemId: system.associatedUserId,
+        ...(pgObj?.queryType === "display-name"
+          ? { displayName: { $regex: pgObj?.searchQuery ?? "" } }
+          : pgObj?.queryType === "username"
+            ? { username: { $regex: pgObj?.searchQuery ?? "" } }
+            : {}),
+      })
+      .sort({ username: 1 })
+      .limit(altersPerPage)
+      .skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
 
-		const alters = await altersCursor.toArray();
-		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
+    const alters = await altersCursor.toArray();
+    const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
 
-		if (pgObj === undefined) {
-			const documentCount = await alterCollection.countDocuments({
-				systemId: system.associatedUserId,
-			});
+    if (pgObj === undefined) {
+      const documentCount = await alterCollection.countDocuments({
+        systemId: system.associatedUserId,
+      });
 
-			otherAlterPagination.push({
-				id: String(pgId),
-				memoryPage: 1,
-				documentCount,
-				userId: system.associatedUserId,
-			});
+      otherAlterPagination.push({
+        id: String(pgId),
+        memoryPage: 1,
+        documentCount,
+        userId: system.associatedUserId,
+      });
 
-			pgObj = {
-				id: String(pgId),
-				memoryPage: 1,
-				documentCount,
-			};
-		}
+      pgObj = {
+        id: String(pgId),
+        memoryPage: 1,
+        documentCount,
+      };
+    }
 
-		return [
-			new Container().setComponents(
-				new TextDisplay().setContent(this.translations.ALTERS_TITLE),
-				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay().setContent(
-					alters
-						.filter((v) => has(AlterProtectionFlags.VISIBILITY, v.public))
-						.map(
-							(alter) =>
-								`[\`@${has(AlterProtectionFlags.USERNAME, alter.public) ? alter.username : "••••••"}\`] **${has(AlterProtectionFlags.NAME, alter.public) ? alter.displayName : "••••••••"}${alter.pronouns !== null && alter.pronouns !== undefined && has(AlterProtectionFlags.PRONOUNS, alter.public) ? ` | ${alter.pronouns}` : ""}**`,
-						)
-						.join("\n") +
-					(alters.filter((v) =>
-						has(AlterProtectionFlags.VISIBILITY, v.public),
-					).length === 0
-						? this.translations.NO_PUBLIC_ALTERS_DESC
-						: ""),
-				),
-				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay().setContent(
-					this.translations.ALTERS_PAGINATION.replace(
-						"{{ page }}",
-						String(pgObj.memoryPage),
-					)
-						.replace(
-							"{{ maxPage }}",
-							String(Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)),
-						)
-						.replace("{{ alters }}", String(alters.length))
-						.replace("{{ maxAlters }}", String(pgObj.documentCount))
-						.replace("{{ time }}", String(Date.now() - time))
-						.replace(
-							"{{ possibleSearchQuery }}",
-							pgObj.searchQuery !== undefined
-								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-									"{{ query }}",
-									`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
-								)
-								: "",
-						),
-				),
-				new ActionRow().setComponents(
-					new Button()
-						.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
-						.setDisabled(pgObj?.memoryPage === 1)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.PreviousPage.create(
-								pgObj.id,
-							),
-						)
-						.setStyle(ButtonStyle.Primary),
-					new Button()
-						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
-						.setDisabled(
-							pgObj?.memoryPage ===
-							Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.NextPage.create(
-								pgObj.id,
-							),
-						)
-						.setStyle(ButtonStyle.Primary),
+    return [
+      new Container().setComponents(
+        new TextDisplay().setContent(this.translations.ALTERS_TITLE),
+        new Separator().setSpacing(Spacing.Large),
+        new TextDisplay().setContent(
+          alters
+            .filter((v) => has(AlterProtectionFlags.VISIBILITY, v.public))
+            .map(
+              (alter) =>
+                `[\`@${has(AlterProtectionFlags.USERNAME, alter.public) ? alter.username : "••••••"}\`] **${has(AlterProtectionFlags.NAME, alter.public) ? alter.displayName : "••••••••"}${alter.pronouns !== null && alter.pronouns !== undefined && has(AlterProtectionFlags.PRONOUNS, alter.public) ? ` | ${alter.pronouns}` : ""}**`,
+            )
+            .join("\n") +
+            (alters.filter((v) => has(AlterProtectionFlags.VISIBILITY, v.public)).length === 0
+              ? this.translations.NO_PUBLIC_ALTERS_DESC
+              : ""),
+        ),
+        new Separator().setSpacing(Spacing.Large),
+        new TextDisplay().setContent(
+          this.translations.ALTERS_PAGINATION.replace("{{ page }}", String(pgObj.memoryPage))
+            .replace(
+              "{{ maxPage }}",
+              String(Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)),
+            )
+            .replace("{{ alters }}", String(alters.length))
+            .replace("{{ maxAlters }}", String(pgObj.documentCount))
+            .replace("{{ time }}", String(Date.now() - time))
+            .replace(
+              "{{ possibleSearchQuery }}",
+              pgObj.searchQuery !== undefined
+                ? this.translations.ALTERS_POSSIBLE_SQ.replace(
+                    "{{ query }}",
+                    `\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+                  )
+                : "",
+            ),
+        ),
+        new ActionRow().setComponents(
+          new Button()
+            .setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
+            .setDisabled(pgObj?.memoryPage === 1)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.OtherAlterPagination.PreviousPage.create(
+                pgObj.id,
+              ),
+            )
+            .setStyle(ButtonStyle.Primary),
+          new Button()
+            .setLabel(this.translations.PAGINATION_NEXT_PAGE)
+            .setDisabled(
+              pgObj?.memoryPage === Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+            )
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.OtherAlterPagination.NextPage.create(
+                pgObj.id,
+              ),
+            )
+            .setStyle(ButtonStyle.Primary),
 
-					new Button()
-						.setStyle(ButtonStyle.Primary)
-						.setEmoji(emojis.search)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.OtherAlterPagination.Search.create(
-								pgObj.id,
-							),
-						),
-				),
-			),
-		];
-	}
+          new Button()
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji(emojis.search)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.OtherAlterPagination.Search.create(
+                pgObj.id,
+              ),
+            ),
+        ),
+      ),
+    ];
+  }
 
-	async altersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
-		const altersPerPage = 5;
+  async altersSettings(system: PSystem, pgObj?: (typeof alterPagination)[0]) {
+    const altersPerPage = 5;
 
-		if (system.alterIds.length === 0) {
-			return [
-				...this.topView("alters", system.associatedUserId),
-				...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
-				new ActionRow().setComponents(
-					new Button()
-						.setLabel(this.translations.CREATE_NEW_ALTER_DESCRIPTION)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
-						)
-						.setStyle(ButtonStyle.Primary),
-				),
-			];
-		}
+    if (system.alterIds.length === 0) {
+      return [
+        ...this.topView("alters", system.associatedUserId),
+        ...new AlertView(this.translations).errorView("ERROR_NO_ALTERS"),
+        new ActionRow().setComponents(
+          new Button()
+            .setLabel(this.translations.CREATE_NEW_ALTER_DESCRIPTION)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
+            )
+            .setStyle(ButtonStyle.Primary),
+        ),
+      ];
+    }
 
-		const time = Date.now();
-		const altersCursor = alterCollection
-			.find({
-				systemId: system.associatedUserId,
-				...(pgObj?.queryType === "display-name"
-					? { displayName: { $regex: pgObj?.searchQuery ?? "" } }
-					: pgObj?.queryType === "username"
-						? { username: { $regex: pgObj?.searchQuery ?? "" } }
-						: {}),
-			})
-			.sort({ username: 1 })
-			.limit(altersPerPage)
-			.skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
+    const time = Date.now();
+    const altersCursor = alterCollection
+      .find({
+        systemId: system.associatedUserId,
+        ...(pgObj?.queryType === "display-name"
+          ? { displayName: { $regex: pgObj?.searchQuery ?? "" } }
+          : pgObj?.queryType === "username"
+            ? { username: { $regex: pgObj?.searchQuery ?? "" } }
+            : {}),
+      })
+      .sort({ username: 1 })
+      .limit(altersPerPage)
+      .skip(((pgObj?.memoryPage ?? 1) - 1) * altersPerPage);
 
-		const alters = await altersCursor.toArray();
-		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
+    const alters = await altersCursor.toArray();
+    const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
 
-		if (pgObj === undefined) {
-			const documentCount = await alterCollection.countDocuments({
-				systemId: system.associatedUserId,
-			});
+    if (pgObj === undefined) {
+      const documentCount = await alterCollection.countDocuments({
+        systemId: system.associatedUserId,
+      });
 
-			alterPagination.push({
-				id: String(pgId),
-				memoryPage: 1,
-				documentCount,
-			});
+      alterPagination.push({
+        id: String(pgId),
+        memoryPage: 1,
+        documentCount,
+      });
 
-			pgObj = {
-				id: String(pgId),
-				memoryPage: 1,
-				documentCount,
-			};
-		}
+      pgObj = {
+        id: String(pgId),
+        memoryPage: 1,
+        documentCount,
+      };
+    }
 
-		return [
-			...this.topView("alters", system.associatedUserId),
-			new Container().setComponents(
-				new TextDisplay().setContent(
-					`${this.translations.ALTERS_TITLE} - ${system.systemName}`,
-				),
-				new Separator().setSpacing(Spacing.Large),
-				...alters.map((alter) => {
-					return new Section()
-						.setAccessory(
-							new Button()
-								.setLabel(this.translations.ALTER_EDIT)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(
-										alter.alterId,
-									),
-								)
-								.setStyle(ButtonStyle.Primary)
-								.setEmoji(emojis.wrenchWhite),
-						)
-						.setComponents(
-							new TextDisplay().setContent(
-								`[\`@${alter.username}\`] **${alter.displayName}${alter.pronouns !== null && alter.pronouns !== undefined ? ` | ${alter.pronouns}` : ""}** ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
-							),
-						);
-				}),
-				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay().setContent(
-					this.translations.ALTERS_PAGINATION.replace(
-						"{{ page }}",
-						String(pgObj.memoryPage),
-					)
-						.replace(
-							"{{ maxPage }}",
-							String(Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)),
-						)
-						.replace("{{ alters }}", String(alters.length))
-						.replace("{{ maxAlters }}", String(pgObj.documentCount))
-						.replace("{{ time }}", String(Date.now() - time))
-						.replace(
-							"{{ possibleSearchQuery }}",
-							pgObj.searchQuery !== undefined
-								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-									"{{ query }}",
-									`\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
-								)
-								: "",
-						),
-				),
-				new ActionRow().setComponents(
-					new Button()
-						.setEmoji(emojis.plus)
-						.setStyle(ButtonStyle.Primary)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
-						),
-					new Button()
-						.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
-						.setDisabled(pgObj?.memoryPage === 1)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(
-								pgObj.id,
-							),
-						)
-						.setStyle(ButtonStyle.Primary),
-					new Button()
-						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
-						.setDisabled(
-							pgObj?.memoryPage ===
-							Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(
-								pgObj.id,
-							),
-						)
-						.setStyle(ButtonStyle.Primary),
+    return [
+      ...this.topView("alters", system.associatedUserId),
+      new Container().setComponents(
+        new TextDisplay().setContent(`${this.translations.ALTERS_TITLE} - ${system.systemName}`),
+        new Separator().setSpacing(Spacing.Large),
+        ...alters.map((alter) => {
+          return new Section()
+            .setAccessory(
+              new Button()
+                .setLabel(this.translations.ALTER_EDIT)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.ConfigureAlter.create(alter.alterId),
+                )
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji(emojis.wrenchWhite),
+            )
+            .setComponents(
+              new TextDisplay().setContent(
+                `[\`@${alter.username}\`] **${alter.displayName}${alter.pronouns !== null && alter.pronouns !== undefined ? ` | ${alter.pronouns}` : ""}** ${alter.proxyTags[0] !== undefined ? `*(*\`"${alter.proxyTags[0].prefix}text${alter.proxyTags[0].suffix}"\`*)*` : ""}`,
+              ),
+            );
+        }),
+        new Separator().setSpacing(Spacing.Large),
+        new TextDisplay().setContent(
+          this.translations.ALTERS_PAGINATION.replace("{{ page }}", String(pgObj.memoryPage))
+            .replace(
+              "{{ maxPage }}",
+              String(Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage)),
+            )
+            .replace("{{ alters }}", String(alters.length))
+            .replace("{{ maxAlters }}", String(pgObj.documentCount))
+            .replace("{{ time }}", String(Date.now() - time))
+            .replace(
+              "{{ possibleSearchQuery }}",
+              pgObj.searchQuery !== undefined
+                ? this.translations.ALTERS_POSSIBLE_SQ.replace(
+                    "{{ query }}",
+                    `\`${pgObj.searchQuery}\` (${pgObj.queryType?.replaceAll("-", " ")})`,
+                  )
+                : "",
+            ),
+        ),
+        new ActionRow().setComponents(
+          new Button()
+            .setEmoji(emojis.plus)
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.AlterPagination.CreateNewAlter.create(),
+            ),
+          new Button()
+            .setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
+            .setDisabled(pgObj?.memoryPage === 1)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.AlterPagination.PreviousPage.create(
+                pgObj.id,
+              ),
+            )
+            .setStyle(ButtonStyle.Primary),
+          new Button()
+            .setLabel(this.translations.PAGINATION_NEXT_PAGE)
+            .setDisabled(
+              pgObj?.memoryPage === Math.ceil((pgObj?.documentCount ?? 0) / altersPerPage),
+            )
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.AlterPagination.NextPage.create(pgObj.id),
+            )
+            .setStyle(ButtonStyle.Primary),
 
-					new Button()
-						.setStyle(ButtonStyle.Primary)
-						.setEmoji(emojis.search)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.AlterPagination.Search.create(
-								pgObj.id,
-							),
-						),
-				),
-			),
-		];
-	}
+          new Button()
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji(emojis.search)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.AlterPagination.Search.create(pgObj.id),
+            ),
+        ),
+      ),
+    ];
+  }
 
-	async tagsSettings(system: PSystem, pgObj?: (typeof tagsPagination)[0]) {
-		const tagsPerPage = 5;
+  async tagsSettings(system: PSystem, pgObj?: (typeof tagsPagination)[0]) {
+    const tagsPerPage = 5;
 
-		if (system.tagIds.length === 0) {
-			return [
-				...this.topView("tags", system.associatedUserId),
-				...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
-				new ActionRow().setComponents(
-					new Button()
-						.setLabel(this.translations.NEW_TAG_BTN)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
-						)
-						.setStyle(ButtonStyle.Primary),
-				),
-			];
-		}
+    if (system.tagIds.length === 0) {
+      return [
+        ...this.topView("tags", system.associatedUserId),
+        ...new AlertView(this.translations).errorView("ERROR_NO_TAGS"),
+        new ActionRow().setComponents(
+          new Button()
+            .setLabel(this.translations.NEW_TAG_BTN)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
+            )
+            .setStyle(ButtonStyle.Primary),
+        ),
+      ];
+    }
 
-		const time = Date.now();
-		const tagsCursor = tagCollection
-			.find({
-				systemId: system.associatedUserId,
-				tagFriendlyName: { $regex: pgObj?.searchQuery ?? "" },
-			})
-			.sort({ orderString: 1, tagFriendlyName: 1 })
-			.limit(tagsPerPage)
-			.skip(((pgObj?.memoryPage ?? 1) - 1) * tagsPerPage);
+    const time = Date.now();
+    const tagsCursor = tagCollection
+      .find({
+        systemId: system.associatedUserId,
+        tagFriendlyName: { $regex: pgObj?.searchQuery ?? "" },
+      })
+      .sort({ orderString: 1, tagFriendlyName: 1 })
+      .limit(tagsPerPage)
+      .skip(((pgObj?.memoryPage ?? 1) - 1) * tagsPerPage);
 
-		const alters = (await tagsCursor.toArray()).sort((a, b) => {
-			const k1 = a.orderString === undefined ? 0 : 1;
-			const k2 = b.orderString === undefined ? 0 : 2;
-			return k2 - k1;
-		});
-		const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
+    const alters = (await tagsCursor.toArray()).sort((a, b) => {
+      const k1 = a.orderString === undefined ? 0 : 1;
+      const k2 = b.orderString === undefined ? 0 : 2;
+      return k2 - k1;
+    });
+    const pgId = pgObj === undefined ? DiscordSnowflake.generate() : pgObj.id;
 
-		if (pgObj === undefined) {
-			const documentCount = await tagCollection.countDocuments({
-				systemId: system.associatedUserId,
-			});
+    if (pgObj === undefined) {
+      const documentCount = await tagCollection.countDocuments({
+        systemId: system.associatedUserId,
+      });
 
-			tagsPagination.push({
-				id: String(pgId),
-				memoryPage: 1,
-				documentCount,
-			});
+      tagsPagination.push({
+        id: String(pgId),
+        memoryPage: 1,
+        documentCount,
+      });
 
-			pgObj = {
-				id: String(pgId),
-				memoryPage: 1,
-				documentCount,
-			};
-		}
+      pgObj = {
+        id: String(pgId),
+        memoryPage: 1,
+        documentCount,
+      };
+    }
 
-		return [
-			...this.topView("tags", system.associatedUserId),
-			new Container().setComponents(
-				new TextDisplay().setContent(
-					`${this.translations.TAG_TITLE} - ${system.systemName}`,
-				),
-				new Separator().setSpacing(Spacing.Large),
-				...alters.map((tag) => {
-					return new Section()
-						.setAccessory(
-							new Button()
-								.setLabel(this.translations.TAG_EDIT)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.ConfigureTag.create(
-										tag.tagId,
-									),
-								)
-								.setStyle(ButtonStyle.Primary)
-								.setEmoji(emojis.wrenchWhite),
-						)
-						.setComponents(
-							new TextDisplay().setContent(
-								`${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`,
-							),
-						);
-				}),
-				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay().setContent(
-					this.translations.TAGS_PAGINATION.replace(
-						"{{ page }}",
-						String(pgObj.memoryPage),
-					)
-						.replace(
-							"{{ maxPage }}",
-							String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)),
-						)
-						.replace("{{ alters }}", String(alters.length))
-						.replace("{{ maxAlters }}", String(pgObj.documentCount))
-						.replace("{{ time }}", String(Date.now() - time))
-						.replace(
-							"{{ possibleSearchQuery }}",
-							pgObj.searchQuery !== undefined
-								? this.translations.ALTERS_POSSIBLE_SQ.replace(
-									"{{ query }}",
-									`\`${pgObj.searchQuery}\``,
-								)
-								: "",
-						),
-				),
-				new ActionRow().setComponents(
-					new Button()
-						.setEmoji(emojis.plus)
-						.setStyle(ButtonStyle.Primary)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
-						),
-					new Button()
-						.setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
-						.setDisabled(pgObj?.memoryPage === 1)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TagPagination.PreviousPage.create(
-								pgObj.id,
-							),
-						)
-						.setStyle(ButtonStyle.Primary),
-					new Button()
-						.setLabel(this.translations.PAGINATION_NEXT_PAGE)
-						.setDisabled(
-							pgObj?.memoryPage ===
-							Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage),
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TagPagination.NextPage.create(
-								pgObj.id,
-							),
-						)
-						.setStyle(ButtonStyle.Primary),
+    return [
+      ...this.topView("tags", system.associatedUserId),
+      new Container().setComponents(
+        new TextDisplay().setContent(`${this.translations.TAG_TITLE} - ${system.systemName}`),
+        new Separator().setSpacing(Spacing.Large),
+        ...alters.map((tag) => {
+          return new Section()
+            .setAccessory(
+              new Button()
+                .setLabel(this.translations.TAG_EDIT)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.ConfigureTag.create(tag.tagId),
+                )
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji(emojis.wrenchWhite),
+            )
+            .setComponents(
+              new TextDisplay().setContent(
+                `${getEmojiFromTagColor(tag.tagColor)}  ${tag.tagFriendlyName}`,
+              ),
+            );
+        }),
+        new Separator().setSpacing(Spacing.Large),
+        new TextDisplay().setContent(
+          this.translations.TAGS_PAGINATION.replace("{{ page }}", String(pgObj.memoryPage))
+            .replace("{{ maxPage }}", String(Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage)))
+            .replace("{{ alters }}", String(alters.length))
+            .replace("{{ maxAlters }}", String(pgObj.documentCount))
+            .replace("{{ time }}", String(Date.now() - time))
+            .replace(
+              "{{ possibleSearchQuery }}",
+              pgObj.searchQuery !== undefined
+                ? this.translations.ALTERS_POSSIBLE_SQ.replace(
+                    "{{ query }}",
+                    `\`${pgObj.searchQuery}\``,
+                  )
+                : "",
+            ),
+        ),
+        new ActionRow().setComponents(
+          new Button()
+            .setEmoji(emojis.plus)
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.TagPagination.CreateNewTag.create(),
+            ),
+          new Button()
+            .setLabel(this.translations.PAGINATION_PREVIOUS_PAGE)
+            .setDisabled(pgObj?.memoryPage === 1)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.TagPagination.PreviousPage.create(
+                pgObj.id,
+              ),
+            )
+            .setStyle(ButtonStyle.Primary),
+          new Button()
+            .setLabel(this.translations.PAGINATION_NEXT_PAGE)
+            .setDisabled(pgObj?.memoryPage === Math.ceil((pgObj?.documentCount ?? 0) / tagsPerPage))
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.TagPagination.NextPage.create(pgObj.id),
+            )
+            .setStyle(ButtonStyle.Primary),
 
-					new Button()
-						.setStyle(ButtonStyle.Primary)
-						.setEmoji(emojis.search)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.TagPagination.Search.create(
-								pgObj.id,
-							),
-						),
-				),
-			),
-		];
-	}
+          new Button()
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji(emojis.search)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.TagPagination.Search.create(pgObj.id),
+            ),
+        ),
+      ),
+    ];
+  }
 
-	publicProfile(system: PSystem, prefix: string, isApplication: boolean) {
-		return [
-			new Container().setComponents(
-				new TextDisplay().setContent(
-					this.translations.S_PUBLIC_PROFILE_TITLE.replace(
-						"{{ systemName }}",
-						system.systemName,
-					),
-				),
-				new Separator().setSpacing(Spacing.Large),
+  publicProfile(system: PSystem, prefix: string, isApplication: boolean) {
+    return [
+      new Container().setComponents(
+        new TextDisplay().setContent(
+          this.translations.S_PUBLIC_PROFILE_TITLE.replace("{{ systemName }}", system.systemName),
+        ),
+        new Separator().setSpacing(Spacing.Large),
 
-				new Section()
-					.addComponents(
-						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_PFP_DESC,
-						),
-					)
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(this.translations.ALTER_SET_PFP)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SetPFP.create(),
-							),
-					),
-				new Separator().setSpacing(Spacing.Large),
-				new Section()
-					.addComponents(
-						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_BANNER_DESC,
-						),
-					)
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(this.translations.ALTER_SET_BANNER)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SetBanner.create(),
-							),
-					),
-				new Separator().setSpacing(Spacing.Large),
-				new Section()
-					.addComponents(
-						new TextDisplay().setContent(
-							this.translations.S_PUBLIC_PROFILE_PN_DESC.replace(
-								"{{ systemName }}",
-								system.systemName,
-							).replace(
-								"{{ pronouns }}",
-								system.systemPronouns ??
-								this.translations.PUBLIC_PROFILE_UNSET_PN,
-							),
-						),
-					)
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(this.translations.ALTER_SET_PRONOUNS)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SetPronouns.create(),
-							),
-					),
-				new Separator().setSpacing(Spacing.Large),
-				new Section()
-					.addComponents(
-						new TextDisplay().setContent(
-							this.translations.S_PUBLIC_PROFILE_DESC_DESC.replace(
-								"{{ mention }}",
-								mentionCommand(prefix, "system description", isApplication),
-							),
-						),
-					)
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(this.translations.ALTER_SET_DESCRIPTION)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SetDescription.create(),
-							),
-					),
-				new Separator().setSpacing(Spacing.Large),
-				new Section()
-					.addComponents(
-						new TextDisplay().setContent(
-							this.translations.PUBLIC_PROFILE_SYSTEM_TAG_DESC.replace(
-								"{{ systemName }}",
-								system.systemName,
-							).replace(
-								"{{ displayTag }}",
-								system.systemDisplayTag ??
-								this.translations.PUBLIC_PROFILE_UNSET_PN,
-							),
-						),
-					)
-					.setAccessory(
-						new Button()
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(this.translations.ALTER_SET_TAG)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SetSystemTag.create(),
-							),
-					),
-			),
-		];
-	}
+        new Section()
+          .addComponents(new TextDisplay().setContent(this.translations.PUBLIC_PROFILE_PFP_DESC))
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(this.translations.ALTER_SET_PFP)
+              .setCustomId(InteractionIdentifier.Systems.Configuration.SetPFP.create()),
+          ),
+        new Separator().setSpacing(Spacing.Large),
+        new Section()
+          .addComponents(new TextDisplay().setContent(this.translations.PUBLIC_PROFILE_BANNER_DESC))
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(this.translations.ALTER_SET_BANNER)
+              .setCustomId(InteractionIdentifier.Systems.Configuration.SetBanner.create()),
+          ),
+        new Separator().setSpacing(Spacing.Large),
+        new Section()
+          .addComponents(
+            new TextDisplay().setContent(
+              this.translations.S_PUBLIC_PROFILE_PN_DESC.replace(
+                "{{ systemName }}",
+                system.systemName,
+              ).replace(
+                "{{ pronouns }}",
+                system.systemPronouns ?? this.translations.PUBLIC_PROFILE_UNSET_PN,
+              ),
+            ),
+          )
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(this.translations.ALTER_SET_PRONOUNS)
+              .setCustomId(InteractionIdentifier.Systems.Configuration.SetPronouns.create()),
+          ),
+        new Separator().setSpacing(Spacing.Large),
+        new Section()
+          .addComponents(
+            new TextDisplay().setContent(
+              this.translations.S_PUBLIC_PROFILE_DESC_DESC.replace(
+                "{{ mention }}",
+                mentionCommand(prefix, "system description", isApplication),
+              ),
+            ),
+          )
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(this.translations.ALTER_SET_DESCRIPTION)
+              .setCustomId(InteractionIdentifier.Systems.Configuration.SetDescription.create()),
+          ),
+        new Separator().setSpacing(Spacing.Large),
+        new Section()
+          .addComponents(
+            new TextDisplay().setContent(
+              this.translations.PUBLIC_PROFILE_SYSTEM_TAG_DESC.replace(
+                "{{ systemName }}",
+                system.systemName,
+              ).replace(
+                "{{ displayTag }}",
+                system.systemDisplayTag ?? this.translations.PUBLIC_PROFILE_UNSET_PN,
+              ),
+            ),
+          )
+          .setAccessory(
+            new Button()
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(this.translations.ALTER_SET_TAG)
+              .setCustomId(InteractionIdentifier.Systems.Configuration.SetSystemTag.create()),
+          ),
+      ),
+    ];
+  }
 
-	importSettings(system: PSystem) {
-		return [
-			new Container().setComponents(
-				new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_TITLE),
-				new Separator().setSpacing(Spacing.Large),
-				new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_DESC),
-				new Separator().setSpacing(Spacing.Small).setDivider(false),
-				new ActionRow().setComponents(
-					new StringSelectMenu()
-						.setCustomId(InteractionIdentifier.Systems.ImportMode.create())
-						.setOptions([
-							new StringSelectOption()
-								.setDescription(this.translations.REPLACE_DESC)
-								.setLabel(this.translations.REPLACE_NAME)
-								.setValue("replace"),
-							new StringSelectOption()
-								.setDescription(this.translations.ADD_DESC)
-								.setLabel(this.translations.ADD_NAME)
-								.setValue("add"),
-							new StringSelectOption()
-								.setDescription(this.translations.FULL_IMPORT_DESC)
-								.setLabel(this.translations.FULL_IMPORT_NAME)
-								.setValue("full-mode"),
-							new StringSelectOption()
-								.setDescription(this.translations.DELETE_IMPORT_DESC)
-								.setLabel(this.translations.DELETE_NAME)
-								.setValue("delete"),
-						]),
-				),
-			),
-		];
-	}
+  importSettings(system: PSystem) {
+    return [
+      new Container().setComponents(
+        new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_TITLE),
+        new Separator().setSpacing(Spacing.Large),
+        new TextDisplay().setContent(this.translations.IMPORT_SETTINGS_DESC),
+        new Separator().setSpacing(Spacing.Small).setDivider(false),
+        new ActionRow().setComponents(
+          new StringSelectMenu()
+            .setCustomId(InteractionIdentifier.Systems.ImportMode.create())
+            .setOptions([
+              new StringSelectOption()
+                .setDescription(this.translations.REPLACE_DESC)
+                .setLabel(this.translations.REPLACE_NAME)
+                .setValue("replace"),
+              new StringSelectOption()
+                .setDescription(this.translations.ADD_DESC)
+                .setLabel(this.translations.ADD_NAME)
+                .setValue("add"),
+              new StringSelectOption()
+                .setDescription(this.translations.FULL_IMPORT_DESC)
+                .setLabel(this.translations.FULL_IMPORT_NAME)
+                .setValue("full-mode"),
+              new StringSelectOption()
+                .setDescription(this.translations.DELETE_IMPORT_DESC)
+                .setLabel(this.translations.DELETE_NAME)
+                .setValue("delete"),
+            ]),
+        ),
+      ),
+    ];
+  }
 
-	syncSettings(
-		user: PUser,
-		state: QuickSyncStatus = QuickSyncStatus.NotSyncing,
-	) {
-		const tokenStored = user.syncConfiguration?.pluralkit?.token !== undefined;
+  syncSettings(user: PUser, state: QuickSyncStatus = QuickSyncStatus.NotSyncing) {
+    const tokenStored = user.syncConfiguration?.pluralkit?.token !== undefined;
 
-		return [
-			new Container().setComponents(
-				new Section()
-					.setAccessory(
-						new Button()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SyncPreferences.QuickSync.create(),
-							)
-							.setStyle(ButtonStyle.Secondary)
-							.setEmoji(
-								state === QuickSyncStatus.Done
-									? emojis.check
-									: state === QuickSyncStatus.Loading
-										? emojis.loading
-										: emojis.refresh,
-							)
-							.setDisabled(
-								!tokenStored || state !== QuickSyncStatus.NotSyncing,
-							),
-					)
-					.setComponents(
-						new TextDisplay().setContent(this.translations.SYNC_PREF_TITLE),
-					),
-				new Separator().setSpacing(Spacing.Large),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SyncPreferences.SyncManually.create(),
-							)
-							.setLabel(this.translations.SYNC_MANUALLY)
-							.setStyle(ButtonStyle.Secondary),
-					)
-					.setComponents(
-						new TextDisplay().setContent(
-							this.translations.SYNC_MANUALLY_DESC_1,
-						),
-						new TextDisplay().setContent(
-							this.translations.SYNC_MANUALLY_DESC_2,
-						),
-					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleAutoSync.create(),
-							)
-							.setLabel(this.translations.AUTO_SYNCING_TOGGLE)
-							.setStyle(ButtonStyle.Secondary)
-							.setDisabled(!tokenStored),
-					)
-					.setComponents(
-						new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_1),
-						new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_2),
-					),
-				new Section()
-					.setAccessory(
-						new Button()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleWriteback.create(),
-							)
-							.setLabel(this.translations.WRITE_BACK_TOGGLE)
-							.setStyle(ButtonStyle.Secondary)
-							.setDisabled(!tokenStored),
-					)
-					.setComponents(
-						new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_1),
-						new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_2),
-					),
-				new TextDisplay().setContent(
-					user.syncConfiguration?.pluralkit?.lastSynced
-						? this.translations.SYNC_FOOTER.replace(
-							"{{ build }}",
-							build,
-						).replace(
-							"{{ lastSyncDate }}",
-							`<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:f>`,
-						)
-						: this.translations.SYNC_FOOTER_NEVER_SYNCED.replace(
-							"{{ build }}",
-							build,
-						),
-				),
-			),
-		];
-	}
+    return [
+      new Container().setComponents(
+        new Section()
+          .setAccessory(
+            new Button()
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.SyncPreferences.QuickSync.create(),
+              )
+              .setStyle(ButtonStyle.Secondary)
+              .setEmoji(
+                state === QuickSyncStatus.Done
+                  ? emojis.check
+                  : state === QuickSyncStatus.Loading
+                    ? emojis.loading
+                    : emojis.refresh,
+              )
+              .setDisabled(!tokenStored || state !== QuickSyncStatus.NotSyncing),
+          )
+          .setComponents(new TextDisplay().setContent(this.translations.SYNC_PREF_TITLE)),
+        new Separator().setSpacing(Spacing.Large),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.SyncPreferences.SyncManually.create(),
+              )
+              .setLabel(this.translations.SYNC_MANUALLY)
+              .setStyle(ButtonStyle.Secondary),
+          )
+          .setComponents(
+            new TextDisplay().setContent(this.translations.SYNC_MANUALLY_DESC_1),
+            new TextDisplay().setContent(this.translations.SYNC_MANUALLY_DESC_2),
+          ),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleAutoSync.create(),
+              )
+              .setLabel(this.translations.AUTO_SYNCING_TOGGLE)
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(!tokenStored),
+          )
+          .setComponents(
+            new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_1),
+            new TextDisplay().setContent(this.translations.AUTO_SYNCING_DESC_2),
+          ),
+        new Section()
+          .setAccessory(
+            new Button()
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.SyncPreferences.ToggleWriteback.create(),
+              )
+              .setLabel(this.translations.WRITE_BACK_TOGGLE)
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(!tokenStored),
+          )
+          .setComponents(
+            new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_1),
+            new TextDisplay().setContent(this.translations.WRITE_BACK_DESC_2),
+          ),
+        new TextDisplay().setContent(
+          user.syncConfiguration?.pluralkit?.lastSynced
+            ? this.translations.SYNC_FOOTER.replace("{{ build }}", build).replace(
+                "{{ lastSyncDate }}",
+                `<t:${Math.floor(user.syncConfiguration?.pluralkit?.lastSynced.getTime() / 1000)}:f>`,
+              )
+            : this.translations.SYNC_FOOTER_NEVER_SYNCED.replace("{{ build }}", build),
+        ),
+      ),
+    ];
+  }
 
-	terminologySettings(system: PSystem) {
-		return [
-			new Container()
-				.setComponents(
-					new TextDisplay().setContent(
-						this.translations.TERMINOLOGY_SYSTEM_TITLE.replace(
-							"{{ emoji }}",
-							emojis.settings,
-						).replace("{{ systemName }}", system.systemName),
-					),
-					new TextDisplay().setContent(this.translations.TERMINOLOGY_DESC),
-					new Separator().setSpacing(Spacing.Large),
-					new TextDisplay().setContent(
-						this.translations.TEMPLATE_TERMINOLOGY_DESC,
-					),
-					new ActionRow().setComponents(
-						new StringSelectMenu()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.TerminologyTab.TemplatesSelect.create(),
-							)
-							.setValuesLength({ min: 1, max: 1 })
-							.setPlaceholder(this.translations.TEMPLATE_PLACEHOLDER)
-							.setOptions(
-								terminologyTemplates.map((template) =>
-									new StringSelectOption()
-										.setValue(template.name.toLocaleLowerCase())
-										.setLabel(template.name)
-										.setDescription(template.description),
-								),
-							),
-					),
-					new Separator(),
-					new Section()
-						.setComponents(
-							new TextDisplay().setContent(
-								this.translations.NORMAL_TERMS_TITLE,
-							),
-							new TextDisplay().setContent(this.translations.NORMAL_TERMS_DESC),
-						)
-						.setAccessory(
-							new Button()
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditNormalTerms.create(),
-								)
-								.setLabel(this.translations.EDIT_NORMAL_TERMS_BTN)
-								.setStyle(ButtonStyle.Primary),
-						),
-					new Section()
-						.setComponents(
-							new TextDisplay().setContent(
-								this.translations.PLURAL_TERMS_TITLE,
-							),
-							new TextDisplay().setContent(this.translations.PLURAL_TERMS_DESC),
-						)
-						.setAccessory(
-							new Button()
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditPluralTerms.create(),
-								)
-								.setLabel(this.translations.EDIT_PLURAL_TERMS_BTN)
-								.setStyle(ButtonStyle.Primary),
-						),
-					new Section()
-						.setComponents(
-							new TextDisplay().setContent(
-								this.translations.CAPITAL_TERMS_TITLE,
-							),
-							new TextDisplay().setContent(
-								this.translations.CAPITAL_TERMS_DESC,
-							),
-						)
-						.setAccessory(
-							new Button()
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.TerminologyTab.EditCapitalTerms.create(),
-								)
-								.setLabel(this.translations.EDIT_CAPITAL_TERMS_BTN)
-								.setStyle(ButtonStyle.Primary),
-						),
-				)
-				.setColor("#1190FF"),
-		];
-	}
+  terminologySettings(system: PSystem) {
+    return [
+      new Container()
+        .setComponents(
+          new TextDisplay().setContent(
+            this.translations.TERMINOLOGY_SYSTEM_TITLE.replace(
+              "{{ emoji }}",
+              emojis.settings,
+            ).replace("{{ systemName }}", system.systemName),
+          ),
+          new TextDisplay().setContent(this.translations.TERMINOLOGY_DESC),
+          new Separator().setSpacing(Spacing.Large),
+          new TextDisplay().setContent(this.translations.TEMPLATE_TERMINOLOGY_DESC),
+          new ActionRow().setComponents(
+            new StringSelectMenu()
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.TerminologyTab.TemplatesSelect.create(),
+              )
+              .setValuesLength({ min: 1, max: 1 })
+              .setPlaceholder(this.translations.TEMPLATE_PLACEHOLDER)
+              .setOptions(
+                terminologyTemplates.map((template) =>
+                  new StringSelectOption()
+                    .setValue(template.name.toLocaleLowerCase())
+                    .setLabel(template.name)
+                    .setDescription(template.description),
+                ),
+              ),
+          ),
+          new Separator(),
+          new Section()
+            .setComponents(
+              new TextDisplay().setContent(this.translations.NORMAL_TERMS_TITLE),
+              new TextDisplay().setContent(this.translations.NORMAL_TERMS_DESC),
+            )
+            .setAccessory(
+              new Button()
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.TerminologyTab.EditNormalTerms.create(),
+                )
+                .setLabel(this.translations.EDIT_NORMAL_TERMS_BTN)
+                .setStyle(ButtonStyle.Primary),
+            ),
+          new Section()
+            .setComponents(
+              new TextDisplay().setContent(this.translations.PLURAL_TERMS_TITLE),
+              new TextDisplay().setContent(this.translations.PLURAL_TERMS_DESC),
+            )
+            .setAccessory(
+              new Button()
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.TerminologyTab.EditPluralTerms.create(),
+                )
+                .setLabel(this.translations.EDIT_PLURAL_TERMS_BTN)
+                .setStyle(ButtonStyle.Primary),
+            ),
+          new Section()
+            .setComponents(
+              new TextDisplay().setContent(this.translations.CAPITAL_TERMS_TITLE),
+              new TextDisplay().setContent(this.translations.CAPITAL_TERMS_DESC),
+            )
+            .setAccessory(
+              new Button()
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.TerminologyTab.EditCapitalTerms.create(),
+                )
+                .setLabel(this.translations.EDIT_CAPITAL_TERMS_BTN)
+                .setStyle(ButtonStyle.Primary),
+            ),
+        )
+        .setColor("#1190FF"),
+    ];
+  }
 
-	syncOperation(
-		existingTranscript: WithId<PImportTranscript>,
-		existingCounts: { alters: number; tags: number },
-	) {
-		const possiblyTooMuch = {
-			destructiveTags:
-				existingCounts.tags +
-				existingTranscript.tags.add.length -
-				existingTranscript.tags.remove.length >
-				1000,
-			destructiveAlters:
-				existingCounts.alters +
-				existingTranscript.alters.add.length -
-				existingTranscript.tags.remove.length >
-				2000,
+  syncOperation(
+    existingTranscript: WithId<PImportTranscript>,
+    existingCounts: { alters: number; tags: number },
+  ) {
+    const possiblyTooMuch = {
+      destructiveTags:
+        existingCounts.tags +
+          existingTranscript.tags.add.length -
+          existingTranscript.tags.remove.length >
+        1000,
+      destructiveAlters:
+        existingCounts.alters +
+          existingTranscript.alters.add.length -
+          existingTranscript.tags.remove.length >
+        2000,
 
-			nonDestructiveTags:
-				existingCounts.tags + existingTranscript.tags.add.length > 1000,
-			nonDestructiveAlters:
-				existingCounts.alters + existingTranscript.alters.add.length > 2000,
-		};
-		const anyPossiblyTooMuch =
-			possiblyTooMuch.destructiveAlters ||
-			possiblyTooMuch.destructiveTags ||
-			possiblyTooMuch.nonDestructiveAlters ||
-			possiblyTooMuch.nonDestructiveTags;
+      nonDestructiveTags: existingCounts.tags + existingTranscript.tags.add.length > 1000,
+      nonDestructiveAlters: existingCounts.alters + existingTranscript.alters.add.length > 2000,
+    };
+    const anyPossiblyTooMuch =
+      possiblyTooMuch.destructiveAlters ||
+      possiblyTooMuch.destructiveTags ||
+      possiblyTooMuch.nonDestructiveAlters ||
+      possiblyTooMuch.nonDestructiveTags;
 
-		return [
-			new Container()
-				.setColor("#FFDF00")
-				.setComponents(
-					new TextDisplay().setContent(
-						this.translations.TRANSCRIPT_TOP.replace(
-							"{{ circleQuestionWhite }}",
-							emojis.circleQuestionWhite,
-						),
-					),
-					new Separator(),
-					new TextDisplay().setContent(this.translations.ALTERS_SEPARATOR),
-					new ActionRow().setComponents(
-						new Button()
-							.setDisabled()
-							.setCustomId("d_")
-							.setStyle(ButtonStyle.Success)
-							.setLabel(`${existingTranscript.alters.add.length.toString()}`)
-							.setEmoji(emojis.plus),
-						new Button()
-							.setDisabled()
-							.setCustomId("d")
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(existingTranscript.alters.update.length.toString()),
-						new Button()
-							.setDisabled()
-							.setCustomId("da_")
-							.setStyle(ButtonStyle.Danger)
-							.setLabel(`${existingTranscript.alters.remove.length.toString()}`)
-							.setEmoji(emojis.minus),
-					),
-					new Separator(),
-					new TextDisplay().setContent(this.translations.TAGS_SEPARATOR),
-					new ActionRow().setComponents(
-						new Button()
-							.setDisabled()
-							.setCustomId("d____")
-							.setStyle(ButtonStyle.Success)
-							.setLabel(`${existingTranscript.tags.add.length.toString()}`)
-							.setEmoji(emojis.plus),
-						new Button()
-							.setDisabled()
-							.setCustomId("d___")
-							.setStyle(ButtonStyle.Secondary)
-							.setLabel(existingTranscript.tags.update.length.toString()),
-						new Button()
-							.setDisabled()
-							.setCustomId("da__")
-							.setStyle(ButtonStyle.Danger)
-							.setLabel(`${existingTranscript.tags.remove.length.toString()}`)
-							.setEmoji(emojis.minus),
-					),
-				),
-			new ActionRow().setComponents(
-				new Button()
-					.setStyle(ButtonStyle.Primary)
-					.setCustomId(
-						InteractionIdentifier.Systems.Syncing.ApplyTranscript.create(
-							existingTranscript._id.toString(),
-						),
-					)
-					.setLabel(this.translations.PK_TRANSCRIPT_APPLY)
-					.setDisabled(
-						possiblyTooMuch.nonDestructiveAlters ||
-						possiblyTooMuch.nonDestructiveTags,
-					)
-					.setEmoji(emojis.wrenchWhite),
-				new Button()
-					.setStyle(ButtonStyle.Danger)
-					.setCustomId(
-						InteractionIdentifier.Systems.Syncing.ApplyTranscriptDestructively.create(
-							existingTranscript._id.toString(),
-						),
-					)
-					.setLabel(this.translations.PK_TRANSCRIPT_APPLY_DESTRUCTIVE)
-					.setDisabled(
-						possiblyTooMuch.destructiveAlters ||
-						possiblyTooMuch.destructiveTags,
-					)
-					.setEmoji(emojis.xWhite),
-			),
-			...(anyPossiblyTooMuch
-				? [
-					new TextDisplay().setContent(
-						this.translations.ALTER_TAG_COUNT_TOO_HIGH,
-					),
-				]
-				: []),
-			new ActionRow().setComponents(
-				new Button()
-					.setURL(
-						`${process.env.APP_HOST}/app/settings/sync/transcript/${existingTranscript._id.toString()}`,
-					)
-					.setStyle(ButtonStyle.Link)
-					.setLabel(this.translations.PK_TRANSCRIPT_VIEW),
-			),
-		];
-	}
+    return [
+      new Container()
+        .setColor("#FFDF00")
+        .setComponents(
+          new TextDisplay().setContent(
+            this.translations.TRANSCRIPT_TOP.replace(
+              "{{ circleQuestionWhite }}",
+              emojis.circleQuestionWhite,
+            ),
+          ),
+          new Separator(),
+          new TextDisplay().setContent(this.translations.ALTERS_SEPARATOR),
+          new ActionRow().setComponents(
+            new Button()
+              .setDisabled()
+              .setCustomId("d_")
+              .setStyle(ButtonStyle.Success)
+              .setLabel(`${existingTranscript.alters.add.length.toString()}`)
+              .setEmoji(emojis.plus),
+            new Button()
+              .setDisabled()
+              .setCustomId("d")
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(existingTranscript.alters.update.length.toString()),
+            new Button()
+              .setDisabled()
+              .setCustomId("da_")
+              .setStyle(ButtonStyle.Danger)
+              .setLabel(`${existingTranscript.alters.remove.length.toString()}`)
+              .setEmoji(emojis.minus),
+          ),
+          new Separator(),
+          new TextDisplay().setContent(this.translations.TAGS_SEPARATOR),
+          new ActionRow().setComponents(
+            new Button()
+              .setDisabled()
+              .setCustomId("d____")
+              .setStyle(ButtonStyle.Success)
+              .setLabel(`${existingTranscript.tags.add.length.toString()}`)
+              .setEmoji(emojis.plus),
+            new Button()
+              .setDisabled()
+              .setCustomId("d___")
+              .setStyle(ButtonStyle.Secondary)
+              .setLabel(existingTranscript.tags.update.length.toString()),
+            new Button()
+              .setDisabled()
+              .setCustomId("da__")
+              .setStyle(ButtonStyle.Danger)
+              .setLabel(`${existingTranscript.tags.remove.length.toString()}`)
+              .setEmoji(emojis.minus),
+          ),
+        ),
+      new ActionRow().setComponents(
+        new Button()
+          .setStyle(ButtonStyle.Primary)
+          .setCustomId(
+            InteractionIdentifier.Systems.Syncing.ApplyTranscript.create(
+              existingTranscript._id.toString(),
+            ),
+          )
+          .setLabel(this.translations.PK_TRANSCRIPT_APPLY)
+          .setDisabled(possiblyTooMuch.nonDestructiveAlters || possiblyTooMuch.nonDestructiveTags)
+          .setEmoji(emojis.wrenchWhite),
+        new Button()
+          .setStyle(ButtonStyle.Danger)
+          .setCustomId(
+            InteractionIdentifier.Systems.Syncing.ApplyTranscriptDestructively.create(
+              existingTranscript._id.toString(),
+            ),
+          )
+          .setLabel(this.translations.PK_TRANSCRIPT_APPLY_DESTRUCTIVE)
+          .setDisabled(possiblyTooMuch.destructiveAlters || possiblyTooMuch.destructiveTags)
+          .setEmoji(emojis.xWhite),
+      ),
+      ...(anyPossiblyTooMuch
+        ? [new TextDisplay().setContent(this.translations.ALTER_TAG_COUNT_TOO_HIGH)]
+        : []),
+      new ActionRow().setComponents(
+        new Button()
+          .setURL(
+            `${process.env.APP_HOST}/app/settings/sync/transcript/${existingTranscript._id.toString()}`,
+          )
+          .setStyle(ButtonStyle.Link)
+          .setLabel(this.translations.PK_TRANSCRIPT_VIEW),
+      ),
+    ];
+  }
 }

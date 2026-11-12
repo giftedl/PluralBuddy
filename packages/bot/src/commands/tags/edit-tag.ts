@@ -3,10 +3,10 @@
 import { Command, AutoLoad, Declare } from "seyfert";
 
 @Declare({
-	name: "edit-tag",
-	description: "tag command",
-	aliases: ["et"],
-	contexts: ["BotDM", "Guild"],
+  name: "edit-tag",
+  description: "tag command",
+  aliases: ["et"],
+  contexts: ["BotDM", "Guild"],
 })
 @AutoLoad()
 export default class EditTagRootCommand extends Command {}

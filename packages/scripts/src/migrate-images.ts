@@ -6,76 +6,80 @@ const normalDb = mongodb.db("pluralbuddy");
 const alters = normalDb.collection<PAlter>("alters");
 const users = normalDb.collection<PUser>("users");
 
-await alters.aggregate([
-	{
-		$match: {
-			$or: [
-				{
-					avatarUrl: {
-						$regex: /^https:\/\/pluralbuddy.giftedly.dev/,
-					},
-				},
-				{
-					banner: {
-						$regex: /^https:\/\/pluralbuddy.giftedly.dev/,
-					},
-				},
-			],
-		},
-	},
-	{
-		$set: {
-			avatarUrl: {
-				$replaceOne: {
-					input: "$avatarUrl",
-					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pluralbuddy.app/",
-				},
-			},
-			banner: {
-				$replaceOne: {
-					input: "$banner",
-					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pluralbuddy.app/",
-				},
-			},
-		},
-	},
-]).toArray();
+await alters
+  .aggregate([
+    {
+      $match: {
+        $or: [
+          {
+            avatarUrl: {
+              $regex: /^https:\/\/pluralbuddy.giftedly.dev/,
+            },
+          },
+          {
+            banner: {
+              $regex: /^https:\/\/pluralbuddy.giftedly.dev/,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $set: {
+        avatarUrl: {
+          $replaceOne: {
+            input: "$avatarUrl",
+            find: "https://pluralbuddy.giftedly.dev/p/",
+            replacement: "https://img.pluralbuddy.app/",
+          },
+        },
+        banner: {
+          $replaceOne: {
+            input: "$banner",
+            find: "https://pluralbuddy.giftedly.dev/p/",
+            replacement: "https://img.pluralbuddy.app/",
+          },
+        },
+      },
+    },
+  ])
+  .toArray();
 
-await users.aggregate([
-	{
-		$match: {
-			$or: [
-				{
-					avatarUrl: {
-						$regex: /^https:\/\/pluralbuddy.giftedly.dev/,
-					},
-				},
-				{
-					banner: {
-						$regex: /^https:\/\/pluralbuddy.giftedly.dev/,
-					},
-				},
-			],
-		},
-	},
-	{
-		$set: {
-			avatarUrl: {
-				$replaceOne: {
-					input: "$avatarUrl",
-					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pluralbuddy.app/",
-				},
-			},
-			banner: {
-				$replaceOne: {
-					input: "$banner",
-					find: "https://pluralbuddy.giftedly.dev/p/",
-					replacement: "https://img.pluralbuddy.app/",
-				},
-			},
-		},
-	},
-]).toArray();
+await users
+  .aggregate([
+    {
+      $match: {
+        $or: [
+          {
+            avatarUrl: {
+              $regex: /^https:\/\/pluralbuddy.giftedly.dev/,
+            },
+          },
+          {
+            banner: {
+              $regex: /^https:\/\/pluralbuddy.giftedly.dev/,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $set: {
+        avatarUrl: {
+          $replaceOne: {
+            input: "$avatarUrl",
+            find: "https://pluralbuddy.giftedly.dev/p/",
+            replacement: "https://img.pluralbuddy.app/",
+          },
+        },
+        banner: {
+          $replaceOne: {
+            input: "$banner",
+            find: "https://pluralbuddy.giftedly.dev/p/",
+            replacement: "https://img.pluralbuddy.app/",
+          },
+        },
+      },
+    },
+  ])
+  .toArray();

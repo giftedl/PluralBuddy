@@ -7,86 +7,75 @@ import type { PAutoProxy } from "@/types/auto-proxy";
 import { sendAutoproxyOperationDM } from "@/lib/autoproxy-operation";
 
 export default class OffAutoProxy extends ComponentCommand {
-	componentType = "StringSelect" as const;
+  componentType = "StringSelect" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Selection.AutoProxyModes.Off.startsWith(
-			context.interaction.values[0] as string,
-		);
-	}
-	
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Selection.AutoProxyModes.Off.startsWith(
+      context.interaction.values[0] as string,
+    );
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const { system } = await ctx.retrievePUser();
-		const guild = await ctx.guild();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const { system } = await ctx.retrievePUser();
+    const guild = await ctx.guild();
 
-		if (guild === undefined) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"DN_ERROR_SE",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (guild === undefined) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView("DN_ERROR_SE"),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		if (system === undefined) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (system === undefined) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const existingGuildPolicies = system.systemAutoproxy.some(
-			(ap) => ap.serverId === guild?.id,
-		);
+    const existingGuildPolicies = system.systemAutoproxy.some((ap) => ap.serverId === guild?.id);
 
-		if (existingGuildPolicies) {
-			await userCollection.updateOne(
-				{ userId: system.associatedUserId },
-				{
-					$set: {
-						"system.systemAutoproxy.$[serverEntry].autoproxyMode": "off",
-						"system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
-					},
-				},
-				{
-					arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
-				},
-			);
-		} else {
-			// Append a new mapping to the nameMap array
-			await userCollection.updateOne(
-				{ userId: system.associatedUserId },
-				{
-					$push: {
-						"system.systemAutoproxy": {
-							autoproxyMode: "off",
-							autoproxyAlter: undefined,
-							serverId: ctx.guildId,
-						} satisfies Partial<PAutoProxy>,
-					},
-				},
-			);
-		}
+    if (existingGuildPolicies) {
+      await userCollection.updateOne(
+        { userId: system.associatedUserId },
+        {
+          $set: {
+            "system.systemAutoproxy.$[serverEntry].autoproxyMode": "off",
+            "system.systemAutoproxy.$[serverEntry].autoproxyAlter": null,
+          },
+        },
+        {
+          arrayFilters: [{ "serverEntry.serverId": ctx.guildId }],
+        },
+      );
+    } else {
+      // Append a new mapping to the nameMap array
+      await userCollection.updateOne(
+        { userId: system.associatedUserId },
+        {
+          $push: {
+            "system.systemAutoproxy": {
+              autoproxyMode: "off",
+              autoproxyAlter: undefined,
+              serverId: ctx.guildId,
+            } satisfies Partial<PAutoProxy>,
+          },
+        },
+      );
+    }
 
-		await sendAutoproxyOperationDM(
-			system,
-			guild,
-			await ctx.userTranslations(),
-			"discord",
-			"off",
-		);
+    await sendAutoproxyOperationDM(system, guild, await ctx.userTranslations(), "discord", "off");
 
-		return await ctx.write({
-			components: new AlertView(await ctx.userTranslations()).successViewCustom(
-				(await ctx.userTranslations()).SET_AUTO_PROXY_SRV.replaceAll(
-					"%server_name%",
-					guild?.name ?? "??",
-				).replaceAll("%mode%", "off"),
-			),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.write({
+      components: new AlertView(await ctx.userTranslations()).successViewCustom(
+        (await ctx.userTranslations()).SET_AUTO_PROXY_SRV.replaceAll(
+          "%server_name%",
+          guild?.name ?? "??",
+        ).replaceAll("%mode%", "off"),
+      ),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 }

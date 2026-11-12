@@ -3,31 +3,30 @@ import { Client, MemoryAdapter } from "seyfert";
 export const client = new Client();
 
 client.setServices({
-    cache: {
-        disabledCache: {
-            channels: true,
-            overwrites: true,
-            bans: true,
-            emojis: true,
-            members: true,
-            messages: true,
-            presences: true,
-            roles: true,
-            stageInstances: true,
-            stickers: true,
-            users: true,
-            voiceStates: true,
-            // enabled
-            onPacket: false,
-            guilds: false
-        },
-        adapter: new MemoryAdapter()
-    }
+  cache: {
+    disabledCache: {
+      channels: true,
+      overwrites: true,
+      bans: true,
+      emojis: true,
+      members: true,
+      messages: true,
+      presences: true,
+      roles: true,
+      stageInstances: true,
+      stickers: true,
+      users: true,
+      voiceStates: true,
+      // enabled
+      onPacket: false,
+      guilds: false,
+    },
+    adapter: new MemoryAdapter(),
+  },
 });
 
 export async function startDiscordBot() {
+  await client.start();
 
-    await client.start();
-
-    console.log("started bot")
+  console.log("started bot");
 }

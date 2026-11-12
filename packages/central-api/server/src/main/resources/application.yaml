@@ -3,7 +3,8 @@ ktor:
     port: 8080
   central:
     ktorEncryption: "$KTOR_ENCRYPTION"
-    clientUrl: "http://localhost:3000"
+    clientUrl: ""
+    cookieDomain: "localhost:8080"
   oidc:
     pluralbuddy:
       issuer: "https://pluralbuddy.app/api/auth"

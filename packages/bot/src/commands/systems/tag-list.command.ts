@@ -7,43 +7,43 @@ import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 
 @Declare({
-	name: "tags",
-	description: "See system tags",
-	aliases: ["tag"],
-	contexts: ["BotDM", "Guild"],
+  name: "tags",
+  description: "See system tags",
+  aliases: ["tag"],
+  contexts: ["BotDM", "Guild"],
 })
 export default class AlterListCommand extends SubCommand {
-	override async run(ctx: CommandContext) {
-		await ctx.deferReply(true);
-		const user = await ctx.retrievePUser();
+  override async run(ctx: CommandContext) {
+    await ctx.deferReply(true);
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_SYSTEM_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (user.system === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_SYSTEM_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		return await ctx.ephemeral(
-			{
-				components: [
-					...(await new SystemSettingsView(
-						await ctx.userTranslations(),
-						getSystemFeatures(user.system)?.preferAccessiblity,
-					).tagsSettings(user.system)),
-				],
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			},
-			undefined,
-			undefined,
-			ctx,
-		);
-	}
+    return await ctx.ephemeral(
+      {
+        components: [
+          ...(await new SystemSettingsView(
+            await ctx.userTranslations(),
+            getSystemFeatures(user.system)?.preferAccessiblity,
+          ).tagsSettings(user.system)),
+        ],
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      },
+      undefined,
+      undefined,
+      ctx,
+    );
+  }
 }

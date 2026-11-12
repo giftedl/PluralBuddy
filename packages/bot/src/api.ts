@@ -13,265 +13,235 @@ import type { StatisticResource } from "./cache/statistics";
 import { emojis } from "./lib/emojis";
 import { importControllers } from "./lib/importing/importControllers";
 import { getLanguageByUserId } from "./lib/lang";
-import {
-	loadedApplicationCommands,
-	mentionCommand,
-} from "./lib/mention-command";
+import { loadedApplicationCommands, mentionCommand } from "./lib/mention-command";
 import { createSystemOperation } from "./lib/system-operation";
-import {
-	alterCollection,
-	mongoClient,
-	tagCollection,
-	userCollection,
-} from "./mongodb";
+import { alterCollection, mongoClient, tagCollection, userCollection } from "./mongodb";
 import { terminologyMemoryCache } from "./types/user";
 import { AlertView } from "./views/alert";
 import { LoadingView } from "./views/loading";
 import { exporter, getExporterAsPlainText } from "./plugins/opentelemetry";
 
 const SystemEditInput = PSystemObject.omit({
-	alterIds: true,
-	tagIds: true,
-	systemAutoproxy: true,
-	createdAt: true,
-	associatedUserId: true,
-	systemOperationDM: true,
-	subAccounts: true,
+  alterIds: true,
+  tagIds: true,
+  systemAutoproxy: true,
+  createdAt: true,
+  associatedUserId: true,
+  systemOperationDM: true,
+  subAccounts: true,
 })
-	.strict()
-	.partial()
-	.default({});
+  .strict()
+  .partial()
+  .default({});
 const app = new Hono();
 
 app.use("/api/*", async (ctx, next) => {
-	if (ctx.req.header("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
-		return ctx.json({ error: "invalid key" }, { status: 400 });
+  if (ctx.req.header("X-PluralBuddy-Api-Key") !== process.env.API_KEY)
+    return ctx.json({ error: "invalid key" }, { status: 400 });
 
-	const timeStart = new Date();
+  const timeStart = new Date();
 
-	await next();
+  await next();
 
-	console.log(
-		`${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? "red" : "green", ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
-	);
+  console.log(
+    `${styleText("gray", "[API]")} ${ctx.req.method} ${ctx.req.path} ${styleText(ctx.res.status >= 400 ? "red" : "green", ctx.res.status.toString())} in ${new Date().getMilliseconds() - timeStart.getMilliseconds()}ms`,
+  );
 });
 app.use(trimTrailingSlash());
 
 export const clientRoutes = app
-	.get("/api/stats", async ({ req, json }) => {
-		return json(
-			await (
-				(client.cache as unknown as { statistic: BaseResource })
-					.statistic as unknown as StatisticResource
-			).get("latest"),
-		);
-	})
-	.get("/api/about-message-contents", async ({ json }) => {
-		return json(
-			client
-				.t("en")
-				.get()
-				.ABOUT_PB.replace("%version%", String(build))
-				.replace("%branch%", process.env.BRANCH ?? "unknown")
-				.replace("%catjamming%", emojis.catjamming)
-				.replace("%github%", emojis.github)
-				.replace("%docs%", emojis.book)
-				.replaceAll("%linein%", emojis.lineIn)
-				.replace("%lineright%", emojis.lineRight)
-				.replace("%command%", mentionCommand("pb;", "setup", true)),
-		);
-	})
-	.post(
-		"/api/commands",
-		zValidator("json", z.object({ commandName: z.string() })),
-		async ({ req, json }) => {
-			const { commandName } = req.valid("json");
+  .get("/api/stats", async ({ req, json }) => {
+    return json(
+      await (
+        (client.cache as unknown as { statistic: BaseResource })
+          .statistic as unknown as StatisticResource
+      ).get("latest"),
+    );
+  })
+  .get("/api/about-message-contents", async ({ json }) => {
+    return json(
+      client
+        .t("en")
+        .get()
+        .ABOUT_PB.replace("%version%", String(build))
+        .replace("%branch%", process.env.BRANCH ?? "unknown")
+        .replace("%catjamming%", emojis.catjamming)
+        .replace("%github%", emojis.github)
+        .replace("%docs%", emojis.book)
+        .replaceAll("%linein%", emojis.lineIn)
+        .replace("%lineright%", emojis.lineRight)
+        .replace("%command%", mentionCommand("pb;", "setup", true)),
+    );
+  })
+  .post(
+    "/api/commands",
+    zValidator("json", z.object({ commandName: z.string() })),
+    async ({ req, json }) => {
+      const { commandName } = req.valid("json");
 
-			return json({
-				mention: mentionCommand("pb;", commandName, true),
-				subcommands: loadedApplicationCommands.filter((v) =>
-					v.name.startsWith(`${commandName} `),
-				),
-			});
-		},
-	)
-	.post(
-		"/api/import-staging-reminder",
-		zValidator("json", z.object({ importStageId: z.string() })),
-		async ({ req, json }) => {
-			const { importStageId } = req.valid("json");
+      return json({
+        mention: mentionCommand("pb;", commandName, true),
+        subcommands: loadedApplicationCommands.filter((v) => v.name.startsWith(`${commandName} `)),
+      });
+    },
+  )
+  .post(
+    "/api/import-staging-reminder",
+    zValidator("json", z.object({ importStageId: z.string() })),
+    async ({ req, json }) => {
+      const { importStageId } = req.valid("json");
 
-			const appDb = mongoClient.db(process.env.WEBSITE_DB ?? ".");
-			const importStageCollection =
-				appDb.collection<ImportStage>("import-staging");
-			const importStage = await importStageCollection.findOne({
-				"webhook.id": importStageId,
-			});
+      const appDb = mongoClient.db(process.env.WEBSITE_DB ?? ".");
+      const importStageCollection = appDb.collection<ImportStage>("import-staging");
+      const importStage = await importStageCollection.findOne({
+        "webhook.id": importStageId,
+      });
 
-			if (!importStage)
-				return json(
-					{ error: "No such import stage instance." },
-					{ status: 400 },
-				);
-			if (importStage.response === null)
-				return json(
-					{ error: "Provided import stage hasn't been responded to yet." },
-					{ status: 400 },
-				);
+      if (!importStage) return json({ error: "No such import stage instance." }, { status: 400 });
+      if (importStage.response === null)
+        return json(
+          { error: "Provided import stage hasn't been responded to yet." },
+          { status: 400 },
+        );
 
-			const input = ImportStagingValidation(
-				importStage.response.dataType,
-			).safeParse(importStage.response.data);
+      const input = ImportStagingValidation(importStage.response.dataType).safeParse(
+        importStage.response.data,
+      );
 
-			if (input.error) {
-				return Response.json({ errors: input.error }, { status: 400 });
-			}
+      if (input.error) {
+        return Response.json({ errors: input.error }, { status: 400 });
+      }
 
-			const translations = await getLanguageByUserId(
-				importStage.originatingSystemId,
-			);
+      const translations = await getLanguageByUserId(importStage.originatingSystemId);
 
-			client.interactions
-				.editOriginal(importStage.webhook.token, {
-					components: new LoadingView(translations).loadingViewLongTerm(),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				})
-				.then(async (message) => {
-					console.log(message);
-					if (importStage.response === null) return;
+      client.interactions
+        .editOriginal(importStage.webhook.token, {
+          components: new LoadingView(translations).loadingViewLongTerm(),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        })
+        .then(async (message) => {
+          console.log(message);
+          if (importStage.response === null) return;
 
-					const system = await userCollection.findOne({
-						userId: importStage.originatingSystemId,
-					});
-					const alters = await alterCollection
-						.find({ systemId: system?.userId })
-						.toArray();
-					const tags = await tagCollection
-						.find({ systemId: system?.userId })
-						.toArray();
-					let response = null;
+          const system = await userCollection.findOne({
+            userId: importStage.originatingSystemId,
+          });
+          const alters = await alterCollection.find({ systemId: system?.userId }).toArray();
+          const tags = await tagCollection.find({ systemId: system?.userId }).toArray();
+          let response = null;
 
-					response = await importControllers[importStage.response.dataType]
-						[
-							importStage.importMode
-								.replace("full-mode", "both")
-								.replace("delete", "deleteM") as
-								| "both"
-								| "add"
-								| "replace"
-								| "deleteM"
-						]({
-							existing: {
-								alters,
-								tags,
-								userId: importStage.originatingSystemId,
-							},
-							import: JSON.parse(importStage.response?.data ?? ""),
-						})
-						.catch((e) => console.error(e));
+          response = await importControllers[importStage.response.dataType]
+            [
+              importStage.importMode.replace("full-mode", "both").replace("delete", "deleteM") as
+                | "both"
+                | "add"
+                | "replace"
+                | "deleteM"
+            ]({
+              existing: {
+                alters,
+                tags,
+                userId: importStage.originatingSystemId,
+              },
+              import: JSON.parse(importStage.response?.data ?? ""),
+            })
+            .catch((e) => console.error(e));
 
-					client.interactions.editOriginal(importStage.webhook.token, {
-						components: new AlertView(translations).successViewCustom(
-							translations.SYSTEM_ADVANCED_IMPORT.replace(
-								"{{ alter-count }}",
-								String(response?.affected.alters ?? 0),
-							).replace(
-								"{{ tag-count }}",
-								String(response?.affected.tags ?? 0),
-							),
-						),
-						flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-					});
-				});
+          client.interactions.editOriginal(importStage.webhook.token, {
+            components: new AlertView(translations).successViewCustom(
+              translations.SYSTEM_ADVANCED_IMPORT.replace(
+                "{{ alter-count }}",
+                String(response?.affected.alters ?? 0),
+              ).replace("{{ tag-count }}", String(response?.affected.tags ?? 0)),
+            ),
+            flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+          });
+        });
 
-			await importStageCollection.deleteOne({
-				"webhook.id": importStageId,
-			});
-			return json({ done: "Handed back off to the user." });
-		},
-	)
-	.post(
-		"/api/systems/operation",
-		zValidator(
-			"json",
-			z.object({
-				method: z.enum(["exchange", "next"]),
-				changedOperation: SystemEditInput,
-				oldSystem: PSystemObject.omit({
-					subAccounts: true,
-					systemAutoproxy: true,
-				}),
-			}),
-		),
-		async ({ req, json }) => {
-			const { method, changedOperation, oldSystem } = req.valid("json");
-			const translations = await getLanguageByUserId(
-				oldSystem.associatedUserId ?? "",
-			);
+      await importStageCollection.deleteOne({
+        "webhook.id": importStageId,
+      });
+      return json({ done: "Handed back off to the user." });
+    },
+  )
+  .post(
+    "/api/systems/operation",
+    zValidator(
+      "json",
+      z.object({
+        method: z.enum(["exchange", "next"]),
+        changedOperation: SystemEditInput,
+        oldSystem: PSystemObject.omit({
+          subAccounts: true,
+          systemAutoproxy: true,
+        }),
+      }),
+    ),
+    async ({ req, json }) => {
+      const { method, changedOperation, oldSystem } = req.valid("json");
+      const translations = await getLanguageByUserId(oldSystem.associatedUserId ?? "");
 
-			console.log("notfying.?");
+      console.log("notfying.?");
 
-			createSystemOperation(
-				{ ...oldSystem, subAccounts: [], systemAutoproxy: [] },
-				changedOperation,
-				translations,
-				method === "exchange" ? "api-exchange" : "api-web",
-			);
+      createSystemOperation(
+        { ...oldSystem, subAccounts: [], systemAutoproxy: [] },
+        changedOperation,
+        translations,
+        method === "exchange" ? "api-exchange" : "api-web",
+      );
 
-			return json({ done: "User notified." });
-		},
-	)
-	.get("/api/health", (c) =>
-		c.json({
-			about: `PluralBuddy ${build}`,
-			routes: app.routes
-				.filter((v) => !v.path.endsWith("*"))
-				.map((v) => v.path),
-		}),
-	)
-	.get("/metrics", async (c) => {
-		const additionalMetrics = await getExporterAsPlainText();
-		
-		try {
-			c.header("Content-Type", register.contentType);
-			
-			return c.text(`${await register.metrics()}\n${additionalMetrics}`);
-		} catch (err) {
-			c.status(500)
-			return c.json({ error: "error while getting metrics" })
-		}
-	})
-	.delete(
-		"/api/cache",
-		zValidator(
-			"json",
-			z.object({
-				type: z.enum([
-					"terminology",
-					"statistic",
-					"similarWebhookResource",
-					"pguild",
-					"i18n",
-					"alterProxy",
-				]),
-				key: z.string(),
-			}),
-		),
-		async (c) => {
-			const { type, key } = c.req.valid("json");
-			await client.cache[type].remove(key);
+      return json({ done: "User notified." });
+    },
+  )
+  .get("/api/health", (c) =>
+    c.json({
+      about: `PluralBuddy ${build}`,
+      routes: app.routes.filter((v) => !v.path.endsWith("*")).map((v) => v.path),
+    }),
+  )
+  .get("/metrics", async (c) => {
+    const additionalMetrics = await getExporterAsPlainText();
 
-			if (type === "terminology") {
-				delete terminologyMemoryCache[key];
-			}
+    try {
+      c.header("Content-Type", register.contentType);
 
-			return c.json({
-				success: true,
-			});
-		},
-	);
+      return c.text(`${await register.metrics()}\n${additionalMetrics}`);
+    } catch (err) {
+      c.status(500);
+      return c.json({ error: "error while getting metrics" });
+    }
+  })
+  .delete(
+    "/api/cache",
+    zValidator(
+      "json",
+      z.object({
+        type: z.enum([
+          "terminology",
+          "statistic",
+          "similarWebhookResource",
+          "pguild",
+          "i18n",
+          "alterProxy",
+        ]),
+        key: z.string(),
+      }),
+    ),
+    async (c) => {
+      const { type, key } = c.req.valid("json");
+      await client.cache[type].remove(key);
+
+      if (type === "terminology") {
+        delete terminologyMemoryCache[key];
+      }
+
+      return c.json({
+        success: true,
+      });
+    },
+  );
 
 export default {
-	port: 3030,
-	fetch: app.fetch,
+  port: 3030,
+  fetch: app.fetch,
 };

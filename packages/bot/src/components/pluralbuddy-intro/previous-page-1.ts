@@ -6,18 +6,18 @@ import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 
 export default class PluralBuddyIntroNextPage extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(ctx: ComponentContext<typeof this.componentType>) {
-		//we are checking if the customId of the interaction is the same that the one set in my button
+  override filter(ctx: ComponentContext<typeof this.componentType>) {
+    //we are checking if the customId of the interaction is the same that the one set in my button
 
-		return InteractionIdentifier.Setup.Pagination.Page1.equals(ctx.customId);
-	}
+    return InteractionIdentifier.Setup.Pagination.Page1.equals(ctx.customId);
+  }
 
-	async run(ctx: ComponentContext<typeof this.componentType>) {
-		return ctx.update({
-			components: new PluralBuddyIntro(await ctx.userTranslations()).pageOne(),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+  async run(ctx: ComponentContext<typeof this.componentType>) {
+    return ctx.update({
+      components: new PluralBuddyIntro(await ctx.userTranslations()).pageOne(),
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

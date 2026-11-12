@@ -1,67 +1,58 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import {
-	Declare,
-	Command,
-	AutoLoad,
-	type CommandContext,
-	Message,
-    Groups,
-} from "seyfert";
+import { Declare, Command, AutoLoad, type CommandContext, Message, Groups } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { SystemView } from "@/views/system";
 import { AlertView } from "@/views/alert";
 
 @Declare({
-	name: "system",
-	description: "system command",
-	aliases: ["s"],
-	contexts: ["BotDM", "Guild"],
+  name: "system",
+  description: "system command",
+  aliases: ["s"],
+  contexts: ["BotDM", "Guild"],
 })
 @Groups({
-	settings: {
-		defaultDescription: "Configure settings about the system.",
-		shortcut: true,
-		aliases: ["config"]
-	}
+  settings: {
+    defaultDescription: "Configure settings about the system.",
+    shortcut: true,
+    aliases: ["config"],
+  },
 })
 // Being in the same folder with @AutoLoad() you can save this step
 @AutoLoad()
 export default class SystemCommand extends Command {
-	override async run(ctx: CommandContext) {
-		await ctx.deferReply(true);
-		const user = await ctx.retrievePUser();
+  override async run(ctx: CommandContext) {
+    await ctx.deferReply(true);
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_SYSTEM_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (user.system === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_SYSTEM_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		return ctx.ephemeral(
-			{
-				components: [
-					...new SystemView(await ctx.userTranslations()).systemProfileView(
-						user.system,
-						user.system.associatedUserId !== ctx.author.id,
-					),
-					...new SystemView(await ctx.userTranslations()).systemConfigureButton(
-						user.system,
-					),
-				],
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				allowed_mentions: { parse: [] },
-			},
-			true,
-			undefined,
-			ctx,
-		);
-	}
+    return ctx.ephemeral(
+      {
+        components: [
+          ...new SystemView(await ctx.userTranslations()).systemProfileView(
+            user.system,
+            user.system.associatedUserId !== ctx.author.id,
+          ),
+          ...new SystemView(await ctx.userTranslations()).systemConfigureButton(user.system),
+        ],
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        allowed_mentions: { parse: [] },
+      },
+      true,
+      undefined,
+      ctx,
+    );
+  }
 }

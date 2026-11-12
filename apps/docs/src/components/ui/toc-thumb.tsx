@@ -1,11 +1,5 @@
-import {
-  type HTMLAttributes,
-  type RefObject,
-  useEffect,
-  useEffectEvent,
-  useRef,
-} from 'react';
-import { useActiveAnchors } from 'fumadocs-core/toc';
+import { type HTMLAttributes, type RefObject, useEffect, useEffectEvent, useRef } from "react";
+import { useActiveAnchors } from "fumadocs-core/toc";
 
 type TocThumb = [top: number, height: number];
 
@@ -13,10 +7,7 @@ interface RefProps {
   containerRef: RefObject<HTMLElement | null>;
 }
 
-export function TocThumb({
-  containerRef,
-  ...props
-}: HTMLAttributes<HTMLDivElement> & RefProps) {
+export function TocThumb({ containerRef, ...props }: HTMLAttributes<HTMLDivElement> & RefProps) {
   const thumbRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -73,9 +64,7 @@ function calc(container: HTMLElement, active: string[]): TocThumb {
     upper = Math.min(upper, element.offsetTop + parseFloat(styles.paddingTop));
     lower = Math.max(
       lower,
-      element.offsetTop +
-        element.clientHeight -
-        parseFloat(styles.paddingBottom),
+      element.offsetTop + element.clientHeight - parseFloat(styles.paddingBottom),
     );
   }
 
@@ -83,6 +72,6 @@ function calc(container: HTMLElement, active: string[]): TocThumb {
 }
 
 function update(element: HTMLElement, info: TocThumb): void {
-  element.style.setProperty('--fd-top', `${info[0]}px`);
-  element.style.setProperty('--fd-height', `${info[1]}px`);
+  element.style.setProperty("--fd-top", `${info[0]}px`);
+  element.style.setProperty("--fd-height", `${info[1]}px`);
 }

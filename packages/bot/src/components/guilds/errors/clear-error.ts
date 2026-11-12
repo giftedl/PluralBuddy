@@ -7,56 +7,50 @@ import { ServerConfigView } from "@/views/server-cfg";
 
 @Middlewares(["ensureGuildPermissions"])
 export default class ClearError extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Guilds.ErrorsTab.ClearError.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Guilds.ErrorsTab.ClearError.startsWith(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const pluralGuild = await ctx.retrievePGuild();
-		const nativeGuild = await ctx.guild();
-		const errorId = InteractionIdentifier.Guilds.ErrorsTab.ClearError.substring(
-			ctx.customId,
-		)[0];
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const pluralGuild = await ctx.retrievePGuild();
+    const nativeGuild = await ctx.guild();
+    const errorId = InteractionIdentifier.Guilds.ErrorsTab.ClearError.substring(ctx.customId)[0];
 
-		if (!nativeGuild) throw new Error("Guild doesn't exist");
+    if (!nativeGuild) throw new Error("Guild doesn't exist");
 
-		if (!pluralGuild.errorLog.some((c) => c.id === errorId)) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_DOESNT_EXIST",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+    if (!pluralGuild.errorLog.some((c) => c.id === errorId)) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView("ERROR_DOESNT_EXIST"),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		await guildCollection.updateOne(
-			{ guildId: pluralGuild.guildId },
-			{ $pull: { errorLog: { id: errorId } } },
-			{ upsert: true },
-		);
-		ctx.client.cache.pguild.remove(pluralGuild.guildId);
+    await guildCollection.updateOne(
+      { guildId: pluralGuild.guildId },
+      { $pull: { errorLog: { id: errorId } } },
+      { upsert: true },
+    );
+    ctx.client.cache.pguild.remove(pluralGuild.guildId);
 
-		await errorCollection.deleteOne({ id: errorId });
+    await errorCollection.deleteOne({ id: errorId });
 
-		pluralGuild.errorLog = pluralGuild.errorLog.filter((c) => c.id !== errorId);
+    pluralGuild.errorLog = pluralGuild.errorLog.filter((c) => c.id !== errorId);
 
-		return await ctx.update({
-			components: [
-				...new ServerConfigView(await ctx.userTranslations()).topView(
-					"errors",
-					pluralGuild.guildId,
-				),
-				...new ServerConfigView(await ctx.userTranslations()).errorSettings(
-					pluralGuild,
-					nativeGuild,
-				),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] },
-		});
-	}
+    return await ctx.update({
+      components: [
+        ...new ServerConfigView(await ctx.userTranslations()).topView(
+          "errors",
+          pluralGuild.guildId,
+        ),
+        ...new ServerConfigView(await ctx.userTranslations()).errorSettings(
+          pluralGuild,
+          nativeGuild,
+        ),
+      ],
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      allowed_mentions: { parse: [] },
+    });
+  }
 }

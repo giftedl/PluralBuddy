@@ -1,41 +1,37 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import {
-	ComponentCommand,
-	FileUpload,
-	Label,
-	Modal,
-	TextInput,
-	type ComponentContext,
+  ComponentCommand,
+  FileUpload,
+  Label,
+  Modal,
+  TextInput,
+  type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { TextInputStyle } from "seyfert/lib/types";
 
 export default class PluralKitRawText extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Setup.PluralKitImport.RawText.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Setup.PluralKitImport.RawText.startsWith(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		return await ctx.modal(
-			new Modal()
-				.setTitle((await ctx.userTranslations()).IMPORT_PLURALKIT_DESCRIPTION)
-				.setCustomId(InteractionIdentifier.Setup.FormSelection.PkForm.create())
-				.setComponents([
-					new Label()
-						.setLabel((await ctx.userTranslations()).IMPORT_SOURCE_DESCRIPTION)
-						.setComponent(
-							new TextInput()
-								.setCustomId(
-									InteractionIdentifier.Setup.FormSelection.PkRawTextType.create(),
-								)
-								.setStyle(TextInputStyle.Paragraph)
-								.setRequired(true),
-						),
-				]),
-		);
-	}
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    return await ctx.modal(
+      new Modal()
+        .setTitle((await ctx.userTranslations()).IMPORT_PLURALKIT_DESCRIPTION)
+        .setCustomId(InteractionIdentifier.Setup.FormSelection.PkForm.create())
+        .setComponents([
+          new Label()
+            .setLabel((await ctx.userTranslations()).IMPORT_SOURCE_DESCRIPTION)
+            .setComponent(
+              new TextInput()
+                .setCustomId(InteractionIdentifier.Setup.FormSelection.PkRawTextType.create())
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(true),
+            ),
+        ]),
+    );
+  }
 }

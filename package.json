@@ -1,26 +1,39 @@
 {
-	"name": "pluralbuddy",
-	"devDependencies": {
-		"@biomejs/biome": "2.0.6",
-		"@trivago/prettier-plugin-sort-imports": "^6.0.2",
-		"concurrently": "^10.0.6"
-	},
-	"private": true,
-	"packageManager": "bun@1.3.13",
-	"scripts": {
-		"bot": "cd packages/bot && bun run bot",
-		"bot:watch": "cd packages/bot && bun run bot:watch",
-		"bot:inspect": "cd packages/bot && bun run bot:inspect",
-		"support:bot": "cd packages/support-bot-module && bun run bot",
-		"central:dev": "cd apps/central && bun run dev",
-		"docs:dev": "cd apps/docs && bun run dev",
-		"docs:openapi": "cd packages/plurography && bun run src/openapi && cd ../../apps/docs && rm -rf content/docs/pluralbuddy/api && bun run scripts/generate-docs.ts",
-		"test": "cd packages/tests && bun test",
-		"types": "cd packages/plurography && bunx tsc --outDir dist",
-		"types:watch": "cd packages/plurography && bunx tsc --outDir dist -w",
-		"bot:types": "concurrently --names plurography,bot \"bun run types:watch\" \"bun run bot:watch\"",
-		"all": "concurrently --names plurography,bot,app \"bun run types:watch\" \"bun run bot:watch\" \"bun run docs:dev\""
-	},
-	"workspaces": ["packages/*", "apps/*"],
-	"dependencies": {}
+  "name": "pluralbuddy",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "bot": "cd packages/bot && bun run bot",
+    "bot:watch": "cd packages/bot && bun run bot:watch",
+    "bot:inspect": "cd packages/bot && bun run bot:inspect",
+    "support:bot": "cd packages/support-bot-module && bun run bot",
+    "central:dev": "cd apps/central && bun run dev",
+    "docs:dev": "cd apps/docs && bun run dev",
+    "docs:openapi": "cd packages/plurography && bun run src/openapi && cd ../../apps/docs && rm -rf content/docs/pluralbuddy/api && bun run scripts/generate-docs.ts",
+    "test": "cd packages/tests && bun test",
+    "types": "cd packages/plurography && bunx tsc --outDir dist",
+    "types:watch": "cd packages/plurography && bunx tsc --outDir dist -w",
+    "bot:types": "concurrently --names plurography,bot \"bun run types:watch\" \"bun run bot:watch\"",
+    "all": "concurrently --names plurography,bot,app \"bun run types:watch\" \"bun run bot:watch\" \"bun run docs:dev\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@biomejs/biome": "2.0.6",
+    "@eslint/js": "^10.0.1",
+    "@eslint/markdown": "^8.0.3",
+    "@slipher/eslint-plugin": "^1.0.0",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "concurrently": "^10.0.6",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^17.14.0",
+    "oxfmt": "^0.77.0",
+    "oxlint": "^1.92.0",
+    "typescript-eslint": "^8.72.1"
+  },
+  "packageManager": "bun@1.3.13"
 }

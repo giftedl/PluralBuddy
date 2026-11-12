@@ -2,15 +2,15 @@
 
 import { PluralKitConverter, PluralKitSystem, terminologyDefaults } from "plurography";
 import {
-	ActionRow,
-	Button,
-	CacheFrom,
-	ComponentCommand,
-	type ComponentContext,
-	Container,
-	ModalCommand,
-	type ModalContext,
-	TextDisplay,
+  ActionRow,
+  Button,
+  CacheFrom,
+  ComponentCommand,
+  type ComponentContext,
+  Container,
+  ModalCommand,
+  type ModalContext,
+  TextDisplay,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import z from "zod";
@@ -22,382 +22,341 @@ import { terminologyTemplates } from "@/lib/terminology-templates";
 import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { AlterProtectionFlags, type PAlter, PAlterObject } from "@/types/alter";
 import { type PTag, PTagObject, TagProtectionFlags } from "@/types/tag";
-import {
-	getUserById,
-	terminologyMemoryCache,
-	writeUserById,
-} from "@/types/user";
+import { getUserById, terminologyMemoryCache, writeUserById } from "@/types/user";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { type PSystem, PSystemObject } from "@/types/system";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
-	override filter(ctx: ModalContext) {
-		return InteractionIdentifier.Setup.FormSelection.PkForm.equals(
-			ctx.customId,
-		);
-	}
+  override filter(ctx: ModalContext) {
+    return InteractionIdentifier.Setup.FormSelection.PkForm.equals(ctx.customId);
+  }
 
-	async run(ctx: ModalContext) {
-		await ctx.interaction.update({
-			components: new LoadingView(await ctx.userTranslations()).loadingView(),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+  async run(ctx: ModalContext) {
+    await ctx.interaction.update({
+      components: new LoadingView(await ctx.userTranslations()).loadingView(),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
 
-		let fileData = "";
+    let fileData = "";
 
-		const file = ctx.interaction.getFiles(
-			InteractionIdentifier.Setup.FormSelection.PkType.create(),
-		);
-		const usingTerminology = ctx.interaction.getCheckbox(
-			InteractionIdentifier.Setup.FormSelection.PkTerminologyCheckboxType.create(),
-		);
+    const file = ctx.interaction.getFiles(
+      InteractionIdentifier.Setup.FormSelection.PkType.create(),
+    );
+    const usingTerminology = ctx.interaction.getCheckbox(
+      InteractionIdentifier.Setup.FormSelection.PkTerminologyCheckboxType.create(),
+    );
 
-		if (file === undefined || file[0] === undefined) {
-			fileData = ctx.interaction.getInputValue(
-				InteractionIdentifier.Setup.FormSelection.PkRawTextType.create(),
-			) as string;
-		} else {
-			if (!file) {
-				throw new Error("?");
-			}
+    if (file === undefined || file[0] === undefined) {
+      fileData = ctx.interaction.getInputValue(
+        InteractionIdentifier.Setup.FormSelection.PkRawTextType.create(),
+      ) as string;
+    } else {
+      if (!file) {
+        throw new Error("?");
+      }
 
-			const MAX_FILE_SIZE = 2 * 1024 * 1024;
-			if (file[0].size > MAX_FILE_SIZE) {
-				return await ctx.editOrReply({
-					components: [
-						...new AlertView(await ctx.userTranslations()).errorView(
-							"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
-						),
-						new ActionRow().addComponents(
-							new Button()
-								.setLabel(
-									(await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE,
-								)
-								.setCustomId(
-									InteractionIdentifier.Setup.Pagination.Page2.create(),
-								)
-								.setStyle(ButtonStyle.Secondary),
-						),
-					],
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				});
-			}
+      const MAX_FILE_SIZE = 2 * 1024 * 1024;
+      if (file[0].size > MAX_FILE_SIZE) {
+        return await ctx.editOrReply({
+          components: [
+            ...new AlertView(await ctx.userTranslations()).errorView(
+              "PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
+            ),
+            new ActionRow().addComponents(
+              new Button()
+                .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+                .setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+                .setStyle(ButtonStyle.Secondary),
+            ),
+          ],
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        });
+      }
 
-			fileData = await (await fetch(file[0].url)).text();
-		}
-		try {
-			JSON.parse(fileData);
-		} catch (error) {
-			return await ctx.editOrReply({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorView(
-						"PLURALBUDDY_IMPORT_ERROR_INVALID_JSON",
-					),
-					new ActionRow().addComponents(
-						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
-							.setCustomId(
-								InteractionIdentifier.Setup.Pagination.Page2.create(),
-							)
-							.setStyle(ButtonStyle.Secondary),
-					),
-				],
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-		const parsed = PluralKitSystem.safeParse(JSON.parse(fileData));
+      fileData = await (await fetch(file[0].url)).text();
+    }
+    try {
+      JSON.parse(fileData);
+    } catch (error) {
+      return await ctx.editOrReply({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorView(
+            "PLURALBUDDY_IMPORT_ERROR_INVALID_JSON",
+          ),
+          new ActionRow().addComponents(
+            new Button()
+              .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+              .setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+              .setStyle(ButtonStyle.Secondary),
+          ),
+        ],
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
+    const parsed = PluralKitSystem.safeParse(JSON.parse(fileData));
 
-		if (parsed.error) {
-			return await ctx.editOrReply({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorViewCustom(
-						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
-							"%zod_errors%",
-							z.prettifyError(parsed.error),
-						),
-					),
-					new ActionRow().addComponents(
-						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
-							.setCustomId(
-								InteractionIdentifier.Setup.Pagination.Page2.create(),
-							)
-							.setStyle(ButtonStyle.Secondary),
-					),
-				],
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (parsed.error) {
+      return await ctx.editOrReply({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorViewCustom(
+            (await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+              "%zod_errors%",
+              z.prettifyError(parsed.error),
+            ),
+          ),
+          new ActionRow().addComponents(
+            new Button()
+              .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+              .setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+              .setStyle(ButtonStyle.Secondary),
+          ),
+        ],
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const { data } = parsed;
-		const newSystem = PSystemObject.safeParse({
-			associatedUserId: ctx.author.id,
+    const { data } = parsed;
+    const newSystem = PSystemObject.safeParse({
+      associatedUserId: ctx.author.id,
 
-			systemName: data.name ?? "Untitled System",
-			systemAvatar: data.avatar_url ?? undefined,
-			systemBanner: data.banner ?? undefined,
-			systemDescription: data.description ?? undefined,
-			systemDisplayTag: data.tag ?? undefined,
-			systemPronouns: data.pronouns ?? undefined,
+      systemName: data.name ?? "Untitled System",
+      systemAvatar: data.avatar_url ?? undefined,
+      systemBanner: data.banner ?? undefined,
+      systemDescription: data.description ?? undefined,
+      systemDisplayTag: data.tag ?? undefined,
+      systemPronouns: data.pronouns ?? undefined,
 
-			alterIds: [],
-			createdAt: new Date(),
-			tagIds: [],
-			systemAutoproxy: [],
-			nicknameFormat: undefined,
-			systemOperationDM: true,
-			public: 0,
-			displayTagMap: {},
-			subAccounts: [],
-			disabled: false,
-			flags: 0,
-			disabledGuilds: [],
-		} satisfies PSystem);
+      alterIds: [],
+      createdAt: new Date(),
+      tagIds: [],
+      systemAutoproxy: [],
+      nicknameFormat: undefined,
+      systemOperationDM: true,
+      public: 0,
+      displayTagMap: {},
+      subAccounts: [],
+      disabled: false,
+      flags: 0,
+      disabledGuilds: [],
+    } satisfies PSystem);
 
-		if (newSystem.error) {
-			return await ctx.editOrReply({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorViewCustom(
-						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
-							"%zod_errors%",
-							z.prettifyError(newSystem.error),
-						),
-					),
-					new ActionRow().addComponents(
-						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
-							.setCustomId(
-								InteractionIdentifier.Setup.Pagination.Page2.create(),
-							)
-							.setStyle(ButtonStyle.Secondary),
-					),
-				],
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-		const { data: systemData } = newSystem;
+    if (newSystem.error) {
+      return await ctx.editOrReply({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorViewCustom(
+            (await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+              "%zod_errors%",
+              z.prettifyError(newSystem.error),
+            ),
+          ),
+          new ActionRow().addComponents(
+            new Button()
+              .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+              .setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+              .setStyle(ButtonStyle.Secondary),
+          ),
+        ],
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
+    const { data: systemData } = newSystem;
 
-		const parsedSafe = data.members.map((member, i) => {
-			return {
-				zodData: PAlterObject.safeParse({
-					alterId: Number(createRandomId(i)),
-					systemId: ctx.author.id,
-					username: member.name
-						.replaceAll(" ", "")
-						.replaceAll("/", "")
-						.replaceAll("\\", "")
-						.replaceAll("@", ""),
-					displayName: member.display_name ?? member.name,
-					nameMap: [],
-					color: member.color !== null ? `#${member.color}` : null,
-					alterMode: "webhook",
-					description: member.description,
-					created: new Date(),
-					pronouns: member.pronouns,
-					avatarUrl: member.avatar_url ?? member.webhook_avatar_url,
-					webhookAvatarUrl: null,
-					banner: member.banner,
-					lastMessageTimestamp: null,
-					messageCount: 0,
-					proxyTags: member.proxy_tags.map((tag, i) => {
-						return {
-							prefix: tag.prefix?.replaceAll('"', "") ?? "",
-							suffix: tag.suffix?.replaceAll('"', "") ?? "",
-							id: Number(createRandomId(i)).toString(),
-						};
-					}),
-					tagIds: [],
-					public: combine(
-						...[
-							...(member.privacy.visibility === "public"
-								? [AlterProtectionFlags.VISIBILITY]
-								: []),
-							...(member.privacy.pronoun_privacy === "public"
-								? [AlterProtectionFlags.PRONOUNS]
-								: []),
-							...(member.privacy.description_privacy === "public"
-								? [AlterProtectionFlags.DESCRIPTION]
-								: []),
-							...(member.privacy.avatar_privacy === "public"
-								? [AlterProtectionFlags.AVATAR]
-								: []),
-							...(member.privacy.banner_privacy === "public"
-								? [AlterProtectionFlags.BANNER]
-								: []),
-							...(member.privacy.metadata_privacy === "public"
-								? [
-										AlterProtectionFlags.MESSAGE_COUNT,
-										AlterProtectionFlags.TAGS,
-									]
-								: []),
-							...(member.privacy.name_privacy === "public"
-								? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
-								: []),
-						],
-					),
-					avatarUrlMap: {},
-					fields: {
-						"@/converter/pk": member.uuid,
-					},
-					flags: 0,
-				} satisfies PAlter),
-				originalPkId: member.id,
-			};
-		});
+    const parsedSafe = data.members.map((member, i) => {
+      return {
+        zodData: PAlterObject.safeParse({
+          alterId: Number(createRandomId(i)),
+          systemId: ctx.author.id,
+          username: member.name
+            .replaceAll(" ", "")
+            .replaceAll("/", "")
+            .replaceAll("\\", "")
+            .replaceAll("@", ""),
+          displayName: member.display_name ?? member.name,
+          nameMap: [],
+          color: member.color !== null ? `#${member.color}` : null,
+          alterMode: "webhook",
+          description: member.description,
+          created: new Date(),
+          pronouns: member.pronouns,
+          avatarUrl: member.avatar_url ?? member.webhook_avatar_url,
+          webhookAvatarUrl: null,
+          banner: member.banner,
+          lastMessageTimestamp: null,
+          messageCount: 0,
+          proxyTags: member.proxy_tags.map((tag, i) => {
+            return {
+              prefix: tag.prefix?.replaceAll('"', "") ?? "",
+              suffix: tag.suffix?.replaceAll('"', "") ?? "",
+              id: Number(createRandomId(i)).toString(),
+            };
+          }),
+          tagIds: [],
+          public: combine(
+            ...[
+              ...(member.privacy.visibility === "public" ? [AlterProtectionFlags.VISIBILITY] : []),
+              ...(member.privacy.pronoun_privacy === "public"
+                ? [AlterProtectionFlags.PRONOUNS]
+                : []),
+              ...(member.privacy.description_privacy === "public"
+                ? [AlterProtectionFlags.DESCRIPTION]
+                : []),
+              ...(member.privacy.avatar_privacy === "public" ? [AlterProtectionFlags.AVATAR] : []),
+              ...(member.privacy.banner_privacy === "public" ? [AlterProtectionFlags.BANNER] : []),
+              ...(member.privacy.metadata_privacy === "public"
+                ? [AlterProtectionFlags.MESSAGE_COUNT, AlterProtectionFlags.TAGS]
+                : []),
+              ...(member.privacy.name_privacy === "public"
+                ? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
+                : []),
+            ],
+          ),
+          avatarUrlMap: {},
+          fields: {
+            "@/converter/pk": member.uuid,
+          },
+          flags: 0,
+        } satisfies PAlter),
+        originalPkId: member.id,
+      };
+    });
 
-		const parsedGroupsSafe = data.groups.map((group, i) => {
-			return PTagObject.safeParse({
-				tagId: createRandomId(i).toString(),
-				systemId: ctx.author.id,
+    const parsedGroupsSafe = data.groups.map((group, i) => {
+      return PTagObject.safeParse({
+        tagId: createRandomId(i).toString(),
+        systemId: ctx.author.id,
 
-				tagFriendlyName: group.display_name ?? group.name,
-				tagDescription: group.description ?? undefined,
-				tagColor: "pink",
+        tagFriendlyName: group.display_name ?? group.name,
+        tagDescription: group.description ?? undefined,
+        tagColor: "pink",
 
-				associatedAlters: parsedSafe
-					.filter((c) => (group.members ?? []).includes(c.originalPkId))
-					.map((c) => c.zodData)
-					.filter((c) => c.success)
-					.map((c) => c.data.alterId.toString()),
+        associatedAlters: parsedSafe
+          .filter((c) => (group.members ?? []).includes(c.originalPkId))
+          .map((c) => c.zodData)
+          .filter((c) => c.success)
+          .map((c) => c.data.alterId.toString()),
 
-				public: combine(
-					...[
-						...(group.privacy.description_privacy === "public"
-							? [TagProtectionFlags.DESCRIPTION]
-							: []),
-						...(group.privacy.name_privacy === "public"
-							? [TagProtectionFlags.NAME]
-							: []),
-						...(group.privacy.metadata_privacy === "public"
-							? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
-							: []),
-					],
-				),
-				fields: {
-					"@pk": group.id.substring(0, 30),
-				},
-			} satisfies PTag);
-		});
+        public: combine(
+          ...[
+            ...(group.privacy.description_privacy === "public"
+              ? [TagProtectionFlags.DESCRIPTION]
+              : []),
+            ...(group.privacy.name_privacy === "public" ? [TagProtectionFlags.NAME] : []),
+            ...(group.privacy.metadata_privacy === "public"
+              ? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
+              : []),
+          ],
+        ),
+        fields: {
+          "@pk": group.id.substring(0, 30),
+        },
+      } satisfies PTag);
+    });
 
-		parsedSafe.forEach((alterWrap) => {
-			const alterId = alterWrap.zodData?.success
-				? alterWrap.zodData.data.alterId?.toString()
-				: null;
-			if (alterId) {
-				const tagIds = parsedGroupsSafe
-					.filter((g) => g.success && g.data.associatedAlters.includes(alterId))
-					.map((g) => g.data?.tagId);
+    parsedSafe.forEach((alterWrap) => {
+      const alterId = alterWrap.zodData?.success
+        ? alterWrap.zodData.data.alterId?.toString()
+        : null;
+      if (alterId) {
+        const tagIds = parsedGroupsSafe
+          .filter((g) => g.success && g.data.associatedAlters.includes(alterId))
+          .map((g) => g.data?.tagId);
 
-				if (alterWrap.zodData.success) {
-					alterWrap.zodData.data.tagIds = tagIds.filter((c) => c !== undefined);
-				}
-			}
-		});
+        if (alterWrap.zodData.success) {
+          alterWrap.zodData.data.tagIds = tagIds.filter((c) => c !== undefined);
+        }
+      }
+    });
 
-		systemData.alterIds = parsedSafe
-			.map((v) => v.zodData)
-			.filter((v) => v.success)
-			.map((v) => v.data.alterId);
+    systemData.alterIds = parsedSafe
+      .map((v) => v.zodData)
+      .filter((v) => v.success)
+      .map((v) => v.data.alterId);
 
-		systemData.tagIds = parsedGroupsSafe
-			.filter((v) => v.success)
-			.map((v) => v.data.tagId);
-			
-		const newExport = new PluralKitConverter().toImport(parsed.data);
+    systemData.tagIds = parsedGroupsSafe.filter((v) => v.success).map((v) => v.data.tagId);
 
-		if (parsedSafe.filter((v) => v.zodData.success).length !== 0)
-			await alterCollection.insertMany(
-				newExport.alters
-			);
-		if (parsedGroupsSafe.filter((v) => v.success).length !== 0)
-			await tagCollection.insertMany(newExport.tags);
+    const newExport = new PluralKitConverter().toImport(parsed.data);
 
+    if (parsedSafe.filter((v) => v.zodData.success).length !== 0)
+      await alterCollection.insertMany(newExport.alters);
+    if (parsedGroupsSafe.filter((v) => v.success).length !== 0)
+      await tagCollection.insertMany(newExport.tags);
 
-		await writeUserById(ctx.author.id, {
-			...(await getUserById(ctx.author.id)),
-			system: newExport.system ?? systemData,
-		});
+    await writeUserById(ctx.author.id, {
+      ...(await getUserById(ctx.author.id)),
+      system: newExport.system ?? systemData,
+    });
 
-		ctx.client.logger.info("Possible PK errors (Zod): {errors}", {
-			errors: parsedSafe
-				.filter((v) => v.zodData.error !== undefined)
-				.map((v) => v.zodData.error),
-		});
+    ctx.client.logger.info("Possible PK errors (Zod): {errors}", {
+      errors: parsedSafe.filter((v) => v.zodData.error !== undefined).map((v) => v.zodData.error),
+    });
 
-		if (usingTerminology === true) {
-			const template = terminologyTemplates.find(
-				(c) => c.name === "PluralKit",
-			) ?? { data: terminologyDefaults };
+    if (usingTerminology === true) {
+      const template = terminologyTemplates.find((c) => c.name === "PluralKit") ?? {
+        data: terminologyDefaults,
+      };
 
-			await userCollection.updateOne(
-				{ userId: ctx.author.id },
-				{
-					$set: {
-						terminology: template.data,
-					},
-				},
-			);
+      await userCollection.updateOne(
+        { userId: ctx.author.id },
+        {
+          $set: {
+            terminology: template.data,
+          },
+        },
+      );
 
-			const newObj = JSON.stringify(template.data);
+      const newObj = JSON.stringify(template.data);
 
-			terminologyMemoryCache[ctx.author.id] = newObj;
-			ctx.client.cache.terminology.set(CacheFrom.Gateway, ctx.author.id, {
-				terms: newObj,
-			});
-		}
+      terminologyMemoryCache[ctx.author.id] = newObj;
+      ctx.client.cache.terminology.set(CacheFrom.Gateway, ctx.author.id, {
+        terms: newObj,
+      });
+    }
 
-		return await ctx.editOrReply({
-			components: [
-				...new AlertView(
-					await ctx.userTranslations(),
-				).successViewCustom(`Successfully imported your PluralKit system!
+    return await ctx.editOrReply({
+      components: [
+        ...new AlertView(await ctx.userTranslations())
+          .successViewCustom(`Successfully imported your PluralKit system!
 
 > **Disclaimer:** You may feel your system might not be completely identical to PluralKit. This is because the core data structure of some resources are different from PluralKit's and as a result may not be identical.
 ${
-	systemData.alterIds.length !== data.members.length
-		? `> - **Alters (members)**: ${parsedSafe
-				.filter((v) => v.zodData.error !== undefined)
-				.map((_, i) => `\`${data.members[i]?.id}\``)
-				.join(
-					", ",
-				)} were unable to be added to the system due to validation issues.`
-		: ""
+  systemData.alterIds.length !== data.members.length
+    ? `> - **Alters (members)**: ${parsedSafe
+        .filter((v) => v.zodData.error !== undefined)
+        .map((_, i) => `\`${data.members[i]?.id}\``)
+        .join(", ")} were unable to be added to the system due to validation issues.`
+    : ""
 }${
-	systemData.tagIds.length !== data.groups.length
-		? `> - **Tags (groups)**: ${parsedGroupsSafe
-				.filter((v) => v.error !== undefined)
-				.map((_, i) => `\`${data.groups[i]?.id}\``)
-				.join(
-					", ",
-				)} were unable to be added to the system due to validation issues.`
-		: ""
-}
+          systemData.tagIds.length !== data.groups.length
+            ? `> - **Tags (groups)**: ${parsedGroupsSafe
+                .filter((v) => v.error !== undefined)
+                .map((_, i) => `\`${data.groups[i]?.id}\``)
+                .join(", ")} were unable to be added to the system due to validation issues.`
+            : ""
+        }
 ### Next Steps
 > - To create a new alter, try using ${mentionCommand(
-					(await ctx.getDefaultPrefix()) ?? "",
-					"system create-alter",
-					ctx.interaction?.message?.messageReference === undefined,
-					"%username% %display name%",
-				)}
+          (await ctx.getDefaultPrefix()) ?? "",
+          "system create-alter",
+          ctx.interaction?.message?.messageReference === undefined,
+          "%username% %display name%",
+        )}
 > - To create a new tag, try using ${mentionCommand(
-					(await ctx.getDefaultPrefix()) ?? "",
-					"system create-tag",
-					ctx.interaction?.message?.messageReference === undefined,
-					"%name%",
-				)}
+          (await ctx.getDefaultPrefix()) ?? "",
+          "system create-tag",
+          ctx.interaction?.message?.messageReference === undefined,
+          "%name%",
+        )}
 `),
-				new ActionRow().setComponents(
-					new Button()
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create(),
-						)
-						.setLabel((await ctx.userTranslations()).CONFIGURE_SYSTEM)
-						.setEmoji(emojis.wrenchWhite)
-						.setStyle(ButtonStyle.Primary),
-				),
-			],
-		});
-	}
+        new ActionRow().setComponents(
+          new Button()
+            .setCustomId(InteractionIdentifier.Systems.Configuration.GeneralTab.Index.create())
+            .setLabel((await ctx.userTranslations()).CONFIGURE_SYSTEM)
+            .setEmoji(emojis.wrenchWhite)
+            .setStyle(ButtonStyle.Primary),
+        ),
+      ],
+    });
+  }
 }

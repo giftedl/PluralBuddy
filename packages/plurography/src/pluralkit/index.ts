@@ -11,56 +11,58 @@ import { PrivacyLevel } from "./privacy";
 export { PrivacyLevel } from "./privacy";
 
 export const PluralKitConfiguration = z.object({
-    timezone: z.string(),
-    "pings_enabled": z.boolean(),
-    "latch_timeout": z.number().nullable(),
-    "member_default_private": z.boolean(),
-    "group_default_private": z.boolean(),
-    "show_private_info": z.boolean(),
-    "member_limit": z.number().nullable().default(1000),
-    "group_limit":  z.number().nullable().default(250),
-    "case_sensitive_proxy_tags": z.boolean(),
-    "proxy_error_message_enabled": z.boolean(),
-    "hid_display_split": z.boolean(),
-    "hid_display_caps": z.boolean(),
-    "hid_list_padding": z.enum([ "off", "left", "right" ]),
-    "card_show_color_hex": z.boolean(),
-    "proxy_switch": z.enum([ "off", "new", "add" ]),
-    "name_format": z.string().nullable(),
-    "description_templates": z.array(z.string())
-})
+  timezone: z.string(),
+  pings_enabled: z.boolean(),
+  latch_timeout: z.number().nullable(),
+  member_default_private: z.boolean(),
+  group_default_private: z.boolean(),
+  show_private_info: z.boolean(),
+  member_limit: z.number().nullable().default(1000),
+  group_limit: z.number().nullable().default(250),
+  case_sensitive_proxy_tags: z.boolean(),
+  proxy_error_message_enabled: z.boolean(),
+  hid_display_split: z.boolean(),
+  hid_display_caps: z.boolean(),
+  hid_list_padding: z.enum(["off", "left", "right"]),
+  card_show_color_hex: z.boolean(),
+  proxy_switch: z.enum(["off", "new", "add"]),
+  name_format: z.string().nullable(),
+  description_templates: z.array(z.string()),
+});
 
-export const PluralKitSystem = z.object({
+export const PluralKitSystem = z
+  .object({
     version: z.number(),
     id: z.string(),
     uuid: z.uuid(),
     created: z.coerce.date(),
 
-    // Display characteristics 
+    // Display characteristics
     name: z.string().max(100).nullable(),
     description: z.string().max(1000).nullable(),
     tag: z.string().max(79).nullable(),
-    "avatar_url": z.string().nullable(),
+    avatar_url: z.string().nullable(),
     pronouns: z.string().max(100).nullable(),
     banner: z.string().nullable(),
-    color: z.string()
-        .regex(/^#?[0-9a-fA-F]{6}$/, {
-            message: "Color must be a valid 6-digit RGB hex (with optional # prefix)"
-        })
-        .nullable(),
+    color: z
+      .string()
+      .regex(/^#?[0-9a-fA-F]{6}$/, {
+        message: "Color must be a valid 6-digit RGB hex (with optional # prefix)",
+      })
+      .nullable(),
     privacy: z.object({
-        "name_privacy": PrivacyLevel,
-        "avatar_privacy": PrivacyLevel,
-        "description_privacy": PrivacyLevel,
-        "banner_privacy": PrivacyLevel,
-        "pronoun_privacy": PrivacyLevel,
-        "member_list_privacy": PrivacyLevel,
-        "group_list_privacy": PrivacyLevel,
-        "front_privacy": PrivacyLevel,
-        "front_history_privacy": PrivacyLevel
+      name_privacy: PrivacyLevel,
+      avatar_privacy: PrivacyLevel,
+      description_privacy: PrivacyLevel,
+      banner_privacy: PrivacyLevel,
+      pronoun_privacy: PrivacyLevel,
+      member_list_privacy: PrivacyLevel,
+      group_list_privacy: PrivacyLevel,
+      front_privacy: PrivacyLevel,
+      front_history_privacy: PrivacyLevel,
     }),
 
-    "webhook_url": z.string().nullable(),
+    webhook_url: z.string().nullable(),
     // "webhook_token": z.string().nullable(),
     config: PluralKitConfiguration,
 
@@ -68,33 +70,43 @@ export const PluralKitSystem = z.object({
     members: PluralKitMember.array().max(2000),
     groups: PluralKitGroup.array().max(250),
 
-    switches: z.array(z.object({
+    switches: z.array(
+      z.object({
         timestamp: z.coerce.date(),
         members: z.string().array(),
-    }))
-}).refine((data) => {
-    // Check that all members have unique ids
-    const memberNames = data.members.map(member => member.id?.toLowerCase?.().trim?.() ?? "");
-    const uniqueMemberNames = new Set(memberNames);
+      }),
+    ),
+  })
+  .refine(
+    (data) => {
+      // Check that all members have unique ids
+      const memberNames = data.members.map((member) => member.id?.toLowerCase?.().trim?.() ?? "");
+      const uniqueMemberNames = new Set(memberNames);
 
-    return memberNames.length === uniqueMemberNames.size;
-}, { error: "All members must be unique" }).refine((data) => {
-    // Check that all groups have unique ids
-    const groupNames = data.groups.map(group => group.id?.toLowerCase?.().trim?.() ?? "");
-    const uniqueGroupNames = new Set(groupNames);
+      return memberNames.length === uniqueMemberNames.size;
+    },
+    { error: "All members must be unique" },
+  )
+  .refine(
+    (data) => {
+      // Check that all groups have unique ids
+      const groupNames = data.groups.map((group) => group.id?.toLowerCase?.().trim?.() ?? "");
+      const uniqueGroupNames = new Set(groupNames);
 
-    return groupNames.length === uniqueGroupNames.size;
-}, { error: "All groups must be unique" })
+      return groupNames.length === uniqueGroupNames.size;
+    },
+    { error: "All groups must be unique" },
+  );
 
 export type PluralKitSystemType = z.infer<typeof PluralKitSystem>;
 
 export function makePkId(length: number) {
-	let result = "";
-	const characters = "abcdefghijklmnopqrstuvwxyz";
-	const charactersLength = characters.length
-    
-	for (let i = 0; i < length; i++) {
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	}
-	return result;
+  let result = "";
+  const characters = "abcdefghijklmnopqrstuvwxyz";
+  const charactersLength = characters.length;
+
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }

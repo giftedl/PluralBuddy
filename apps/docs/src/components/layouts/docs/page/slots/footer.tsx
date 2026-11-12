@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useTranslations } from '@fuma-translate/react';
-import { useFooterItems } from '@fumadocs/base-ui/utils/use-footer-items';
-import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
-import type * as PageTree from 'fumadocs-core/page-tree';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { type ComponentProps, useMemo } from 'react';
-import { cn } from '@/lib/cn';
-import { isActive } from '@/lib/urls';
+import { useTranslations } from "@fuma-translate/react";
+import { useFooterItems } from "@fumadocs/base-ui/utils/use-footer-items";
+import { usePathname } from "fumadocs-core/framework";
+import Link from "fumadocs-core/link";
+import type * as PageTree from "fumadocs-core/page-tree";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { type ComponentProps, useMemo } from "react";
+import { cn } from "@/lib/cn";
+import { isActive } from "@/lib/urls";
 
-type Item = Pick<PageTree.Item, 'name' | 'description' | 'url'>;
+type Item = Pick<PageTree.Item, "name" | "description" | "url">;
 
-export interface FooterProps extends ComponentProps<'div'> {
+export interface FooterProps extends ComponentProps<"div"> {
   /**
    * Items including information for the next and previous page
    */
@@ -41,8 +41,8 @@ export function Footer({ items, children, className, ...props }: FooterProps) {
     <>
       <div
         className={cn(
-          '@container grid gap-4',
-          previous && next ? 'grid-cols-2' : 'grid-cols-1',
+          "@container grid gap-4",
+          previous && next ? "grid-cols-2" : "grid-cols-1",
           className,
         )}
         {...props}
@@ -56,28 +56,28 @@ export function Footer({ items, children, className, ...props }: FooterProps) {
 }
 
 function FooterItem({ item, index }: { item: Item; index: 0 | 1 }) {
-  const t = useTranslations({ note: 'pagination' });
+  const t = useTranslations({ note: "pagination" });
   const Icon = index === 0 ? ChevronLeft : ChevronRight;
 
   return (
     <Link
       href={item.url}
       className={cn(
-        'flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-accent/80 hover:text-accent-foreground @max-lg:col-span-full',
-        index === 1 && 'text-end',
+        "flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-accent/80 hover:text-accent-foreground @max-lg:col-span-full",
+        index === 1 && "text-end",
       )}
     >
       <div
         className={cn(
-          'inline-flex items-center gap-1.5 font-medium',
-          index === 1 && 'flex-row-reverse',
+          "inline-flex items-center gap-1.5 font-medium",
+          index === 1 && "flex-row-reverse",
         )}
       >
         <Icon className="-mx-1 size-4 shrink-0 rtl:rotate-180" />
         <p>{item.name}</p>
       </div>
       <p className="text-fd-muted-foreground truncate">
-        {item.description ?? (index === 0 ? t('Previous Page') : t('Next Page'))}
+        {item.description ?? (index === 0 ? t("Previous Page") : t("Next Page"))}
       </p>
     </Link>
   );

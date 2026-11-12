@@ -2,12 +2,12 @@
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
-	ActionRow,
-	Button,
-	ComponentCommand,
-	type ComponentContext,
-	ModalCommand,
-	type ModalContext,
+  ActionRow,
+  Button,
+  ComponentCommand,
+  type ComponentContext,
+  ModalCommand,
+  type ModalContext,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { z } from "zod";
@@ -21,171 +21,157 @@ import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
 
 export default class PluralBuddyImportModal extends ModalCommand {
-	override filter(ctx: ModalContext) {
-		return InteractionIdentifier.Setup.FormSelection.ImportForm.equals(
-			ctx.customId,
-		);
-	}
+  override filter(ctx: ModalContext) {
+    return InteractionIdentifier.Setup.FormSelection.ImportForm.equals(ctx.customId);
+  }
 
-	async run(ctx: ModalContext) {
-		await ctx.interaction.update({
-			components: new LoadingView(await ctx.userTranslations()).loadingView(),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+  async run(ctx: ModalContext) {
+    await ctx.interaction.update({
+      components: new LoadingView(await ctx.userTranslations()).loadingView(),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
 
-		const file = ctx.interaction.getFiles(
-			InteractionIdentifier.Setup.FormSelection.ImportType.create(),
-			true,
-		)[0];
-		if (!file) {
-			throw new Error("?");
-		}
+    const file = ctx.interaction.getFiles(
+      InteractionIdentifier.Setup.FormSelection.ImportType.create(),
+      true,
+    )[0];
+    if (!file) {
+      throw new Error("?");
+    }
 
-		const MAX_FILE_SIZE = 2 * 1024 * 1024;
-		if (file.size > MAX_FILE_SIZE) {
-			return await ctx.editOrReply({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorView(
-						"PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
-					),
-					new ActionRow().addComponents(
-						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
-							.setCustomId(
-								InteractionIdentifier.Setup.Pagination.Page2.create(),
-							)
-							.setStyle(ButtonStyle.Secondary),
-					),
-				],
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    const MAX_FILE_SIZE = 2 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      return await ctx.editOrReply({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorView(
+            "PLURALBUDDY_IMPORT_ERROR_TOO_LARGE",
+          ),
+          new ActionRow().addComponents(
+            new Button()
+              .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+              .setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+              .setStyle(ButtonStyle.Secondary),
+          ),
+        ],
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const fileData = await (await fetch(file.url)).text();
-		const parsed = ImportNotation.safeParse(JSON.parse(fileData));
+    const fileData = await (await fetch(file.url)).text();
+    const parsed = ImportNotation.safeParse(JSON.parse(fileData));
 
-		if (parsed.error) {
-			return await ctx.editOrReply({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorViewCustom(
-						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
-							"%zod_errors%",
-							z.prettifyError(parsed.error),
-						),
-					),
-					new ActionRow().addComponents(
-						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
-							.setCustomId(
-								InteractionIdentifier.Setup.Pagination.Page2.create(),
-							)
-							.setStyle(ButtonStyle.Secondary),
-					),
-				],
+    if (parsed.error) {
+      return await ctx.editOrReply({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorViewCustom(
+            (await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+              "%zod_errors%",
+              z.prettifyError(parsed.error),
+            ),
+          ),
+          new ActionRow().addComponents(
+            new Button()
+              .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+              .setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+              .setStyle(ButtonStyle.Secondary),
+          ),
+        ],
 
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-		const { data } = parsed;
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
+    const { data } = parsed;
 
-		if (data.system === null) {
-			return await ctx.editOrReply({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorViewCustom(
-						(await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
-							"%zod_errors%",
-							"The system is `null`.",
-						),
-					),
-					new ActionRow().addComponents(
-						new Button()
-							.setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
-							.setCustomId(
-								InteractionIdentifier.Setup.Pagination.Page2.create(),
-							)
-							.setStyle(ButtonStyle.Secondary),
-					),
-				],
+    if (data.system === null) {
+      return await ctx.editOrReply({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorViewCustom(
+            (await ctx.userTranslations()).PLURALBUDDY_IMPORT_ERROR.replace(
+              "%zod_errors%",
+              "The system is `null`.",
+            ),
+          ),
+          new ActionRow().addComponents(
+            new Button()
+              .setLabel((await ctx.userTranslations()).PAGINATION_PREVIOUS_PAGE)
+              .setCustomId(InteractionIdentifier.Setup.Pagination.Page2.create())
+              .setStyle(ButtonStyle.Secondary),
+          ),
+        ],
 
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		data.system.associatedUserId = ctx.author.id;
-		data.system.alterIds = [];
+    data.system.associatedUserId = ctx.author.id;
+    data.system.alterIds = [];
 
-		const newAlters = data.alters.map((v, i) => {
-			return {
-				...v,
-				systemId: ctx.author.id,
-				lastMessageTimestamp: null,
-				messageCount: 0,
-				alterId: Number(createRandomId(i)),
-				created: new Date(),
-			};
-		});
+    const newAlters = data.alters.map((v, i) => {
+      return {
+        ...v,
+        systemId: ctx.author.id,
+        lastMessageTimestamp: null,
+        messageCount: 0,
+        alterId: Number(createRandomId(i)),
+        created: new Date(),
+      };
+    });
 
-		const newTags = data.tags.map((v, i) => {
-			const newAlterIds = v.associatedAlters.map((originalAlterId) => {
-				const theoreticalAlter = data.alters.find(
-					(alter) => alter.alterId.toString() === originalAlterId,
-				);
+    const newTags = data.tags.map((v, i) => {
+      const newAlterIds = v.associatedAlters.map((originalAlterId) => {
+        const theoreticalAlter = data.alters.find(
+          (alter) => alter.alterId.toString() === originalAlterId,
+        );
 
-				return newAlters.find(
-					(newAlter) => theoreticalAlter?.username === newAlter.username,
-				);
-			});
+        return newAlters.find((newAlter) => theoreticalAlter?.username === newAlter.username);
+      });
 
-			return {
-				...v,
-				tagId: DiscordSnowflake.generate({ processId: BigInt(i) }).toString(),
-				systemId: ctx.author.id,
-				associatedAlters: newAlterIds
-					.filter((c) => c !== undefined)
-					.map((c) => c.alterId.toString()),
-			};
-		});
+      return {
+        ...v,
+        tagId: DiscordSnowflake.generate({ processId: BigInt(i) }).toString(),
+        systemId: ctx.author.id,
+        associatedAlters: newAlterIds
+          .filter((c) => c !== undefined)
+          .map((c) => c.alterId.toString()),
+      };
+    });
 
-		const patchedAlters = newAlters.map((v) => {
-			const newTagIds = v.tagIds.map((originalTagId) => {
-				const theoreticalTag = data.tags.find(
-					(tag) => tag.tagId.toString() === originalTagId,
-				);
+    const patchedAlters = newAlters.map((v) => {
+      const newTagIds = v.tagIds.map((originalTagId) => {
+        const theoreticalTag = data.tags.find((tag) => tag.tagId.toString() === originalTagId);
 
-				return newTags.find(
-					(newAlter) =>
-						theoreticalTag?.tagFriendlyName === newAlter.tagFriendlyName,
-				);
-			});
+        return newTags.find(
+          (newAlter) => theoreticalTag?.tagFriendlyName === newAlter.tagFriendlyName,
+        );
+      });
 
-			return {
-				...v,
-				tagIds: newTagIds.filter((c) => c !== undefined).map((c) => c.tagId),
-			};
-		});
+      return {
+        ...v,
+        tagIds: newTagIds.filter((c) => c !== undefined).map((c) => c.tagId),
+      };
+    });
 
-		data.system.alterIds = newAlters.map((v) => v.alterId);
-		data.system.tagIds = newTags.map((v) => v.tagId);
+    data.system.alterIds = newAlters.map((v) => v.alterId);
+    data.system.tagIds = newTags.map((v) => v.tagId);
 
-		if (patchedAlters.length > 0)
-			await alterCollection.insertMany(patchedAlters);
-		if (newTags.length > 0) await tagCollection.insertMany(newTags);
+    if (patchedAlters.length > 0) await alterCollection.insertMany(patchedAlters);
+    if (newTags.length > 0) await tagCollection.insertMany(newTags);
 
-		await writeUserById(ctx.author.id, {
-			...(await getUserById(ctx.author.id)),
-			system: data.system,
-		});
+    await writeUserById(ctx.author.id, {
+      ...(await getUserById(ctx.author.id)),
+      system: data.system,
+    });
 
-		await ctx.editOrReply({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await ctx.userTranslations()).SUCCESSFULLY_IMPORTED.replace(
-						"%alter_count%",
-						String(data.system.alterIds.length),
-					).replace("%system_name%", String(data.system.systemName)),
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-	}
+    await ctx.editOrReply({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successViewCustom(
+          (await ctx.userTranslations()).SUCCESSFULLY_IMPORTED.replace(
+            "%alter_count%",
+            String(data.system.alterIds.length),
+          ).replace("%system_name%", String(data.system.systemName)),
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2,
+    });
+  }
 }

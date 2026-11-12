@@ -5,74 +5,70 @@ import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
-import {
-	type CommandContext,
-	createStringOption,
-	Declare,
-	Options,
-} from "seyfert";
+import { type CommandContext, createStringOption, Declare, Options } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
-	"alter-name": createStringOption({
-		description: "The name of the alter to modify.",
-		required: true,
-		autocomplete: autocompleteAlters,
-	}),
+  "alter-name": createStringOption({
+    description: "The name of the alter to modify.",
+    required: true,
+    autocomplete: autocompleteAlters,
+  }),
 };
 
 @Declare({
-	name: "config",
-	description: "Modify the config of an alter",
-	aliases: ["settings", "s"],
-	contexts: ["BotDM", "Guild"],
+  name: "config",
+  description: "Modify the config of an alter",
+  aliases: ["settings", "s"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class AlterConfigCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const { "alter-name": alterName } = ctx.options;
-		const systemId = ctx.author.id;
-		const alter =
-			ctx.contextAlter() ??
-			(await (Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+  override async run(ctx: CommandContext<typeof options>) {
+    await ctx.deferReply(true);
+    const { "alter-name": alterName } = ctx.options;
+    const systemId = ctx.author.id;
+    const alter =
+      ctx.contextAlter() ??
+      (await (Number.isNaN(Number.parseInt(alterName))
+        ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+        : alterCollection.findOne({
+            $or: [{ username: alterName }, { alterId: Number(alterName) }],
+            systemId,
+          })));
 
-		if (alter === null) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_ALTER_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (alter === null) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_ALTER_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		return await ctx.ephemeral(
-			{
-				components: [
-					...new AlterView(await ctx.userTranslations()).alterTopView(
-						"general",
-						alter.alterId.toString(),
-						alter.username,
-					),
-					...(await new AlterView(
-						await ctx.userTranslations(),
-					).alterGeneralView(alter, ctx.guildId)),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			},
-			undefined,
-			undefined,
-			ctx,
-		);
-	}
+    return await ctx.ephemeral(
+      {
+        components: [
+          ...new AlterView(await ctx.userTranslations()).alterTopView(
+            "general",
+            alter.alterId.toString(),
+            alter.username,
+          ),
+          ...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
+            alter,
+            ctx.guildId,
+          )),
+        ],
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      },
+      undefined,
+      undefined,
+      ctx,
+    );
+  }
 }

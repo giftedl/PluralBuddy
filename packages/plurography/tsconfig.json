@@ -1,43 +1,31 @@
 {
-	"compilerOptions": {
-		"module": "node16",
-		"target": "es2021",
-		"moduleResolution": "bundler",
-		"declaration": true,
-		"sourceMap": false,
-		"strict": true,
-		"esModuleInterop": true,
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"preserveConstEnums": true,
-		"noImplicitAny": true,
-		"strictNullChecks": true,
-		"strictFunctionTypes": true,
-		"noImplicitThis": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
-		"skipLibCheck": true,
-		"noErrorTruncation": true,
-		"stripInternal": true,
-		"types": [
-			"bun"
-		],
-		"paths": {
-			"@/*": [
-				"./src/*"
-			]
-		}
-	},
-	"exclude": [
-		"**/lib",
-		"**/__test__",
-		"**/node_modules",
-		"**/.*/",
-		"src/openapi/**/**"
-	],
-	"include": [
-		"src"
-	]
+  "compilerOptions": {
+    "module": "node16",
+    "target": "es2021",
+    "moduleResolution": "bundler",
+    "declaration": true,
+    "sourceMap": false,
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "preserveConstEnums": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "noErrorTruncation": true,
+    "stripInternal": true,
+    "types": ["bun"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "exclude": ["**/lib", "**/__test__", "**/node_modules", "**/.*/", "src/openapi/**/**"],
+  "include": ["src"]
 }

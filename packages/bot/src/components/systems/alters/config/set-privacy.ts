@@ -1,11 +1,11 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 import {
-	ComponentCommand,
-	Label,
-	Modal,
-	StringSelectMenu,
-	TextDisplay,
-	type ComponentContext,
+  ComponentCommand,
+  Label,
+  Modal,
+  StringSelectMenu,
+  TextDisplay,
+  type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
@@ -14,68 +14,60 @@ import { MessageFlags } from "seyfert/lib/types";
 import { alterPrivacySelection } from "@/lib/selection-options";
 
 export default class SetPrivacyButton extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const alterId =
-			InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.substring(
-				ctx.customId,
-			)[0];
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const alterId = InteractionIdentifier.Systems.Configuration.Alters.SetPrivacy.substring(
+      ctx.customId,
+    )[0];
 
-		const systemId = ctx.author.id;
-		const query = alterCollection.findOne({
-			alterId: Number(alterId),
-			systemId,
-		});
-		const alter = await query;
+    const systemId = ctx.author.id;
+    const query = alterCollection.findOne({
+      alterId: Number(alterId),
+      systemId,
+    });
+    const alter = await query;
 
-		if (alter === null) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (alter === null) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_ALTER_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const form = new Modal()
-			.setCustomId(
-				InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.create(
-					alter.alterId,
-				),
-			)
-			.setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
-			.addComponents([
-				new TextDisplay().setContent(
-					(await ctx.userTranslations()).SYSTEM_PRIVACY_INFO,
-				),
-				new Label()
-					.setLabel((await ctx.userTranslations()).ALTER_SET_PRIVACY)
-					.setDescription((await ctx.userTranslations()).TAG_PRIVACY_FORM_DESC)
-					.setComponent(
-						new StringSelectMenu()
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyType.create(),
-							)
-							.setOptions(
-								alterPrivacySelection(
-									await ctx.userTranslations(),
-									alter.public,
-								),
-							)
-							.setValuesLength({
-								min: 0,
-								max: alterPrivacySelection(await ctx.userTranslations()).length,
-							})
-							.setRequired(false),
-					),
-			]);
-		return await ctx.modal(form);
-	}
+    const form = new Modal()
+      .setCustomId(
+        InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyForm.create(
+          alter.alterId,
+        ),
+      )
+      .setTitle((await ctx.userTranslations()).ALTER_FORM_TITLE)
+      .addComponents([
+        new TextDisplay().setContent((await ctx.userTranslations()).SYSTEM_PRIVACY_INFO),
+        new Label()
+          .setLabel((await ctx.userTranslations()).ALTER_SET_PRIVACY)
+          .setDescription((await ctx.userTranslations()).TAG_PRIVACY_FORM_DESC)
+          .setComponent(
+            new StringSelectMenu()
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterPrivacyType.create(),
+              )
+              .setOptions(alterPrivacySelection(await ctx.userTranslations(), alter.public))
+              .setValuesLength({
+                min: 0,
+                max: alterPrivacySelection(await ctx.userTranslations()).length,
+              })
+              .setRequired(false),
+          ),
+      ]);
+    return await ctx.modal(form);
+  }
 }

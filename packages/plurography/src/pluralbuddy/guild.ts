@@ -3,205 +3,188 @@
 import z from "zod";
 
 export const defaultPrefixes = {
-	canary: ["pbc;", "pbc!"],
-	production: ["pb;", "pb!", "Pb;", "Pb!", "pB;", "pB!", "PB;", "PB!"],
+  canary: ["pbc;", "pbc!"],
+  production: ["pb;", "pb!", "Pb;", "Pb!", "pB;", "pB!", "PB;", "PB!"],
 };
 
 export const GuildErrorTypes = z.enum([
-	"EnforcedGuildTagRegulation",
-	"EnforcedProxyModeRegulation",
-	"BotPermissionsRequired",
-	"UserPermissionsRequired",
-	"FailedLogging",
-	"FailedMessageReaction",
-	"WebhookFailedCreation"
+  "EnforcedGuildTagRegulation",
+  "EnforcedProxyModeRegulation",
+  "BotPermissionsRequired",
+  "UserPermissionsRequired",
+  "FailedLogging",
+  "FailedMessageReaction",
+  "WebhookFailedCreation",
 ]);
 
 export enum GuildFlags {
-	DISABLE_APP_EXPLAIN = 1 << 0,
-	DISABLE_ABOUT = 1 << 1,
-	DISABLE_HELP = 1 << 2,
-	DISABLE_NUDGING = 1 << 3,
-	DISABLE_MESSAGE_INFO = 1 << 4,
-	MANDATORY_GUILD_TAG = 1 << 5,
-	FORCED_WEBHOOK_MODE = 1 << 6,
-	FORCED_NICKNAME_MODE = 1 << 7,
-	LOGGING = 1 << 8,
-	DISABLE_PERMISSION_CHECK = 1 << 9,
-	DISABLE_PROXY_TYPING = 1 << 10
+  DISABLE_APP_EXPLAIN = 1 << 0,
+  DISABLE_ABOUT = 1 << 1,
+  DISABLE_HELP = 1 << 2,
+  DISABLE_NUDGING = 1 << 3,
+  DISABLE_MESSAGE_INFO = 1 << 4,
+  MANDATORY_GUILD_TAG = 1 << 5,
+  FORCED_WEBHOOK_MODE = 1 << 6,
+  FORCED_NICKNAME_MODE = 1 << 7,
+  LOGGING = 1 << 8,
+  DISABLE_PERMISSION_CHECK = 1 << 9,
+  DISABLE_PROXY_TYPING = 1 << 10,
 }
 
 export const PGuildObject = z
-	.object({
-		guildId: z.string(),
+  .object({
+    guildId: z.string(),
 
-		/** command prefixes */
-		prefixes: z
-			.string()
-			.array()
-			.default(
-				defaultPrefixes[
-					(process.env.BRANCH as "production" | "canary") ?? "production"
-				],
-			),
+    /** command prefixes */
+    prefixes: z
+      .string()
+      .array()
+      .default(defaultPrefixes[(process.env.BRANCH as "production" | "canary") ?? "production"]),
 
-		/** users allowed to use, channels allowed to proxy */
-		blockedRoles: z.string().array().max(25).default([]),
-		blockedChannels: z.string().array().max(25).default([]),
-		blockedCategories: z.string().array().max(25).default([]).catch([]),
+    /** users allowed to use, channels allowed to proxy */
+    blockedRoles: z.string().array().max(25).default([]),
+    blockedChannels: z.string().array().max(25).default([]),
+    blockedCategories: z.string().array().max(25).default([]).catch([]),
 
-		managerRoles: z.string().array().max(25).default([]),
-		allowedAlterModes: z.enum(["webhook", "nickname", "both"]).default("both"),
-		flags: z.number().optional().default(0).catch(0),
-		logChannel: z.string().optional().nullable().catch(undefined),
-		proxyDelay: z.number().max(2500).optional().catch(0),
-		pingMode: z.enum(["unaffected", "always-on", "always-off", "opposite"]).optional(),
+    managerRoles: z.string().array().max(25).default([]),
+    allowedAlterModes: z.enum(["webhook", "nickname", "both"]).default("both"),
+    flags: z.number().optional().default(0).catch(0),
+    logChannel: z.string().optional().nullable().catch(undefined),
+    proxyDelay: z.number().max(2500).optional().catch(0),
+    pingMode: z.enum(["unaffected", "always-on", "always-off", "opposite"]).optional(),
 
-		rolePreferences: z
-			.object({
-				roleId: z.string(),
-				containerContents: z.string().optional().catch(undefined),
-				containerLocation: z
-					.enum(["top", "bottom"])
-					.optional()
-					.catch(undefined),
-				containerColor: z.string().optional().catch(undefined),
-			})
-			.array()
-			.default([]),
+    rolePreferences: z
+      .object({
+        roleId: z.string(),
+        containerContents: z.string().optional().catch(undefined),
+        containerLocation: z.enum(["top", "bottom"]).optional().catch(undefined),
+        containerColor: z.string().optional().catch(undefined),
+      })
+      .array()
+      .default([]),
 
-		automod: z
-			.object({
-				enabled: z.boolean(),
-				rules: z.string().array(),
-				appliedOnce: z
-					.enum(["sent-message", "user-joins-server", "both"])
-					.optional(),
-			})
-			.default({
-				enabled: false,
-				rules: [],
-				appliedOnce: "both",
-			}),
+    automod: z
+      .object({
+        enabled: z.boolean(),
+        rules: z.string().array(),
+        appliedOnce: z.enum(["sent-message", "user-joins-server", "both"]).optional(),
+      })
+      .default({
+        enabled: false,
+        rules: [],
+        appliedOnce: "both",
+      }),
 
-		errorLog: z
-			.object({
-				id: z.string(),
+    errorLog: z
+      .object({
+        id: z.string(),
 
-				title: z.string(),
-				description: z.string(),
-				type: GuildErrorTypes,
+        title: z.string(),
+        description: z.string(),
+        type: GuildErrorTypes,
 
-				responsibleUserId: z.string().optional(),
-				responsibleChannelId: z.string().optional(),
-				timestamp: z.coerce.date(),
-			})
-			.array()
-			.default([])
-			.catch([]),
-	})
-	.transform((data) => ({
-		...data,
-		getFeatures: () => ({
-			requiresGuildTag: (data.flags & GuildFlags.MANDATORY_GUILD_TAG) !== 0,
-			forcedWebhookMode: (data.flags & GuildFlags.FORCED_WEBHOOK_MODE) !== 0,
-			forcedNicknameMode: (data.flags & GuildFlags.FORCED_NICKNAME_MODE) !== 0,
-			disabledAppExplain: (data.flags & GuildFlags.DISABLE_APP_EXPLAIN) !== 0,
-			disabledAbout: (data.flags & GuildFlags.DISABLE_ABOUT) !== 0,
-			disabledHelp: (data.flags & GuildFlags.DISABLE_HELP) !== 0,
-			disabledNudging: (data.flags & GuildFlags.DISABLE_NUDGING) !== 0,
-			disabledMessageInfo: (data.flags & GuildFlags.DISABLE_MESSAGE_INFO) !== 0,
-			disabledProxyTyping: (data.flags & GuildFlags.DISABLE_PROXY_TYPING) !== 0,
-			disabledPermissionCheck:
-				(data.flags & GuildFlags.DISABLE_PERMISSION_CHECK) !== 0,
-			logging: (data.flags & GuildFlags.LOGGING) !== 0,
+        responsibleUserId: z.string().optional(),
+        responsibleChannelId: z.string().optional(),
+        timestamp: z.coerce.date(),
+      })
+      .array()
+      .default([])
+      .catch([]),
+  })
+  .transform((data) => ({
+    ...data,
+    getFeatures: () => ({
+      requiresGuildTag: (data.flags & GuildFlags.MANDATORY_GUILD_TAG) !== 0,
+      forcedWebhookMode: (data.flags & GuildFlags.FORCED_WEBHOOK_MODE) !== 0,
+      forcedNicknameMode: (data.flags & GuildFlags.FORCED_NICKNAME_MODE) !== 0,
+      disabledAppExplain: (data.flags & GuildFlags.DISABLE_APP_EXPLAIN) !== 0,
+      disabledAbout: (data.flags & GuildFlags.DISABLE_ABOUT) !== 0,
+      disabledHelp: (data.flags & GuildFlags.DISABLE_HELP) !== 0,
+      disabledNudging: (data.flags & GuildFlags.DISABLE_NUDGING) !== 0,
+      disabledMessageInfo: (data.flags & GuildFlags.DISABLE_MESSAGE_INFO) !== 0,
+      disabledProxyTyping: (data.flags & GuildFlags.DISABLE_PROXY_TYPING) !== 0,
+      disabledPermissionCheck: (data.flags & GuildFlags.DISABLE_PERMISSION_CHECK) !== 0,
+      logging: (data.flags & GuildFlags.LOGGING) !== 0,
 
-			has: (flag: GuildFlags) => (data.flags & flag) !== 0,
-			disable: (flag: GuildFlags) =>
-				(data.flags & flag) === 0 /* doesn't have flag */
-					? data.flags
-					: data.flags - flag,
-			enable: (flag: GuildFlags) =>
-				(data.flags & flag) !== 0 /* does have flag */
-					? data.flags
-					: data.flags + flag,
-			bool: (flag: GuildFlags, bool?: boolean) =>
-				bool
-					? (data.flags & flag) !== 0 /* does have flag */
-						? data.flags
-						: data.flags + flag
-					: (data.flags & flag) === 0 /* doesn't have flag */
-						? data.flags
-						: data.flags - flag,
-		}),
-	}));
+      has: (flag: GuildFlags) => (data.flags & flag) !== 0,
+      disable: (flag: GuildFlags) =>
+        (data.flags & flag) === 0 /* doesn't have flag */ ? data.flags : data.flags - flag,
+      enable: (flag: GuildFlags) =>
+        (data.flags & flag) !== 0 /* does have flag */ ? data.flags : data.flags + flag,
+      bool: (flag: GuildFlags, bool?: boolean) =>
+        bool
+          ? (data.flags & flag) !== 0 /* does have flag */
+            ? data.flags
+            : data.flags + flag
+          : (data.flags & flag) === 0 /* doesn't have flag */
+            ? data.flags
+            : data.flags - flag,
+    }),
+  }));
 
 export const PGuildErrorObject = z.object({
-	id: z.string(),
+  id: z.string(),
 
-	title: z.string(),
-	description: z.string(),
-	type: GuildErrorTypes,
+  title: z.string(),
+  description: z.string(),
+  type: GuildErrorTypes,
 
-	responsibleUserId: z.string().optional(),
-	responsibleChannelId: z.string().optional(),
-	responsibleGuildId: z.string(),
+  responsibleUserId: z.string().optional(),
+  responsibleChannelId: z.string().optional(),
+  responsibleGuildId: z.string(),
 
-	createdAt: z.coerce.date(),
+  createdAt: z.coerce.date(),
 });
 
 export type PGuild = z.infer<typeof PGuildObject>;
 export type PGuildError = z.infer<typeof PGuildErrorObject>;
 
 export const defaultGuildStructure = (guildId: string) => {
-	return PGuildObject.parse({ guildId });
+  return PGuildObject.parse({ guildId });
 };
 
-export const friendlyFeatureIndex: Record<
-	string,
-	{ title: string; description: string }
-> = {
-	DISABLE_APP_EXPLAIN: {
-		title: "Disable \`[APP]\`/\`[BOT]\` explanation command",
-		description:
-			"This command allows users to explain how users proxying with PluralBuddy are not applications/bots.",
-	},
-	DISABLE_ABOUT: {
-		title: "Disable about command",
-		description: "This command shows information about PluralBuddy.",
-	},
-	DISABLE_HELP: {
-		title: "Disable help command",
-		description:
-			"This command shows information about the features & commands of PluralBuddy.",
-	},
-	DISABLE_NUDGING: {
-		title: "Disable Nudging",
-		description:
-			'This allows users to ping ("nudge") other proxied users main account. Users can block other users not allowing them to be nudged.',
-	},
-	DISABLE_MESSAGE_INFO: {
-		title: "Disable Message Info",
-		description:
-			"This allows users to gain public information about another user based on a message they sent.",
-	},
-	FORCED_WEBHOOK_MODE: {
-		title: "Forced Webhook Mode",
-		description:
-			"This forces all users to proxy with webhook mode only. **This will not work if you have Forced Nickname Mode also enabled.**",
-	},
-	FORCED_NICKNAME_MODE: {
-		title: "Forced Nickname Mode",
-		description:
-			"This forces all users to proxy with nickname mode only. **This will not work if you have Forced Webhook Mode also enabled.**",
-	},
-	DISABLE_PERMISSION_CHECK: {
-		title: "Disable Permission Check Command",
-		description:
-			"This command shows server administrators and members whether they have permissions to do certain things.",
-	},
-	DISABLE_PROXY_TYPING: {
-		title: "Disable Proxy Typing",
-		description: "By default, PluralBuddy types in the channel after a message is proxied. Enabling this feature will disable proxy typing."
-	}
+export const friendlyFeatureIndex: Record<string, { title: string; description: string }> = {
+  DISABLE_APP_EXPLAIN: {
+    title: "Disable \`[APP]\`/\`[BOT]\` explanation command",
+    description:
+      "This command allows users to explain how users proxying with PluralBuddy are not applications/bots.",
+  },
+  DISABLE_ABOUT: {
+    title: "Disable about command",
+    description: "This command shows information about PluralBuddy.",
+  },
+  DISABLE_HELP: {
+    title: "Disable help command",
+    description: "This command shows information about the features & commands of PluralBuddy.",
+  },
+  DISABLE_NUDGING: {
+    title: "Disable Nudging",
+    description:
+      'This allows users to ping ("nudge") other proxied users main account. Users can block other users not allowing them to be nudged.',
+  },
+  DISABLE_MESSAGE_INFO: {
+    title: "Disable Message Info",
+    description:
+      "This allows users to gain public information about another user based on a message they sent.",
+  },
+  FORCED_WEBHOOK_MODE: {
+    title: "Forced Webhook Mode",
+    description:
+      "This forces all users to proxy with webhook mode only. **This will not work if you have Forced Nickname Mode also enabled.**",
+  },
+  FORCED_NICKNAME_MODE: {
+    title: "Forced Nickname Mode",
+    description:
+      "This forces all users to proxy with nickname mode only. **This will not work if you have Forced Webhook Mode also enabled.**",
+  },
+  DISABLE_PERMISSION_CHECK: {
+    title: "Disable Permission Check Command",
+    description:
+      "This command shows server administrators and members whether they have permissions to do certain things.",
+  },
+  DISABLE_PROXY_TYPING: {
+    title: "Disable Proxy Typing",
+    description:
+      "By default, PluralBuddy types in the channel after a message is proxied. Enabling this feature will disable proxy typing.",
+  },
 };

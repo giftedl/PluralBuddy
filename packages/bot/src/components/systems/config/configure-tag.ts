@@ -8,48 +8,43 @@ import { AlertView } from "@/views/alert";
 import { TagView } from "@/views/tags";
 
 export default class ConfigureAlter extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.ConfigureTag.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.ConfigureTag.startsWith(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const tagId =
-			InteractionIdentifier.Systems.Configuration.ConfigureTag.substring(
-				ctx.customId,
-			)[0];
-		const systemId = ctx.author.id;
-		const query = tagCollection.findOne({
-			$and: [{ tagId }, { systemId }],
-		});
-		const tag = await query;
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const tagId = InteractionIdentifier.Systems.Configuration.ConfigureTag.substring(
+      ctx.customId,
+    )[0];
+    const systemId = ctx.author.id;
+    const query = tagCollection.findOne({
+      $and: [{ tagId }, { systemId }],
+    });
+    const tag = await query;
 
-		if (tag === null) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_TAG_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (tag === null) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		return await ctx.update({
-			components: [
-				...new TagView(await ctx.userTranslations()).tagTopView(
-					"general",
-					tag.tagId,
-					tag.tagFriendlyName,
-				),
-				...new TagView(await ctx.userTranslations()).tagGeneral(
-					tag,
-					(await ctx.getDefaultPrefix()) ?? "pb;",
-					ctx.interaction.message.messageReference === undefined,
-				),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.update({
+      components: [
+        ...new TagView(await ctx.userTranslations()).tagTopView(
+          "general",
+          tag.tagId,
+          tag.tagFriendlyName,
+        ),
+        ...new TagView(await ctx.userTranslations()).tagGeneral(
+          tag,
+          (await ctx.getDefaultPrefix()) ?? "pb;",
+          ctx.interaction.message.messageReference === undefined,
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

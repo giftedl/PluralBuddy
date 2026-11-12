@@ -3,23 +3,23 @@ import { client } from "..";
 import { loadedApplicationCommands } from "./mention-command";
 
 const contextDescriptions: Record<string, string> = {
-	"Nudge Author": "Nudge the author of a proxied message",
-	"Get Message Info": "Get the message info of a proxied message",
-	"Delete Message": "Delete a proxied message",
-	"Edit Message": "Edit a proxied message",
-	"Canary Nudge Author": "Nudge the author of a proxied message",
-	"Canary Get Message Info": "Get the message info of a proxied message",
-	"Canary Delete Message": "Delete a proxied message",
-	"Canary Edit Message": "Edit a proxied message",
+  "Nudge Author": "Nudge the author of a proxied message",
+  "Get Message Info": "Get the message info of a proxied message",
+  "Delete Message": "Delete a proxied message",
+  "Edit Message": "Edit a proxied message",
+  "Canary Nudge Author": "Nudge the author of a proxied message",
+  "Canary Get Message Info": "Get the message info of a proxied message",
+  "Canary Delete Message": "Delete a proxied message",
+  "Canary Edit Message": "Edit a proxied message",
 };
 
 export function generateCommandList(page: number) {
-	return loadedApplicationCommands
-		.filter((v) => !v.name.startsWith("debug"))
-		.slice((page - 1) * 50, page * 50)
-		.map((c) => {
-			return `> - \`${c.type === ApplicationCommandType.ChatInput ? "/" : ""}${c.name}\` – ${c.type === ApplicationCommandType.ChatInput ? c.description : (contextDescriptions[c.name] ?? "")}`;
-		})
+  return loadedApplicationCommands
+    .filter((v) => !v.name.startsWith("debug"))
+    .slice((page - 1) * 50, page * 50)
+    .map((c) => {
+      return `> - \`${c.type === ApplicationCommandType.ChatInput ? "/" : ""}${c.name}\` – ${c.type === ApplicationCommandType.ChatInput ? c.description : (contextDescriptions[c.name] ?? "")}`;
+    })
 
-		.join("\n");
+    .join("\n");
 }

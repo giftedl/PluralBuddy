@@ -23,7 +23,11 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="https://pluralbuddy.app/openapi.yml" operations={[{"path":"/v1/users/{user}/system/create-tag","method":"post"}]} showDescription />
+      <Comp
+        document="https://pluralbuddy.app/openapi.yml"
+        operations={[{ path: "/v1/users/{user}/system/create-tag", method: "post" }]}
+        showDescription
+      />
     </>
   );
 }

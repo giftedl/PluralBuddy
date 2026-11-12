@@ -1,9 +1,9 @@
-'use client';
-import { NavigationMenu as Primitive } from '@base-ui/react/navigation-menu';
-import Link, { type LinkProps } from 'fumadocs-core/link';
-import type { ComponentProps } from 'react';
-import { cn } from '@/lib/cn';
-import { navItemVariants } from './slots/header';
+"use client";
+import { NavigationMenu as Primitive } from "@base-ui/react/navigation-menu";
+import Link, { type LinkProps } from "fumadocs-core/link";
+import type { ComponentProps } from "react";
+import { cn } from "@/lib/cn";
+import { navItemVariants } from "./slots/header";
 
 export function NavbarMenu({
   className,
@@ -12,7 +12,7 @@ export function NavbarMenu({
 }: ComponentProps<typeof Primitive.Item>) {
   return (
     <Primitive.Item
-      className={(s) => cn('list-none', typeof className === 'function' ? className(s) : className)}
+      className={(s) => cn("list-none", typeof className === "function" ? className(s) : className)}
       {...props}
     >
       {children}
@@ -29,15 +29,15 @@ export function NavbarMenuContent({
       {...props}
       className={(s) =>
         cn(
-          'h-full w-(--anchor-width) max-w-(--available-width) p-3',
-          'transition-[opacity,transform,translate] duration-(--duration) ease-(--easing)',
-          'data-starting-style:opacity-0 data-ending-style:opacity-0',
-          'data-starting-style:data-[activation-direction=left]:-translate-x-1/2',
-          'data-starting-style:data-[activation-direction=right]:translate-x-1/2',
-          'data-ending-style:data-[activation-direction=left]:translate-x-1/2',
-          'data-ending-style:data-[activation-direction=right]:-translate-x-1/2',
-          'grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3',
-          typeof className === 'function' ? className(s) : className,
+          "h-full w-(--anchor-width) max-w-(--available-width) p-3",
+          "transition-[opacity,transform,translate] duration-(--duration) ease-(--easing)",
+          "data-starting-style:opacity-0 data-ending-style:opacity-0",
+          "data-starting-style:data-[activation-direction=left]:-translate-x-1/2",
+          "data-starting-style:data-[activation-direction=right]:translate-x-1/2",
+          "data-ending-style:data-[activation-direction=left]:translate-x-1/2",
+          "data-ending-style:data-[activation-direction=right]:-translate-x-1/2",
+          "grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3",
+          typeof className === "function" ? className(s) : className,
         )
       }
     />
@@ -55,8 +55,8 @@ export function NavbarMenuTrigger({
       className={(s) =>
         cn(
           navItemVariants(),
-          'text-sm rounded-md',
-          typeof className === 'function' ? className(s) : className,
+          "text-sm rounded-md",
+          typeof className === "function" ? className(s) : className,
         )
       }
     >
@@ -72,7 +72,7 @@ export function NavbarMenuLink(props: LinkProps) {
         <Link
           {...props}
           className={cn(
-            'flex flex-col gap-2 rounded-lg border bg-fd-card p-3 transition-colors hover:bg-accent/80 hover:text-accent-foreground',
+            "flex flex-col gap-2 rounded-lg border bg-fd-card p-3 transition-colors hover:bg-accent/80 hover:text-accent-foreground",
             props.className,
           )}
         >

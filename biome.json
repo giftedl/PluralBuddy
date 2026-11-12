@@ -1,17 +1,17 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
-    "assist": {
-        "actions": {
-            "source": {
-                "organizeImports": "off"
-            }
-        }
-    },
-    "linter": {
-        "rules": {
-            "correctness": {
-                "useExhaustiveDependencies": "warn"
-            }
-        }
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
     }
+  },
+  "linter": {
+    "rules": {
+      "correctness": {
+        "useExhaustiveDependencies": "warn"
+      }
+    }
+  }
 }

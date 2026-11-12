@@ -15,33 +15,30 @@ import { AlphabeticalSort } from "./components/sort";
 import { Step, Steps } from "./components/steps";
 
 export const MDXFeedbackBlock = (props: any) => (
-	<FeedbackBlock
-		{...props}
-		onSendAction={onSendFeedback}
-	>
-		{props.children}
-	</FeedbackBlock>
-)
+  <FeedbackBlock {...props} onSendAction={onSendFeedback}>
+    {props.children}
+  </FeedbackBlock>
+);
 
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
-	return {
-		...defaultMdxComponents,
-		img: (props) => {
-			return <ImageZoom {...(props as any)} {...(props.src as any)} />;
-		},
-		SystemCardExample,
-		AppCardExample,
-		CheckPermsCardExample,
-		BlockedRoleExample,
-		BlockedChannelExample,
-		DMRepliesExample,
-		RoleContainerExample,
-		AlphabeticalSort,
-		// APIPage,
-		Steps,
-		Step,
-		ThirdPartyIntegrationViewer,
-		FeedbackBlock: (props) => <MDXFeedbackBlock {...props} />,
-		...components,
-	};
+  return {
+    ...defaultMdxComponents,
+    img: (props) => {
+      return <ImageZoom {...(props as any)} {...(props.src as any)} />;
+    },
+    SystemCardExample,
+    AppCardExample,
+    CheckPermsCardExample,
+    BlockedRoleExample,
+    BlockedChannelExample,
+    DMRepliesExample,
+    RoleContainerExample,
+    AlphabeticalSort,
+    // APIPage,
+    Steps,
+    Step,
+    ThirdPartyIntegrationViewer,
+    FeedbackBlock: (props) => <MDXFeedbackBlock {...props} />,
+    ...components,
+  };
 }

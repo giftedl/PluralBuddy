@@ -3,6 +3,7 @@ package app.pluralbuddy.services
 import app.pluralbuddy.util.db.MongoSessionStorage
 import app.pluralbuddy.util.getApplicationConfig
 import app.pluralbuddy.util.toHex
+import io.ktor.http.URLProtocol
 import io.ktor.http.auth.DigestAlgorithm
 import io.ktor.http.auth.KeyAlgorithm
 import io.ktor.http.auth.SignatureAlgorithm
@@ -19,12 +20,14 @@ import io.ktor.server.auth.oidc.OidcStateEncryptionKey
 import io.ktor.server.auth.principal
 import io.ktor.server.auth.roles
 import io.ktor.server.config.getAs
+import io.ktor.server.request.host
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.SessionStorage
 import io.ktor.server.sessions.sameSite
+import io.ktor.server.util.url
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.serialization.json.Json
 import java.security.SecureRandom
@@ -59,9 +62,9 @@ suspend fun Application.configureAuthenticationSecurity() {
                         MongoSessionStorage.RealSession::class.java
                     )
                 )
-                cookie {
-                    cookie.sameSite = "Lax"
-                }
+//                cookie {
+//                    cookie.domain = central.cookieDomain
+//                }
             }
 
             stateEncryptionKey = OidcStateEncryptionKey.of(central.ktorEncryption.hexToByteArray())
@@ -70,7 +73,9 @@ suspend fun Application.configureAuthenticationSecurity() {
 
             scopes = env.scopes
             loginUri = { path("api", "v1", "authentication", "to-login") }
-            redirectUri = { path("api", "callback") }
+            redirectUri = {
+                path("api", "callback")
+            }
             onAuthenticated { t,  ->
                 call.respondRedirect("${central.clientUrl}/auth/callback")
             }

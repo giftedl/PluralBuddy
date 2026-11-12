@@ -7,50 +7,47 @@ import { AlertView } from "@/views/alert";
 import { Shortcut } from "yunaforseyfert";
 
 @Declare({
-	name: "prefer-accessiblity",
-	description:
-		"PluralBuddy will prefer accessiblity over looks/data visiblity.",
+  name: "prefer-accessiblity",
+  description: "PluralBuddy will prefer accessiblity over looks/data visiblity.",
 })
 @Group("settings")
 @Shortcut()
 export default class IncludeProxyTags extends SubCommand {
-	override async run(ctx: CommandContext) {
-		const { system } = await ctx.retrievePUser();
+  override async run(ctx: CommandContext) {
+    const { system } = await ctx.retrievePUser();
 
-		if (system === undefined) {
-			return await ctx.write({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_SYSTEM_DOESNT_EXIST",
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+    if (system === undefined) {
+      return await ctx.write({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+        ],
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		await createSystemOperation(
-			system,
-			{
-				flags: getSystemFeatures(system).preferAccessiblity
-					? getSystemFeatures(system).disable(SystemFlags.PREFER_ACCESSIBLITY)
-					: getSystemFeatures(system).enable(SystemFlags.PREFER_ACCESSIBLITY),
-			},
-			await ctx.userTranslations(),
-			"discord",
-			{
-				flippedPreferAccessiblity: true,
-			},
-		);
+    await createSystemOperation(
+      system,
+      {
+        flags: getSystemFeatures(system).preferAccessiblity
+          ? getSystemFeatures(system).disable(SystemFlags.PREFER_ACCESSIBLITY)
+          : getSystemFeatures(system).enable(SystemFlags.PREFER_ACCESSIBLITY),
+      },
+      await ctx.userTranslations(),
+      "discord",
+      {
+        flippedPreferAccessiblity: true,
+      },
+    );
 
-		return await ctx.write({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successView(
-					getSystemFeatures(system).preferAccessiblity
-						? "PREFER_ACCESSIBLITY_E"
-						: "PREFER_ACCESSIBLITY_D",
-				),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.write({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successView(
+          getSystemFeatures(system).preferAccessiblity
+            ? "PREFER_ACCESSIBLITY_E"
+            : "PREFER_ACCESSIBLITY_D",
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

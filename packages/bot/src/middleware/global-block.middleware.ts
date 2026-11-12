@@ -6,59 +6,50 @@ import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 
-export const globalBlockUserMiddleware = createMiddleware<void>(
-	async (middle) => {
-		const pluralUser = await middle.context.retrievePUser();
+export const globalBlockUserMiddleware = createMiddleware<void>(async (middle) => {
+  const pluralUser = await middle.context.retrievePUser();
 
-		if (
-			middle.context.isChat() &&
-			(middle.context.options as Record<string, string>)["alter-name"]
-		) {
-			const ctx = middle.context;
+  if (middle.context.isChat() && (middle.context.options as Record<string, string>)["alter-name"]) {
+    const ctx = middle.context;
 
-			const { "alter-name": alterName } = middle.context.options as {
-				"alter-name": string;
-			};
-			const systemId = ctx.author.id;
+    const { "alter-name": alterName } = middle.context.options as {
+      "alter-name": string;
+    };
+    const systemId = ctx.author.id;
 
-			const query = Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					});
-			const alter = await query;
+    const query = Number.isNaN(Number.parseInt(alterName))
+      ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+      : alterCollection.findOne({
+          $or: [{ username: alterName }, { alterId: Number(alterName) }],
+          systemId,
+        });
+    const alter = await query;
 
-			if (alter === null) {
-				const possibleMatch = await alterCollection.findOne({
-					$or: [{ username: { $regex: alterName } }],
-					systemId,
-				});
+    if (alter === null) {
+      const possibleMatch = await alterCollection.findOne({
+        $or: [{ username: { $regex: alterName } }],
+        systemId,
+      });
 
-				return await ctx.ephemeral({
-					components: new AlertView(
-						await ctx.userTranslations(),
-					).errorViewCustom(
-						possibleMatch
-							? (
-									await ctx.userTranslations()
-								).ERROR_ALTER_DOESNT_EXIST_SUGGESTION.replace(
-									"%suggestion%",
-									possibleMatch.username,
-								)
-							: (await ctx.userTranslations()).ERROR_ALTER_DOESNT_EXIST,
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				});
-			}
+      return await ctx.ephemeral({
+        components: new AlertView(await ctx.userTranslations()).errorViewCustom(
+          possibleMatch
+            ? (await ctx.userTranslations()).ERROR_ALTER_DOESNT_EXIST_SUGGESTION.replace(
+                "%suggestion%",
+                possibleMatch.username,
+              )
+            : (await ctx.userTranslations()).ERROR_ALTER_DOESNT_EXIST,
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-			ctx.setContextAlter(alter);
-		}
+    ctx.setContextAlter(alter);
+  }
 
-		if (pluralUser.blocked) {
-			return middlewareIssue("ERROR_USER_BLOCKED", middle);
-		}
+  if (pluralUser.blocked) {
+    return middlewareIssue("ERROR_USER_BLOCKED", middle);
+  }
 
-		middle.next();
-	},
-);
+  middle.next();
+});

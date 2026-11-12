@@ -11,40 +11,33 @@ import clientPromise from "./db";
  * API route handler (where you pass the request headers).
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-	const session = await auth.api.getSession({ headers: opts.headers });
+  const session = await auth.api.getSession({ headers: opts.headers });
 
-	const mongoClient = await clientPromise;
-	await mongoClient.connect();
+  const mongoClient = await clientPromise;
+  await mongoClient.connect();
 
-	after(() => mongoClient.close());
+  after(() => mongoClient.close());
 
-	const botDatabase = mongoClient.db(
-		`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
-	);
-	const webDatabase = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
-	let discordAccountId: string | null = null;
+  const botDatabase = mongoClient.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
+  const webDatabase = mongoClient.db(`${process.env.ENV}-pluralbuddy-app`);
+  let discordAccountId: string | null = null;
 
-	if (session !== null) {
-		discordAccountId =
-			(
-				await webDatabase
-					.collection("account")
-					.findOne({ userId: new ObjectId(session.user.id) })
-			)?.accountId ?? null;
-	}
+  if (session !== null) {
+    discordAccountId =
+      (await webDatabase.collection("account").findOne({ userId: new ObjectId(session.user.id) }))
+        ?.accountId ?? null;
+  }
 
-	return { session, mongoClient, discordAccountId, botDatabase, webDatabase };
+  return { session, mongoClient, discordAccountId, botDatabase, webDatabase };
 };
 
 // Avoid exporting the entire t-object
 // since it's not very descriptive.
 // For instance, the use of a t variable
 // is common in i18n libraries.
-const t = initTRPC
-	.context<Awaited<ReturnType<typeof createTRPCContext>>>()
-	.create({
-		transformer: superjson,
-	});
+const t = initTRPC.context<Awaited<ReturnType<typeof createTRPCContext>>>().create({
+  transformer: superjson,
+});
 
 // Base router and procedure helpers
 export const createTRPCRouter = t.router;

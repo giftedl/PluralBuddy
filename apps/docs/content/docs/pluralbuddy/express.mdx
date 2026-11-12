@@ -13,16 +13,16 @@ PluralBuddy Express is a solution that allows alters in your PluralBuddy system 
 ## Feature Comparison
 
 | Feature                              | Bot | Express |
-|--------------------------------------|-----|---------|
-| Get Message Info                     | ✅   | ✅       |
-| Edit/Delete Messages                 | ✅   | ⚠️¹      |
-| Modify system settings with commands | ✅   | ❌       |
-| Auto-resolve emojis                  | ✅   | ✅       |
-| Proxy in DMs                         | ❌   | ✅       |
-| Proxy in any server²                 | ❌   | ✅       |
-| **---**                                  |     |         |
-| Requires a Discord application       | ❌   | ✅       |
-| Must be added to server              | ✅   | ❌       |
+| ------------------------------------ | --- | ------- |
+| Get Message Info                     | ✅  | ✅      |
+| Edit/Delete Messages                 | ✅  | ⚠️¹     |
+| Modify system settings with commands | ✅  | ❌      |
+| Auto-resolve emojis                  | ✅  | ✅      |
+| Proxy in DMs                         | ❌  | ✅      |
+| Proxy in any server²                 | ❌  | ✅      |
+| **---**                              |     |         |
+| Requires a Discord application       | ❌  | ✅      |
+| Must be added to server              | ✅  | ❌      |
 
 ¹: You can only edit/delete Express messages if the **Express application** is **added to the server** that was proxying due to Discord limitations. <br/>
 ²: You can only proxy in servers where you have the **Use External Applications** permission.
@@ -68,7 +68,8 @@ In the PluralBuddy settings, you can actually set some of the preferences for Ex
 ![Express Preferences](/image/express-preferences.png)
 
 Express has two different modes that you can choose from to format external messages:
- - **Container Mode:** all messages will be inside of a Components V2 [Container](https://docs.discord.com/developers/components/reference#container) (most similar in appearance to an embed from Components V1), accented with your alter's color.
- - **Text Display Mode:** the default mode, sending all contents of your message in a Components V2 [Text Display](https://docs.discord.com/developers/components/reference#text-display) (most similar in appearance to default server-based behavior).
+
+- **Container Mode:** all messages will be inside of a Components V2 [Container](https://docs.discord.com/developers/components/reference#container) (most similar in appearance to an embed from Components V1), accented with your alter's color.
+- **Text Display Mode:** the default mode, sending all contents of your message in a Components V2 [Text Display](https://docs.discord.com/developers/components/reference#text-display) (most similar in appearance to default server-based behavior).
 
 You can also set a custom name for your alter. By default, your alter's Express name is the first 30 characters of your alter's display name. However, if you have lots of extra characters you do not want in your alter name, you can shorten it with this option.

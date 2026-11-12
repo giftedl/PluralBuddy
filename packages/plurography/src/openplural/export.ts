@@ -16,60 +16,68 @@ import { OpenPluralTaxonomyAssignment } from "./taxonomy-assignment";
 import { OpenPluralTaxonomyTerm } from "./taxonomy-term";
 import { OpenPluralWarning } from "./warning";
 
-export const OpenPluralExport = z.object({
-	exported_at: z.coerce.date(),
-	producer: z.object({
-		app: z.string(),
-		app_version: z.string().default(""),
-		app_id: z.string().default(""),
-		exporter_version: z.string().default(""),
-	}),
-	capabilities: z.object({
-		modules: z
-			.enum([
-				"systems",
-				"members",
-				"groups",
-				"taxonomy",
-				"custom_fields",
-				"front_periods",
-				"front_events",
-				"front_comments",
-				"notes",
-				"assets",
-				"chat",
-				"boards",
-				"relationships",
-				"polls",
-				"reminders",
-				"habits",
-				"proxy",
-				"sharing",
-				"safety",
-			])
-			.array(),
-	}),
-	systems: OpenPluralSystem.array(),
-	members: OpenPluralMember.array(),
-	groups: OpenPluralGroup.array(),
-	group_memberships: OpenPluralGroupMembership.array(),
-	taxonomy_terms: OpenPluralTaxonomyTerm.array(),
-	taxonomy_assignments: OpenPluralTaxonomyAssignment.array(),
-	custom_fields: OpenPluralCustomField.array(),
-	custom_field_values: OpenPluralCustomFieldValue.array(),
+export const OpenPluralExport = z
+  .object({
+    exported_at: z.coerce.date(),
+    producer: z.object({
+      app: z.string(),
+      app_version: z.string().default(""),
+      app_id: z.string().default(""),
+      exporter_version: z.string().default(""),
+    }),
+    capabilities: z.object({
+      modules: z
+        .enum([
+          "systems",
+          "members",
+          "groups",
+          "taxonomy",
+          "custom_fields",
+          "front_periods",
+          "front_events",
+          "front_comments",
+          "notes",
+          "assets",
+          "chat",
+          "boards",
+          "relationships",
+          "polls",
+          "reminders",
+          "habits",
+          "proxy",
+          "sharing",
+          "safety",
+        ])
+        .array(),
+    }),
+    systems: OpenPluralSystem.array(),
+    members: OpenPluralMember.array(),
+    groups: OpenPluralGroup.array(),
+    group_memberships: OpenPluralGroupMembership.array(),
+    taxonomy_terms: OpenPluralTaxonomyTerm.array(),
+    taxonomy_assignments: OpenPluralTaxonomyAssignment.array(),
+    custom_fields: OpenPluralCustomField.array(),
+    custom_field_values: OpenPluralCustomFieldValue.array(),
 
-	front_periods: OpenPluralFrontPeriod.array(),
+    front_periods: OpenPluralFrontPeriod.array(),
     front_events: OpenPluralFrontEvent.array(),
     front_comments: OpenPluralFrontComment.array(),
 
-	notes: OpenPluralNote.array(),
+    notes: OpenPluralNote.array(),
     assets: OpenPluralAsset.array(),
     extensions: z.record(z.string(), z.unknown()),
     warnings: OpenPluralWarning.array(),
     source_refs: OpenPluralSourceRef.array(),
     privacy: OpenPluralPrivacy,
-}).and(z.object({
-	openplural_version: z.literal("0.1"),
-}).or(z.object({
-	pluralport_version: z.literal("0.1")
-})));
+  })
+  .and(
+    z
+      .object({
+        openplural_version: z.literal("0.1"),
+      })
+      .or(
+        z.object({
+          pluralport_version: z.literal("0.1"),
+        }),
+      ),
+  );

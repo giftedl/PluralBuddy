@@ -17,27 +17,30 @@ As per PluralBuddy's [Privacy Policy](/docs/policies/privacy), this will also de
 Deletion of a message is **permanent**. There is no way to reverse or otherwise undo a message deletion, as Discord doesn't allow that, either.
 
 <Callout>
-    This doesn't require the **Manage Messages** permission due to the fact that webhooks can delete their own messages. However, this permission is otherwise required when proxying messages
-    to delete the original message when proxying.
+  This doesn't require the **Manage Messages** permission due to the fact that webhooks can delete
+  their own messages. However, this permission is otherwise required when proxying messages to
+  delete the original message when proxying.
 </Callout>
 
 ### ✏️ Edit Message
 
 <Callout type="warning" title="Context Menu Required">
-    This action can only be used with the native Discord context menu. You cannot edit messages with reactions.
+  This action can only be used with the native Discord context menu. You cannot edit messages with
+  reactions.
 </Callout>
 
 This will edit the message of a proxied message. Some links or special elements apart of the proxied message may need to be rerendered when editing messages. You must be the owner of the original message before being able to edit a message.
 
 ### 🔔 Nudge User
 
-Users can be nudged, which will ping the author of the alter. Nudging can be disabled and specific users can be blocked from nudging you by using `/nudge-preferences`. 
+Users can be nudged, which will ping the author of the alter. Nudging can be disabled and specific users can be blocked from nudging you by using `/nudge-preferences`.
 
 Nudging is the equivalent to "Ping Author" on other plural bots. Nudging is useful for getting the attention of users even when you don't know the main host of the system.
 
 <Callout type="warning">
-    Nudging should not be used to get the attention of users that have blocked you on Discord. Doing such is against PluralBuddy's [Terms of Service](/docs/policies/terms).
-</Callout> 
+  Nudging should not be used to get the attention of users that have blocked you on Discord. Doing
+  such is against PluralBuddy's [Terms of Service](/docs/policies/terms).
+</Callout>
 
 ### ❓ Message Info
 
@@ -55,8 +58,8 @@ Firstly, you can use the native Discord context menu actions that appear when ri
 
 Additionally, you can also send a reaction to a message, which will achieve the action that you'd like to do.
 
- - Delete Message: ❌
- - Nudge User: 🔔
- - Message Info: ❓
+- Delete Message: ❌
+- Nudge User: 🔔
+- Message Info: ❓
 
 The reaction will be removed from the message once the action was completed. You will get feedback on the actions you complete based on additional reactions added by PluralBuddy.

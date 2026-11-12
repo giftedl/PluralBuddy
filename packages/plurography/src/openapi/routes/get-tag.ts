@@ -5,53 +5,53 @@ import z from "zod";
 import { PTagObject } from "@/pluralbuddy/tag";
 
 export const register = (registry: OpenAPIRegistry) =>
-	registry.registerPath({
-		method: "get",
-		path: "/v1/users/{user}/tags/{tag}",
-		summary: "Get a system tag",
-		description:
-			"Get data about a specific tag by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
-		security: [{ oAuth2: ["tags:read"] }],
-		parameters: [
-			{
-				name: "user",
-				in: "path",
-				required: true,
-				description:
-					"`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
-				schema: {
-					type: "string",
-				},
-			},
-			{
-				name: "tag",
-				in: "path",
-				required: true,
-				description: "`{tag}` is the tag ID.",
-				schema: {
-					type: "string",
-				},
-			},
-		],
-		responses: {
-			"200": {
-				description: "Success.",
-				content: {
-					"application/json": {
-						schema: z.object({
-							isSelf: z.boolean(),
-							data: PTagObject.nullable(),
-						}),
-					},
-				},
-			},
-			"401": {
-				description: "No access token when authenticating.",
-				content: {
-					"application/json": {
-						schema: UnauthorizedSchema,
-					},
-				},
-			},
-		},
-	});
+  registry.registerPath({
+    method: "get",
+    path: "/v1/users/{user}/tags/{tag}",
+    summary: "Get a system tag",
+    description:
+      "Get data about a specific tag by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user).",
+    security: [{ oAuth2: ["tags:read"] }],
+    parameters: [
+      {
+        name: "user",
+        in: "path",
+        required: true,
+        description:
+          "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user.",
+        schema: {
+          type: "string",
+        },
+      },
+      {
+        name: "tag",
+        in: "path",
+        required: true,
+        description: "`{tag}` is the tag ID.",
+        schema: {
+          type: "string",
+        },
+      },
+    ],
+    responses: {
+      "200": {
+        description: "Success.",
+        content: {
+          "application/json": {
+            schema: z.object({
+              isSelf: z.boolean(),
+              data: PTagObject.nullable(),
+            }),
+          },
+        },
+      },
+      "401": {
+        description: "No access token when authenticating.",
+        content: {
+          "application/json": {
+            schema: UnauthorizedSchema,
+          },
+        },
+      },
+    },
+  });

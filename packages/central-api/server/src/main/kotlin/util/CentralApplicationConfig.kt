@@ -7,7 +7,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EnvApplicationConfig(
     val ktorEncryption: String,
-    val clientUrl: String
+    val clientUrl: String,
+    val cookieDomain: String
 )
 
 fun Application.getApplicationConfig(): EnvApplicationConfig

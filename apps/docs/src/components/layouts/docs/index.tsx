@@ -1,18 +1,18 @@
-import type * as PageTree from 'fumadocs-core/page-tree';
-import { type HTMLAttributes, type ReactNode, useMemo } from 'react';
-import type { SidebarProps, SidebarProviderProps } from './slots/sidebar';
+import type * as PageTree from "fumadocs-core/page-tree";
+import { type HTMLAttributes, type ReactNode, useMemo } from "react";
+import type { SidebarProps, SidebarProviderProps } from "./slots/sidebar";
 import {
   getLayoutTabs,
   type BaseLayoutProps,
   type GetLayoutTabsOptions,
   type LayoutTab,
-} from '@/components/layouts/shared';
-import { type DocsSlots, LayoutBody } from './client';
+} from "@/components/layouts/shared";
+import { type DocsSlots, LayoutBody } from "./client";
 
 export interface DocsLayoutProps extends BaseLayoutProps {
   tree: PageTree.Root;
   sidebar?: SidebarOptions;
-  tabMode?: 'top' | 'auto';
+  tabMode?: "top" | "auto";
   tabs?: LayoutTab[] | GetLayoutTabsOptions | false;
   containerProps?: HTMLAttributes<HTMLDivElement>;
   slots?: Partial<DocsSlots>;
@@ -27,7 +27,7 @@ interface SidebarOptions extends SidebarProps, SidebarProviderProps {
   /**
    * @deprecated use layout-level `tabMode` option instead.
    */
-  tabMode?: 'auto' | 'top';
+  tabMode?: "auto" | "top";
   /**
    * @deprecated use layout-level `tabs` option instead.
    */
@@ -46,7 +46,7 @@ export function DocsLayout({
     if (Array.isArray(layoutTabs)) {
       return layoutTabs;
     }
-    if (typeof layoutTabs === 'object') {
+    if (typeof layoutTabs === "object") {
       return getLayoutTabs(tree, layoutTabs);
     }
     if (layoutTabs !== false) {
@@ -62,4 +62,4 @@ export function DocsLayout({
   );
 }
 
-export { type DocsSlots, useDocsLayout } from './client';
+export { type DocsSlots, useDocsLayout } from "./client";

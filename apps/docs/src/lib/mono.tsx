@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import fs from 'node:fs/promises';
-import type { ImageResponseOptions } from 'next/server';
+import type { ReactNode } from "react";
+import fs from "node:fs/promises";
+import type { ImageResponseOptions } from "next/server";
 
 export interface GenerateProps {
   title: ReactNode;
@@ -9,7 +9,6 @@ export interface GenerateProps {
   logo?: ReactNode;
 }
 
-
 export async function getImageResponseOptions(): Promise<ImageResponseOptions> {
   return {
     width: 1200,
@@ -17,64 +16,59 @@ export async function getImageResponseOptions(): Promise<ImageResponseOptions> {
   };
 }
 
-export function generate({
-  title,
-  description,
-  logo,
-  site = 'My App',
-}: GenerateProps) {
-  const primaryTextColor = 'rgb(240,240,240)';
+export function generate({ title, description, logo, site = "My App" }: GenerateProps) {
+  const primaryTextColor = "rgb(240,240,240)";
 
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '100%',
-        color: 'white',
-        backgroundColor: 'rgb(10,10,10)',
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "100%",
+        color: "white",
+        backgroundColor: "rgb(10,10,10)",
       }}
     >
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
-          padding: '4rem',
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+          padding: "4rem",
         }}
       >
         <p
           style={{
             fontWeight: 600,
-            fontSize: '76px',
+            fontSize: "76px",
           }}
         >
           {title}
         </p>
         <p
           style={{
-            fontSize: '48px',
-            color: 'rgba(240,240,240,0.7)',
+            fontSize: "48px",
+            color: "rgba(240,240,240,0.7)",
           }}
         >
           {description}
         </p>
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: '24px',
-            marginTop: 'auto',
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "24px",
+            marginTop: "auto",
             color: primaryTextColor,
           }}
         >
           {logo}
           <p
             style={{
-              fontSize: '46px',
+              fontSize: "46px",
               fontWeight: 600,
             }}
           >

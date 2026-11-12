@@ -1,12 +1,17 @@
-'use client';
+"use client";
 
-import { type ComponentProps, createContext, type FC, use } from 'react';
-import type { BaseLayoutProps, LinkItemType, NavOptions } from '@/components/layouts/shared';
-import { type BaseSlots, type BaseSlotsProps, baseSlots, useLinkItems } from '@/components/layouts/shared';
-import { Container } from './slots/container';
-import { Header } from './slots/header';
+import { type ComponentProps, createContext, type FC, use } from "react";
+import type { BaseLayoutProps, LinkItemType, NavOptions } from "@/components/layouts/shared";
+import {
+  type BaseSlots,
+  type BaseSlotsProps,
+  baseSlots,
+  useLinkItems,
+} from "@/components/layouts/shared";
+import { Container } from "./slots/container";
+import { Header } from "./slots/header";
 
-export interface HomeLayoutProps extends BaseLayoutProps, ComponentProps<'main'> {
+export interface HomeLayoutProps extends BaseLayoutProps, ComponentProps<"main"> {
   nav?: Nav;
   slots?: Partial<HomeSlots>;
   fixedMode?: boolean;
@@ -20,8 +25,8 @@ interface Nav extends NavOptions {
 }
 
 export interface HomeSlots extends BaseSlots {
-  header: FC<ComponentProps<'header'> & { fixedMode: boolean }>;
-  container: FC<ComponentProps<'main'>>;
+  header: FC<ComponentProps<"header"> & { fixedMode: boolean }>;
+  container: FC<ComponentProps<"main">>;
 }
 
 const LayoutContext = createContext<{
@@ -34,7 +39,7 @@ const LayoutContext = createContext<{
 export function useHomeLayout() {
   const context = use(LayoutContext);
   if (!context)
-    throw new Error('Please use this component under <HomeLayout /> (`fumadocs-ui/layouts/home`).');
+    throw new Error("Please use this component under <HomeLayout /> (`fumadocs-ui/layouts/home`).");
   return context;
 }
 
@@ -81,7 +86,7 @@ export function HomeLayout(props: HomeLayoutProps = { fixedMode: false }) {
   );
 }
 
-function InlineHeader(props: ComponentProps<'header'> & { fixedMode: boolean }) {
+function InlineHeader(props: ComponentProps<"header"> & { fixedMode: boolean }) {
   const { nav } = useHomeLayout().props;
   if (nav?.component) return nav.component;
   return <Header {...props} />;

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 
 type DataStateValue = string | boolean | null;
 
 function parseDatasetValue(value: string | null): DataStateValue {
   if (value === null) return null;
-  if (value === '' || value === 'true') return true;
-  if (value === 'false') return false;
+  if (value === "" || value === "true") return true;
+  if (value === "false") return false;
   return value;
 }
 

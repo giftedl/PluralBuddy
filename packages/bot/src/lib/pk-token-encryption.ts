@@ -1,19 +1,19 @@
 export async function decryptToken(iv: string, token: string) {
-	const key = process.env.PK_TOKEN_KEY ?? "";
+  const key = process.env.PK_TOKEN_KEY ?? "";
 
-	const importedKey = await crypto.subtle.importKey(
-		"raw",
-		Uint8Array.fromHex(key),
-		"AES-GCM",
-		true,
-		["encrypt", "decrypt"],
-	);
+  const importedKey = await crypto.subtle.importKey(
+    "raw",
+    Uint8Array.fromHex(key),
+    "AES-GCM",
+    true,
+    ["encrypt", "decrypt"],
+  );
 
-	const decryptedData = await crypto.subtle.decrypt(
-		{ name: "AES-GCM", iv: Buffer.from(iv, "hex").buffer },
-		importedKey,
-		Buffer.from(token, "hex").buffer,
-	);
+  const decryptedData = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: Buffer.from(iv, "hex").buffer },
+    importedKey,
+    Buffer.from(token, "hex").buffer,
+  );
 
-	return Buffer.from(decryptedData).toString();
+  return Buffer.from(decryptedData).toString();
 }

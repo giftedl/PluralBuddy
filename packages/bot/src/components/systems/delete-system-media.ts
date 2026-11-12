@@ -1,13 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	ActionRow,
-	Attachment,
-	AttachmentBuilder,
-	Button,
-	ComponentCommand,
-	type ComponentContext,
-	File,
+  ActionRow,
+  Attachment,
+  AttachmentBuilder,
+  Button,
+  ComponentCommand,
+  type ComponentContext,
+  File,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { deleteAssetPrefix } from "@/object-storage";
@@ -21,51 +21,48 @@ import { LoadingView } from "@/views/loading";
 import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
 
 export default class DeleteSystemButton extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(ctx: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.DeleteSystemMedia.equals(ctx.customId);
-	}
+  override filter(ctx: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.DeleteSystemMedia.equals(ctx.customId);
+  }
 
-	async run(ctx: ComponentContext<typeof this.componentType>) {
-		await ctx.update({
-			components: new LoadingView(await ctx.userTranslations()).loadingView(),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
+  async run(ctx: ComponentContext<typeof this.componentType>) {
+    await ctx.update({
+      components: new LoadingView(await ctx.userTranslations()).loadingView(),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
 
-		const user = await ctx.retrievePUser();
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.editOrReply({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-		await ctx.followup({
-			files: [
-				new AttachmentBuilder()
-					.setName("system.json")
-					.setFile(
-						"buffer",
-						Buffer.from(await buildExportPayload(user.system)),
-					),
-			],
-			flags: MessageFlags.Ephemeral,
-		});
+    if (user.system === undefined) {
+      return await ctx.editOrReply({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
+    await ctx.followup({
+      files: [
+        new AttachmentBuilder()
+          .setName("system.json")
+          .setFile("buffer", Buffer.from(await buildExportPayload(user.system))),
+      ],
+      flags: MessageFlags.Ephemeral,
+    });
 
-		await deleteAssetPrefix(user.storagePrefix);
+    await deleteAssetPrefix(user.storagePrefix);
 
-		await userCollection.deleteOne({ userId: ctx.author.id });
-		await alterCollection.deleteMany({ systemId: ctx.author.id });
-		await tagCollection.deleteMany({ systemId: ctx.author.id });
+    await userCollection.deleteOne({ userId: ctx.author.id });
+    await alterCollection.deleteMany({ systemId: ctx.author.id });
+    await tagCollection.deleteMany({ systemId: ctx.author.id });
 
-		return await ctx.editOrReply({
-			components: new AlertView(await ctx.userTranslations()).successView(
-				"SYSTEM_DELETION_MEDIA_FINISHED",
-			),
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.editOrReply({
+      components: new AlertView(await ctx.userTranslations()).successView(
+        "SYSTEM_DELETION_MEDIA_FINISHED",
+      ),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 }

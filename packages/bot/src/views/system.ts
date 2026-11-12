@@ -1,15 +1,15 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	ActionRow,
-	AttachmentBuilder,
-	Button,
-	Container,
-	MediaGallery,
-	MediaGalleryItem,
-	Section,
-	TextDisplay,
-	Thumbnail,
+  ActionRow,
+  AttachmentBuilder,
+  Button,
+  Container,
+  MediaGallery,
+  MediaGalleryItem,
+  Section,
+  TextDisplay,
+  Thumbnail,
 } from "seyfert";
 import { ButtonStyle } from "seyfert/lib/types";
 import { has } from "@/lib/privacy-bitmask";
@@ -19,92 +19,78 @@ import { type PSystem, SystemProtectionFlags } from "../types/system";
 import { TranslatedView } from "./translated-view";
 
 export class SystemView extends TranslatedView {
-	systemProfileView(system: PSystem, external?: boolean) {
-		const displayNameDisplayable =
-			!external || has(SystemProtectionFlags.NAME, system.public);
-		const displayTagDisplayable =
-			!external || has(SystemProtectionFlags.DISPLAY_TAG, system.public);
-		const pronounsDisplayable =
-			!external || has(SystemProtectionFlags.PRONOUNS, system.public);
-		const descriptionDisplayable =
-			!external || has(SystemProtectionFlags.DESCRIPTION, system.public);
-		const avatarDisplayable =
-			!external || has(SystemProtectionFlags.AVATAR, system.public);
-		const bannerDisplayable =
-			!external || has(SystemProtectionFlags.BANNER, system.public);
-		const altersDisplayable =
-			!external || has(SystemProtectionFlags.ALTERS, system.public);
-		const tagsDisplayable =
-			!external || has(SystemProtectionFlags.TAGS, system.public);
+  systemProfileView(system: PSystem, external?: boolean) {
+    const displayNameDisplayable = !external || has(SystemProtectionFlags.NAME, system.public);
+    const displayTagDisplayable =
+      !external || has(SystemProtectionFlags.DISPLAY_TAG, system.public);
+    const pronounsDisplayable = !external || has(SystemProtectionFlags.PRONOUNS, system.public);
+    const descriptionDisplayable =
+      !external || has(SystemProtectionFlags.DESCRIPTION, system.public);
+    const avatarDisplayable = !external || has(SystemProtectionFlags.AVATAR, system.public);
+    const bannerDisplayable = !external || has(SystemProtectionFlags.BANNER, system.public);
+    const altersDisplayable = !external || has(SystemProtectionFlags.ALTERS, system.public);
+    const tagsDisplayable = !external || has(SystemProtectionFlags.TAGS, system.public);
 
-		const innerComponents = new TextDisplay().setContent(
-			`${displayNameDisplayable ? `## ${system.systemName}` : ""}
-${(pronounsDisplayable && system.systemPronouns) || (displayTagDisplayable && system.systemDisplayTag) ? `-# ${displayTagDisplayable && system.systemDisplayTag ? system.systemDisplayTag : ""}${(displayTagDisplayable && system.systemDisplayTag) && (pronounsDisplayable && system.systemPronouns) ? " · " : ""}${pronounsDisplayable && system.systemPronouns ? system.systemPronouns : ""}` : ""}
+    const innerComponents = new TextDisplay().setContent(
+      `${displayNameDisplayable ? `## ${system.systemName}` : ""}
+${(pronounsDisplayable && system.systemPronouns) || (displayTagDisplayable && system.systemDisplayTag) ? `-# ${displayTagDisplayable && system.systemDisplayTag ? system.systemDisplayTag : ""}${displayTagDisplayable && system.systemDisplayTag && pronounsDisplayable && system.systemPronouns ? " · " : ""}${pronounsDisplayable && system.systemPronouns ? system.systemPronouns : ""}` : ""}
 ${descriptionDisplayable && system.systemDescription ? `\n${system.systemDescription}\n` : "\n"}
 ${altersDisplayable ? `${this.translations.ALTERS_PROFILE_LABEL}${(system.alterIds as number[]).length}` : ""}
 ${tagsDisplayable ? `${this.translations.TAGS_PROFILE_LABEL}${(system.tagIds as string[]).length}` : ""}
 ${this.translations.OWNED_BY_PROFILE}<@${system.associatedUserId}> (${system.associatedUserId})`,
-		);
+    );
 
-		console.log('avatar: \'', system.systemAvatar, "'")
+    console.log("avatar: '", system.systemAvatar, "'");
 
-		return [
-			new Container().setComponents(
-				system.systemAvatar !== null &&
-					system.systemAvatar !== undefined &&
-					system.systemAvatar.replaceAll(" ", "") !== "" &&
-					avatarDisplayable
-					? new Section()
-							.setAccessory(
-								new Thumbnail()
-									.setMedia(
-										system.systemAvatar === ""
-											? "https://pluralbuddy.app/image/pfp.png"
-											: system.systemAvatar,
-									)
-									.setDescription(
-										this.translations.ALT_AVATAR.replace(
-											"{{ alter }}",
-											system.associatedUserId,
-										),
-									),
-							)
-							.setComponents(innerComponents)
-					: innerComponents,
-				...(system.systemBanner !== null &&
-				system.systemBanner !== undefined &&
-				system.systemBanner.replaceAll(" ", "") !== "" &&
-				bannerDisplayable
-					? [
-							new MediaGallery().setItems(
-								new MediaGalleryItem()
-									.setMedia(system.systemBanner)
-									.setDescription(
-										this.translations.ALT_BANNER.replace(
-											"{{ alter }}",
-											system.associatedUserId,
-										),
-									),
-							),
-						]
-					: []),
-			),
-		];
-	}
+    return [
+      new Container().setComponents(
+        system.systemAvatar !== null &&
+          system.systemAvatar !== undefined &&
+          system.systemAvatar.replaceAll(" ", "") !== "" &&
+          avatarDisplayable
+          ? new Section()
+              .setAccessory(
+                new Thumbnail()
+                  .setMedia(
+                    system.systemAvatar === ""
+                      ? "https://pluralbuddy.app/image/pfp.png"
+                      : system.systemAvatar,
+                  )
+                  .setDescription(
+                    this.translations.ALT_AVATAR.replace("{{ alter }}", system.associatedUserId),
+                  ),
+              )
+              .setComponents(innerComponents)
+          : innerComponents,
+        ...(system.systemBanner !== null &&
+        system.systemBanner !== undefined &&
+        system.systemBanner.replaceAll(" ", "") !== "" &&
+        bannerDisplayable
+          ? [
+              new MediaGallery().setItems(
+                new MediaGalleryItem()
+                  .setMedia(system.systemBanner)
+                  .setDescription(
+                    this.translations.ALT_BANNER.replace("{{ alter }}", system.associatedUserId),
+                  ),
+              ),
+            ]
+          : []),
+      ),
+    ];
+  }
 
-	systemConfigureButton(system: PSystem) {
-		return [
-			new ActionRow().setComponents(
-				new Button()
-					.setLabel(this.translations.CONFIGURE_PROFILE_BTN)
-					.setEmoji(emojis.wrenchWhite)
-					.setCustomId(
-						InteractionIdentifier.Systems.ConfigurePublicProfile.create(
-							system.associatedUserId,
-						),
-					)
-					.setStyle(ButtonStyle.Primary),
-			),
-		];
-	}
+  systemConfigureButton(system: PSystem) {
+    return [
+      new ActionRow().setComponents(
+        new Button()
+          .setLabel(this.translations.CONFIGURE_PROFILE_BTN)
+          .setEmoji(emojis.wrenchWhite)
+          .setCustomId(
+            InteractionIdentifier.Systems.ConfigurePublicProfile.create(system.associatedUserId),
+          )
+          .setStyle(ButtonStyle.Primary),
+      ),
+    ];
+  }
 }

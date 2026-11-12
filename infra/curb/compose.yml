@@ -12,7 +12,6 @@ configs:
 name: pluralbuddy-curb
 version: "3"
 services:
-
   ### Observability tools
   alloy:
     image: grafana/alloy:latest
@@ -49,7 +48,7 @@ services:
       - 3100:3100
     volumes:
       - ${PWD}:/mnt/config
-    command: "-config.file=\"/mnt/config/loki-config.yaml\""
+    command: '-config.file="/mnt/config/loki-config.yaml"'
     networks:
       - loki
 
@@ -64,15 +63,13 @@ services:
     configs:
       - source: prometheus_config
         target: /etc/prometheus/prometheus.yml
-        uid: "65534"    # Required: numeric UID for 'nobody' user
-        gid: "65534"    # Required: numeric GID for 'nobody' group
-        mode: 0400      # Required: read-only permissions
+        uid: "65534" # Required: numeric UID for 'nobody' user
+        gid: "65534" # Required: numeric GID for 'nobody' group
+        mode: 0400 # Required: read-only permissions
     expose:
       - "9090"
     volumes:
       - prometheus-data:/prometheus
-
-
 
   ### Grafana
   grafana:
@@ -82,10 +79,9 @@ services:
     environment:
       - GF_PATHS_CONFIG=/var/lib/grafana/grafana.ini
     ports:
-      - '3000:80'
+      - "3000:80"
     volumes:
       - grafana-storage:/var/lib/grafana
-
 
 networks:
   loki: {}

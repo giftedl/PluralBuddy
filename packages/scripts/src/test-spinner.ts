@@ -1,5 +1,5 @@
 import ora from "ora";
 
-const spinner = ora("hi").start()
+const spinner = ora("hi").start();
 
-setTimeout(() => spinner.stop(), 3000)
+setTimeout(() => spinner.stop(), 3000);

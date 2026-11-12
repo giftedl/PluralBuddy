@@ -1,12 +1,7 @@
 import { waitUntil } from "@vercel/functions";
 import { MongoClient } from "mongodb";
 import { headers } from "next/headers";
-import {
-	ImportNotation,
-	ImportStage,
-	PluralKitSystem,
-	TupperBoxSystem,
-} from "plurography";
+import { ImportNotation, ImportStage, PluralKitSystem, TupperBoxSystem } from "plurography";
 import z from "zod";
 import { auth } from "@/lib/auth";
 import { getDiscordIdBySessionId } from "@/lib/discord-id";
@@ -15,134 +10,118 @@ import { baseProcedure } from "../init";
 import { router } from "../trpc";
 
 export const ImportStagingRouter = router({
-	markImportStagingDone: baseProcedure
-		.input(
-			z
-				.object({
-					from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {
-						error: "You must select a valid option.",
-					}),
-					importStagingId: z.string(),
-					data: z
-						.string()
-						.min(20, "Import must be at least 20 characters.")
-						.refine(
-							(val) => {
-								try {
-									JSON.parse(val);
-								} catch {
-									return false;
-								}
-								return true;
-							},
-							{ error: "Must be valid JSON." },
-						),
-				})
-				.refine(
-					(val) => {
-						try {
-							JSON.parse(val.data);
-						} catch {
-							return false;
-						}
-						if (
-							val.from === "PluralKit" &&
-							PluralKitSystem.safeParse(JSON.parse(val.data)).error
-						) {
-							return false;
-						}
-						if (
-							val.from === "PluralBuddy" &&
-							ImportNotation.safeParse(JSON.parse(val.data)).error
-						) {
-							return false;
-						}
-						if (
-							val.from === "TupperBox" &&
-							TupperBoxSystem.safeParse(JSON.parse(val.data)).error
-						) {
-							return false;
-						}
+  markImportStagingDone: baseProcedure
+    .input(
+      z
+        .object({
+          from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {
+            error: "You must select a valid option.",
+          }),
+          importStagingId: z.string(),
+          data: z
+            .string()
+            .min(20, "Import must be at least 20 characters.")
+            .refine(
+              (val) => {
+                try {
+                  JSON.parse(val);
+                } catch {
+                  return false;
+                }
+                return true;
+              },
+              { error: "Must be valid JSON." },
+            ),
+        })
+        .refine(
+          (val) => {
+            try {
+              JSON.parse(val.data);
+            } catch {
+              return false;
+            }
+            if (val.from === "PluralKit" && PluralKitSystem.safeParse(JSON.parse(val.data)).error) {
+              return false;
+            }
+            if (
+              val.from === "PluralBuddy" &&
+              ImportNotation.safeParse(JSON.parse(val.data)).error
+            ) {
+              return false;
+            }
+            if (val.from === "TupperBox" && TupperBoxSystem.safeParse(JSON.parse(val.data)).error) {
+              return false;
+            }
 
-						return true;
-					},
-					{ error: "Configuration is not consistent with import type." },
-				),
-		)
-		.mutation(async ({ ctx, input }) => {
-			const session = await auth.api.getSession({
-				headers: await headers(),
-			});
+            return true;
+          },
+          { error: "Configuration is not consistent with import type." },
+        ),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
-			if (!session) throw new Error("Session error.");
+      if (!session) throw new Error("Session error.");
 
-			const staging = await ctx.webDatabase
-				.collection<ImportStage>("import-staging")
-				.findOne(
-					// @ts-ignore
-					{ "webhook.id": input.importStagingId },
-				);
+      const staging = await ctx.webDatabase.collection<ImportStage>("import-staging").findOne(
+        // @ts-ignore
+        { "webhook.id": input.importStagingId },
+      );
 
-			if (
-				staging?.originatingSystemId !==
-				(await getDiscordIdBySessionId(session.user.id))
-			) {
-				throw new Error("Session doesn't match staging.");
-			}
+      if (staging?.originatingSystemId !== (await getDiscordIdBySessionId(session.user.id))) {
+        throw new Error("Session doesn't match staging.");
+      }
 
-			await ctx.webDatabase.collection<ImportStage>("import-staging").updateOne(
-				// @ts-ignore
-				{ "webhook.id": input.importStagingId },
-				{
-					$set: {
-						response: {
-							data: input.data,
-							dataType: input.from,
-						},
-					},
-				},
-			);
+      await ctx.webDatabase.collection<ImportStage>("import-staging").updateOne(
+        // @ts-ignore
+        { "webhook.id": input.importStagingId },
+        {
+          $set: {
+            response: {
+              data: input.data,
+              dataType: input.from,
+            },
+          },
+        },
+      );
 
-			waitUntil(
-				api["import-staging-reminder"].$post({
-					json: { importStageId: input.importStagingId },
-				}),
-			);
+      waitUntil(
+        api["import-staging-reminder"].$post({
+          json: { importStageId: input.importStagingId },
+        }),
+      );
 
-			return { done: true };
-		}),
-	getImportData: baseProcedure
-		.input(z.object({ id: z.string() }))
-		.query(async ({ ctx, input }) => {
-			const session = ctx.session;
+      return { done: true };
+    }),
+  getImportData: baseProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    const session = ctx.session;
 
-			if (!session) throw new Error("Session error.");
+    if (!session) throw new Error("Session error.");
 
-			const mongoDb = ctx.webDatabase
+    const mongoDb = ctx.webDatabase;
 
-			let result = (await mongoDb
-				.collection<ImportStage>("import-staging")
-				.findOne({ "webhook.id": input.id })) as ImportStage | null;
-			if (result === null) {
-				throw new Error("Unauthorized.");
-			}
-			if (
-				result.originatingSystemId !==
-				(await getDiscordIdBySessionId(session.user.id))
-			) {
-				throw new Error("Unauthorized.");
-			}
+    let result = (await mongoDb
+      .collection<ImportStage>("import-staging")
+      .findOne({ "webhook.id": input.id })) as ImportStage | null;
+    if (result === null) {
+      throw new Error("Unauthorized.");
+    }
+    if (result.originatingSystemId !== (await getDiscordIdBySessionId(session.user.id))) {
+      throw new Error("Unauthorized.");
+    }
 
-			if (result) {
-				result = {
-					...result,
-					_id: null,
-					webhook: { id: input.id, token: "redacted" },
-				} as ImportStage;
-			}
+    if (result) {
+      result = {
+        ...result,
+        _id: null,
+        webhook: { id: input.id, token: "redacted" },
+      } as ImportStage;
+    }
 
-			waitUntil(ctx.mongoClient.close());
+    waitUntil(ctx.mongoClient.close());
 
-			return result;
-		}),
+    return result;
+  }),
 });

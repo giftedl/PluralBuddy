@@ -1,13 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	ComponentCommand,
-	Label,
-	Modal,
-	StringSelectMenu,
-	TextDisplay,
-	TextInput,
-	type ComponentContext,
+  ComponentCommand,
+  Label,
+  Modal,
+  StringSelectMenu,
+  TextDisplay,
+  TextInput,
+  type ComponentContext,
 } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { MessageFlags, TextInputStyle } from "seyfert/lib/types";
@@ -17,59 +17,43 @@ import { has } from "@/lib/privacy-bitmask";
 import { SystemProtectionFlags } from "@/types/system";
 
 export default class SetName extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(ctx: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.equals(
-			ctx.customId,
-		);
-	}
+  override filter(ctx: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.GeneralTab.SetPrivacy.equals(ctx.customId);
+  }
 
-	async run(ctx: ComponentContext<typeof this.componentType>) {
-		const oldSystemPrivacy = (await ctx.retrievePUser()).system?.public;
+  async run(ctx: ComponentContext<typeof this.componentType>) {
+    const oldSystemPrivacy = (await ctx.retrievePUser()).system?.public;
 
-		if (oldSystemPrivacy === undefined) {
-			return await ctx.interaction.update({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (oldSystemPrivacy === undefined) {
+      return await ctx.interaction.update({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const form = new Modal()
-			.setCustomId(
-				InteractionIdentifier.Systems.Configuration.FormSelection.PrivacyForm.create(),
-			)
-			.setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
-			.addComponents([
-				new TextDisplay().setContent(
-					(await ctx.userTranslations()).SYSTEM_PRIVACY_INFO,
-				),
-				new Label()
-					.setLabel((await ctx.userTranslations()).SYSTEM_PRIVACY_FORM_LABEL)
-					.setDescription(
-						(await ctx.userTranslations())
-							.CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC,
-					)
-					.setComponent(
-						new StringSelectMenu()
-							.setCustomId(
-								InteractionIdentifier.Setup.FormSelection.PrivacyType.create(),
-							)
-							.setOptions(
-								privacySelection(
-									await ctx.userTranslations(),
-									oldSystemPrivacy,
-								),
-							)
-							.setValuesLength({
-								min: 0,
-								max: privacySelection(await ctx.userTranslations()).length,
-							})
-							.setRequired(false),
-					),
-			]);
-		return await ctx.interaction.modal(form);
-	}
+    const form = new Modal()
+      .setCustomId(InteractionIdentifier.Systems.Configuration.FormSelection.PrivacyForm.create())
+      .setTitle((await ctx.userTranslations()).EDIT_SYSTEM_FORM_TITLE)
+      .addComponents([
+        new TextDisplay().setContent((await ctx.userTranslations()).SYSTEM_PRIVACY_INFO),
+        new Label()
+          .setLabel((await ctx.userTranslations()).SYSTEM_PRIVACY_FORM_LABEL)
+          .setDescription((await ctx.userTranslations()).CREATING_NEW_SYSTEM_PRIVACY_FORM_DESC)
+          .setComponent(
+            new StringSelectMenu()
+              .setCustomId(InteractionIdentifier.Setup.FormSelection.PrivacyType.create())
+              .setOptions(privacySelection(await ctx.userTranslations(), oldSystemPrivacy))
+              .setValuesLength({
+                min: 0,
+                max: privacySelection(await ctx.userTranslations()).length,
+              })
+              .setRequired(false),
+          ),
+      ]);
+    return await ctx.interaction.modal(form);
+  }
 }

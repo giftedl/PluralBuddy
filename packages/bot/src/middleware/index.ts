@@ -8,10 +8,10 @@ import { noWebhookMiddleware } from "./no-webhook.middleware";
 import { serverBlock } from "./server-block.middleware";
 
 export const middlewares = {
-	latency,
-	globalBlockUserMiddleware,
-	noWebhookMiddleware,
-	ensureGuildPermissions,
-	administrativeGuildPermissions,
-	serverBlock,
+  latency,
+  globalBlockUserMiddleware,
+  noWebhookMiddleware,
+  ensureGuildPermissions,
+  administrativeGuildPermissions,
+  serverBlock,
 };

@@ -7,87 +7,85 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
-	ActionRow,
-	Button,
-	type CommandContext,
-	createStringOption,
-	Declare,
-	Options,
+  ActionRow,
+  Button,
+  type CommandContext,
+  createStringOption,
+  Declare,
+  Options,
 } from "seyfert";
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 
 const options = {
-	"alter-name": createStringOption({
-		description: "The name of the alter to modify.",
-		required: true,
-		autocomplete: autocompleteAlters,
-	}),
+  "alter-name": createStringOption({
+    description: "The name of the alter to modify.",
+    required: true,
+    autocomplete: autocompleteAlters,
+  }),
 };
 
 @Declare({
-	name: "delete",
-	description: "Remove an alter",
-	aliases: ["remove", "r"],
-	contexts: ["BotDM", "Guild"],
+  name: "delete",
+  description: "Remove an alter",
+  aliases: ["remove", "r"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class DeleteAlterCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const { "alter-name": alterName } = ctx.options;
-		const systemId = ctx.author.id;
-		const alter =
-			ctx.contextAlter() ??
-			(await (Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+  override async run(ctx: CommandContext<typeof options>) {
+    await ctx.deferReply(true);
+    const { "alter-name": alterName } = ctx.options;
+    const systemId = ctx.author.id;
+    const alter =
+      ctx.contextAlter() ??
+      (await (Number.isNaN(Number.parseInt(alterName))
+        ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+        : alterCollection.findOne({
+            $or: [{ username: alterName }, { alterId: Number(alterName) }],
+            systemId,
+          })));
 
-		if (alter === null) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_ALTER_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (alter === null) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_ALTER_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		return await ctx.ephemeral(
-			{
-				components: [
-					...new AlertView(await ctx.userTranslations()).questionViewCustom(
-						(await ctx.userTranslations()).CONFIRMATION_ALTER_DELETION.replace(
-							"%alter%",
-							alter.username,
-						),
-					),
+    return await ctx.ephemeral(
+      {
+        components: [
+          ...new AlertView(await ctx.userTranslations()).questionViewCustom(
+            (await ctx.userTranslations()).CONFIRMATION_ALTER_DELETION.replace(
+              "%alter%",
+              alter.username,
+            ),
+          ),
 
-					new ActionRow().setComponents(
-						new Button()
-							.setEmoji(emojis.circleQuestionWhite)
-							.setStyle(ButtonStyle.Primary)
-							.setLabel(
-								(await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN,
-							)
-							.setCustomId(
-								InteractionIdentifier.Systems.Configuration.Alters.RemoveAlterConfirm.create(
-									alter.alterId,
-								),
-							),
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			},
-			undefined,
-			undefined,
-			ctx,
-		);
-	}
+          new ActionRow().setComponents(
+            new Button()
+              .setEmoji(emojis.circleQuestionWhite)
+              .setStyle(ButtonStyle.Primary)
+              .setLabel((await ctx.userTranslations()).CONFIRMATION_SYSTEM_DELETION_BTN)
+              .setCustomId(
+                InteractionIdentifier.Systems.Configuration.Alters.RemoveAlterConfirm.create(
+                  alter.alterId,
+                ),
+              ),
+          ),
+        ],
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      },
+      undefined,
+      undefined,
+      ctx,
+    );
+  }
 }

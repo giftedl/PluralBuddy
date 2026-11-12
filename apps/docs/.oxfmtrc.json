@@ -1,0 +1,12 @@
+{
+    "$schema": "../../node_modules/oxfmt/configuration_schema.json",
+    "ignorePatterns": [],
+    "sortTailwindcss": {
+        "stylesheet": "./src/app/global.css",
+        "functions": [
+            "clsx",
+            "cn"
+        ],
+        "preserveWhitespace": true
+    }
+}

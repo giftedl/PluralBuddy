@@ -2,47 +2,40 @@ import { AlertView } from "@/views/alert";
 import { createMiddleware } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
-export const administrativeGuildPermissions = createMiddleware<void>(
-	async (middle) => {
-		const ctx = middle.context;
+export const administrativeGuildPermissions = createMiddleware<void>(async (middle) => {
+  const ctx = middle.context;
 
-		if (ctx.guildId === undefined) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"DN_ERROR_SE",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+  if (ctx.guildId === undefined) {
+    return await ctx.write({
+      components: new AlertView(await ctx.userTranslations()).errorView("DN_ERROR_SE"),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 
-		const member = await ctx.client.members
-			.fetch(ctx.guildId, ctx.author.id)
-			.catch(() => null);
-		const apiGuild = await ctx.guild();
+  const member = await ctx.client.members.fetch(ctx.guildId, ctx.author.id).catch(() => null);
+  const apiGuild = await ctx.guild();
 
-		if (!member) throw new Error("no member");
-		if (!apiGuild) throw new Error("no guild");
+  if (!member) throw new Error("no member");
+  if (!apiGuild) throw new Error("no guild");
 
-		const memberPermissions = await member.fetchPermissions();
+  const memberPermissions = await member.fetchPermissions();
 
-		if (
-			!(
-				memberPermissions.has(["Administrator"]) ||
-				memberPermissions.has(["ManageGuild"]) ||
-				apiGuild.ownerId === member.id ||
-				// this is NOT used in production. this is NOT a backdoor.
-				(process.env.SRV_CFG_TEST_USER_ID &&
-					process.env.SRV_CFG_TEST_USER_ID === member.id)
-			)
-		) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"INSUFFICIENT_USER_PERMISSIONS",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+  if (
+    !(
+      memberPermissions.has(["Administrator"]) ||
+      memberPermissions.has(["ManageGuild"]) ||
+      apiGuild.ownerId === member.id ||
+      // this is NOT used in production. this is NOT a backdoor.
+      (process.env.SRV_CFG_TEST_USER_ID && process.env.SRV_CFG_TEST_USER_ID === member.id)
+    )
+  ) {
+    return await ctx.write({
+      components: new AlertView(await ctx.userTranslations()).errorView(
+        "INSUFFICIENT_USER_PERMISSIONS",
+      ),
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+    });
+  }
 
-		middle.next();
-	},
-);
+  middle.next();
+});

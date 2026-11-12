@@ -1,244 +1,190 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import {
-	ActionRow,
-	Button,
-	Container,
-	Section,
-	Separator,
-	TextDisplay,
-} from "seyfert";
+import { ActionRow, Button, Container, Section, Separator, TextDisplay } from "seyfert";
 import { ButtonStyle, Spacing } from "seyfert/lib/types";
 import { emojis, getEmojiFromTagColor } from "@/lib/emojis";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { mentionCommand } from "@/lib/mention-command";
 import { AlterProtectionFlags } from "@/types/alter";
-import {
-	type PTag,
-	TagProtectionFlags,
-	tagColors,
-	tagHexColors,
-} from "@/types/tag";
-import {
-	friendlyProtectionTags,
-	has,
-	listFromMaskTags,
-} from "../lib/privacy-bitmask";
+import { type PTag, TagProtectionFlags, tagColors, tagHexColors } from "@/types/tag";
+import { friendlyProtectionTags, has, listFromMaskTags } from "../lib/privacy-bitmask";
 import { AlertView } from "./alert";
 import { TranslatedView } from "./translated-view";
 
 export class TagView extends TranslatedView {
-	tagProfileView(tag: PTag, external = false) {
-		if (external && !has(AlterProtectionFlags.VISIBILITY, tag.public)) {
-			return new AlertView(this.translations).errorView("INVISIBLE_TAG");
-		}
+  tagProfileView(tag: PTag, external = false) {
+    if (external && !has(AlterProtectionFlags.VISIBILITY, tag.public)) {
+      return new AlertView(this.translations).errorView("INVISIBLE_TAG");
+    }
 
-		const nameDisplayable =
-			!external || has(TagProtectionFlags.NAME, tag.public);
-		const colorDisplayable =
-			!external || has(TagProtectionFlags.COLOR, tag.public);
-		const descriptionDisplayable =
-			!external || has(TagProtectionFlags.DESCRIPTION, tag.public);
-		const altersDisplayable =
-			!external || has(TagProtectionFlags.ALTERS, tag.public);
+    const nameDisplayable = !external || has(TagProtectionFlags.NAME, tag.public);
+    const colorDisplayable = !external || has(TagProtectionFlags.COLOR, tag.public);
+    const descriptionDisplayable = !external || has(TagProtectionFlags.DESCRIPTION, tag.public);
+    const altersDisplayable = !external || has(TagProtectionFlags.ALTERS, tag.public);
 
-		const innerComponents =
-			new TextDisplay().setContent(`${colorDisplayable || nameDisplayable ? `## ${colorDisplayable ? getEmojiFromTagColor(tag.tagColor) : ""} ${nameDisplayable ? tag.tagFriendlyName : ""}` : ""}
+    const innerComponents = new TextDisplay()
+      .setContent(`${colorDisplayable || nameDisplayable ? `## ${colorDisplayable ? getEmojiFromTagColor(tag.tagColor) : ""} ${nameDisplayable ? tag.tagFriendlyName : ""}` : ""}
 ${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}${descriptionDisplayable ? (tag.tagDescription ?? "") : ""}${tag.tagDescription !== null && descriptionDisplayable ? "\n" : ""}
 ${altersDisplayable ? `${this.translations.ALTER_COUNT_LABEL}${tag.associatedAlters.length}\n` : ""}
 ${this.translations.ID_SMALL_PROFILE}\`${tag.tagId}\``);
 
-		return [
-			new Container()
-				.setComponents(innerComponents)
-				.setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
-		];
-	}
+    return [
+      new Container()
+        .setComponents(innerComponents)
+        .setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
+    ];
+  }
 
-	tagConfigureButton(tag: PTag) {
-		return [
-			new ActionRow().setComponents(
-				new Button()
-					.setLabel(this.translations.CONFIGURE_PROFILE_BTN)
-					.setEmoji(emojis.wrenchWhite)
-					.setCustomId(
-						InteractionIdentifier.Systems.Configuration.Tags.ConfigureTagExternal.create(
-							tag.tagId,
-						),
-					)
-					.setStyle(ButtonStyle.Primary),
-			),
-		];
-	}
+  tagConfigureButton(tag: PTag) {
+    return [
+      new ActionRow().setComponents(
+        new Button()
+          .setLabel(this.translations.CONFIGURE_PROFILE_BTN)
+          .setEmoji(emojis.wrenchWhite)
+          .setCustomId(
+            InteractionIdentifier.Systems.Configuration.Tags.ConfigureTagExternal.create(tag.tagId),
+          )
+          .setStyle(ButtonStyle.Primary),
+      ),
+    ];
+  }
 
-	tagTopView(currentTab: "general", tagId: string, tagUsername: string) {
-		return [
-			new Container().setComponents(
-				new TextDisplay().setContent(
-					this.translations.ALTER_TOP_VIEW.replace(
-						"{{ alterUsername }}",
-						tagUsername,
-					).replace("{{ alterId }}", tagId),
-				),
+  tagTopView(currentTab: "general", tagId: string, tagUsername: string) {
+    return [
+      new Container().setComponents(
+        new TextDisplay().setContent(
+          this.translations.ALTER_TOP_VIEW.replace("{{ alterUsername }}", tagUsername).replace(
+            "{{ alterId }}",
+            tagId,
+          ),
+        ),
 
-				new ActionRow().setComponents(
-					new Button()
-						.setLabel(this.translations.TOP_BACK_LABEL)
-						.setStyle(ButtonStyle.Secondary)
-						.setEmoji(emojis.undo)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Tags.Index.create(),
-						),
-					new Button()
-						.setLabel(this.translations.GENERAL_LABEL)
-						.setStyle(
-							currentTab === "general"
-								? ButtonStyle.Success
-								: ButtonStyle.Secondary,
-						)
-						.setEmoji(
-							currentTab === "general"
-								? emojis.squareCheck
-								: emojis.squareDashed,
-						)
-						.setCustomId(
-							InteractionIdentifier.Systems.Configuration.Tags.GeneralSettings.create(
-								tagId,
-							),
-						),
-				),
-			),
-		];
-	}
+        new ActionRow().setComponents(
+          new Button()
+            .setLabel(this.translations.TOP_BACK_LABEL)
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(emojis.undo)
+            .setCustomId(InteractionIdentifier.Systems.Configuration.Tags.Index.create()),
+          new Button()
+            .setLabel(this.translations.GENERAL_LABEL)
+            .setStyle(currentTab === "general" ? ButtonStyle.Success : ButtonStyle.Secondary)
+            .setEmoji(currentTab === "general" ? emojis.squareCheck : emojis.squareDashed)
+            .setCustomId(
+              InteractionIdentifier.Systems.Configuration.Tags.GeneralSettings.create(tagId),
+            ),
+        ),
+      ),
+    ];
+  }
 
-	tagGeneral(tag: PTag, prefix: string, applicationCommand: boolean) {
-		return [
-			new Container()
-				.setComponents(
-					new TextDisplay().setContent(
-						this.translations.TAG_GENERAL.replace(
-							"%general%",
-							getEmojiFromTagColor(tag.tagColor),
-						).replace("%tag%", tag.tagFriendlyName),
-					),
-					new Separator().setSpacing(Spacing.Large),
-					new Section()
-						.addComponents(
-							new TextDisplay().setContent(
-								this.translations.TAG_SET_DISPLAY_NAME_DESC,
-							),
-						)
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.ALTER_SET_DISPLAY)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.Tags.SetDisplayName.create(
-										tag.tagId,
-									),
-								),
-						),
-					new Separator().setSpacing(Spacing.Small),
-					new Section()
-						.addComponents(
-							new TextDisplay().setContent(
-								this.translations.TAG_SET_COLOR_DESC,
-							),
-						)
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.TAG_SET_COLOR)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.Tags.SetColor.create(
-										tag.tagId,
-									),
-								),
-						),
-					new Separator().setSpacing(Spacing.Small),
-					new Section()
-						.addComponents(
-							new TextDisplay().setContent(
-								`${this.translations.TAG_SET_PRIVACY_DESC}
+  tagGeneral(tag: PTag, prefix: string, applicationCommand: boolean) {
+    return [
+      new Container()
+        .setComponents(
+          new TextDisplay().setContent(
+            this.translations.TAG_GENERAL.replace(
+              "%general%",
+              getEmojiFromTagColor(tag.tagColor),
+            ).replace("%tag%", tag.tagFriendlyName),
+          ),
+          new Separator().setSpacing(Spacing.Large),
+          new Section()
+            .addComponents(
+              new TextDisplay().setContent(this.translations.TAG_SET_DISPLAY_NAME_DESC),
+            )
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel(this.translations.ALTER_SET_DISPLAY)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.Tags.SetDisplayName.create(tag.tagId),
+                ),
+            ),
+          new Separator().setSpacing(Spacing.Small),
+          new Section()
+            .addComponents(new TextDisplay().setContent(this.translations.TAG_SET_COLOR_DESC))
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel(this.translations.TAG_SET_COLOR)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.Tags.SetColor.create(tag.tagId),
+                ),
+            ),
+          new Separator().setSpacing(Spacing.Small),
+          new Section()
+            .addComponents(
+              new TextDisplay().setContent(
+                `${this.translations.TAG_SET_PRIVACY_DESC}
 ${
-	(tag.public ?? 0) > 0
-		? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionTags(this.translations, listFromMaskTags(tag.public ?? 0)).join("`, `")}\``
-		: ""
+  (tag.public ?? 0) > 0
+    ? `\n-# ${this.translations.CREATING_NEW_SYSTEM_PRIVACY_SET} \`${friendlyProtectionTags(this.translations, listFromMaskTags(tag.public ?? 0)).join("`, `")}\``
+    : ""
 }`,
-							),
-						)
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.TAG_SET_PRIVACY)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.Tags.SetPrivacy.create(
-										tag.tagId,
-									),
-								),
-						),
-					new Separator().setSpacing(Spacing.Small),
-					new Section()
-						.addComponents(
-							new TextDisplay().setContent(
-								this.translations.T_ORDER_STRING_DESC.replace(
-									"{{ order }}",
-									tag.orderString ?? "unset",
-								),
-							),
-						)
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.ALTER_SET_ORDER_STRING)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.Tags.SetOrderString.create(
-										tag.tagId,
-									),
-								),
-						),
-					new Separator().setSpacing(Spacing.Small),
-					new Section()
-						.addComponents(
-							new TextDisplay().setContent(
-								this.translations.T_PUBLIC_PROFILE_DESC_DESC.replace(
-									"{{ command }}",
-									mentionCommand(
-										prefix,
-										"edit-tag description",
-										applicationCommand,
-										tag.tagFriendlyName,
-									),
-								),
-							),
-						)
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Secondary)
-								.setLabel(this.translations.ALTER_SET_DESCRIPTION)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.Tags.SetDescription.create(
-										tag.tagId,
-									),
-								),
-						),
-					new Separator().setSpacing(Spacing.Small),
-					new Section()
-						.addComponents(
-							new TextDisplay().setContent(this.translations.DELETE_TAG_DESC),
-						)
-						.setAccessory(
-							new Button()
-								.setStyle(ButtonStyle.Danger)
-								.setLabel(this.translations.TAG_DELETE)
-								.setCustomId(
-									InteractionIdentifier.Systems.Configuration.Tags.DeleteTag.create(
-										tag.tagId,
-									),
-								),
-						),
-				)
-				.setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
-		];
-	}
+              ),
+            )
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel(this.translations.TAG_SET_PRIVACY)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.Tags.SetPrivacy.create(tag.tagId),
+                ),
+            ),
+          new Separator().setSpacing(Spacing.Small),
+          new Section()
+            .addComponents(
+              new TextDisplay().setContent(
+                this.translations.T_ORDER_STRING_DESC.replace(
+                  "{{ order }}",
+                  tag.orderString ?? "unset",
+                ),
+              ),
+            )
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel(this.translations.ALTER_SET_ORDER_STRING)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.Tags.SetOrderString.create(tag.tagId),
+                ),
+            ),
+          new Separator().setSpacing(Spacing.Small),
+          new Section()
+            .addComponents(
+              new TextDisplay().setContent(
+                this.translations.T_PUBLIC_PROFILE_DESC_DESC.replace(
+                  "{{ command }}",
+                  mentionCommand(
+                    prefix,
+                    "edit-tag description",
+                    applicationCommand,
+                    tag.tagFriendlyName,
+                  ),
+                ),
+              ),
+            )
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel(this.translations.ALTER_SET_DESCRIPTION)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.Tags.SetDescription.create(tag.tagId),
+                ),
+            ),
+          new Separator().setSpacing(Spacing.Small),
+          new Section()
+            .addComponents(new TextDisplay().setContent(this.translations.DELETE_TAG_DESC))
+            .setAccessory(
+              new Button()
+                .setStyle(ButtonStyle.Danger)
+                .setLabel(this.translations.TAG_DELETE)
+                .setCustomId(
+                  InteractionIdentifier.Systems.Configuration.Tags.DeleteTag.create(tag.tagId),
+                ),
+            ),
+        )
+        .setColor(`#${tagHexColors[tagColors.indexOf(tag.tagColor)]}`),
+    ];
+  }
 }

@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { type HTMLAttributes, useEffect, useState } from 'react';
-import { X } from 'lucide-react';
-import { cn } from '../lib/cn';
-import { buttonVariants } from './ui/button';
-import { useTranslations } from '@fuma-translate/react';
+import { type HTMLAttributes, useEffect, useState } from "react";
+import { X } from "lucide-react";
+import { cn } from "../lib/cn";
+import { buttonVariants } from "./ui/button";
+import { useTranslations } from "@fuma-translate/react";
 
-type BannerVariant = 'rainbow' | 'normal';
+type BannerVariant = "rainbow" | "normal";
 
 export function Banner({
   id,
-  variant = 'normal',
+  variant = "normal",
   changeLayout = true,
-  height = '3rem',
+  height = "3rem",
   rainbowColors = [
-    'rgba(0,149,255,0.56)',
-    'rgba(231,77,255,0.77)',
-    'rgba(255,0,0,0.73)',
-    'rgba(131,255,166,0.66)',
+    "rgba(0,149,255,0.56)",
+    "rgba(231,77,255,0.77)",
+    "rgba(255,0,0,0.73)",
+    "rgba(131,255,166,0.66)",
   ],
   ...props
 }: HTMLAttributes<HTMLDivElement> & {
@@ -43,17 +43,17 @@ export function Banner({
    */
   changeLayout?: boolean;
 }) {
-  const t = useTranslations({ note: 'banner' });
+  const t = useTranslations({ note: "banner" });
   const [open, setOpen] = useState(true);
   const globalKey = id ? `nd-banner-${encodeBase32(id)}` : null;
 
   useEffect(() => {
-    if (globalKey && localStorage.getItem(globalKey) === 'true') setOpen(false);
+    if (globalKey && localStorage.getItem(globalKey) === "true") setOpen(false);
   }, [globalKey]);
 
   function onClose() {
     setOpen(false);
-    if (globalKey) localStorage.setItem(globalKey, 'true');
+    if (globalKey) localStorage.setItem(globalKey, "true");
   }
 
   if (!open) return null;
@@ -63,10 +63,10 @@ export function Banner({
       id={id}
       {...props}
       className={cn(
-        'sticky top-0 z-40 flex flex-row items-center justify-center px-4 text-center text-sm font-medium',
-        variant === 'normal' && 'bg-fd-secondary',
-        variant === 'rainbow' && 'bg-fd-background',
-        !open && 'hidden',
+        "sticky top-0 z-40 flex flex-row items-center justify-center px-4 text-center text-sm font-medium",
+        variant === "normal" && "bg-fd-secondary",
+        variant === "rainbow" && "bg-fd-background",
+        !open && "hidden",
         props.className,
       )}
       style={{
@@ -89,7 +89,7 @@ export function Banner({
         />
       ) : null}
 
-      {variant === 'rainbow'
+      {variant === "rainbow"
         ? flow({
             colors: rainbowColors,
           })
@@ -98,13 +98,13 @@ export function Banner({
       {id ? (
         <button
           type="button"
-          aria-label={t('Close Banner', { note: 'aria-label' })}
+          aria-label={t("Close Banner", { note: "aria-label" })}
           onClick={onClose}
           className={cn(
             buttonVariants({
-              color: 'ghost',
-              className: 'absolute inset-e-2 top-1/2 -translate-y-1/2 text-fd-muted-foreground/50',
-              size: 'icon-sm',
+              color: "ghost",
+              className: "absolute inset-e-2 top-1/2 -translate-y-1/2 text-fd-muted-foreground/50",
+              size: "icon-sm",
             }),
           )}
         >
@@ -116,7 +116,7 @@ export function Banner({
 }
 
 const maskImage =
-  'linear-gradient(to bottom,white,transparent), radial-gradient(circle at top center, white, transparent)';
+  "linear-gradient(to bottom,white,transparent), radial-gradient(circle at top center, white, transparent)";
 
 function flow({ colors }: { colors: string[] }) {
   return (
@@ -126,11 +126,11 @@ function flow({ colors }: { colors: string[] }) {
         style={
           {
             maskImage,
-            maskComposite: 'intersect',
-            animation: 'fd-moving-banner 20s linear infinite',
-            backgroundImage: `repeating-linear-gradient(70deg, ${[...colors, colors[0]].map((color, i) => `${color} ${(i * 50) / colors.length}%`).join(', ')})`,
-            backgroundSize: '200% 100%',
-            filter: 'saturate(2)',
+            maskComposite: "intersect",
+            animation: "fd-moving-banner 20s linear infinite",
+            backgroundImage: `repeating-linear-gradient(70deg, ${[...colors, colors[0]].map((color, i) => `${color} ${(i * 50) / colors.length}%`).join(", ")})`,
+            backgroundSize: "200% 100%",
+            filter: "saturate(2)",
           } as object
         }
       />
@@ -145,8 +145,8 @@ function flow({ colors }: { colors: string[] }) {
 }
 
 function encodeBase32(str: string) {
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz234567';
-  let encoded = '';
+  const alphabet = "abcdefghijklmnopqrstuvwxyz234567";
+  let encoded = "";
 
   let buffer = 0;
   let bitsLeft = 0;

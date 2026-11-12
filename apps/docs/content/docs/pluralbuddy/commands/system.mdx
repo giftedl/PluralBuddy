@@ -7,31 +7,32 @@ _discord-embed-name: system
 The `pb;system` command is the root command for numerous other-system related commands.
 
 ## Sub-commands
+
 _All arguments in `<value>` format are required. All arguments in `[value]` are optional. Attachments can be uploaded directly and privately using Discord application commands as opposed to uploading directly to the command message used._
 
 <AlphabeticalSort>
 
- - `pb;system alters` - View all alters in a system. Searchable.
- - `pb;system tags` - View all tags in a system. Searchable.
- - `pb;system description [description]` - Set or view the current system description.
- - `pb;system toggle` - Toggle system being able to proxy. (disabled systems will NOT be able to proxy).
- - `pb;system pronouns <pronouns>` - Set the pronouns of the system, viewable on the system profile.
- - `pb;system avatar [avatar url or attachment]` - Set the profile picture of the system, viewable on the system profile. Cleared when not provided.
- - `pb;system banner [banner url or attachment]` - Set the banner of the system, viewable on the system profile. Cleared when not provided.
- - `pb;system name <name>` - Sets the name of the system, viewable on the system profile.
- - `pb;system display-tag <display-tag> [-server-specific]` - Sets the display tag of the system, appended to the end of all webhook names from any alters in this system.
- - `pb;system info [-p]` - Opens the profile of the system. Equivalent to using `pb;system`. `-p` sends this message non-ephemerally.
- - `pb;system import` - Prompt to open the system import menu.
- - `pb;system export` - Export a PluralBuddy-compliant system configuration including all of your system data.
- - `pb;system delete [-mi]` - Completely delete the system. Using `-mi` will also remove media uploaded related to the system in 7-8 days after deletion operation.
- - `pb;system nickname-format <new format>` - Set the nickname format for alters, where `%username%` is the username and `%display%` is the alter display name in `new format`.
- - `pb;system latch-delay <new delay>` - Set delay after sending last message before clearing latch alter.
- - `pb;system random [-qt]` - View a random alter. Optionally query a tag with `-qt`. 
- - `pb;system create-tag <display name>` - Creates a new tag in the system.
- - `pb;[system] create-alter <username> [display name]` - Creates a new alter in the system (since 26.1.1, display names are optional and by default usernames will be used).
- - `pb;system include-pronouns` - Toggling including pronouns in the webhook name after proxying with an alter.
- - `pb;system include-proxy-tags` - Toggling including proxy tags after proxying with an alter.
- - `pb;system config` - Opens the visual configuration for your system.
+- `pb;system alters` - View all alters in a system. Searchable.
+- `pb;system tags` - View all tags in a system. Searchable.
+- `pb;system description [description]` - Set or view the current system description.
+- `pb;system toggle` - Toggle system being able to proxy. (disabled systems will NOT be able to proxy).
+- `pb;system pronouns <pronouns>` - Set the pronouns of the system, viewable on the system profile.
+- `pb;system avatar [avatar url or attachment]` - Set the profile picture of the system, viewable on the system profile. Cleared when not provided.
+- `pb;system banner [banner url or attachment]` - Set the banner of the system, viewable on the system profile. Cleared when not provided.
+- `pb;system name <name>` - Sets the name of the system, viewable on the system profile.
+- `pb;system display-tag <display-tag> [-server-specific]` - Sets the display tag of the system, appended to the end of all webhook names from any alters in this system.
+- `pb;system info [-p]` - Opens the profile of the system. Equivalent to using `pb;system`. `-p` sends this message non-ephemerally.
+- `pb;system import` - Prompt to open the system import menu.
+- `pb;system export` - Export a PluralBuddy-compliant system configuration including all of your system data.
+- `pb;system delete [-mi]` - Completely delete the system. Using `-mi` will also remove media uploaded related to the system in 7-8 days after deletion operation.
+- `pb;system nickname-format <new format>` - Set the nickname format for alters, where `%username%` is the username and `%display%` is the alter display name in `new format`.
+- `pb;system latch-delay <new delay>` - Set delay after sending last message before clearing latch alter.
+- `pb;system random [-qt]` - View a random alter. Optionally query a tag with `-qt`.
+- `pb;system create-tag <display name>` - Creates a new tag in the system.
+- `pb;[system] create-alter <username> [display name]` - Creates a new alter in the system (since 26.1.1, display names are optional and by default usernames will be used).
+- `pb;system include-pronouns` - Toggling including pronouns in the webhook name after proxying with an alter.
+- `pb;system include-proxy-tags` - Toggling including proxy tags after proxying with an alter.
+- `pb;system config` - Opens the visual configuration for your system.
 - `pb;system toggle-typing-status` - Toggles the "PluralBuddy is typing" indicator for your system.
 
 </AlphabeticalSort>
@@ -55,9 +56,10 @@ If you need to, it is recommended to use `pb;system info` (`/system info`) to ge
 In 26.1.1, there were additional optional flag parameters added to employ additional configuration that can be achieved on an alter like setting descriptions, pronouns, etc.
 
 Below are the different flags you can use to configure an alter:
- - `--pronouns <pronouns>` - Assign pronouns to the alter.
- - `--assign <tag>` - Assign a tag to the alter.
- - `--desc <description>` - Set the description of the alter. New lines can be used.
- - `--now` - Autoproxy an alter globally/guild-wide directly after the alters creation. If autoproxy is off, latch mode will be used.
+
+- `--pronouns <pronouns>` - Assign pronouns to the alter.
+- `--assign <tag>` - Assign a tag to the alter.
+- `--desc <description>` - Set the description of the alter. New lines can be used.
+- `--now` - Autoproxy an alter globally/guild-wide directly after the alters creation. If autoproxy is off, latch mode will be used.
 
 Additionally, you no longer have to type `system`. You can use `pb;ca` or `pb;create-alter`.

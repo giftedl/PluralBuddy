@@ -5,37 +5,33 @@ import { MessageFlags } from "seyfert/lib/types";
 
 @Middlewares(["ensureGuildPermissions"])
 export default class ViewErrorsTab extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Guilds.ErrorsTab.GoToPage.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Guilds.ErrorsTab.GoToPage.startsWith(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const pluralGuild = await ctx.retrievePGuild();
-		const nativeGuild = await ctx.guild();
-		const page = InteractionIdentifier.Guilds.ErrorsTab.GoToPage.substring(
-			ctx.customId,
-		)[0];
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const pluralGuild = await ctx.retrievePGuild();
+    const nativeGuild = await ctx.guild();
+    const page = InteractionIdentifier.Guilds.ErrorsTab.GoToPage.substring(ctx.customId)[0];
 
-		if (!nativeGuild) throw new Error("What.");
+    if (!nativeGuild) throw new Error("What.");
 
-		return await ctx.update({
-			components: [
-				...new ServerConfigView(await ctx.userTranslations()).topView(
-					"errors",
-					pluralGuild.guildId,
-				),
-				...new ServerConfigView(await ctx.userTranslations()).errorSettings(
-					pluralGuild,
-					nativeGuild,
-					Number(page ?? "1"),
-				),
-			],
-			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			allowed_mentions: { parse: [] },
-		});
-	}
+    return await ctx.update({
+      components: [
+        ...new ServerConfigView(await ctx.userTranslations()).topView(
+          "errors",
+          pluralGuild.guildId,
+        ),
+        ...new ServerConfigView(await ctx.userTranslations()).errorSettings(
+          pluralGuild,
+          nativeGuild,
+          Number(page ?? "1"),
+        ),
+      ],
+      flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      allowed_mentions: { parse: [] },
+    });
+  }
 }

@@ -1,20 +1,20 @@
 {
   "name": "messagegraph",
-  "module": "src/index.ts",
   "type": "module",
+  "module": "src/index.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     }
   },
+  "dependencies": {
+    "discord-api-types": "^0.38.37"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "discord-api-types": "^0.38.37"
   }
 }

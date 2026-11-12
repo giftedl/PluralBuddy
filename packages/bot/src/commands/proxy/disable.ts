@@ -4,68 +4,61 @@ import { userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 
 @Declare({
-	name: "disable",
-	description: "Disable proxying in this server.",
-	aliases: ["d", "off"],
-	contexts: ["Guild"],
+  name: "disable",
+  description: "Disable proxying in this server.",
+  aliases: ["d", "off"],
+  contexts: ["Guild"],
 })
 export default class DisableProxying extends SubCommand {
-	override async run(ctx: CommandContext) {
-		await ctx.deferReply(true);
-		const guild = await ctx.guild();
+  override async run(ctx: CommandContext) {
+    await ctx.deferReply(true);
+    const guild = await ctx.guild();
 
-		if (guild === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"DN_ERROR_SE",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (guild === undefined) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView("DN_ERROR_SE"),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const { system } = await ctx.retrievePUser();
+    const { system } = await ctx.retrievePUser();
 
-		if (system === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (system === undefined) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		if ((system.disabledGuilds ?? []).includes(guild.id)) {
-			return await ctx.editResponse({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorView(
-						"PROXYING_ALREADY_DISABLED",
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+    if ((system.disabledGuilds ?? []).includes(guild.id)) {
+      return await ctx.editResponse({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorView("PROXYING_ALREADY_DISABLED"),
+        ],
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		await userCollection.updateOne(
-			{
-				userId: system.associatedUserId,
-			},
-			{
-				$push: {
-					"system.disabledGuilds": guild.id,
-				},
-			},
-		);
+    await userCollection.updateOne(
+      {
+        userId: system.associatedUserId,
+      },
+      {
+        $push: {
+          "system.disabledGuilds": guild.id,
+        },
+      },
+    );
 
-		return await ctx.editResponse({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await ctx.userTranslations()).SUCCESS_DISABLE_GUILD.replace(
-						"{{ guild }}",
-						guild.name,
-					),
-				),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.editResponse({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successViewCustom(
+          (await ctx.userTranslations()).SUCCESS_DISABLE_GUILD.replace("{{ guild }}", guild.name),
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

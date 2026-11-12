@@ -8,16 +8,15 @@ PluralBuddy uses many terms which may be confusing in nature, which is what this
 
 ## Compared to Other Bots
 
-| PluralBuddy                   | TupperBox                                                            | PluralKit   |
-|-------------------------------|----------------------------------------------------------------------|-------------|
-| **Proxy Tags**                | Brackets                                                             | -           |
-| **System Tags**               | Group Tags                                                           | -           |
-| **Auto-proxy**                | Auto-proxying                                                        | -           |
-| **Alters**                    | Tuppers                                                              | Members     |
-| **Tags**                      | Tupper Groups                                                        | Groups      |
-| **Nudging**                   | *No Alternative*                                                     | Ping Author |
-| **Message Info**              | ❓ [proxy action](https://tupperbox.app/guide/proxying#proxy-actions)| -           |
-
+| PluralBuddy      | TupperBox                                                             | PluralKit   |
+| ---------------- | --------------------------------------------------------------------- | ----------- |
+| **Proxy Tags**   | Brackets                                                              | -           |
+| **System Tags**  | Group Tags                                                            | -           |
+| **Auto-proxy**   | Auto-proxying                                                         | -           |
+| **Alters**       | Tuppers                                                               | Members     |
+| **Tags**         | Tupper Groups                                                         | Groups      |
+| **Nudging**      | _No Alternative_                                                      | Ping Author |
+| **Message Info** | ❓ [proxy action](https://tupperbox.app/guide/proxying#proxy-actions) | -           |
 
 _`-` means that feature's name is the same as PluralBuddy_
 
@@ -47,6 +46,7 @@ Nickname formats tells PluralBuddy how your nicknames should be formatted. By de
 - Nickname formats can be at most 40 characters.
 
 Nickname formats can be set using `pb;system nickname-format`:
+
 - `pb;system nickname-format <new format>` - Set the nickname format for alters, where `%username%` is the username and `%display%` is the alter display name in `new format`.
 
 ## Nudging
@@ -57,13 +57,14 @@ All of the nudge settings are configured in a seperate command: `pb;nudge-prefer
 
 ### DM Replies
 
-DM Replies is apart of the PluralBuddy nudging feature. DM Replies is a feature that will automatically send you a DM when another user, __regardless of whether the author is proxying or not__, replies to one of your proxied messages.
+DM Replies is apart of the PluralBuddy nudging feature. DM Replies is a feature that will automatically send you a DM when another user, **regardless of whether the author is proxying or not**, replies to one of your proxied messages.
 
 <DMRepliesExample />
 
-
 <Callout type="warning" title="Storage Limitations">
-  Webhooks on Discord cannot be reply pinged. If you try to, the reply ping is cleared when your message hits the server. This is why DM replies are always on regardless of what the replying user specifies for reply pings, as in reality the user doesn't have a choice.
+  Webhooks on Discord cannot be reply pinged. If you try to, the reply ping is cleared when your
+  message hits the server. This is why DM replies are always on regardless of what the replying user
+  specifies for reply pings, as in reality the user doesn't have a choice.
 </Callout>
 
 ## Proxying
@@ -76,22 +77,23 @@ PluralBuddy, uses [Components V2](https://docs.discord.com/developers/components
 
 ### Differences
 
-| Native Feature  | Notes
-| :-------------: | -----
-| Embedding Links | Embedding links is possible on PluralBuddy, however PluralBuddy has to get link metadata by itself as opposed to Discord getting it from their backend. This means that link embeds may not look exactly correct.
-| Images          | Image rendering might not always look perfect since Discord seems to mess up on image sizing in rare circumstances.
-| Stickers        | Stickers are natively supported since they are automatically converted to images. Again, sticker sizes may not be correct to their normal sticker size counterpart.
-| Emojis          | _All_ external emojis are supported, regardless of if PluralBuddy is in the server that the emoji comes from.
-| Edits           | Due to the overall complexity of Components V2, you are only allowed to edit the message _text_ content, nothing else.
-| Audio Messages  | Due to Discord limitations, audio messages may not be inline playable due to how they are converted to audio files, and sent as a File Display.
-| Replies         | Replies are formatted like: `Replying to (user): (message contents linked to message)`. However, replies are a separate Text Display. Additionally, in rare circumstances, replies may break and the link wont format correctly. Please report this to the support server if this happens.
+| Native Feature  | Notes                                                                                                                                                                                                                                                                                      |
+| :-------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Embedding Links | Embedding links is possible on PluralBuddy, however PluralBuddy has to get link metadata by itself as opposed to Discord getting it from their backend. This means that link embeds may not look exactly correct.                                                                          |
+|     Images      | Image rendering might not always look perfect since Discord seems to mess up on image sizing in rare circumstances.                                                                                                                                                                        |
+|    Stickers     | Stickers are natively supported since they are automatically converted to images. Again, sticker sizes may not be correct to their normal sticker size counterpart.                                                                                                                        |
+|     Emojis      | _All_ external emojis are supported, regardless of if PluralBuddy is in the server that the emoji comes from.                                                                                                                                                                              |
+|      Edits      | Due to the overall complexity of Components V2, you are only allowed to edit the message _text_ content, nothing else.                                                                                                                                                                     |
+| Audio Messages  | Due to Discord limitations, audio messages may not be inline playable due to how they are converted to audio files, and sent as a File Display.                                                                                                                                            |
+|     Replies     | Replies are formatted like: `Replying to (user): (message contents linked to message)`. However, replies are a separate Text Display. Additionally, in rare circumstances, replies may break and the link wont format correctly. Please report this to the support server if this happens. |
 
 ## System Privacy
 
 PluralBuddy runs on the philosophy that **everything is private, by default.** What this means for you, is if you create an alter, a system, or a tag, all data of it is automatically private by design.
 
 <Callout type="warning">
-  Since PluralKit is public by default, importing from PluralKit will make everything public, unless you've set that differently in your PluralKit settings.
+  Since PluralKit is public by default, importing from PluralKit will make everything public, unless
+  you've set that differently in your PluralKit settings.
 </Callout>
 
 However, you can easily set settings for your system to make it less or more public.
@@ -103,4 +105,3 @@ pb;edit-tag config <tag>
 ```
 
 All of those above commands can help you set privacy settings.
-

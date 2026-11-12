@@ -1,15 +1,15 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ import {
-	type Webhook,
-	type UsingClient,
-	type TopLevelBuilders,
-	type ApplicationEmoji,
-	Container,
-	TextDisplay,
-	MediaGallery,
-	MediaGalleryItem,
-	AttachmentBuilder,
-	Section,
-	Thumbnail,
+  type Webhook,
+  type UsingClient,
+  type TopLevelBuilders,
+  type ApplicationEmoji,
+  Container,
+  TextDisplay,
+  MediaGallery,
+  MediaGalleryItem,
+  AttachmentBuilder,
+  Section,
+  Thumbnail,
 } from "seyfert";
 import type { ColorResolvable } from "seyfert/lib/common";
 import type { Message, WebhookMessage } from "seyfert/lib/structures";
@@ -18,174 +18,164 @@ import type { PWebhook } from "@/events/on-message-create";
 import { getGifLink } from "./tenor";
 
 export async function processUrlIntegrations(
-	webhook: PWebhook,
-	client: UsingClient,
-	message: Message | WebhookMessage,
-	messageId: string,
-	stringContents: string,
-	reply: TopLevelBuilders[],
-	mainContents: TopLevelBuilders[],
-	fileAttachments: Array<{ buff: Buffer; name: string }>,
-	uploadedEmojis: ApplicationEmoji[],
-	channelReference?:
-		| { channelId: string; guildId: string; userId: string }
-		| undefined,
-	altUserId?: string | undefined,
-	altGuildId?: string | undefined,
+  webhook: PWebhook,
+  client: UsingClient,
+  message: Message | WebhookMessage,
+  messageId: string,
+  stringContents: string,
+  reply: TopLevelBuilders[],
+  mainContents: TopLevelBuilders[],
+  fileAttachments: Array<{ buff: Buffer; name: string }>,
+  uploadedEmojis: ApplicationEmoji[],
+  channelReference?: { channelId: string; guildId: string; userId: string } | undefined,
+  altUserId?: string | undefined,
+  altGuildId?: string | undefined,
 ) {
-	const urlAttachments: Array<
-		{ buff: Buffer; name: string } | { link: string }
-	> = [];
-	const containerAttachments: Array<Container> = [];
-	const urlRegex = /(?<!<)(https?:\/\/[^\s>]+)(?!>)/g;
-	const userPerms = await client.channels.memberPermissions(
-		channelReference?.channelId ?? message.channelId,
-		await client.members.fetch(
-			altGuildId ?? channelReference?.guildId ?? (message.guildId as string),
-			altUserId ?? channelReference?.userId ?? message.user.id,
-		),
-		true,
-	);
+  const urlAttachments: Array<{ buff: Buffer; name: string } | { link: string }> = [];
+  const containerAttachments: Array<Container> = [];
+  const urlRegex = /(?<!<)(https?:\/\/[^\s>]+)(?!>)/g;
+  const userPerms = await client.channels.memberPermissions(
+    channelReference?.channelId ?? message.channelId,
+    await client.members.fetch(
+      altGuildId ?? channelReference?.guildId ?? (message.guildId as string),
+      altUserId ?? channelReference?.userId ?? message.user.id,
+    ),
+    true,
+  );
 
-	if (userPerms.has(["EmbedLinks"]) ?? false) {
-		const matches =
-			(
-				message.content +
-				message.components
-					.filter((c) => c.type === ComponentType.TextDisplay)
-					.map((c) => (c.data as APITextDisplayComponent).content)
-					.join("")
-			).match(urlRegex) ?? [];
-		for (const regex of matches) {
-			if (regex.startsWith("https://tenor.com")) {
-				const link = await getGifLink(regex);
+  if (userPerms.has(["EmbedLinks"]) ?? false) {
+    const matches =
+      (
+        message.content +
+        message.components
+          .filter((c) => c.type === ComponentType.TextDisplay)
+          .map((c) => (c.data as APITextDisplayComponent).content)
+          .join("")
+      ).match(urlRegex) ?? [];
+    for (const regex of matches) {
+      if (regex.startsWith("https://tenor.com")) {
+        const link = await getGifLink(regex);
 
-				if (link !== null) {
-					urlAttachments.push({ link });
-					continue;
-				}
-			}
-			if (regex.startsWith("https://cdn.discordapp.com/attachments/")) {
-				urlAttachments.push({ link: regex });
-				continue;
-			}
+        if (link !== null) {
+          urlAttachments.push({ link });
+          continue;
+        }
+      }
+      if (regex.startsWith("https://cdn.discordapp.com/attachments/")) {
+        urlAttachments.push({ link: regex });
+        continue;
+      }
 
-			const url = await fetch(
-				`https://wsrv.nl/?url=${encodeURIComponent(regex)}`,
-			);
+      const url = await fetch(`https://wsrv.nl/?url=${encodeURIComponent(regex)}`);
 
-			if (url.ok || regex.startsWith("https://i.imgur.com")) {
-				urlAttachments.push({ link: regex });
-			} else {
-				// biome-ignore lint/suspicious/noExplicitAny: any required.
-				const result = (await url.json()) as any;
-				console.log(result);
+      if (url.ok || regex.startsWith("https://i.imgur.com")) {
+        urlAttachments.push({ link: regex });
+      } else {
+        // biome-ignore lint/suspicious/noExplicitAny: any required.
+        const result = (await url.json()) as any;
+        console.log(result);
 
-				if (
-					(result.message.includes("Is it a valid image?") ||
-						result.message.includes("The requested URL returned error:")) &&
-					!/^https:\/\/([a-zA-Z0-9-]+\.)?discord\.com/.test(regex)
-				) {
-					const meta = await fetch(
-						`${process.env.LINK_SCRAPER_API}?url=${encodeURIComponent(regex)}`,
-						{ signal: AbortSignal.timeout(3000) },
-					);
+        if (
+          (result.message.includes("Is it a valid image?") ||
+            result.message.includes("The requested URL returned error:")) &&
+          !/^https:\/\/([a-zA-Z0-9-]+\.)?discord\.com/.test(regex)
+        ) {
+          const meta = await fetch(
+            `${process.env.LINK_SCRAPER_API}?url=${encodeURIComponent(regex)}`,
+            { signal: AbortSignal.timeout(3000) },
+          );
 
-					if (meta.ok) {
-						const json = (await meta.json()) as Record<string, unknown>;
-						if (regex.startsWith("https://klipy.com/gifs/")) {
-							urlAttachments.push({ link: json?.["og:image"] as string });
-							continue;
-						}
+          if (meta.ok) {
+            const json = (await meta.json()) as Record<string, unknown>;
+            if (regex.startsWith("https://klipy.com/gifs/")) {
+              urlAttachments.push({ link: json?.["og:image"] as string });
+              continue;
+            }
 
-						containerAttachments.push(
-							new Container()
-								.setComponents(
-									new TextDisplay().setContent(`### [${json?.title ?? json?.["og:title"] ?? json?.["twitter:title"] ?? json?.["og:site_name"] ?? ""}](${regex})
+            containerAttachments.push(
+              new Container()
+                .setComponents(
+                  new TextDisplay()
+                    .setContent(`### [${json?.title ?? json?.["og:title"] ?? json?.["twitter:title"] ?? json?.["og:site_name"] ?? ""}](${regex})
 ${json?.description ?? json?.["og:description"] ?? json?.["twitter:description"] ?? ""}`),
-									...(json?.["og:image"]
-										? [
-												new MediaGallery().setItems(
-													new MediaGalleryItem().setMedia(
-														`https://wsrv.nl/?url=${json?.["og:image"] as string}&w=400&h=210`,
-													),
-												),
-											]
-										: []),
-									...(json?.["og:site_name"] !== undefined
-										? [
-												new TextDisplay().setContent(
-													json?.["og:site_name"] !== undefined
-														? `-# ${json?.["og:site_name"]}`
-														: "",
-												),
-											]
-										: []),
-								)
-								.setColor(
-									(json?.["theme-color"] as ColorResolvable | undefined) ??
-										("#96bff8" as ColorResolvable),
-								),
-						);
-					}
-				}
-			}
-		}
-	}
+                  ...(json?.["og:image"]
+                    ? [
+                        new MediaGallery().setItems(
+                          new MediaGalleryItem().setMedia(
+                            `https://wsrv.nl/?url=${json?.["og:image"] as string}&w=400&h=210`,
+                          ),
+                        ),
+                      ]
+                    : []),
+                  ...(json?.["og:site_name"] !== undefined
+                    ? [
+                        new TextDisplay().setContent(
+                          json?.["og:site_name"] !== undefined
+                            ? `-# ${json?.["og:site_name"]}`
+                            : "",
+                        ),
+                      ]
+                    : []),
+                )
+                .setColor(
+                  (json?.["theme-color"] as ColorResolvable | undefined) ??
+                    ("#96bff8" as ColorResolvable),
+                ),
+            );
+          }
+        }
+      }
+    }
+  }
 
-	// Only edit if we have URL-based attachments to add
-	if (urlAttachments.length > 0 || containerAttachments.length > 0) {
-		const hasFileAttachmentsFromMessage = fileAttachments.length > 0;
-		const isOnlyGifUrl =
-			(stringContents.startsWith("https://tenor.com") ||
-				stringContents.startsWith("https://klipy.com/gifs/")) &&
-			stringContents.split(/\s+/).length === 1;
-		const hasTextContent =
-			stringContents.length > 0 &&
-			!(isOnlyGifUrl && !hasFileAttachmentsFromMessage);
+  // Only edit if we have URL-based attachments to add
+  if (urlAttachments.length > 0 || containerAttachments.length > 0) {
+    const hasFileAttachmentsFromMessage = fileAttachments.length > 0;
+    const isOnlyGifUrl =
+      (stringContents.startsWith("https://tenor.com") ||
+        stringContents.startsWith("https://klipy.com/gifs/")) &&
+      stringContents.split(/\s+/).length === 1;
+    const hasTextContent =
+      stringContents.length > 0 && !(isOnlyGifUrl && !hasFileAttachmentsFromMessage);
 
-		// Combine file attachments and URL attachments
-		const allAttachments: Array<
-			{ buff: Buffer; name: string } | { link: string }
-		> = [
-			...fileAttachments.map((fa) => ({ buff: fa.buff, name: fa.name })),
-			...urlAttachments,
-		];
+    // Combine file attachments and URL attachments
+    const allAttachments: Array<{ buff: Buffer; name: string } | { link: string }> = [
+      ...fileAttachments.map((fa) => ({ buff: fa.buff, name: fa.name })),
+      ...urlAttachments,
+    ];
 
-		await webhook.messages.edit({
-			messageId,
-			body: {
-				components: [
-					...reply,
-					...(hasTextContent
-						? mainContents
-						: mainContents[0]?.data.type === ComponentType.Container
-							? [mainContents[0]]
-							: []),
-					...(urlAttachments.length > 0
-						? [
-								new MediaGallery().addItems(
-									allAttachments.map((attachment) =>
-										new MediaGalleryItem().setMedia(
-											"link" in attachment
-												? attachment.link
-												: `attachment://${(attachment as { name: string }).name}`,
-										),
-									),
-								),
-							]
-						: []),
-					...containerAttachments,
-				],
-				files: allAttachments
-					.filter((c) => "name" in c)
-					.map((c) =>
-						new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name),
-					),
-			},
-		});
-	}
-	for (const emoji of uploadedEmojis) {
-		emoji.delete().catch((_) => null);
-	}
+    await webhook.messages.edit({
+      messageId,
+      body: {
+        components: [
+          ...reply,
+          ...(hasTextContent
+            ? mainContents
+            : mainContents[0]?.data.type === ComponentType.Container
+              ? [mainContents[0]]
+              : []),
+          ...(urlAttachments.length > 0
+            ? [
+                new MediaGallery().addItems(
+                  allAttachments.map((attachment) =>
+                    new MediaGalleryItem().setMedia(
+                      "link" in attachment
+                        ? attachment.link
+                        : `attachment://${(attachment as { name: string }).name}`,
+                    ),
+                  ),
+                ),
+              ]
+            : []),
+          ...containerAttachments,
+        ],
+        files: allAttachments
+          .filter((c) => "name" in c)
+          .map((c) => new AttachmentBuilder().setFile("buffer", c.buff).setName(c.name)),
+      },
+    });
+  }
+  for (const emoji of uploadedEmojis) {
+    emoji.delete().catch((_) => null);
+  }
 }

@@ -8,30 +8,28 @@ import { MessageFlags } from "seyfert/lib/types";
 import { NudgePreferences } from "@/views/nudge-preferences";
 
 export default class DisableNudgingButton extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Nudge.ToggleNudge.startsWith(context.customId);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Nudge.ToggleNudge.startsWith(context.customId);
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const user = await ctx.retrievePUser();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const user = await ctx.retrievePUser();
 
-		await writeUserById(user.userId, {
-			...user,
-			nudging: {
-				...user.nudging,
-				currentlyEnabled: !user.nudging.currentlyEnabled,
-			},
-		});
+    await writeUserById(user.userId, {
+      ...user,
+      nudging: {
+        ...user.nudging,
+        currentlyEnabled: !user.nudging.currentlyEnabled,
+      },
+    });
 
-		user.nudging.currentlyEnabled = !user.nudging.currentlyEnabled;
+    user.nudging.currentlyEnabled = !user.nudging.currentlyEnabled;
 
-		return await ctx.update({
-			components: new NudgePreferences(
-				await ctx.userTranslations(),
-			).nudgePreferences(user),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.update({
+      components: new NudgePreferences(await ctx.userTranslations()).nudgePreferences(user),
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

@@ -1,32 +1,19 @@
 "use client";
 
 import { useControllableState } from "@radix-ui/react-use-controllable-state";
-import {
-  createContext,
-  type HTMLAttributes,
-  useContext,
-  useEffect,
-} from "react";
+import { createContext, type HTMLAttributes, useContext, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
-const formatDate = (
-  date: Date,
-  timeZone: string,
-  options?: Intl.DateTimeFormatOptions
-) =>
+const formatDate = (date: Date, timeZone: string, options?: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat(
     "en-US",
     options ?? {
       dateStyle: "long",
       timeZone,
-    }
+    },
   ).format(date);
 
-const formatTime = (
-  date: Date,
-  timeZone: string,
-  options?: Intl.DateTimeFormatOptions
-) =>
+const formatTime = (date: Date, timeZone: string, options?: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat(
     "en-US",
     options ?? {
@@ -34,7 +21,7 @@ const formatTime = (
       minute: "2-digit",
       second: "2-digit",
       timeZone,
-    }
+    },
   ).format(date);
 
 type RelativeTimeContextType = {
@@ -116,17 +103,10 @@ const RelativeTimeZoneContext = createContext<RelativeTimeZoneContextType>({
   zone: "UTC",
 });
 
-export const RelativeTimeZone = ({
-  zone,
-  className,
-  ...props
-}: RelativeTimeZoneProps) => (
+export const RelativeTimeZone = ({ zone, className, ...props }: RelativeTimeZoneProps) => (
   <RelativeTimeZoneContext.Provider value={{ zone }}>
     <div
-      className={cn(
-        "flex items-center justify-between gap-1.5 text-xs",
-        className
-      )}
+      className={cn("flex items-center justify-between gap-1.5 text-xs", className)}
       {...props}
     />
   </RelativeTimeZoneContext.Provider>
@@ -134,19 +114,13 @@ export const RelativeTimeZone = ({
 
 export type RelativeTimeZoneDisplayProps = HTMLAttributes<HTMLDivElement>;
 
-export const RelativeTimeZoneDisplay = ({
-  className,
-  ...props
-}: RelativeTimeZoneDisplayProps) => {
+export const RelativeTimeZoneDisplay = ({ className, ...props }: RelativeTimeZoneDisplayProps) => {
   const { time, timeFormatOptions } = useContext(RelativeTimeContext);
   const { zone } = useContext(RelativeTimeZoneContext);
   const display = formatTime(time, zone, timeFormatOptions);
 
   return (
-    <div
-      className={cn("pl-8 text-muted-foreground tabular-nums", className)}
-      {...props}
-    >
+    <div className={cn("pl-8 text-muted-foreground tabular-nums", className)} {...props}>
       {display}
     </div>
   );
@@ -154,10 +128,7 @@ export const RelativeTimeZoneDisplay = ({
 
 export type RelativeTimeZoneDateProps = HTMLAttributes<HTMLDivElement>;
 
-export const RelativeTimeZoneDate = ({
-  className,
-  ...props
-}: RelativeTimeZoneDateProps) => {
+export const RelativeTimeZoneDate = ({ className, ...props }: RelativeTimeZoneDateProps) => {
   const { time, dateFormatOptions } = useContext(RelativeTimeContext);
   const { zone } = useContext(RelativeTimeZoneContext);
   const display = formatDate(time, zone, dateFormatOptions);
@@ -167,14 +138,11 @@ export const RelativeTimeZoneDate = ({
 
 export type RelativeTimeZoneLabelProps = HTMLAttributes<HTMLDivElement>;
 
-export const RelativeTimeZoneLabel = ({
-  className,
-  ...props
-}: RelativeTimeZoneLabelProps) => (
+export const RelativeTimeZoneLabel = ({ className, ...props }: RelativeTimeZoneLabelProps) => (
   <div
     className={cn(
       "flex h-4 items-center justify-center rounded-xs bg-secondary px-1.5 font-mono",
-      className
+      className,
     )}
     {...props}
   />

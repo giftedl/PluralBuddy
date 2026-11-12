@@ -1,18 +1,18 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	ActionRow,
-	AutoLoad,
-	Button,
-	Command,
-	type CommandContext,
-	createBooleanOption,
-	createStringOption,
-	Declare,
-	LocalesT,
-	Message,
-	Options,
-	TextDisplay,
+  ActionRow,
+  AutoLoad,
+  Button,
+  Command,
+  type CommandContext,
+  createBooleanOption,
+  createStringOption,
+  Declare,
+  LocalesT,
+  Message,
+  Options,
+  TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
@@ -21,159 +21,145 @@ import { AlertView } from "../views/alert";
 import { AlterView } from "../views/alters";
 
 const options = {
-	alter: createStringOption({
-		description:
-			"Name of the alter to query. You can use `<user-id>/<alter>` for alters from other systems.",
-		required: true,
-	}),
-	public: createBooleanOption({
-		description: "Do you want to expose this publicly? (non-ephemeral)",
-		aliases: ["p"],
-		flag: true,
-	}),
+  alter: createStringOption({
+    description:
+      "Name of the alter to query. You can use `<user-id>/<alter>` for alters from other systems.",
+    required: true,
+  }),
+  public: createBooleanOption({
+    description: "Do you want to expose this publicly? (non-ephemeral)",
+    aliases: ["p"],
+    flag: true,
+  }),
 };
 
 @Declare({
-	name: "alter",
-	description: "Query an alter",
-	aliases: ["a", "m", "member"],
-	contexts: ["BotDM", "Guild"],
+  name: "alter",
+  description: "Query an alter",
+  aliases: ["a", "m", "member"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class SystemCommand extends Command {
-	override async run(ctx: CommandContext<typeof options>) {
-		const { alter: alterName, public: publicMode } = ctx.options;
-		const systemId = ctx.author.id;
-		await ctx.deferReply(!publicMode);
+  override async run(ctx: CommandContext<typeof options>) {
+    const { alter: alterName, public: publicMode } = ctx.options;
+    const systemId = ctx.author.id;
+    await ctx.deferReply(!publicMode);
 
-		const publicMessage = publicMode
-			? publicMode
-			: (ctx.message as unknown) instanceof Message
-				? (ctx.message as unknown as Message).content.endsWith("-p")
-				: publicMode;
+    const publicMessage = publicMode
+      ? publicMode
+      : (ctx.message as unknown) instanceof Message
+        ? (ctx.message as unknown as Message).content.endsWith("-p")
+        : publicMode;
 
-		let query = null;
-		const userAlterMatch = /^(\d+)\/(.+)$/.exec(alterName);
-		if (userAlterMatch) {
-			// If format is <user-id>/<alter>, query from another system
-			const [_, otherSystemId, otherAlterName] = userAlterMatch;
-			query = alterCollection.findOne({
-				$or: [
-					{ username: otherAlterName },
-					{ alterId: Number(otherAlterName) },
-				],
-				systemId: otherSystemId,
-			});
-		} else {
-			try {
-				// Otherwise, query for current user's alters
-				query = Number.isNaN(Number.parseInt(alterName))
-					? ((await alterCollection.findOne({
-							username: alterName,
+    let query = null;
+    const userAlterMatch = /^(\d+)\/(.+)$/.exec(alterName);
+    if (userAlterMatch) {
+      // If format is <user-id>/<alter>, query from another system
+      const [_, otherSystemId, otherAlterName] = userAlterMatch;
+      query = alterCollection.findOne({
+        $or: [{ username: otherAlterName }, { alterId: Number(otherAlterName) }],
+        systemId: otherSystemId,
+      });
+    } else {
+      try {
+        // Otherwise, query for current user's alters
+        query = Number.isNaN(Number.parseInt(alterName))
+          ? ((await alterCollection.findOne({
+              username: alterName,
 
-							systemId,
-						})) ??
-						(await alterCollection.findOne({
-							username: { $regex: new RegExp(alterName, "i") },
-							systemId,
-						})))
-					: ((await alterCollection.findOne({
-							$or: [
-								{ username: { $regex: new RegExp(alterName, "i") } },
-								{ alterId: Number(alterName) },
-							],
-							systemId,
-						})) ??
-						(await alterCollection.findOne({
-							$or: [
-								{ username: { $regex: new RegExp(alterName, "i") } },
-								{ alterId: Number(alterName) },
-							],
-							systemId,
-						})));
-			} catch (_) {
-				return await ctx.ephemeral(
-					{
-						components: new AlertView(await ctx.userTranslations()).errorView(
-							"MONGO_REGEX_ERROR",
-						),
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					},
-					undefined,
-					undefined,
-					ctx,
-				);
-			}
-		}
+              systemId,
+            })) ??
+            (await alterCollection.findOne({
+              username: { $regex: new RegExp(alterName, "i") },
+              systemId,
+            })))
+          : ((await alterCollection.findOne({
+              $or: [
+                { username: { $regex: new RegExp(alterName, "i") } },
+                { alterId: Number(alterName) },
+              ],
+              systemId,
+            })) ??
+            (await alterCollection.findOne({
+              $or: [
+                { username: { $regex: new RegExp(alterName, "i") } },
+                { alterId: Number(alterName) },
+              ],
+              systemId,
+            })));
+      } catch (_) {
+        return await ctx.ephemeral(
+          {
+            components: new AlertView(await ctx.userTranslations()).errorView("MONGO_REGEX_ERROR"),
+            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+          },
+          undefined,
+          undefined,
+          ctx,
+        );
+      }
+    }
 
-		const alter = await query;
+    const alter = await query;
 
-		if (alter === null && userAlterMatch) {
-			return await ctx.ephemeral(
-				{
-					components: [
-						...new AlertView(await ctx.userTranslations()).errorView(
-							"INVISIBLE_ALTER",
-						),
-					],
-					flags:
-						MessageFlags.IsComponentsV2 +
-						(ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
-					allowed_mentions: { parse: [] },
-				},
-				true,
-				undefined,
-				ctx,
-			);
-		}
+    if (alter === null && userAlterMatch) {
+      return await ctx.ephemeral(
+        {
+          components: [...new AlertView(await ctx.userTranslations()).errorView("INVISIBLE_ALTER")],
+          flags:
+            MessageFlags.IsComponentsV2 +
+            (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
+          allowed_mentions: { parse: [] },
+        },
+        true,
+        undefined,
+        ctx,
+      );
+    }
 
-		if (alter === null) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_ALTER_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (alter === null) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_ALTER_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		return await ctx.ephemeral(
-			{
-				components: [
-					...(await new AlterView(
-						await ctx.userTranslations(),
-					).alterProfileView(alter, alter.systemId !== ctx.author.id)),
-					...(publicMessage && alter.systemId === ctx.author.id
-						? [
-								new TextDisplay().setContent(
-									`-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
-								),
-							]
-						: []),
-					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView(await ctx.userTranslations()).alterConfigureButton(
-								alter,
-							)
-						: []),
-					...(!publicMessage && alter.systemId === ctx.author.id
-						? new AlterView(await ctx.userTranslations()).alterProxyModes(
-								alter,
-								ctx.guildId,
-							)
-						: []),
-				],
-				flags:
-					MessageFlags.IsComponentsV2 +
-					(ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
-				allowed_mentions: { parse: [] },
-			},
-			true,
-			undefined,
-			ctx,
-		);
-	}
+    return await ctx.ephemeral(
+      {
+        components: [
+          ...(await new AlterView(await ctx.userTranslations()).alterProfileView(
+            alter,
+            alter.systemId !== ctx.author.id,
+          )),
+          ...(publicMessage && alter.systemId === ctx.author.id
+            ? [
+                new TextDisplay().setContent(
+                  `-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
+                ),
+              ]
+            : []),
+          ...(!publicMessage && alter.systemId === ctx.author.id
+            ? new AlterView(await ctx.userTranslations()).alterConfigureButton(alter)
+            : []),
+          ...(!publicMessage && alter.systemId === ctx.author.id
+            ? new AlterView(await ctx.userTranslations()).alterProxyModes(alter, ctx.guildId)
+            : []),
+        ],
+        flags:
+          MessageFlags.IsComponentsV2 + (ctx.options.public !== true ? MessageFlags.Ephemeral : 0),
+        allowed_mentions: { parse: [] },
+      },
+      true,
+      undefined,
+      ctx,
+    );
+  }
 }

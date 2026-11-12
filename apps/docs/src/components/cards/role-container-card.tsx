@@ -1,13 +1,13 @@
 "use client";
 import {
-	DiscordBold,
-	DiscordContainer,
-	DiscordCustomEmoji,
-	DiscordItalic,
-	DiscordLink,
-	DiscordMessage,
-	DiscordMessages,
-	DiscordTextDisplay,
+  DiscordBold,
+  DiscordContainer,
+  DiscordCustomEmoji,
+  DiscordItalic,
+  DiscordLink,
+  DiscordMessage,
+  DiscordMessages,
+  DiscordTextDisplay,
 } from "@penwin/discord-components-react-render";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -15,69 +15,57 @@ import { MDXFeedbackBlock } from "@/mdx-components";
 import { CorrectHeaderFixer } from "../correct-header-fixer";
 
 export function RoleContainerExample() {
-	const { resolvedTheme } = useTheme();
-	const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-	useEffect(() => setMounted(true));
+  useEffect(() => setMounted(true));
 
-	if (!mounted) return null;
-	return (
-		<MDXFeedbackBlock id="app-card" body="Blocked Channel Card (#response)">
-			<DiscordMessages
-				className="py-4 font-[gg_sans] rounded-[8px] border"
-				lightTheme={resolvedTheme === "light"}
-			>
-				<DiscordMessage
-					author="💘 love | xe/xem"
-					avatar="/image/main-page/love-pfp.jpg"
-					bot={true}
-					className="px-3 "
-					lightTheme={resolvedTheme === "light"}
-				>
-					<DiscordContainer accentColor="#f1aef2" className="mb-2">
-						<DiscordTextDisplay className="block">
-							<DiscordCustomEmoji
-								url="/image/moderator-example.png"
-								name="moderator"
-								className="mr-1"
-							/>{" "}
-							Moderator
-						</DiscordTextDisplay>
-					</DiscordContainer>
-					<DiscordTextDisplay className="block">
-						hi, i'm love!
-					</DiscordTextDisplay>
-				</DiscordMessage>
-				<DiscordMessage
-					lightTheme={resolvedTheme === "light"}
-					message-body-only
-					className="block"
-				>
-					<DiscordTextDisplay className="block">
-						the role container doesn't continue across consecutive proxies.
-					</DiscordTextDisplay>
-				</DiscordMessage>
-				<DiscordMessage
-					lightTheme={resolvedTheme === "light"}
-					message-body-only
-					className="block"
-				>
-					<DiscordTextDisplay className="block">
-						did you know love's profile is from{" "}
-						<DiscordLink
-							href="https://en.wikipedia.org/wiki/The_Fragrant_Flower_Blooms_with_Dignity"
-							target="_blank"
-						>
-							<DiscordItalic>
-								The Fragrant Flowers Bloom with Dignity
-							</DiscordItalic>
-						</DiscordLink>
-						?
-					</DiscordTextDisplay>
-				</DiscordMessage>
-			</DiscordMessages>
+  if (!mounted) return null;
+  return (
+    <MDXFeedbackBlock id="app-card" body="Blocked Channel Card (#response)">
+      <DiscordMessages
+        className="py-4 font-[gg_sans] rounded-[8px] border"
+        lightTheme={resolvedTheme === "light"}
+      >
+        <DiscordMessage
+          author="💘 love | xe/xem"
+          avatar="/image/main-page/love-pfp.jpg"
+          bot={true}
+          className="px-3 "
+          lightTheme={resolvedTheme === "light"}
+        >
+          <DiscordContainer accentColor="#f1aef2" className="mb-2">
+            <DiscordTextDisplay className="block">
+              <DiscordCustomEmoji
+                url="/image/moderator-example.png"
+                name="moderator"
+                className="mr-1"
+              />{" "}
+              Moderator
+            </DiscordTextDisplay>
+          </DiscordContainer>
+          <DiscordTextDisplay className="block">hi, i'm love!</DiscordTextDisplay>
+        </DiscordMessage>
+        <DiscordMessage lightTheme={resolvedTheme === "light"} message-body-only className="block">
+          <DiscordTextDisplay className="block">
+            the role container doesn't continue across consecutive proxies.
+          </DiscordTextDisplay>
+        </DiscordMessage>
+        <DiscordMessage lightTheme={resolvedTheme === "light"} message-body-only className="block">
+          <DiscordTextDisplay className="block">
+            did you know love's profile is from{" "}
+            <DiscordLink
+              href="https://en.wikipedia.org/wiki/The_Fragrant_Flower_Blooms_with_Dignity"
+              target="_blank"
+            >
+              <DiscordItalic>The Fragrant Flowers Bloom with Dignity</DiscordItalic>
+            </DiscordLink>
+            ?
+          </DiscordTextDisplay>
+        </DiscordMessage>
+      </DiscordMessages>
 
-			<CorrectHeaderFixer />
-		</MDXFeedbackBlock>
-	);
+      <CorrectHeaderFixer />
+    </MDXFeedbackBlock>
+  );
 }

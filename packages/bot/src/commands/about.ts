@@ -1,6 +1,14 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
-import { Command, type CommandContext, Container, Declare, LocalesT, type Message, TextDisplay } from "seyfert";
+import {
+  Command,
+  type CommandContext,
+  Container,
+  Declare,
+  LocalesT,
+  type Message,
+  TextDisplay,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { mentionCommand } from "@/lib/mention-command";
@@ -8,65 +16,63 @@ import { AlertView } from "@/views/alert";
 import { build } from "..";
 
 @Declare({
-	name: "about",
-	description: "PluralBuddy!",
-	contexts: ["BotDM", "Guild"],
-	aliases: ["info"],
+  name: "about",
+  description: "PluralBuddy!",
+  contexts: ["BotDM", "Guild"],
+  aliases: ["info"],
 })
 export default class SystemCommand extends Command {
-	override async run(ctx: CommandContext) {
-		const guild = await ctx.retrievePGuild();
+  override async run(ctx: CommandContext) {
+    const guild = await ctx.retrievePGuild();
 
-        if (guild.getFeatures().disabledAbout) {
-            if (ctx.isChat() && ctx.message) {
-                (ctx.message as Message).delete().catch(_ => null)
+    if (guild.getFeatures().disabledAbout) {
+      if (ctx.isChat() && ctx.message) {
+        (ctx.message as Message).delete().catch((_) => null);
 
-				try {
-					await (ctx.message as Message).author.write({
-						components: new AlertView(await ctx.userTranslations()).errorView(
-							"FEATURE_DISABLED_GUILD",
-						),
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					});
-				} catch (_) {}
-				return;
-			}
+        try {
+          await (ctx.message as Message).author.write({
+            components: new AlertView(await ctx.userTranslations()).errorView(
+              "FEATURE_DISABLED_GUILD",
+            ),
+            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+          });
+        } catch (_) {}
+        return;
+      }
 
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"FEATURE_DISABLED_GUILD",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		return await ctx.write({
-			components: [
-				new Container()
-					.setComponents(
-						new TextDisplay().setContent(
-							ctx.t
-								.get(await ctx.language())
-								.ABOUT_PB.replace("%version%", String(build))
-								.replace("%branch%", process.env.BRANCH ?? "unknown")
-								.replace("%catjamming%", emojis.catjamming)
-								.replace("%github%", emojis.github)
-								.replace("%docs%", emojis.book)
-								.replaceAll("%linein%", emojis.lineIn)
-								.replace("%lineright%", emojis.lineRight)
-								.replace(
-									"%command%",
-									mentionCommand(
-										(await ctx.getDefaultPrefix()) ?? "pb;",
-										"setup",
-										ctx.message === undefined,
-									),
-								),
-						),
-					)
-					.setColor("#FCCEE8"),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.write({
+      components: [
+        new Container()
+          .setComponents(
+            new TextDisplay().setContent(
+              ctx.t
+                .get(await ctx.language())
+                .ABOUT_PB.replace("%version%", String(build))
+                .replace("%branch%", process.env.BRANCH ?? "unknown")
+                .replace("%catjamming%", emojis.catjamming)
+                .replace("%github%", emojis.github)
+                .replace("%docs%", emojis.book)
+                .replaceAll("%linein%", emojis.lineIn)
+                .replace("%lineright%", emojis.lineRight)
+                .replace(
+                  "%command%",
+                  mentionCommand(
+                    (await ctx.getDefaultPrefix()) ?? "pb;",
+                    "setup",
+                    ctx.message === undefined,
+                  ),
+                ),
+            ),
+          )
+          .setColor("#FCCEE8"),
+      ],
+      flags: MessageFlags.IsComponentsV2,
+    });
+  }
 }

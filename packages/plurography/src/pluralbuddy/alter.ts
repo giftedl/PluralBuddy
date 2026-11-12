@@ -23,79 +23,65 @@ const flagsDescription = `This is a bitwise operation-based number which determi
 | PROXY_TAGS_KEPT         | \`1\` \`(1 << 0)\`      | Keeps proxy tags after proxying for this specific alter. |`;
 
 export enum AlterProtectionFlags {
-	VISIBILITY = 1 << 0,
-	NAME = 1 << 1,
-	DESCRIPTION = 1 << 2,
-	BANNER = 1 << 3,
-	PRONOUNS = 1 << 4,
-	AVATAR = 1 << 5,
-	TAGS = 1 << 7,
-	MESSAGE_COUNT = 1 << 8,
-	USERNAME = 1 << 9,
+  VISIBILITY = 1 << 0,
+  NAME = 1 << 1,
+  DESCRIPTION = 1 << 2,
+  BANNER = 1 << 3,
+  PRONOUNS = 1 << 4,
+  AVATAR = 1 << 5,
+  TAGS = 1 << 7,
+  MESSAGE_COUNT = 1 << 8,
+  USERNAME = 1 << 9,
 }
 
 export enum AlterFlags {
-	PROXY_TAGS_KEPT = 1 << 0,
+  PROXY_TAGS_KEPT = 1 << 0,
 }
 
 export const PAlterObject = z
-	.object({
-		alterId: z.number(),
-		systemId: z.string(),
+  .object({
+    alterId: z.number(),
+    systemId: z.string(),
 
-		username: z
-			.string()
-			.max(100)
-			.regex(/^[^\s@\\/]+$/),
-		displayName: z.string().max(100),
-		nameMap: z
-			.object({ server: z.string().max(20), name: z.string().max(100) })
-			.array(),
-		color: z
-			.string()
-			.regex(/^#[0-9A-Fa-f]{6}$/i)
-			.nullable(),
-		description: z.string().max(1000).nullable(),
-		created: z.coerce.date(),
-		pronouns: z.string().max(100).nullable(),
+    username: z
+      .string()
+      .max(100)
+      .regex(/^[^\s@\\/]+$/),
+    displayName: z.string().max(100),
+    nameMap: z.object({ server: z.string().max(20), name: z.string().max(100) }).array(),
+    color: z
+      .string()
+      .regex(/^#[0-9A-Fa-f]{6}$/i)
+      .nullable(),
+    description: z.string().max(1000).nullable(),
+    created: z.coerce.date(),
+    pronouns: z.string().max(100).nullable(),
 
-		avatarUrl: z.string().nullable(),
-		avatarUrlMap: z.record(z.string(), z.string().optional()).default({}),
-		webhookAvatarUrl: z.string().nullable(),
-		banner: z.string().nullable(),
+    avatarUrl: z.string().nullable(),
+    avatarUrlMap: z.record(z.string(), z.string().optional()).default({}),
+    webhookAvatarUrl: z.string().nullable(),
+    banner: z.string().nullable(),
 
-		lastMessageTimestamp: z.coerce.date().nullable(),
-		messageCount: z.number(),
-		alterMode: z.enum(["nickname", "webhook", "both"]).default("webhook"),
-		proxyTags: z
-			.object({
-				prefix: z.string().max(100),
-				suffix: z.string().max(100),
-				id: z.string(),
-			})
-			.array()
-			.default([]),
+    lastMessageTimestamp: z.coerce.date().nullable(),
+    messageCount: z.number(),
+    alterMode: z.enum(["nickname", "webhook", "both"]).default("webhook"),
+    proxyTags: z
+      .object({
+        prefix: z.string().max(100),
+        suffix: z.string().max(100),
+        id: z.string(),
+      })
+      .array()
+      .default([]),
 
-		tagIds: z.string().array().default([]).meta({
-			description:
-				"Edit the tags associated with this alter. This will **replace** the list of tags inheriting this alter when using the API.",
-		}),
-		public: z
-			.number()
-			.nonnegative()
-			.default(0)
-			.meta({ description: publicDescription }),
-		flags: z
-			.number()
-			.nonnegative()
-			.optional()
-			.default(0)
-			.meta({ description: flagsDescription }),
-		fields: z
-			.record(z.string().max(20), z.string().max(150))
-			.optional()
-			.default({}),
-	})
-	.meta({ id: "PAlter" });
+    tagIds: z.string().array().default([]).meta({
+      description:
+        "Edit the tags associated with this alter. This will **replace** the list of tags inheriting this alter when using the API.",
+    }),
+    public: z.number().nonnegative().default(0).meta({ description: publicDescription }),
+    flags: z.number().nonnegative().optional().default(0).meta({ description: flagsDescription }),
+    fields: z.record(z.string().max(20), z.string().max(150)).optional().default({}),
+  })
+  .meta({ id: "PAlter" });
 
 export type PAlter = z.infer<typeof PAlterObject>;

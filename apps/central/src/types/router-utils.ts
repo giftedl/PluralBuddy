@@ -1,3 +1,3 @@
-import { useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router";
 
-export type AnyValidPathname = Parameters<ReturnType<typeof useNavigate>>[0]["from"]
+export type AnyValidPathname = Parameters<ReturnType<typeof useNavigate>>[0]["from"];

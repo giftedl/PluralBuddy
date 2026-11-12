@@ -5,87 +5,87 @@ import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import {
-	type CommandContext,
-	Container,
-	createBooleanOption,
-	createStringOption,
-	Declare,
-	Options,
-	TextDisplay,
+  type CommandContext,
+  Container,
+  createBooleanOption,
+  createStringOption,
+  Declare,
+  Options,
+  TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { createSystemOperation } from "@/lib/system-operation";
 
 const options = {
-	"system-description": createStringOption({
-		description: "The new description for the system.",
-		max_length: 4000,
-	}),
+  "system-description": createStringOption({
+    description: "The new description for the system.",
+    max_length: 4000,
+  }),
 };
 
 @Declare({
-	name: "description",
-	description: "Edit the description of your system",
-	aliases: ["desc", "d"],
-	contexts: ["BotDM", "Guild"],
+  name: "description",
+  description: "Edit the description of your system",
+  aliases: ["desc", "d"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const { "system-description": systemDescription } = ctx.options;
+  override async run(ctx: CommandContext<typeof options>) {
+    await ctx.deferReply(true);
+    const { "system-description": systemDescription } = ctx.options;
 
-		const user = await ctx.retrievePUser();
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_SYSTEM_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (user.system === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_SYSTEM_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		if (systemDescription === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: [
-						new Container().setComponents(
-							new TextDisplay().setContent(`\`\`\`
+    if (systemDescription === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: [
+            new Container().setComponents(
+              new TextDisplay().setContent(`\`\`\`
 ${user.system.systemDescription ?? "⛔ Your system has no description."}
 \`\`\``),
-						),
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				},
-				true,
-				undefined,
-				ctx,
-			);
-		}
+            ),
+          ],
+          flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+        },
+        true,
+        undefined,
+        ctx,
+      );
+    }
 
-		await createSystemOperation(
-			user.system,
-			{ systemDescription },
-			await ctx.userTranslations(),
-			"discord",
-		);
+    await createSystemOperation(
+      user.system,
+      { systemDescription },
+      await ctx.userTranslations(),
+      "discord",
+    );
 
-		return await ctx.editResponse({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await await ctx.userTranslations()).ALTER_SUCCESS_DESC.replace(
-						"@%alter%",
-						"your system",
-					),
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.editResponse({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successViewCustom(
+          (await await ctx.userTranslations()).ALTER_SUCCESS_DESC.replace(
+            "@%alter%",
+            "your system",
+          ),
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2,
+    });
+  }
 }

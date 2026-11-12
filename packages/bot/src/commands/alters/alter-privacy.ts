@@ -2,165 +2,154 @@
 
 import { AlterProtectionFlags } from "plurography";
 import {
-	type CommandContext,
-	Container,
-	createStringOption,
-	Declare,
-	Options,
-	SubCommand,
-	TextDisplay,
+  type CommandContext,
+  Container,
+  createStringOption,
+  Declare,
+  Options,
+  SubCommand,
+  TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { createPartialAlterOperation } from "@/lib/alter-operation";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
 import { writeBack } from "@/lib/pk-sync-engine";
-import {
-	friendlyProtectionAlters,
-	listFromMaskAlters,
-} from "@/lib/privacy-bitmask";
+import { friendlyProtectionAlters, listFromMaskAlters } from "@/lib/privacy-bitmask";
 import { alterCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
-	"alter-name": createStringOption({
-		description: "The name of the alter.",
-		required: true,
-		autocomplete: autocompleteAlters,
-	}),
-	"alter-subject": createStringOption({
-		description: "Name of the subject to set",
-		choices: Object.keys(AlterProtectionFlags)
-			.filter((c) => Number.isNaN(Number(c)))
-			.map((c) => {
-				return { name: c.toLocaleLowerCase(), value: c.toLocaleLowerCase() };
-			}),
-	}),
-	"alter-subject-choice": createStringOption({
-		description: "Whether to set the subject to public or private",
-		choices: [
-			{ name: "Public", value: "public" },
-			{ name: "Private", value: "private" },
-		],
-	}),
+  "alter-name": createStringOption({
+    description: "The name of the alter.",
+    required: true,
+    autocomplete: autocompleteAlters,
+  }),
+  "alter-subject": createStringOption({
+    description: "Name of the subject to set",
+    choices: Object.keys(AlterProtectionFlags)
+      .filter((c) => Number.isNaN(Number(c)))
+      .map((c) => {
+        return { name: c.toLocaleLowerCase(), value: c.toLocaleLowerCase() };
+      }),
+  }),
+  "alter-subject-choice": createStringOption({
+    description: "Whether to set the subject to public or private",
+    choices: [
+      { name: "Public", value: "public" },
+      { name: "Private", value: "private" },
+    ],
+  }),
 };
 
 @Declare({
-	name: "privacy",
-	description: "Set an alter's privacy.",
-	aliases: ["p"],
-	contexts: ["BotDM", "Guild"],
+  name: "privacy",
+  description: "Set an alter's privacy.",
+  aliases: ["p"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class EditAlterPrivacyCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const {
-			"alter-name": alterName,
-			"alter-subject": alterPrivacySubject,
-			"alter-subject-choice": alterPrivacySubjectChoice,
-		} = ctx.options;
+  override async run(ctx: CommandContext<typeof options>) {
+    await ctx.deferReply(true);
+    const {
+      "alter-name": alterName,
+      "alter-subject": alterPrivacySubject,
+      "alter-subject-choice": alterPrivacySubjectChoice,
+    } = ctx.options;
 
-		const systemId = ctx.author.id;
-		const alter =
-			ctx.contextAlter() ??
-			(await (Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+    const systemId = ctx.author.id;
+    const alter =
+      ctx.contextAlter() ??
+      (await (Number.isNaN(Number.parseInt(alterName))
+        ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+        : alterCollection.findOne({
+            $or: [{ username: alterName }, { alterId: Number(alterName) }],
+            systemId,
+          })));
 
-		if (alter === null) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_ALTER_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (alter === null) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_ALTER_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		if (
-			alterPrivacySubject === undefined ||
-			alterPrivacySubjectChoice === undefined
-		) {
-			return await ctx.ephemeral(
-				{
-					components: [
-						new Container().setComponents(
-							new TextDisplay().setContent(`Alter's can have privacy flags that identify how external users see your alter. All alters are exclusively private by default. Below are the public values that you added.
+    if (alterPrivacySubject === undefined || alterPrivacySubjectChoice === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: [
+            new Container().setComponents(
+              new TextDisplay()
+                .setContent(`Alter's can have privacy flags that identify how external users see your alter. All alters are exclusively private by default. Below are the public values that you added.
 
 **Current public privacy values**:
 \`${friendlyProtectionAlters(await ctx.userTranslations(), listFromMaskAlters(alter.public ?? 0)).join("`, `")}\`
 
 -# If you were trying to _set_ the privacy values, you may not have finished the command.`),
-						),
-					],
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+            ),
+          ],
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		let newPublic = alter.public ?? 0;
-		const flagValue =
-			// @ts-expect-error
-			AlterProtectionFlags[alterPrivacySubject.toUpperCase() as string];
+    let newPublic = alter.public ?? 0;
+    const flagValue =
+      // @ts-expect-error
+      AlterProtectionFlags[alterPrivacySubject.toUpperCase() as string];
 
-		if (alterPrivacySubjectChoice === "public") {
-			newPublic = newPublic | flagValue;
-		} else if (alterPrivacySubjectChoice === "private") {
-			newPublic = newPublic & ~flagValue;
-		}
+    if (alterPrivacySubjectChoice === "public") {
+      newPublic = newPublic | flagValue;
+    } else if (alterPrivacySubjectChoice === "private") {
+      newPublic = newPublic & ~flagValue;
+    }
 
-		const data = await createPartialAlterOperation(
-			alter.alterId,
-			alter,
-			{ public: newPublic },
-			await ctx.userTranslations(),
-			"discord",
-		);
+    const data = await createPartialAlterOperation(
+      alter.alterId,
+      alter,
+      { public: newPublic },
+      await ctx.userTranslations(),
+      "discord",
+    );
 
-		w(ctx.author.id, "alter.update", {
-			type: "alter.update",
-			alter: {
-				...alter,
-				public: newPublic,
-			},
-		});
-		if (alter.fields["@/converter/pk"])
-			writeBack({
-				type: "alter",
-				id: alter.fields["@/converter/pk"],
-				change: { public: newPublic },
-				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
-			});
+    w(ctx.author.id, "alter.update", {
+      type: "alter.update",
+      alter: {
+        ...alter,
+        public: newPublic,
+      },
+    });
+    if (alter.fields["@/converter/pk"])
+      writeBack({
+        type: "alter",
+        id: alter.fields["@/converter/pk"],
+        change: { public: newPublic },
+        syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+      });
 
-		return await ctx.editResponse({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await ctx.userTranslations()).ALTER_SUCCESS_PRIVACY.replace(
-						"%alter%",
-						alter.username,
-					)
-						.replace(
-							"%new%",
-							`\`${friendlyProtectionAlters(await ctx.userTranslations(), listFromMaskAlters(data?.public ?? 0)).join("`, `")}\``,
-						)
-						.replace(
-							"%number%",
-							(listFromMaskAlters(data?.public ?? 0) ?? []).length.toString(),
-						),
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.editResponse({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successViewCustom(
+          (await ctx.userTranslations()).ALTER_SUCCESS_PRIVACY.replace("%alter%", alter.username)
+            .replace(
+              "%new%",
+              `\`${friendlyProtectionAlters(await ctx.userTranslations(), listFromMaskAlters(data?.public ?? 0)).join("`, `")}\``,
+            )
+            .replace("%number%", (listFromMaskAlters(data?.public ?? 0) ?? []).length.toString()),
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2,
+    });
+  }
 }

@@ -7,50 +7,47 @@ import { AlertView } from "@/views/alert";
 import { Shortcut } from "yunaforseyfert";
 
 @Declare({
-	name: "include-pronouns",
-	description:
-		"Toggling including pronouns in the webhook name after proxying with an alter.",
+  name: "include-pronouns",
+  description: "Toggling including pronouns in the webhook name after proxying with an alter.",
 })
 @Group("settings")
 @Shortcut()
 export default class IncludeProxyTags extends SubCommand {
-	override async run(ctx: CommandContext) {
-		const { system } = await ctx.retrievePUser();
+  override async run(ctx: CommandContext) {
+    const { system } = await ctx.retrievePUser();
 
-		if (system === undefined) {
-			return await ctx.write({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_SYSTEM_DOESNT_EXIST",
-					),
-				],
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+    if (system === undefined) {
+      return await ctx.write({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorView("ERROR_SYSTEM_DOESNT_EXIST"),
+        ],
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		await createSystemOperation(
-			system,
-			{
-				flags: getSystemFeatures(system).includePronouns
-					? getSystemFeatures(system).disable(SystemFlags.INCLUDE_PRONOUNS)
-					: getSystemFeatures(system).enable(SystemFlags.INCLUDE_PRONOUNS),
-			},
-			await ctx.userTranslations(),
-			"discord",
-			{
-				flippedProxyTags: true,
-			},
-		);
+    await createSystemOperation(
+      system,
+      {
+        flags: getSystemFeatures(system).includePronouns
+          ? getSystemFeatures(system).disable(SystemFlags.INCLUDE_PRONOUNS)
+          : getSystemFeatures(system).enable(SystemFlags.INCLUDE_PRONOUNS),
+      },
+      await ctx.userTranslations(),
+      "discord",
+      {
+        flippedProxyTags: true,
+      },
+    );
 
-		return await ctx.write({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successView(
-					getSystemFeatures(system).includePronouns
-						? "TOGGLED_INCLUDING_PRONOUNS_D"
-						: "TOGGLED_INCLUDING_PRONOUNS_E",
-				),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.write({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successView(
+          getSystemFeatures(system).includePronouns
+            ? "TOGGLED_INCLUDING_PRONOUNS_D"
+            : "TOGGLED_INCLUDING_PRONOUNS_E",
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

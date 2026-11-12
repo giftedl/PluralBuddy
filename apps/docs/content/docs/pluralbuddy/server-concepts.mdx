@@ -11,8 +11,9 @@ PluralBuddy has many features that are cattered directly towards server administ
 ## Blocked Channels/Roles
 
 PluralBuddy allows both the blocking of channels in your server and the blocking of specific roles.
- - Blocked channels doesn't allow users to proxy when in a specific channel.
- - Blocked roles doesn't allow users to proxy if their host account contains a specific role.
+
+- Blocked channels doesn't allow users to proxy when in a specific channel.
+- Blocked roles doesn't allow users to proxy if their host account contains a specific role.
 
 Blocked roles will see the following message in DMs when attempting to proxy or use a command:
 
@@ -65,9 +66,7 @@ PluralBuddy's solution to this is **proxy delays**. They work by waiting a certa
 
 This often will allow moderation bots to get a chance to delete messages before PluralBuddy will eventually delete the host message regardless.
 
-<Callout type="warning">
-    Proxy delays can be **at most** 2.5 seconds.
-</Callout>
+<Callout type="warning">Proxy delays can be **at most** 2.5 seconds.</Callout>
 
 ### Commands
 
@@ -104,29 +103,35 @@ Enforcing system tag will enforce system prefixes/tags for all users proxying wi
 ## Feature Flags
 
 <ul>
-    <FeedbackBlock 
-        body={Object.keys(friendlyFeatureIndex)
-            .filter(c => Number.isNaN(Number(c)))
-            .map(v => v.toLocaleLowerCase()).join("\n- ")}
-        id="alter-protection"
-    >
-        <div className="in-[.prose-no-margin]:prose-no-margin">
-            {Object.values(friendlyFeatureIndex)
-                .map((v) => <li key={v}><b>{v.title}</b>: {v.description}</li>)}
-        </div>
-    </FeedbackBlock>
+  <FeedbackBlock
+    body={Object.keys(friendlyFeatureIndex)
+      .filter((c) => Number.isNaN(Number(c)))
+      .map((v) => v.toLocaleLowerCase())
+      .join("\n- ")}
+    id="alter-protection"
+  >
+    <div className="in-[.prose-no-margin]:prose-no-margin">
+      {Object.values(friendlyFeatureIndex).map((v) => (
+        <li key={v}>
+          <b>{v.title}</b>: {v.description}
+        </li>
+      ))}
+    </div>
+  </FeedbackBlock>
 </ul>
 
 Above are all of the feature flags that PluralBuddy currently have. PluralBuddy feature flags disable or enable certain functionality of the bot.
 
 <Callout type="warning">
-    Some features start with "disable", and when enabled the feature preceeding the "disabled" part is actually disabled.
+  Some features start with "disable", and when enabled the feature preceeding the "disabled" part is
+  actually disabled.
 </Callout>
 
 ### Commands
 
 <Callout type="info">
-    This command is slash command only, meaning it can only be accessed when starting your command with a slash and using the native menu.
+  This command is slash command only, meaning it can only be accessed when starting your command
+  with a slash and using the native menu.
 </Callout>
 
 - `pb;server-config set-feature <feature> <on|off>` - Slash command only, sets specific server features.

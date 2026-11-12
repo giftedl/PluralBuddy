@@ -1,15 +1,8 @@
 {
   "name": "database-backups",
-  "module": "index.ts",
-  "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/adm-zip": "^0.5.8",
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
+  "type": "module",
+  "module": "index.ts",
   "dependencies": {
     "@types/find-remove": "^2.0.3",
     "@types/node": "^26.1.1",
@@ -18,5 +11,12 @@
     "node-cron": "^4.4.1",
     "ora": "^9.4.1",
     "zip-a-folder": "^6.1.1"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

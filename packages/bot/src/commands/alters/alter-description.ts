@@ -1,13 +1,13 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import {
-	type CommandContext,
-	Container,
-	createStringOption,
-	Declare,
-	Options,
-	SubCommand,
-	TextDisplay,
+  type CommandContext,
+  Container,
+  createStringOption,
+  Declare,
+  Options,
+  SubCommand,
+  TextDisplay,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
@@ -17,105 +17,101 @@ import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
-	"alter-name": createStringOption({
-		description: "The name of the alter to modify.",
-		required: true,
-		autocomplete: autocompleteAlters,
-	}),
-	"alter-description": createStringOption({
-		description: "The new description for the alter.",
-		max_length: 2000,
-	}),
+  "alter-name": createStringOption({
+    description: "The name of the alter to modify.",
+    required: true,
+    autocomplete: autocompleteAlters,
+  }),
+  "alter-description": createStringOption({
+    description: "The new description for the alter.",
+    max_length: 2000,
+  }),
 };
 
 @Declare({
-	name: "description",
-	description: "Edit the description of an alter",
-	aliases: ["desc", "d", "bio"],
-	contexts: ["BotDM", "Guild"],
+  name: "description",
+  description: "Edit the description of an alter",
+  aliases: ["desc", "d", "bio"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class EditAlterDisplayNameCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const { "alter-name": alterName, "alter-description": alterDescription } =
-			ctx.options;
+  override async run(ctx: CommandContext<typeof options>) {
+    await ctx.deferReply(true);
+    const { "alter-name": alterName, "alter-description": alterDescription } = ctx.options;
 
-		const systemId = ctx.author.id;
+    const systemId = ctx.author.id;
 
-		const alter =
-			ctx.contextAlter() ??
-			(await (Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+    const alter =
+      ctx.contextAlter() ??
+      (await (Number.isNaN(Number.parseInt(alterName))
+        ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+        : alterCollection.findOne({
+            $or: [{ username: alterName }, { alterId: Number(alterName) }],
+            systemId,
+          })));
 
-		if (alter === null) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_ALTER_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (alter === null) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_ALTER_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		if (alterDescription === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: [
-						new Container().setComponents(
-							new TextDisplay().setContent(`\`\`\`
+    if (alterDescription === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: [
+            new Container().setComponents(
+              new TextDisplay().setContent(`\`\`\`
 ${alter.description ?? "⛔ Your alter has no description."}
 \`\`\``),
-						),
-					],
-					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-				},
-				true,
-				undefined,
-				ctx,
-			);
-		}
+            ),
+          ],
+          flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+        },
+        true,
+        undefined,
+        ctx,
+      );
+    }
 
-		await alterCollection.updateOne(
-			{ alterId: alter.alterId },
-			{ $set: { description: alterDescription } },
-		);
+    await alterCollection.updateOne(
+      { alterId: alter.alterId },
+      { $set: { description: alterDescription } },
+    );
 
-		w(ctx.author.id, "alter.update", {
-			type: "alter.update",
-			alter: {
-				...alter,
-				description: alterDescription,
-			},
-		});
-		if (alter.fields["@/converter/pk"])
-			writeBack({
-				type: "alter",
-				id: alter.fields["@/converter/pk"],
-				change: {
-					description: alterDescription,
-				},
-				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
-			});
+    w(ctx.author.id, "alter.update", {
+      type: "alter.update",
+      alter: {
+        ...alter,
+        description: alterDescription,
+      },
+    });
+    if (alter.fields["@/converter/pk"])
+      writeBack({
+        type: "alter",
+        id: alter.fields["@/converter/pk"],
+        change: {
+          description: alterDescription,
+        },
+        syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+      });
 
-		return await ctx.editResponse({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await ctx.userTranslations()).ALTER_SUCCESS_DESC.replace(
-						"%alter%",
-						alter.username,
-					),
-				),
-			],
-			flags: MessageFlags.IsComponentsV2,
-		});
-	}
+    return await ctx.editResponse({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successViewCustom(
+          (await ctx.userTranslations()).ALTER_SUCCESS_DESC.replace("%alter%", alter.username),
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2,
+    });
+  }
 }

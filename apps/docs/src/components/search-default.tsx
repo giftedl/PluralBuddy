@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { SearchClient, useDocsSearch } from 'fumadocs-core/search/client';
-import { fetchClient } from 'fumadocs-core/search/client/fetch';
-import { type ReactNode, use, useMemo, useState } from 'react';
-import { useOnChange } from 'fumadocs-core/utils/use-on-change';
+import { SearchClient, useDocsSearch } from "fumadocs-core/search/client";
+import { fetchClient } from "fumadocs-core/search/client/fetch";
+import { type ReactNode, use, useMemo, useState } from "react";
+import { useOnChange } from "fumadocs-core/utils/use-on-change";
 import {
   SearchDialog,
   SearchDialogClose,
@@ -17,13 +17,13 @@ import {
   type SharedProps,
   TagsList,
   TagsListItem,
-} from '@fumadocs/base-ui/components/dialog/search';
-import type { SortedResult } from 'fumadocs-core/search';
-import type { SearchLink, TagItem } from '@fumadocs/base-ui/contexts/search';
+} from "@fumadocs/base-ui/components/dialog/search";
+import type { SortedResult } from "fumadocs-core/search";
+import type { SearchLink, TagItem } from "@fumadocs/base-ui/contexts/search";
 
 export interface DefaultSearchDialogProps extends SharedProps {
   /** @deprecated re-create the dialog instead for other clients, see https://fumadocs.dev/docs/search/orama */
-  type?: 'static';
+  type?: "static";
 
   links?: SearchLink[];
 
@@ -50,7 +50,6 @@ export interface DefaultSearchDialogProps extends SharedProps {
   allowClear?: boolean;
 }
 
-
 export default function DefaultSearchDialog({
   type,
   defaultTag,
@@ -69,7 +68,7 @@ export default function DefaultSearchDialog({
   const defaultItems = useMemo<SortedResult[] | null>(() => {
     if (links.length === 0) return null;
     return links.map(([name, link]) => ({
-      type: 'page',
+      type: "page",
       id: name,
       content: name,
       url: link,
@@ -89,7 +88,7 @@ export default function DefaultSearchDialog({
           <SearchDialogInput />
           <SearchDialogClose />
         </SearchDialogHeader>
-        <SearchDialogList items={query.data !== 'empty' ? query.data : defaultItems} />
+        <SearchDialogList items={query.data !== "empty" ? query.data : defaultItems} />
       </SearchDialogContent>
       <SearchDialogFooter>
         {tags.length > 0 && (

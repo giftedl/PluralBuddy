@@ -9,58 +9,58 @@ import type { PSystem } from "@/types/system";
 import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 export default class SetNameForm extends ModalCommand {
-	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.NicknameForm.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ModalContext) {
+    return InteractionIdentifier.Systems.Configuration.FormSelection.NicknameForm.startsWith(
+      context.customId,
+    );
+  }
 
-	async run(ctx: ModalContext) {
-		const newSystemNick = ctx.interaction.getInputValue(
-			InteractionIdentifier.Systems.Configuration.FormSelection.NicknameType.create(),
-			true,
-		);
-		const user = await ctx.retrievePUser();
+  async run(ctx: ModalContext) {
+    const newSystemNick = ctx.interaction.getInputValue(
+      InteractionIdentifier.Systems.Configuration.FormSelection.NicknameType.create(),
+      true,
+    );
+    const user = await ctx.retrievePUser();
 
-		if (user.system === undefined) {
-			return await ctx.interaction.update({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (user.system === undefined) {
+      return await ctx.interaction.update({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const updatedSystem = await createSystemOperation(
-			user.system,
-			{
-				nicknameFormat: newSystemNick as string,
-			},
-			await ctx.userTranslations(),
-			"discord",
-		);
+    const updatedSystem = await createSystemOperation(
+      user.system,
+      {
+        nicknameFormat: newSystemNick as string,
+      },
+      await ctx.userTranslations(),
+      "discord",
+    );
 
-		if (updatedSystem === undefined) {
-			return await ctx.interaction.update({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (updatedSystem === undefined) {
+      return await ctx.interaction.update({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		await ctx.interaction.update({
-			components: [
-				...new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(updatedSystem)?.preferAccessiblity,
-				).topView("general", updatedSystem.associatedUserId),
-				...(await new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(updatedSystem)?.preferAccessiblity,
-				).generalSettings(updatedSystem, ctx.guildId, 1)),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    await ctx.interaction.update({
+      components: [
+        ...new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(updatedSystem)?.preferAccessiblity,
+        ).topView("general", updatedSystem.associatedUserId),
+        ...(await new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(updatedSystem)?.preferAccessiblity,
+        ).generalSettings(updatedSystem, ctx.guildId, 1)),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

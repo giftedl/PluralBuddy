@@ -46,6 +46,5 @@ overrides:
       processors: ["span-metrics", "service-graphs"]
       generate_native_histograms: both
 
-
 usage_report:
   reporting_enabled: false

@@ -1,10 +1,10 @@
-'use client';
-import * as Primitive from 'fumadocs-core/toc';
-import { type ComponentProps, createContext, useContext, useRef } from 'react';
-import { cn } from '../../lib/cn';
-import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import { TocThumb } from './toc-thumb';
-import { mergeRefs } from '../../lib/merge-refs';
+"use client";
+import * as Primitive from "fumadocs-core/toc";
+import { type ComponentProps, createContext, useContext, useRef } from "react";
+import { cn } from "../../lib/cn";
+import { useI18n } from "fumadocs-ui/contexts/i18n";
+import { TocThumb } from "./toc-thumb";
+import { mergeRefs } from "../../lib/merge-refs";
 
 const TOCContext = createContext<Primitive.TOCItemType[]>([]);
 
@@ -26,30 +26,24 @@ export function TOCProvider({
   );
 }
 
-export function TOCScrollArea({
-  ref,
-  className,
-  ...props
-}: ComponentProps<'div'>) {
+export function TOCScrollArea({ ref, className, ...props }: ComponentProps<"div">) {
   const viewRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
       ref={mergeRefs(viewRef, ref)}
       className={cn(
-        'relative min-h-0 text-sm ms-px overflow-auto [scrollbar-width:none] [mask-image:linear-gradient(to_bottom,transparent,white_16px,white_calc(100%-16px),transparent)] py-3',
+        "relative min-h-0 text-sm ms-px overflow-auto [scrollbar-width:none] [mask-image:linear-gradient(to_bottom,transparent,white_16px,white_calc(100%-16px),transparent)] py-3",
         className,
       )}
       {...props}
     >
-      <Primitive.ScrollProvider containerRef={viewRef}>
-        {props.children}
-      </Primitive.ScrollProvider>
+      <Primitive.ScrollProvider containerRef={viewRef}>{props.children}</Primitive.ScrollProvider>
     </div>
   );
 }
 
-export function TOCItems({ ref, className, ...props }: ComponentProps<'div'>) {
+export function TOCItems({ ref, className, ...props }: ComponentProps<"div">) {
   const containerRef = useRef<HTMLDivElement>(null);
   const items = useTOCItems();
   const { text } = useI18n();
@@ -69,10 +63,7 @@ export function TOCItems({ ref, className, ...props }: ComponentProps<'div'>) {
       />
       <div
         ref={mergeRefs(ref, containerRef)}
-        className={cn(
-          'flex flex-col border-s border-fd-foreground/10',
-          className,
-        )}
+        className={cn("flex flex-col border-s border-fd-foreground/10", className)}
         {...props}
       >
         {items.map((item) => (
@@ -88,10 +79,10 @@ function TOCItem({ item }: { item: Primitive.TOCItemType }) {
     <Primitive.TOCItem
       href={item.url}
       className={cn(
-        'prose py-1.5 text-sm text-fd-muted-foreground transition-colors [overflow-wrap:anywhere] first:pt-0 last:pb-0 data-[active=true]:text-fd-primary',
-        item.depth <= 2 && 'ps-3',
-        item.depth === 3 && 'ps-6',
-        item.depth >= 4 && 'ps-8',
+        "prose py-1.5 text-sm text-fd-muted-foreground transition-colors [overflow-wrap:anywhere] first:pt-0 last:pb-0 data-[active=true]:text-fd-primary",
+        item.depth <= 2 && "ps-3",
+        item.depth === 3 && "ps-6",
+        item.depth >= 4 && "ps-8",
       )}
     >
       {item.title}

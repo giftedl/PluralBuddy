@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 /**
  * jalco-ui
@@ -21,7 +21,7 @@
  * Dependencies: lucide-react
  */
 
-import * as React from "react"
+import * as React from "react";
 import {
   Check,
   ChevronRight,
@@ -31,74 +31,55 @@ import {
   UnfoldHorizontal,
   FoldHorizontal,
   X,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import {
-  jsonThemes,
-  type JsonColorTheme,
-  type ShikiThemeName,
-} from "@/lib/themes"
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { jsonThemes, type JsonColorTheme, type ShikiThemeName } from "@/lib/themes";
 
-type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue }
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
-const ThemeContext = React.createContext<JsonColorTheme | null>(null)
+const ThemeContext = React.createContext<JsonColorTheme | null>(null);
 
 function useThemeColors(): JsonColorTheme | null {
-  return React.use(ThemeContext)
+  return React.use(ThemeContext);
 }
 
 function typeOf(value: JsonValue): string {
-  if (value === null) return "null"
-  if (Array.isArray(value)) return "array"
-  return typeof value
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
+  return typeof value;
 }
 
 function countEntries(value: JsonValue): number {
-  if (Array.isArray(value)) return value.length
-  if (value !== null && typeof value === "object")
-    return Object.keys(value).length
-  return 0
+  if (Array.isArray(value)) return value.length;
+  if (value !== null && typeof value === "object") return Object.keys(value).length;
+  return 0;
 }
 
 function buildPath(parent: string, key: string | number): string {
-  if (parent === "") return String(key)
-  if (typeof key === "number") return `${parent}[${key}]`
-  if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)) return `${parent}.${key}`
-  return `${parent}["${key}"]`
+  if (parent === "") return String(key);
+  if (typeof key === "number") return `${parent}[${key}]`;
+  if (/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)) return `${parent}.${key}`;
+  return `${parent}["${key}"]`;
 }
 
-function matchesSearch(
-  key: string | number,
-  value: JsonValue,
-  query: string
-): boolean {
-  const q = query.toLowerCase()
-  if (String(key).toLowerCase().includes(q)) return true
-  if (value === null) return "null".includes(q)
-  if (typeof value !== "object") return String(value).toLowerCase().includes(q)
-  return false
+function matchesSearch(key: string | number, value: JsonValue, query: string): boolean {
+  const q = query.toLowerCase();
+  if (String(key).toLowerCase().includes(q)) return true;
+  if (value === null) return "null".includes(q);
+  if (typeof value !== "object") return String(value).toLowerCase().includes(q);
+  return false;
 }
 
-function hasSearchMatch(
-  value: JsonValue,
-  key: string | number,
-  query: string
-): boolean {
-  if (!query) return false
-  if (matchesSearch(key, value, query)) return true
+function hasSearchMatch(value: JsonValue, key: string | number, query: string): boolean {
+  if (!query) return false;
+  if (matchesSearch(key, value, query)) return true;
   if (value !== null && typeof value === "object") {
     const entries = Array.isArray(value)
       ? value.map((v, i) => [i, v] as const)
-      : Object.entries(value)
-    return entries.some(([k, v]) => hasSearchMatch(v, k, query))
+      : Object.entries(value);
+    return entries.some(([k, v]) => hasSearchMatch(v, k, query));
   }
-  return false
+  return false;
 }
 
 function TokenSpan({
@@ -107,12 +88,12 @@ function TokenSpan({
   className,
   italic,
 }: {
-  token: keyof JsonColorTheme
-  children: React.ReactNode
-  className?: string
-  italic?: boolean
+  token: keyof JsonColorTheme;
+  children: React.ReactNode;
+  className?: string;
+  italic?: boolean;
 }) {
-  const theme = useThemeColors()
+  const theme = useThemeColors();
 
   if (theme) {
     return (
@@ -122,7 +103,7 @@ function TokenSpan({
       >
         {children}
       </span>
-    )
+    );
   }
 
   const fallbackMap: Record<string, string> = {
@@ -134,32 +115,16 @@ function TokenSpan({
     punctuation: "text-muted-foreground",
     fg: "",
     bg: "",
-  }
+  };
 
-  return (
-    <span
-      className={cn(
-        fallbackMap[token],
-        italic && "italic",
-        className
-      )}
-    >
-      {children}
-    </span>
-  )
+  return <span className={cn(fallbackMap[token], italic && "italic", className)}>{children}</span>;
 }
 
-function HighlightMatch({
-  text,
-  query,
-}: {
-  text: string
-  query: string
-}) {
-  if (!query) return <>{text}</>
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  if (!query) return <>{text}</>;
 
-  const idx = text.toLowerCase().indexOf(query.toLowerCase())
-  if (idx === -1) return <>{text}</>
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{text}</>;
 
   return (
     <>
@@ -169,19 +134,19 @@ function HighlightMatch({
       </mark>
       {text.slice(idx + query.length)}
     </>
-  )
+  );
 }
 
 interface JsonNodeProps {
-  keyName: string | number
-  value: JsonValue
-  path: string
-  depth: number
-  defaultExpanded: number | true
-  searchQuery: string
-  collapsedPaths: Set<string>
-  onToggle: (path: string) => void
-  isLast: boolean
+  keyName: string | number;
+  value: JsonValue;
+  path: string;
+  depth: number;
+  defaultExpanded: number | true;
+  searchQuery: string;
+  collapsedPaths: Set<string>;
+  onToggle: (path: string) => void;
+  isLast: boolean;
 }
 
 function JsonNode({
@@ -195,52 +160,52 @@ function JsonNode({
   onToggle,
   isLast,
 }: JsonNodeProps) {
-  const theme = useThemeColors()
-  const type = typeOf(value)
-  const isExpandable = type === "object" || type === "array"
-  const count = isExpandable ? countEntries(value) : 0
+  const theme = useThemeColors();
+  const type = typeOf(value);
+  const isExpandable = type === "object" || type === "array";
+  const count = isExpandable ? countEntries(value) : 0;
 
-  const isCollapsed = collapsedPaths.has(path)
-  const isExpanded = isExpandable && !isCollapsed
+  const isCollapsed = collapsedPaths.has(path);
+  const isExpanded = isExpandable && !isCollapsed;
 
-  const openBracket = type === "array" ? "[" : "{"
-  const closeBracket = type === "array" ? "]" : "}"
-  const comma = isLast ? "" : ","
+  const openBracket = type === "array" ? "[" : "{";
+  const closeBracket = type === "array" ? "]" : "}";
+  const comma = isLast ? "" : ",";
 
-  const nodeMatches = searchQuery && matchesSearch(keyName, value, searchQuery)
+  const nodeMatches = searchQuery && matchesSearch(keyName, value, searchQuery);
 
   const handleToggle = React.useCallback(() => {
-    if (isExpandable) onToggle(path)
-  }, [isExpandable, onToggle, path])
+    if (isExpandable) onToggle(path);
+  }, [isExpandable, onToggle, path]);
 
-  const [pathCopied, setPathCopied] = React.useState(false)
+  const [pathCopied, setPathCopied] = React.useState(false);
 
   const handleCopyPath = React.useCallback(() => {
     navigator.clipboard.writeText(path).then(() => {
-      setPathCopied(true)
-      setTimeout(() => setPathCopied(false), 1500)
-    })
-  }, [path])
+      setPathCopied(true);
+      setTimeout(() => setPathCopied(false), 1500);
+    });
+  }, [path]);
 
-  const hoverBg = theme ? `${theme.fg}10` : undefined
+  const hoverBg = theme ? `${theme.fg}10` : undefined;
 
   const rowClass = cn(
     "group flex items-center gap-0 py-px",
     !theme && "hover:bg-muted/40",
-    !theme && nodeMatches && "bg-amber-100/40 dark:bg-amber-900/20"
-  )
+    !theme && nodeMatches && "bg-amber-100/40 dark:bg-amber-900/20",
+  );
 
   const rowStyle: React.CSSProperties = {
     paddingLeft: `${depth * 20 + 8}px`,
     ...(theme && nodeMatches ? { backgroundColor: `${theme.fg}15` } : {}),
-  }
+  };
 
   const copyIconClass = cn(
     "ml-1 inline-flex items-center justify-center rounded p-0.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     theme
       ? "opacity-0 group-hover:opacity-60 hover:!opacity-100"
-      : "text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-foreground focus-visible:text-muted-foreground"
-  )
+      : "text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-foreground focus-visible:text-muted-foreground",
+  );
 
   function renderKey() {
     return (
@@ -255,7 +220,7 @@ function JsonNode({
           keyName
         )}
       </TokenSpan>
-    )
+    );
   }
 
   function renderValue() {
@@ -266,34 +231,30 @@ function JsonNode({
           <HighlightMatch text={value} query={searchQuery} />
           &quot;
         </TokenSpan>
-      )
+      );
     }
     if (value === null) {
       return (
         <TokenSpan token="null" italic>
-          {searchQuery ? (
-            <HighlightMatch text="null" query={searchQuery} />
-          ) : (
-            "null"
-          )}
+          {searchQuery ? <HighlightMatch text="null" query={searchQuery} /> : "null"}
         </TokenSpan>
-      )
+      );
     }
     if (typeof value === "number") {
       return (
         <TokenSpan token="number">
           <HighlightMatch text={String(value)} query={searchQuery} />
         </TokenSpan>
-      )
+      );
     }
     if (typeof value === "boolean") {
       return (
         <TokenSpan token="boolean">
           <HighlightMatch text={String(value)} query={searchQuery} />
         </TokenSpan>
-      )
+      );
     }
-    return <span>{String(value)}</span>
+    return <span>{String(value)}</span>;
   }
 
   if (!isExpandable) {
@@ -304,15 +265,14 @@ function JsonNode({
         onMouseEnter={
           theme
             ? (e) => {
-                e.currentTarget.style.backgroundColor = hoverBg ?? ""
+                e.currentTarget.style.backgroundColor = hoverBg ?? "";
               }
             : undefined
         }
         onMouseLeave={
           theme
             ? (e) => {
-                e.currentTarget.style.backgroundColor =
-                  nodeMatches ? `${theme.fg}15` : ""
+                e.currentTarget.style.backgroundColor = nodeMatches ? `${theme.fg}15` : "";
               }
             : undefined
         }
@@ -338,21 +298,18 @@ function JsonNode({
           )}
         </button>
       </div>
-    )
+    );
   }
 
   const entries = Array.isArray(value)
     ? value.map((v, i) => [i, v] as [number, JsonValue])
-    : (Object.entries(value as Record<string, JsonValue>) as [
-        string,
-        JsonValue,
-      ][])
+    : (Object.entries(value as Record<string, JsonValue>) as [string, JsonValue][]);
 
   const filteredEntries = searchQuery
     ? entries.filter(([k, v]) => hasSearchMatch(v, k, searchQuery))
-    : entries
-  const showAll = !searchQuery
-  const displayEntries = showAll ? entries : filteredEntries
+    : entries;
+  const showAll = !searchQuery;
+  const displayEntries = showAll ? entries : filteredEntries;
 
   return (
     <div>
@@ -362,15 +319,14 @@ function JsonNode({
         onMouseEnter={
           theme
             ? (e) => {
-                e.currentTarget.style.backgroundColor = hoverBg ?? ""
+                e.currentTarget.style.backgroundColor = hoverBg ?? "";
               }
             : undefined
         }
         onMouseLeave={
           theme
             ? (e) => {
-                e.currentTarget.style.backgroundColor =
-                  nodeMatches ? `${theme.fg}15` : ""
+                e.currentTarget.style.backgroundColor = nodeMatches ? `${theme.fg}15` : "";
               }
             : undefined
         }
@@ -386,7 +342,7 @@ function JsonNode({
             className={cn(
               "size-3 transition-transform",
               isExpanded && "rotate-90",
-              !theme && "text-muted-foreground"
+              !theme && "text-muted-foreground",
             )}
           />
         </button>
@@ -453,7 +409,7 @@ function JsonNode({
         </>
       )}
     </div>
-  )
+  );
 }
 
 function collectPaths(
@@ -461,70 +417,61 @@ function collectPaths(
   path: string,
   maxDepth: number | true,
   depth: number,
-  result: Set<string>
+  result: Set<string>,
 ): void {
-  if (value === null || typeof value !== "object") return
+  if (value === null || typeof value !== "object") return;
   if (maxDepth !== true && depth >= maxDepth) {
-    result.add(path)
+    result.add(path);
   }
   const entries = Array.isArray(value)
     ? value.map((v, i) => [i, v] as const)
-    : Object.entries(value)
+    : Object.entries(value);
   for (const [k, v] of entries) {
-    collectPaths(v, buildPath(path, k), maxDepth, depth + 1, result)
+    collectPaths(v, buildPath(path, k), maxDepth, depth + 1, result);
   }
 }
 
-function allExpandablePaths(
-  value: JsonValue,
-  rootName: string
-): Set<string> {
-  const result = new Set<string>()
-  collectAllExpandable(value, rootName, result)
-  return result
+function allExpandablePaths(value: JsonValue, rootName: string): Set<string> {
+  const result = new Set<string>();
+  collectAllExpandable(value, rootName, result);
+  return result;
 }
 
-function collectAllExpandable(
-  value: JsonValue,
-  path: string,
-  result: Set<string>
-): void {
-  if (value === null || typeof value !== "object") return
-  result.add(path)
+function collectAllExpandable(value: JsonValue, path: string, result: Set<string>): void {
+  if (value === null || typeof value !== "object") return;
+  result.add(path);
   const entries = Array.isArray(value)
     ? value.map((v, i) => [i, v] as const)
-    : Object.entries(value)
+    : Object.entries(value);
   for (const [k, v] of entries) {
-    collectAllExpandable(v, buildPath(path, k), result)
+    collectAllExpandable(v, buildPath(path, k), result);
   }
 }
 
-function resolveTheme(
-  theme: ShikiThemeName | JsonColorTheme | undefined
-): JsonColorTheme | null {
-  if (!theme) return null
-  if (typeof theme === "string") return jsonThemes[theme] ?? null
-  return theme
+function resolveTheme(theme: ShikiThemeName | JsonColorTheme | undefined): JsonColorTheme | null {
+  if (!theme) return null;
+  if (typeof theme === "string") return jsonThemes[theme] ?? null;
+  return theme;
 }
 
 interface JsonViewerProps extends Omit<React.ComponentProps<"div">, "children" | "title"> {
   /** Any JSON-serializable value to display. */
-  data: JsonValue
+  data: JsonValue;
   /** Optional heading label. */
-  title?: string
+  title?: string;
   /** Label for the root node. Defaults to "root". */
-  rootName?: string
+  rootName?: string;
   /**
    * Depth to expand by default.
    * - Number: expand nodes up to this depth (default 1)
    * - `true`: expand all nodes
    */
-  defaultExpanded?: number | true
+  defaultExpanded?: number | true;
   /**
    * Editor color theme. Pass a shiki theme name (e.g. "dracula", "github-dark")
    * or a custom JsonColorTheme object. When omitted, uses Tailwind theme colors.
    */
-  colorTheme?: ShikiThemeName | JsonColorTheme
+  colorTheme?: ShikiThemeName | JsonColorTheme;
 }
 
 function JsonViewer({
@@ -536,70 +483,66 @@ function JsonViewer({
   className,
   ...props
 }: JsonViewerProps) {
-  const resolved = resolveTheme(colorTheme)
+  const resolved = resolveTheme(colorTheme);
 
-  const [collapsedPaths, setCollapsedPaths] = React.useState<Set<string>>(
-    () => {
-      if (defaultExpanded === true) return new Set()
-      const collapsed = new Set<string>()
-      collectPaths(data, rootName, defaultExpanded, 0, collapsed)
-      return collapsed
-    }
-  )
-  const [searchQuery, setSearchQuery] = React.useState("")
-  const [searchOpen, setSearchOpen] = React.useState(false)
-  const [copiedAll, setCopiedAll] = React.useState(false)
-  const searchRef = React.useRef<HTMLInputElement>(null)
+  const [collapsedPaths, setCollapsedPaths] = React.useState<Set<string>>(() => {
+    if (defaultExpanded === true) return new Set();
+    const collapsed = new Set<string>();
+    collectPaths(data, rootName, defaultExpanded, 0, collapsed);
+    return collapsed;
+  });
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchOpen, setSearchOpen] = React.useState(false);
+  const [copiedAll, setCopiedAll] = React.useState(false);
+  const searchRef = React.useRef<HTMLInputElement>(null);
 
   const togglePath = React.useCallback((path: string) => {
     setCollapsedPaths((prev) => {
-      const next = new Set(prev)
+      const next = new Set(prev);
       if (next.has(path)) {
-        next.delete(path)
+        next.delete(path);
       } else {
-        next.add(path)
+        next.add(path);
       }
-      return next
-    })
-  }, [])
+      return next;
+    });
+  }, []);
 
   const expandAll = React.useCallback(() => {
-    setCollapsedPaths(new Set())
-  }, [])
+    setCollapsedPaths(new Set());
+  }, []);
 
   const collapseAll = React.useCallback(() => {
-    const all = allExpandablePaths(data, rootName)
-    setCollapsedPaths(all)
-  }, [data, rootName])
+    const all = allExpandablePaths(data, rootName);
+    setCollapsedPaths(all);
+  }, [data, rootName]);
 
   const copyJson = React.useCallback(() => {
-    navigator.clipboard
-      .writeText(JSON.stringify(data, null, 2))
-      .then(() => {
-        setCopiedAll(true)
-        setTimeout(() => setCopiedAll(false), 1500)
-      })
-  }, [data])
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
+      setCopiedAll(true);
+      setTimeout(() => setCopiedAll(false), 1500);
+    });
+  }, [data]);
 
   const toggleSearch = React.useCallback(() => {
     setSearchOpen((prev) => {
       if (!prev) {
-        requestAnimationFrame(() => searchRef.current?.focus())
+        requestAnimationFrame(() => searchRef.current?.focus());
       } else {
-        setSearchQuery("")
+        setSearchQuery("");
       }
-      return !prev
-    })
-  }, [])
+      return !prev;
+    });
+  }, []);
 
   React.useEffect(() => {
     if (searchQuery) {
-      setCollapsedPaths(new Set())
+      setCollapsedPaths(new Set());
     }
-  }, [searchQuery])
+  }, [searchQuery]);
 
-  const isExpandable = data !== null && typeof data === "object"
-  const type = typeOf(data)
+  const isExpandable = data !== null && typeof data === "object";
+  const type = typeOf(data);
 
   return (
     <ThemeContext value={resolved}>
@@ -607,18 +550,14 @@ function JsonViewer({
         data-slot="json-viewer"
         className={cn(
           "overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm",
-          className
+          className,
         )}
         {...props}
       >
         {/* Toolbar */}
         <div className="flex items-center justify-between border-b border-border/40 px-3 py-2 sm:px-4">
           <div className="flex items-center gap-2">
-            {title && (
-              <h3 className="text-sm font-semibold text-foreground">
-                {title}
-              </h3>
-            )}
+            {title && <h3 className="text-sm font-semibold text-foreground">{title}</h3>}
             {isExpandable && (
               <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
                 {countEntries(data)} {type === "array" ? "items" : "keys"}
@@ -632,7 +571,7 @@ function JsonViewer({
               aria-label={searchOpen ? "Close search" : "Search"}
               className={cn(
                 "inline-flex items-center justify-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                searchOpen && "bg-muted text-foreground"
+                searchOpen && "bg-muted text-foreground",
               )}
             >
               <Search className="size-3.5" />
@@ -722,9 +661,7 @@ function JsonViewer({
               <TokenSpan token="key">{rootName}</TokenSpan>
               <TokenSpan token="punctuation">: </TokenSpan>
               {typeof data === "string" ? (
-                <TokenSpan token="string">
-                  &quot;{data}&quot;
-                </TokenSpan>
+                <TokenSpan token="string">&quot;{data}&quot;</TokenSpan>
               ) : typeof data === "number" ? (
                 <TokenSpan token="number">{String(data)}</TokenSpan>
               ) : typeof data === "boolean" ? (
@@ -739,11 +676,7 @@ function JsonViewer({
         </div>
       </div>
     </ThemeContext>
-  )
+  );
 }
 
-export {
-  JsonViewer,
-  type JsonViewerProps,
-  type JsonValue,
-}
+export { JsonViewer, type JsonViewerProps, type JsonValue };

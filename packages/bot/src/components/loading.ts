@@ -4,13 +4,13 @@ import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export default class DisabledOption extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return context.customId === "loading";
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return context.customId === "loading";
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		ctx.deferUpdate();
-	}
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    ctx.deferUpdate();
+  }
 }

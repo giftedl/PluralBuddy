@@ -10,58 +10,58 @@ import { AlertView } from "@/views/alert";
 import { AlterView } from "@/views/alters";
 import { SystemSettingsView } from "@/views/system-settings";
 export default class SetPronounsButton extends ModalCommand {
-	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsForm.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ModalContext) {
+    return InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsForm.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ModalContext) {
-		let { system } = await ctx.retrievePUser();
+  override async run(ctx: ModalContext) {
+    let { system } = await ctx.retrievePUser();
 
-		if (system === undefined) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (system === undefined) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const newSystemPronouns = ctx.interaction.getInputValue(
-			InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsType.create(),
-			true,
-		);
+    const newSystemPronouns = ctx.interaction.getInputValue(
+      InteractionIdentifier.Systems.Configuration.FormSelection.SystemPronounsType.create(),
+      true,
+    );
 
-		const newSystem = await createSystemOperation(
-			system,
-			{
-				systemPronouns: newSystemPronouns as string,
-			},
-			await ctx.userTranslations(),
-			"discord",
-		);
+    const newSystem = await createSystemOperation(
+      system,
+      {
+        systemPronouns: newSystemPronouns as string,
+      },
+      await ctx.userTranslations(),
+      "discord",
+    );
 
-		system = newSystem;
+    system = newSystem;
 
-		if (!system) throw new Error("No system?");
+    if (!system) throw new Error("No system?");
 
-		return await ctx.interaction.update({
-			components: [
-				...new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(system)?.preferAccessiblity,
-				).topView("public-settings", system.associatedUserId),
-				...new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(system)?.preferAccessiblity,
-				).publicProfile(
-					system,
-					(await ctx.getDefaultPrefix()) ?? "",
-					ctx.interaction?.message?.messageReference === undefined,
-				),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.interaction.update({
+      components: [
+        ...new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(system)?.preferAccessiblity,
+        ).topView("public-settings", system.associatedUserId),
+        ...new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(system)?.preferAccessiblity,
+        ).publicProfile(
+          system,
+          (await ctx.getDefaultPrefix()) ?? "",
+          ctx.interaction?.message?.messageReference === undefined,
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

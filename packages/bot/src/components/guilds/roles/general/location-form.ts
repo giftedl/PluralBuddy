@@ -7,52 +7,49 @@ import { MessageFlags } from "seyfert/lib/types";
 
 @Middlewares(["ensureGuildPermissions"])
 export default class RoleContentsForm extends ModalCommand {
-	override filter(context: ModalContext) {
-		return InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationForm.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ModalContext) {
+    return InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationForm.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ModalContext) {
-		const roleId =
-			InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationForm.substring(
-				ctx.customId,
-			)[0];
-		const newLocation = (ctx.interaction.getInputValue(
-			InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationSelection.create(),
-		) ?? ["top"]) as "top" | "bottom";
+  override async run(ctx: ModalContext) {
+    const roleId = InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationForm.substring(
+      ctx.customId,
+    )[0];
+    const newLocation = (ctx.interaction.getInputValue(
+      InteractionIdentifier.Guilds.FormSelection.ChangeRoleLocationSelection.create(),
+    ) ?? ["top"]) as "top" | "bottom";
 
-		console.log(newLocation);
-		const guild = await ctx.retrievePGuild();
-		const role = guild.rolePreferences.find((c) => c.roleId === roleId);
+    console.log(newLocation);
+    const guild = await ctx.retrievePGuild();
+    const role = guild.rolePreferences.find((c) => c.roleId === roleId);
 
-		if (!role)
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ROLE_PREFERENCE_DOESNT_EXIST",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
+    if (!role)
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ROLE_PREFERENCE_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
 
-		guild.rolePreferences = [
-			...guild.rolePreferences.filter((c) => c.roleId !== roleId),
-			{ ...role, containerLocation: newLocation },
-		];
-		role.containerLocation = newLocation;
+    guild.rolePreferences = [
+      ...guild.rolePreferences.filter((c) => c.roleId !== roleId),
+      { ...role, containerLocation: newLocation },
+    ];
+    role.containerLocation = newLocation;
 
-		await guildCollection.updateOne(
-			{ guildId: guild.guildId, "rolePreferences.roleId": roleId },
-			{ $set: { "rolePreferences.$.containerLocation": newLocation } },
-			{ upsert: true },
-		);
-		ctx.client.cache.pguild.remove(guild.guildId);
+    await guildCollection.updateOne(
+      { guildId: guild.guildId, "rolePreferences.roleId": roleId },
+      { $set: { "rolePreferences.$.containerLocation": newLocation } },
+      { upsert: true },
+    );
+    ctx.client.cache.pguild.remove(guild.guildId);
 
-		return await ctx.interaction.update({
-			components: new ServerConfigView(
-				await ctx.userTranslations(),
-			).roleGeneralView(role),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			allowed_mentions: { parse: [] },
-		});
-	}
+    return await ctx.interaction.update({
+      components: new ServerConfigView(await ctx.userTranslations()).roleGeneralView(role),
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      allowed_mentions: { parse: [] },
+    });
+  }
 }

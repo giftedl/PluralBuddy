@@ -1,31 +1,31 @@
 import { getColor } from "colorthief";
 import { set } from "lodash";
 import {
-	type ApplicationEmoji,
-	AttachmentBuilder,
-	Command,
-	type CommandContext,
-	Container,
-	createBooleanOption,
-	createStringOption,
-	Declare,
-	IgnoreCommand,
-	MediaGallery,
-	Message,
-	Options,
-	Section,
-	Separator,
-	TextDisplay,
-	Thumbnail,
-	type TopLevelBuilders,
+  type ApplicationEmoji,
+  AttachmentBuilder,
+  Command,
+  type CommandContext,
+  Container,
+  createBooleanOption,
+  createStringOption,
+  Declare,
+  IgnoreCommand,
+  MediaGallery,
+  Message,
+  Options,
+  Section,
+  Separator,
+  TextDisplay,
+  Thumbnail,
+  type TopLevelBuilders,
 } from "seyfert";
 import {
-	type APIContainerComponent,
-	type APIMediaGalleryComponent,
-	type APITextDisplayComponent,
-	ComponentType,
-	MessageFlags,
-	Spacing,
+  type APIContainerComponent,
+  type APIMediaGalleryComponent,
+  type APITextDisplayComponent,
+  ComponentType,
+  MessageFlags,
+  Spacing,
 } from "seyfert/lib/types";
 import { pendingIgnoreDeletion } from "@/events/on-message-delete";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
@@ -34,308 +34,279 @@ import { emojis } from "@/lib/emojis";
 import { getSystemFeatures } from "@/lib/get-system-flags";
 import { getModernComponentsMappings } from "@/lib/proxying";
 import { processEmojis } from "@/lib/proxying/process-emojis";
-import {
-	getDisplayNameWebhook,
-	getSimilarWebhooks,
-	setLastLatchAlter,
-} from "@/lib/proxying/util";
+import { getDisplayNameWebhook, getSimilarWebhooks, setLastLatchAlter } from "@/lib/proxying/util";
 import { alterCollection, messagesCollection } from "@/mongodb";
 import { getGuildFromId } from "@/types/guild";
 import { AlertView } from "@/views/alert";
 import { client } from "..";
 
 const options = {
-	alter: createStringOption({
-		description: "Alter to reproxy as",
-		autocomplete: autocompleteAlters,
-		required: true,
-	}),
-	"change-latch": createBooleanOption({
-		description: "Update the alter latch to this alter",
-		required: false,
-	}),
+  alter: createStringOption({
+    description: "Alter to reproxy as",
+    autocomplete: autocompleteAlters,
+    required: true,
+  }),
+  "change-latch": createBooleanOption({
+    description: "Update the alter latch to this alter",
+    required: false,
+  }),
 };
 
 @Declare({
-	name: "reproxy",
-	description: "Reproxy as an alter",
-	contexts: ["Guild"],
-	aliases: ["rp"],
+  name: "reproxy",
+  description: "Reproxy as an alter",
+  contexts: ["Guild"],
+  aliases: ["rp"],
 })
 @Options(options)
 export default class ReproxyCommand extends Command {
-	override async run(ctx: CommandContext<typeof options>) {
-		await ctx.deferReply(true);
-		const { system } = await ctx.retrievePUser();
-		const { alter: alterName, "change-latch": changeLatch } = ctx.options;
+  override async run(ctx: CommandContext<typeof options>) {
+    await ctx.deferReply(true);
+    const { system } = await ctx.retrievePUser();
+    const { alter: alterName, "change-latch": changeLatch } = ctx.options;
 
-		const systemId = ctx.author.id;
+    const systemId = ctx.author.id;
 
-		const alter =
-			ctx.contextAlter() ??
-			(await (Number.isNaN(Number.parseInt(alterName))
-				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
-				: alterCollection.findOne({
-						$or: [{ username: alterName }, { alterId: Number(alterName) }],
-						systemId,
-					})));
+    const alter =
+      ctx.contextAlter() ??
+      (await (Number.isNaN(Number.parseInt(alterName))
+        ? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
+        : alterCollection.findOne({
+            $or: [{ username: alterName }, { alterId: Number(alterName) }],
+            systemId,
+          })));
 
-		if (system === undefined) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_SYSTEM_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
-		if (alter === null) {
-			return await ctx.ephemeral(
-				{
-					components: new AlertView(await ctx.userTranslations()).errorView(
-						"ERROR_ALTER_DOESNT_EXIST",
-					),
-					flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-				},
-				undefined,
-				undefined,
-				ctx,
-			);
-		}
+    if (system === undefined) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_SYSTEM_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
+    if (alter === null) {
+      return await ctx.ephemeral(
+        {
+          components: new AlertView(await ctx.userTranslations()).errorView(
+            "ERROR_ALTER_DOESNT_EXIST",
+          ),
+          flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+        },
+        undefined,
+        undefined,
+        ctx,
+      );
+    }
 
-		const referencedMessageId = (ctx.message as Message | undefined)
-			?.referencedMessage?.id;
-		const message = await messagesCollection.findOne(
-			{
-				systemId: ctx.author.id,
-				channelId: ctx.channelId,
-				...(referencedMessageId ? { messageId: referencedMessageId } : {}),
-			},
-			{ sort: { createdAt: -1 } },
-		);
+    const referencedMessageId = (ctx.message as Message | undefined)?.referencedMessage?.id;
+    const message = await messagesCollection.findOne(
+      {
+        systemId: ctx.author.id,
+        channelId: ctx.channelId,
+        ...(referencedMessageId ? { messageId: referencedMessageId } : {}),
+      },
+      { sort: { createdAt: -1 } },
+    );
 
-		if (!ctx.guildId) return;
+    if (!ctx.guildId) return;
 
-		if (message === null) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"NOT_RECENT_ENOUGH",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+    if (message === null) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView("NOT_RECENT_ENOUGH"),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		const { messageId } = message;
+    const { messageId } = message;
 
-		if (
-			message?.systemId !== ctx.author.id ||
-			message.guildId !== ctx.guildId
-		) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_OWN_MESSAGE",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
-		const channel = await ctx.channel();
-		const parent =
-			"parentId" in channel && channel.isThread() ? channel.parentId : null;
+    if (message?.systemId !== ctx.author.id || message.guildId !== ctx.guildId) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView("ERROR_OWN_MESSAGE"),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
+    const channel = await ctx.channel();
+    const parent = "parentId" in channel && channel.isThread() ? channel.parentId : null;
 
-		const similarWebhooks = await getSimilarWebhooks(
-			parent ?? message.channelId,
-		);
-		const originalMessage = await client.messages
-			.fetch(message.messageId, message.channelId)
-			.catch(() => null);
+    const similarWebhooks = await getSimilarWebhooks(parent ?? message.channelId);
+    const originalMessage = await client.messages
+      .fetch(message.messageId, message.channelId)
+      .catch(() => null);
 
-		if (similarWebhooks[0] === undefined || originalMessage === null) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_MANUAL_PROXY",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+    if (similarWebhooks[0] === undefined || originalMessage === null) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView("ERROR_MANUAL_PROXY"),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		const webhook = similarWebhooks[0];
-		const user = await ctx.retrievePUser();
-		if (!user) throw new Error("No user.");
-		const displayName =
-			getDisplayNameWebhook(alter, originalMessage, user) ?? alter.username;
+    const webhook = similarWebhooks[0];
+    const user = await ctx.retrievePUser();
+    if (!user) throw new Error("No user.");
+    const displayName = getDisplayNameWebhook(alter, originalMessage, user) ?? alter.username;
 
-		pendingIgnoreDeletion.push(message.messageId);
+    pendingIgnoreDeletion.push(message.messageId);
 
-		const processedEmojis: ApplicationEmoji[] = [];
-		const componentList = (await Promise.all(
-			[
-				...(originalMessage.components.map((v) =>
-					v.toBuilder(),
-				) as TopLevelBuilders[]),
-				...(originalMessage.content !== ""
-					? [new TextDisplay().setContent(originalMessage.content)]
-					: []),
-			]
-				.filter((v) => v !== undefined)
-				.map(async (v) => {
-					if (v.data.type === ComponentType.TextDisplay && v.data.content) {
-						const processEmoji = await processEmojis(v.data.content);
-						processedEmojis.push(...processEmoji.emojis);
+    const processedEmojis: ApplicationEmoji[] = [];
+    const componentList = (await Promise.all(
+      [
+        ...(originalMessage.components.map((v) => v.toBuilder()) as TopLevelBuilders[]),
+        ...(originalMessage.content !== ""
+          ? [new TextDisplay().setContent(originalMessage.content)]
+          : []),
+      ]
+        .filter((v) => v !== undefined)
+        .map(async (v) => {
+          if (v.data.type === ComponentType.TextDisplay && v.data.content) {
+            const processEmoji = await processEmojis(v.data.content);
+            processedEmojis.push(...processEmoji.emojis);
 
-						(v as TextDisplay).setContent(processEmoji.newMessage);
-					}
-					return v;
-				}),
-		)) as TopLevelBuilders[];
+            (v as TextDisplay).setContent(processEmoji.newMessage);
+          }
+          return v;
+        }),
+    )) as TopLevelBuilders[];
 
-		const attachments = await Promise.all(
-			originalMessage.attachments.map(async (v) =>
-				new AttachmentBuilder()
-					.setFile("buffer", await (await fetch(v.url)).arrayBuffer())
-					.setName(v.filename),
-			),
-		);
-		webhook.messages
-			.write({
-				body: {
-					...getModernComponentsMappings(componentList),
-					allowed_mentions: { parse: [] },
-					files: attachments,
-					username: displayName.substring(0, 80),
-					avatar_url:
-						(alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ??
-						alter?.avatarUrl ??
-						undefined,
-				},
-				query: {
-					wait: true,
-					...(parent === null ? {} : { thread_id: ctx.channelId }),
-				},
-			})
-			.catch((v) => console.error(v))
-			.then((sentMessage) => {
-				setLastLatchAlter(
-					ctx.guildId ?? "",
-					ctx.channelId ?? "",
-					system,
-					alter,
-				);
+    const attachments = await Promise.all(
+      originalMessage.attachments.map(async (v) =>
+        new AttachmentBuilder()
+          .setFile("buffer", await (await fetch(v.url)).arrayBuffer())
+          .setName(v.filename),
+      ),
+    );
+    webhook.messages
+      .write({
+        body: {
+          ...getModernComponentsMappings(componentList),
+          allowed_mentions: { parse: [] },
+          files: attachments,
+          username: displayName.substring(0, 80),
+          avatar_url:
+            (alter.avatarUrlMap ?? {})[ctx.guildId ?? ""] ?? alter?.avatarUrl ?? undefined,
+        },
+        query: {
+          wait: true,
+          ...(parent === null ? {} : { thread_id: ctx.channelId }),
+        },
+      })
+      .catch((v) => console.error(v))
+      .then((sentMessage) => {
+        setLastLatchAlter(ctx.guildId ?? "", ctx.channelId ?? "", system, alter);
 
-				messagesCollection.replaceOne(
-					{ messageId: message.messageId },
-					{
-						messageId: sentMessage?.id ?? "0",
-						alterId: alter.alterId,
-						systemId,
-						createdAt: new Date(),
-						channelId: sentMessage?.channelId ?? "0",
-						guildId: message.guildId,
-					},
-				);
+        messagesCollection.replaceOne(
+          { messageId: message.messageId },
+          {
+            messageId: sentMessage?.id ?? "0",
+            alterId: alter.alterId,
+            systemId,
+            createdAt: new Date(),
+            channelId: sentMessage?.channelId ?? "0",
+            guildId: message.guildId,
+          },
+        );
 
-				(async () => {
-					await Promise.all(processedEmojis.map(async (c) => await c.delete()));
+        (async () => {
+          await Promise.all(processedEmojis.map(async (c) => await c.delete()));
 
-					await webhook.messages.delete({
-						messageId,
-						query: parent !== null ? { thread_id: channel.id } : {},
-						reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
-					});
+          await webhook.messages.delete({
+            messageId,
+            query: parent !== null ? { thread_id: channel.id } : {},
+            reason: `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
+          });
 
-					const guild = await getGuildFromId(ctx.guildId ?? "");
-					const user = await client.users.fetch(ctx.author.id);
-					const message = originalMessage.components
-						.map((v) => v.toBuilder())
-						.filter((v) => v.data.type === ComponentType.TextDisplay)
-						.map((c) => (c as TextDisplay).data.content)
-						.filter((c) => c !== undefined)
-						.filter((c) => !c.startsWith(`-# ${emojis.reply}`))
-						.join("");
+          const guild = await getGuildFromId(ctx.guildId ?? "");
+          const user = await client.users.fetch(ctx.author.id);
+          const message = originalMessage.components
+            .map((v) => v.toBuilder())
+            .filter((v) => v.data.type === ComponentType.TextDisplay)
+            .map((c) => (c as TextDisplay).data.content)
+            .filter((c) => c !== undefined)
+            .filter((c) => !c.startsWith(`-# ${emojis.reply}`))
+            .join("");
 
-					let color = "Green";
+          let color = "Green";
 
-					if (!guild.logChannel) return;
+          if (!guild.logChannel) return;
 
-					try {
-						const image = await (
-							await fetch(
-								`https://wsrv.nl?url=${(alter?.avatarUrlMap ?? {})[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png"}`,
-								{ signal: AbortSignal.timeout(3000) },
-							)
-						).arrayBuffer();
+          try {
+            const image = await (
+              await fetch(
+                `https://wsrv.nl?url=${(alter?.avatarUrlMap ?? {})[sentMessage?.guildId ?? ""] ?? alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png"}`,
+                { signal: AbortSignal.timeout(3000) },
+              )
+            ).arrayBuffer();
 
-						color = (await getColor(image))?.hex() ?? "Green";
-					} catch (_) {}
+            color = (await getColor(image))?.hex() ?? "Green";
+          } catch (_) {}
 
-					if (!guild.logChannel) return;
+          if (!guild.logChannel) return;
 
-					await client.messages
-						.write(guild.logChannel, {
-							components: [
-								new TextDisplay().setContent(
-									`https://discord.com/channels/${ctx.guildId ?? "@me"}/${ctx.channelId}/${sentMessage?.id}`,
-								),
-								new Container()
-									.setComponents(
-										new Section()
-											.setComponents(
-												new TextDisplay().setContent(
-													message === "" || message === undefined
-														? "Cannot render message as string - use link above."
-														: message,
-												),
-											)
-											.setAccessory(
-												new Thumbnail().setMedia(
-													alter?.avatarUrl ??
-														"https://cdn.discordapp.com/embed/avatars/0.png",
-												),
-											),
-										new Separator().setSpacing(Spacing.Large),
-										new TextDisplay().setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alter.alterId}\`
+          await client.messages
+            .write(guild.logChannel, {
+              components: [
+                new TextDisplay().setContent(
+                  `https://discord.com/channels/${ctx.guildId ?? "@me"}/${ctx.channelId}/${sentMessage?.id}`,
+                ),
+                new Container()
+                  .setComponents(
+                    new Section()
+                      .setComponents(
+                        new TextDisplay().setContent(
+                          message === "" || message === undefined
+                            ? "Cannot render message as string - use link above."
+                            : message,
+                        ),
+                      )
+                      .setAccessory(
+                        new Thumbnail().setMedia(
+                          alter?.avatarUrl ?? "https://cdn.discordapp.com/embed/avatars/0.png",
+                        ),
+                      ),
+                    new Separator().setSpacing(Spacing.Large),
+                    new TextDisplay()
+                      .setContent(`-# Sent by system/user \`${systemId}\`, by alter \`${alter.alterId}\`
 -# Mention: @${user.username} (<@${systemId}>)
 -# Alter Mention: @${alter?.username} (${alter?.nameMap.find((c) => c.server === guild.guildId)?.name ?? alter?.username})
 -# Proxied message as: \`N/A\` → \`${sentMessage?.id ?? "Unknown"}\`
 -# Proxied via: /reproxy
 -# Sent at: <t:${Math.floor(Date.now() / 1000)}:f>`),
-									)
-									.setColor((color as `#${string}` | "Green") ?? "Green"),
-							],
-							flags: MessageFlags.IsComponentsV2,
-							allowed_mentions: { parse: [] },
-						})
-						.catch(() =>
-							createError(guild.guildId, {
-								title: "Failed to send proxy log in log channel.",
-								description:
-									"PluralBuddy attempted to send a proxied log message, but failed, maybe due to a lack of permission.",
-								responsibleChannelId: guild.logChannel ?? undefined,
-								type: "FailedLogging",
-							}),
-						);
-				})();
-			});
+                  )
+                  .setColor((color as `#${string}` | "Green") ?? "Green"),
+              ],
+              flags: MessageFlags.IsComponentsV2,
+              allowed_mentions: { parse: [] },
+            })
+            .catch(() =>
+              createError(guild.guildId, {
+                title: "Failed to send proxy log in log channel.",
+                description:
+                  "PluralBuddy attempted to send a proxied log message, but failed, maybe due to a lack of permission.",
+                responsibleChannelId: guild.logChannel ?? undefined,
+                type: "FailedLogging",
+              }),
+            );
+        })();
+      });
 
-		return await ctx
-			.editResponse({
-				components: new AlertView(await ctx.userTranslations()).successView(
-					"REPROXIED_MESSAGE",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			})
-			.then(() => {
-				if ((ctx.message as unknown) instanceof Message) {
-					const message = ctx.message as unknown as Message;
+    return await ctx
+      .editResponse({
+        components: new AlertView(await ctx.userTranslations()).successView("REPROXIED_MESSAGE"),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      })
+      .then(() => {
+        if ((ctx.message as unknown) instanceof Message) {
+          const message = ctx.message as unknown as Message;
 
-					message.delete(
-						`Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
-					);
-				}
-				setTimeout(() => ctx.deleteResponse(), 1000);
-			});
-	}
+          message.delete(
+            `Removed after user request of @${ctx.author.username} (${ctx.author.id})`,
+          );
+        }
+        setTimeout(() => ctx.deleteResponse(), 1000);
+      });
+  }
 }

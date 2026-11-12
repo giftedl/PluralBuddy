@@ -1,12 +1,7 @@
 "use client";
 
 import { Field, FieldDescription } from "../ui/field";
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupButton,
-	InputGroupInput,
-} from "../ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/shadcn-button";
 import { X } from "lucide-react";
@@ -16,75 +11,70 @@ import { OAuthClient } from "@better-auth/oauth-provider";
 import { authClient } from "@/lib/auth-client";
 
 export function RedirectURLs({ application }: { application: OAuthClient }) {
-	const [existingURIs, setExistingURIs] = useState<string[]>(
-		application.redirect_uris,
-	);
-	const [value, setValue] = useState<string>("");
+  const [existingURIs, setExistingURIs] = useState<string[]>(application.redirect_uris);
+  const [value, setValue] = useState<string>("");
 
-	return (
-		<Field>
-			<FieldDescription>
-				This is the allowed redirect URI's for the application.
-			</FieldDescription>
+  return (
+    <Field>
+      <FieldDescription>This is the allowed redirect URI's for the application.</FieldDescription>
 
-			<InputGroup>
-				<InputGroupInput
-					placeholder="https://acme.com/api/callback"
-					value={value}
-					onChange={(e) => setValue(e.target.value)}
-				/>
-				<InputGroupAddon align="inline-end">
-					<InputGroupButton
-						variant="secondary"
-						disabled={existingURIs.length === 10}
-						onClick={async () => {
-								setExistingURIs((existing) => [...existing, value]);
-								setValue("");
-								
-								await authClient.oauth2.updateClient({
-									client_id: application.client_id,
-									update: {
-										redirect_uris: [...existingURIs, value],
-									}
-								})
-							
-						}}
-					>
-						Add
-					</InputGroupButton>
-				</InputGroupAddon>
-			</InputGroup>
+      <InputGroup>
+        <InputGroupInput
+          placeholder="https://acme.com/api/callback"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            variant="secondary"
+            disabled={existingURIs.length === 10}
+            onClick={async () => {
+              setExistingURIs((existing) => [...existing, value]);
+              setValue("");
 
-			<div className="flex items-center gap-1">
-				{existingURIs.map((name: string, i: number) => (
-					<Badge className="w-min" key={name}>
-						{name}{" "}
-						{existingURIs.length !== 1 && (
-							<Button
-								aria-label={`Remove redirect URI ${i + 1}`}
-								className="size-4"
-								onClick={async() => {
-									const index = existingURIs.indexOf(name);
-									if (index > -1) {
-										const newScopes = [...existingURIs];
-										newScopes.splice(index, 1);
-										setExistingURIs(newScopes);
+              await authClient.oauth2.updateClient({
+                client_id: application.client_id,
+                update: {
+                  redirect_uris: [...existingURIs, value],
+                },
+              });
+            }}
+          >
+            Add
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
 
-										await authClient.oauth2.updateClient({
-											client_id: application.client_id,
-											update: {
-												redirect_uris: newScopes,
-											}
-										})
-									}
-								}}
-							>
-								<X />
-							</Button>
-						)}
-					</Badge>
-				))}
-			</div>
-		</Field>
-	);
+      <div className="flex items-center gap-1">
+        {existingURIs.map((name: string, i: number) => (
+          <Badge className="w-min" key={name}>
+            {name}{" "}
+            {existingURIs.length !== 1 && (
+              <Button
+                aria-label={`Remove redirect URI ${i + 1}`}
+                className="size-4"
+                onClick={async () => {
+                  const index = existingURIs.indexOf(name);
+                  if (index > -1) {
+                    const newScopes = [...existingURIs];
+                    newScopes.splice(index, 1);
+                    setExistingURIs(newScopes);
+
+                    await authClient.oauth2.updateClient({
+                      client_id: application.client_id,
+                      update: {
+                        redirect_uris: newScopes,
+                      },
+                    });
+                  }
+                }}
+              >
+                <X />
+              </Button>
+            )}
+          </Badge>
+        ))}
+      </div>
+    </Field>
+  );
 }

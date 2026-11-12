@@ -5,6 +5,6 @@ import { Tupper } from "./tupper";
 import { TupperBoxGroup } from "./group";
 
 export const TupperBoxSystem = z.object({
-    tuppers: Tupper.array(),
-    groups: TupperBoxGroup.array()
-})
+  tuppers: Tupper.array(),
+  groups: TupperBoxGroup.array(),
+});

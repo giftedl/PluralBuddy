@@ -2,86 +2,82 @@
 
 import { getUserById, noteCollection, writeUserById } from "@/mongodb";
 import {
-	SubCommand,
-	type CommandContext,
-	createUserOption,
-	createStringOption,
-	Declare,
-	Options,
-    type OnOptionsReturnObject
+  SubCommand,
+  type CommandContext,
+  createUserOption,
+  createStringOption,
+  Declare,
+  Options,
+  type OnOptionsReturnObject,
 } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 const options = {
-	"user-id": createStringOption({
-		description: "User to the block list",
-		required: true,
-	}),
-	note: createStringOption({
-		description: "Sapphire Note including the reasoning",
-		required: true,
-		min_length: 7,
-		max_length: 7,
-	}),
+  "user-id": createStringOption({
+    description: "User to the block list",
+    required: true,
+  }),
+  note: createStringOption({
+    description: "Sapphire Note including the reasoning",
+    required: true,
+    min_length: 7,
+    max_length: 7,
+  }),
 };
 
 @Declare({
-	name: "create",
-	description: "Create a block",
-	contexts: ["Guild"],
-	guildId: ["1444187699924963350"],
+  name: "create",
+  description: "Create a block",
+  contexts: ["Guild"],
+  guildId: ["1444187699924963350"],
 })
 @Options(options)
 export default class CreateBlockCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		if (!ctx.member?.roles.keys.includes("1444241245634433134")) {
-			return;
-		}
+  override async run(ctx: CommandContext<typeof options>) {
+    if (!ctx.member?.roles.keys.includes("1444241245634433134")) {
+      return;
+    }
 
-		const { "user-id": userId, note: note } = ctx.options;
-        const user = await getUserById(userId)
+    const { "user-id": userId, note: note } = ctx.options;
+    const user = await getUserById(userId);
 
-        if (user.blocked) {
-            return await ctx.write({
-                content: "That user was already blocked.",
-                flags: MessageFlags.Ephemeral,
+    if (user.blocked) {
+      return await ctx.write({
+        content: "That user was already blocked.",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
 
-            })
-        }
+    await noteCollection.insertOne({
+      note,
+      associatedUserId: userId,
+      date: new Date(),
+      moderatorId: ctx.author.id,
+    });
 
-		await noteCollection.insertOne({
-			note,
-			associatedUserId: userId,
-            date: new Date(),
-            moderatorId: ctx.author.id
-		});
+    await writeUserById(userId, {
+      ...(await getUserById(userId)),
+      blocked: true,
+    });
 
-        await writeUserById(userId, {
-            ...(await getUserById(userId)),
-            blocked: true
-        })
+    return await ctx.write({
+      content: `Okay, that user has been **blocked**. (${note}) (${userId})`,
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 
-		return await ctx.write({
-			content: `Okay, that user has been **blocked**. (${note}) (${userId})`,
-			flags: MessageFlags.Ephemeral,
-		});
-	}
+  override async onOptionsError(context: CommandContext, metadata: OnOptionsReturnObject) {
+    if (context.author.bot === true) return;
 
-	override async onOptionsError(
-		context: CommandContext,
-		metadata: OnOptionsReturnObject,
-	) {
-		if (context.author.bot === true) return;
+    const errors = Object.entries(metadata)
+      .filter((_) => _[1].failed)
+      .map((error) => `${error[0]}: ${error[1].value}`)
+      .join("\n");
 
-		const errors = Object.entries(metadata)
-			.filter((_) => _[1].failed)
-			.map((error) => `${error[0]}: ${error[1].value}`)
-			.join("\n");
-
-		await context.write({
-			content: `There was some error(s) while parsing arguments in that command:
+    await context.write({
+      content: `There was some error(s) while parsing arguments in that command:
             
-            >>> ${errors}`
-		});
-	}
+            >>> ${errors}`,
+    });
+  }
 }

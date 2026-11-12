@@ -1,80 +1,77 @@
 import { emojis } from "@/lib/emojis";
 import { AlertView } from "@/views/alert";
 import {
-	Command,
-	type CommandContext,
-	Container,
-	Declare,
-	LocalesT,
-	type Message,
-	TextDisplay,
+  Command,
+  type CommandContext,
+  Container,
+  Declare,
+  LocalesT,
+  type Message,
+  TextDisplay,
 } from "seyfert";
 import { MessageFlags, PermissionFlagsBits } from "seyfert/lib/types";
 
 @Declare({
-	name: "checkpermissions",
-	description: "Ensure PluralBuddy has the proper permissions.",
-	aliases: ["permissions"],
+  name: "checkpermissions",
+  description: "Ensure PluralBuddy has the proper permissions.",
+  aliases: ["permissions"],
 })
 export default class CheckPermissionsCommand extends Command {
-	override async run(ctx: CommandContext) {
-		const guild = await ctx.retrievePGuild();
+  override async run(ctx: CommandContext) {
+    const guild = await ctx.retrievePGuild();
 
-		if (guild.getFeatures().disabledPermissionCheck) {
-			if (ctx.isChat() && ctx.message) {
-				(ctx.message as Message).delete().catch(_ => null);
+    if (guild.getFeatures().disabledPermissionCheck) {
+      if (ctx.isChat() && ctx.message) {
+        (ctx.message as Message).delete().catch((_) => null);
 
-				try {
-					await (ctx.message as Message).author.write({
-						components: new AlertView(await ctx.userTranslations()).errorView(
-							"FEATURE_DISABLED_GUILD",
-						),
-						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-					});
-				} catch (_) {}
-				return;
-			}
+        try {
+          await (ctx.message as Message).author.write({
+            components: new AlertView(await ctx.userTranslations()).errorView(
+              "FEATURE_DISABLED_GUILD",
+            ),
+            flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+          });
+        } catch (_) {}
+        return;
+      }
 
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"FEATURE_DISABLED_GUILD",
-				),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			});
-		}
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView("FEATURE_DISABLED_GUILD"),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      });
+    }
 
-		if (ctx.guildId === undefined) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"DN_ERROR_SE",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (ctx.guildId === undefined) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView("DN_ERROR_SE"),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const userPerms = await ctx.client.channels.memberPermissions(
-			ctx.channelId,
-			await ctx.client.members.fetch(ctx.guildId as string, ctx.client.botId),
-			true,
-		);
+    const userPerms = await ctx.client.channels.memberPermissions(
+      ctx.channelId,
+      await ctx.client.members.fetch(ctx.guildId as string, ctx.client.botId),
+      true,
+    );
 
-		const sendingUserPerms = await ctx.client.channels.memberPermissions(
-			ctx.channelId,
-			await ctx.client.members.fetch(ctx.guildId as string, ctx.author.id),
-			true,
-		);
+    const sendingUserPerms = await ctx.client.channels.memberPermissions(
+      ctx.channelId,
+      await ctx.client.members.fetch(ctx.guildId as string, ctx.author.id),
+      true,
+    );
 
-		const { forcedWebhookMode, forcedNicknameMode } = guild.getFeatures();
+    const { forcedWebhookMode, forcedNicknameMode } = guild.getFeatures();
 
-		return await ctx.write({
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			components: [
-				new TextDisplay().setContent(
-					`-# ${emojis.reply} What permissions does PluralBuddy need and why?`,
-				),
-				new Container()
-					.setComponents(
-						new TextDisplay().setContent(`PluralBuddy supports a wide range of permission configurations due to how alters & systems are setup.
+    return await ctx.write({
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      components: [
+        new TextDisplay().setContent(
+          `-# ${emojis.reply} What permissions does PluralBuddy need and why?`,
+        ),
+        new Container()
+          .setComponents(
+            new TextDisplay()
+              .setContent(`PluralBuddy supports a wide range of permission configurations due to how alters & systems are setup.
 
 > **Pro tip:** Don't give all bots Administrator permissions! It increases your likelihood of being raided if a bot is compromised.
 
@@ -92,9 +89,9 @@ However, there are two permissions that you can use for proxying which requires 
 
 
 -# ALL permissions are needed in context of the channel. If any of the 5 above permissions aren't granted accordingly, in a channel, then the bot won't work in the way specified above _just_ in that channel.`),
-					)
-					.setColor("#FCCEE8"),
-			],
-		});
-	}
+          )
+          .setColor("#FCCEE8"),
+      ],
+    });
+  }
 }

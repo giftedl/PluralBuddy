@@ -9,14 +9,14 @@ import Link from "next/link";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 
 export function SolarPicture() {
-	return (
-		<HoverCard>
-			<HoverCardTrigger asChild>
-				<Avatar>
-					<AvatarImage src="/image/pfp.png" />
-					<AvatarFallback>pfp</AvatarFallback>
-				</Avatar>
-			</HoverCardTrigger>
-		</HoverCard>
-	);
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Avatar>
+          <AvatarImage src="/image/pfp.png" />
+          <AvatarFallback>pfp</AvatarFallback>
+        </Avatar>
+      </HoverCardTrigger>
+    </HoverCard>
+  );
 }

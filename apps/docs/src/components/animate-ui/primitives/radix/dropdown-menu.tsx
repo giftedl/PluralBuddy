@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
-import { AnimatePresence, motion, type HTMLMotionProps } from 'motion/react';
+import * as React from "react";
+import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
+import { AnimatePresence, motion, type HTMLMotionProps } from "motion/react";
 
 import {
   Highlight,
   HighlightItem,
   type HighlightItemProps,
   type HighlightProps,
-} from '@/components/animate-ui/primitives/effects/highlight';
-import { getStrictContext } from '@/lib/get-strict-context';
-import { useControlledState } from '@/hooks/use-controlled-state';
-import { useDataState } from '@/hooks/use-data-state';
+} from "@/components/animate-ui/primitives/effects/highlight";
+import { getStrictContext } from "@/lib/get-strict-context";
+import { useControlledState } from "@/hooks/use-controlled-state";
+import { useDataState } from "@/hooks/use-data-state";
 
 type DropdownMenuContextType = {
   isOpen: boolean;
@@ -27,14 +27,12 @@ type DropdownMenuSubContextType = {
 };
 
 const [DropdownMenuProvider, useDropdownMenu] =
-  getStrictContext<DropdownMenuContextType>('DropdownMenuContext');
+  getStrictContext<DropdownMenuContextType>("DropdownMenuContext");
 
 const [DropdownMenuSubProvider, useDropdownMenuSub] =
-  getStrictContext<DropdownMenuSubContextType>('DropdownMenuSubContext');
+  getStrictContext<DropdownMenuSubContextType>("DropdownMenuSubContext");
 
-type DropdownMenuProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.Root
->;
+type DropdownMenuProps = React.ComponentProps<typeof DropdownMenuPrimitive.Root>;
 
 function DropdownMenu(props: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useControlledState({
@@ -42,59 +40,34 @@ function DropdownMenu(props: DropdownMenuProps) {
     defaultValue: props?.defaultOpen,
     onChange: props?.onOpenChange,
   });
-  const [highlightedValue, setHighlightedValue] = React.useState<string | null>(
-    null,
-  );
+  const [highlightedValue, setHighlightedValue] = React.useState<string | null>(null);
 
   return (
-    <DropdownMenuProvider
-      value={{ isOpen, setIsOpen, highlightedValue, setHighlightedValue }}
-    >
-      <DropdownMenuPrimitive.Root
-        data-slot="dropdown-menu"
-        {...props}
-        onOpenChange={setIsOpen}
-      />
+    <DropdownMenuProvider value={{ isOpen, setIsOpen, highlightedValue, setHighlightedValue }}>
+      <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} onOpenChange={setIsOpen} />
     </DropdownMenuProvider>
   );
 }
 
-type DropdownMenuTriggerProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.Trigger
->;
+type DropdownMenuTriggerProps = React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>;
 
 function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
-  return (
-    <DropdownMenuPrimitive.Trigger
-      data-slot="dropdown-menu-trigger"
-      {...props}
-    />
-  );
+  return <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
 }
 
-type DropdownMenuPortalProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.Portal
->;
+type DropdownMenuPortalProps = React.ComponentProps<typeof DropdownMenuPrimitive.Portal>;
 
 function DropdownMenuPortal(props: DropdownMenuPortalProps) {
-  return (
-    <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
-  );
+  return <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />;
 }
 
-type DropdownMenuGroupProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.Group
->;
+type DropdownMenuGroupProps = React.ComponentProps<typeof DropdownMenuPrimitive.Group>;
 
 function DropdownMenuGroup(props: DropdownMenuGroupProps) {
-  return (
-    <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
-  );
+  return <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />;
 }
 
-type DropdownMenuSubProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.Sub
->;
+type DropdownMenuSubProps = React.ComponentProps<typeof DropdownMenuPrimitive.Sub>;
 
 function DropdownMenuSub(props: DropdownMenuSubProps) {
   const [isOpen, setIsOpen] = useControlledState({
@@ -114,42 +87,27 @@ function DropdownMenuSub(props: DropdownMenuSubProps) {
   );
 }
 
-type DropdownMenuRadioGroupProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.RadioGroup
->;
+type DropdownMenuRadioGroupProps = React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>;
 
 function DropdownMenuRadioGroup(props: DropdownMenuRadioGroupProps) {
-  return (
-    <DropdownMenuPrimitive.RadioGroup
-      data-slot="dropdown-menu-radio-group"
-      {...props}
-    />
-  );
+  return <DropdownMenuPrimitive.RadioGroup data-slot="dropdown-menu-radio-group" {...props} />;
 }
 
 type DropdownMenuSubTriggerProps = Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger>,
-  'asChild'
+  "asChild"
 > &
-  HTMLMotionProps<'div'>;
+  HTMLMotionProps<"div">;
 
-function DropdownMenuSubTrigger({
-  disabled,
-  textValue,
-  ...props
-}: DropdownMenuSubTriggerProps) {
+function DropdownMenuSubTrigger({ disabled, textValue, ...props }: DropdownMenuSubTriggerProps) {
   const { setHighlightedValue } = useDropdownMenu();
-  const [, highlightedRef] = useDataState<HTMLDivElement>(
-    'highlighted',
-    undefined,
-    (value) => {
-      if (value === true) {
-        const el = highlightedRef.current;
-        const v = el?.dataset.value || el?.id || null;
-        if (v) setHighlightedValue(v);
-      }
-    },
-  );
+  const [, highlightedRef] = useDataState<HTMLDivElement>("highlighted", undefined, (value) => {
+    if (value === true) {
+      const el = highlightedRef.current;
+      const v = el?.dataset.value || el?.id || null;
+      if (v) setHighlightedValue(v);
+    }
+  });
 
   return (
     <DropdownMenuPrimitive.SubTrigger
@@ -158,24 +116,17 @@ function DropdownMenuSubTrigger({
       textValue={textValue}
       asChild
     >
-      <motion.div
-        data-slot="dropdown-menu-sub-trigger"
-        data-disabled={disabled}
-        {...props}
-      />
+      <motion.div data-slot="dropdown-menu-sub-trigger" data-disabled={disabled} {...props} />
     </DropdownMenuPrimitive.SubTrigger>
   );
 }
 
 type DropdownMenuSubContentProps = Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>,
-  'forceMount' | 'asChild'
+  "forceMount" | "asChild"
 > &
-  Omit<
-    React.ComponentProps<typeof DropdownMenuPrimitive.Portal>,
-    'forceMount'
-  > &
-  HTMLMotionProps<'div'>;
+  Omit<React.ComponentProps<typeof DropdownMenuPrimitive.Portal>, "forceMount"> &
+  HTMLMotionProps<"div">;
 
 function DropdownMenuSubContent({
   loop,
@@ -226,7 +177,7 @@ function DropdownMenuSubContent({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={transition}
-              style={{ willChange: 'opacity, transform', ...style }}
+              style={{ willChange: "opacity, transform", ...style }}
               {...props}
             />
           </DropdownMenuPrimitive.SubContent>
@@ -236,15 +187,12 @@ function DropdownMenuSubContent({
   );
 }
 
-type DropdownMenuHighlightProps = Omit<
-  HighlightProps,
-  'controlledItems' | 'enabled' | 'hover'
-> & {
+type DropdownMenuHighlightProps = Omit<HighlightProps, "controlledItems" | "enabled" | "hover"> & {
   animateOnHover?: boolean;
 };
 
 function DropdownMenuHighlight({
-  transition = { type: 'spring', stiffness: 350, damping: 35 },
+  transition = { type: "spring", stiffness: 350, damping: 35 },
   ...props
 }: DropdownMenuHighlightProps) {
   const { highlightedValue } = useDropdownMenu();
@@ -263,13 +211,10 @@ function DropdownMenuHighlight({
 
 type DropdownMenuContentProps = Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.Content>,
-  'forceMount' | 'asChild'
+  "forceMount" | "asChild"
 > &
-  Omit<
-    React.ComponentProps<typeof DropdownMenuPrimitive.Portal>,
-    'forceMount'
-  > &
-  HTMLMotionProps<'div'>;
+  Omit<React.ComponentProps<typeof DropdownMenuPrimitive.Portal>, "forceMount"> &
+  HTMLMotionProps<"div">;
 
 function DropdownMenuContent({
   loop,
@@ -325,7 +270,7 @@ function DropdownMenuContent({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={transition}
-              style={{ willChange: 'opacity, transform', ...style }}
+              style={{ willChange: "opacity, transform", ...style }}
               {...props}
             />
           </DropdownMenuPrimitive.Content>
@@ -343,28 +288,19 @@ function DropdownMenuHighlightItem(props: DropdownMenuHighlightItemProps) {
 
 type DropdownMenuItemProps = Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.Item>,
-  'asChild'
+  "asChild"
 > &
-  HTMLMotionProps<'div'>;
+  HTMLMotionProps<"div">;
 
-function DropdownMenuItem({
-  disabled,
-  onSelect,
-  textValue,
-  ...props
-}: DropdownMenuItemProps) {
+function DropdownMenuItem({ disabled, onSelect, textValue, ...props }: DropdownMenuItemProps) {
   const { setHighlightedValue } = useDropdownMenu();
-  const [, highlightedRef] = useDataState<HTMLDivElement>(
-    'highlighted',
-    undefined,
-    (value) => {
-      if (value === true) {
-        const el = highlightedRef.current;
-        const v = el?.dataset.value || el?.id || null;
-        if (v) setHighlightedValue(v);
-      }
-    },
-  );
+  const [, highlightedRef] = useDataState<HTMLDivElement>("highlighted", undefined, (value) => {
+    if (value === true) {
+      const el = highlightedRef.current;
+      const v = el?.dataset.value || el?.id || null;
+      if (v) setHighlightedValue(v);
+    }
+  });
 
   return (
     <DropdownMenuPrimitive.Item
@@ -374,20 +310,16 @@ function DropdownMenuItem({
       textValue={textValue}
       asChild
     >
-      <motion.div
-        data-slot="dropdown-menu-item"
-        data-disabled={disabled}
-        {...props}
-      />
+      <motion.div data-slot="dropdown-menu-item" data-disabled={disabled} {...props} />
     </DropdownMenuPrimitive.Item>
   );
 }
 
 type DropdownMenuCheckboxItemProps = Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>,
-  'asChild'
+  "asChild"
 > &
-  HTMLMotionProps<'div'>;
+  HTMLMotionProps<"div">;
 
 function DropdownMenuCheckboxItem({
   checked,
@@ -398,17 +330,13 @@ function DropdownMenuCheckboxItem({
   ...props
 }: DropdownMenuCheckboxItemProps) {
   const { setHighlightedValue } = useDropdownMenu();
-  const [, highlightedRef] = useDataState<HTMLDivElement>(
-    'highlighted',
-    undefined,
-    (value) => {
-      if (value === true) {
-        const el = highlightedRef.current;
-        const v = el?.dataset.value || el?.id || null;
-        if (v) setHighlightedValue(v);
-      }
-    },
-  );
+  const [, highlightedRef] = useDataState<HTMLDivElement>("highlighted", undefined, (value) => {
+    if (value === true) {
+      const el = highlightedRef.current;
+      const v = el?.dataset.value || el?.id || null;
+      if (v) setHighlightedValue(v);
+    }
+  });
 
   return (
     <DropdownMenuPrimitive.CheckboxItem
@@ -420,20 +348,16 @@ function DropdownMenuCheckboxItem({
       textValue={textValue}
       asChild
     >
-      <motion.div
-        data-slot="dropdown-menu-checkbox-item"
-        data-disabled={disabled}
-        {...props}
-      />
+      <motion.div data-slot="dropdown-menu-checkbox-item" data-disabled={disabled} {...props} />
     </DropdownMenuPrimitive.CheckboxItem>
   );
 }
 
 type DropdownMenuRadioItemProps = Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>,
-  'asChild'
+  "asChild"
 > &
-  HTMLMotionProps<'div'>;
+  HTMLMotionProps<"div">;
 
 function DropdownMenuRadioItem({
   value,
@@ -443,17 +367,13 @@ function DropdownMenuRadioItem({
   ...props
 }: DropdownMenuRadioItemProps) {
   const { setHighlightedValue } = useDropdownMenu();
-  const [, highlightedRef] = useDataState<HTMLDivElement>(
-    'highlighted',
-    undefined,
-    (value) => {
-      if (value === true) {
-        const el = highlightedRef.current;
-        const v = el?.dataset.value || el?.id || null;
-        if (v) setHighlightedValue(v);
-      }
-    },
-  );
+  const [, highlightedRef] = useDataState<HTMLDivElement>("highlighted", undefined, (value) => {
+    if (value === true) {
+      const el = highlightedRef.current;
+      const v = el?.dataset.value || el?.id || null;
+      if (v) setHighlightedValue(v);
+    }
+  });
 
   return (
     <DropdownMenuPrimitive.RadioItem
@@ -464,39 +384,24 @@ function DropdownMenuRadioItem({
       textValue={textValue}
       asChild
     >
-      <motion.div
-        data-slot="dropdown-menu-radio-item"
-        data-disabled={disabled}
-        {...props}
-      />
+      <motion.div data-slot="dropdown-menu-radio-item" data-disabled={disabled} {...props} />
     </DropdownMenuPrimitive.RadioItem>
   );
 }
 
-type DropdownMenuLabelProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.Label
->;
+type DropdownMenuLabelProps = React.ComponentProps<typeof DropdownMenuPrimitive.Label>;
 
 function DropdownMenuLabel(props: DropdownMenuLabelProps) {
-  return (
-    <DropdownMenuPrimitive.Label data-slot="dropdown-menu-label" {...props} />
-  );
+  return <DropdownMenuPrimitive.Label data-slot="dropdown-menu-label" {...props} />;
 }
 
-type DropdownMenuSeparatorProps = React.ComponentProps<
-  typeof DropdownMenuPrimitive.Separator
->;
+type DropdownMenuSeparatorProps = React.ComponentProps<typeof DropdownMenuPrimitive.Separator>;
 
 function DropdownMenuSeparator(props: DropdownMenuSeparatorProps) {
-  return (
-    <DropdownMenuPrimitive.Separator
-      data-slot="dropdown-menu-separator"
-      {...props}
-    />
-  );
+  return <DropdownMenuPrimitive.Separator data-slot="dropdown-menu-separator" {...props} />;
 }
 
-type DropdownMenuShortcutProps = React.ComponentProps<'span'>;
+type DropdownMenuShortcutProps = React.ComponentProps<"span">;
 
 function DropdownMenuShortcut(props: DropdownMenuShortcutProps) {
   return <span data-slot="dropdown-menu-shortcut" {...props} />;
@@ -504,16 +409,13 @@ function DropdownMenuShortcut(props: DropdownMenuShortcutProps) {
 
 type DropdownMenuItemIndicatorProps = Omit<
   React.ComponentProps<typeof DropdownMenuPrimitive.ItemIndicator>,
-  'asChild'
+  "asChild"
 > &
-  HTMLMotionProps<'div'>;
+  HTMLMotionProps<"div">;
 
 function DropdownMenuItemIndicator(props: DropdownMenuItemIndicatorProps) {
   return (
-    <DropdownMenuPrimitive.ItemIndicator
-      data-slot="dropdown-menu-item-indicator"
-      asChild
-    >
+    <DropdownMenuPrimitive.ItemIndicator data-slot="dropdown-menu-item-indicator" asChild>
       <motion.div {...props} />
     </DropdownMenuPrimitive.ItemIndicator>
   );

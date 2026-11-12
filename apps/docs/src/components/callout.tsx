@@ -1,16 +1,16 @@
-import { CircleCheck, CircleX, Info, Lightbulb, TriangleAlert } from 'lucide-react';
-import type { ComponentProps, ReactNode } from 'react';
-import { cn } from '../lib/cn';
+import { CircleCheck, CircleX, Info, Lightbulb, TriangleAlert } from "lucide-react";
+import type { ComponentProps, ReactNode } from "react";
+import { cn } from "../lib/cn";
 
-export type CalloutType = 'info' | 'warn' | 'error' | 'success' | 'warning' | 'idea';
+export type CalloutType = "info" | "warn" | "error" | "success" | "warning" | "idea";
 
-const iconClass = 'size-5 -me-0.5 fill-(--callout-color) text-fd-card';
+const iconClass = "size-5 -me-0.5 fill-(--callout-color) text-fd-card";
 
 export function Callout({
   children,
   title,
   ...props
-}: { title?: ReactNode } & Omit<CalloutContainerProps, 'title'>) {
+}: { title?: ReactNode } & Omit<CalloutContainerProps, "title">) {
   return (
     <CalloutContainer {...props}>
       {title && <CalloutTitle>{title}</CalloutTitle>}
@@ -19,7 +19,7 @@ export function Callout({
   );
 }
 
-export interface CalloutContainerProps extends ComponentProps<'div'> {
+export interface CalloutContainerProps extends ComponentProps<"div"> {
   /**
    * @defaultValue info
    */
@@ -32,13 +32,13 @@ export interface CalloutContainerProps extends ComponentProps<'div'> {
 }
 
 function resolveAlias(type: CalloutType) {
-  if (type === 'warn') return 'warning';
-  if ((type as unknown) === 'tip') return 'info';
+  if (type === "warn") return "warning";
+  if ((type as unknown) === "tip") return "info";
   return type;
 }
 
 export function CalloutContainer({
-  type: inputType = 'info',
+  type: inputType = "info",
   icon,
   children,
   className,
@@ -50,12 +50,12 @@ export function CalloutContainer({
   return (
     <div
       className={cn(
-        'flex gap-2 my-4 rounded-xl border bg-fd-card p-3 ps-1 text-sm text-fd-card-foreground shadow-md',
+        "flex gap-2 my-4 rounded-xl border bg-fd-card p-3 ps-1 text-sm text-fd-card-foreground shadow-md",
         className,
       )}
       style={
         {
-          '--callout-color': `var(--color-fd-${type}, var(--color-fd-muted))`,
+          "--callout-color": `var(--color-fd-${type}, var(--color-fd-muted))`,
           ...style,
         } as object
       }
@@ -77,18 +77,18 @@ export function CalloutContainer({
   );
 }
 
-export function CalloutTitle({ children, className, ...props }: ComponentProps<'p'>) {
+export function CalloutTitle({ children, className, ...props }: ComponentProps<"p">) {
   return (
-    <p className={cn('font-medium my-0!', className)} {...props}>
+    <p className={cn("font-medium my-0!", className)} {...props}>
       {children}
     </p>
   );
 }
 
-export function CalloutDescription({ children, className, ...props }: ComponentProps<'p'>) {
+export function CalloutDescription({ children, className, ...props }: ComponentProps<"p">) {
   return (
     <div
-      className={cn('text-fd-muted-foreground prose-no-margin empty:hidden', className)}
+      className={cn("text-fd-muted-foreground prose-no-margin empty:hidden", className)}
       {...props}
     >
       {children}

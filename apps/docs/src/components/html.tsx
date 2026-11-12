@@ -13,16 +13,18 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-export function Html({
-  children,
-}: {
-  children: ReactNode;
-}): React.ReactElement {
+export function Html({ children }: { children: ReactNode }): React.ReactElement {
   const mode = useMode();
-  const { resolvedTheme } = useTheme()
+  const { resolvedTheme } = useTheme();
 
   return (
-    <html id={mode} className={cn(inter.className, resolvedTheme)} suppressHydrationWarning lang={getLocale()} dir={getTextDirection()}>
+    <html
+      id={mode}
+      className={cn(inter.className, resolvedTheme)}
+      suppressHydrationWarning
+      lang={getLocale()}
+      dir={getTextDirection()}
+    >
       {children}
     </html>
   );

@@ -17,14 +17,14 @@ services:
     env_file: ".env"
     container_name: pluralbuddy-redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - pluralbuddy_redis-data-sfx87qgyqks6reh7nvjxe1ud:/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USERNAME=${REDIS_USERNAME}
     restart: unless-stopped
-  
+
   bot:
     image: ghcr.io/giftedl/pluralbuddy/bot:latest
     env_file: ".env"
@@ -33,7 +33,7 @@ services:
       - "diun.enable=true"
     # Backend, internal API
     ports:
-      - '3030:3030'
+      - "3030:3030"
     environment:
       # Databases
       - REDIS=redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@pluralbuddy-redis:6379/0

@@ -1,28 +1,28 @@
-'use client';
-import { usePathname } from 'fumadocs-core/framework';
-import Link from 'fumadocs-core/link';
-import { useI18n } from '@fumadocs/base-ui/contexts/i18n';
-import type { FC, ComponentProps } from 'react';
-import { isLinkItemActive, type BaseLayoutProps, type LinkItemType } from '.';
+"use client";
+import { usePathname } from "fumadocs-core/framework";
+import Link from "fumadocs-core/link";
+import { useI18n } from "@fumadocs/base-ui/contexts/i18n";
+import type { FC, ComponentProps } from "react";
+import { isLinkItemActive, type BaseLayoutProps, type LinkItemType } from ".";
 import {
   type LanguageSelectProps,
   type LanguageSelectTextProps,
   LanguageSelect,
   LanguageSelectText,
-} from './slots/language-select';
+} from "./slots/language-select";
 import {
   type SearchTriggerProps,
   type FullSearchTriggerProps,
   SearchTrigger,
   FullSearchTrigger,
-} from './slots/search-trigger';
-import { type ThemeSwitchProps, ThemeSwitch } from './slots/theme-switch';
+} from "./slots/search-trigger";
+import { type ThemeSwitchProps, ThemeSwitch } from "./slots/theme-switch";
 
 export function LinkItem({
   ref,
   item,
   ...props
-}: Omit<ComponentProps<'a'>, 'href'> & { item: Extract<LinkItemType, { url: string }> }) {
+}: Omit<ComponentProps<"a">, "href"> & { item: Extract<LinkItemType, { url: string }> }) {
   const pathname = usePathname();
   const active = isLinkItemActive(item, pathname);
 
@@ -34,7 +34,7 @@ export function LinkItem({
 }
 
 export interface BaseSlots {
-  navTitle: FC<ComponentProps<'a'>>;
+  navTitle: FC<ComponentProps<"a">>;
   themeSwitch: FC<ThemeSwitchProps> | false;
   searchTrigger:
     | {
@@ -52,10 +52,10 @@ export interface BaseSlots {
 
 export interface BaseSlotsProps<P extends BaseLayoutProps = BaseLayoutProps> extends Pick<
   P,
-  'nav'
+  "nav"
 > {
-  themeSwitch: Omit<NonNullable<P['themeSwitch']>, 'enabled'>;
-  searchToggle: Omit<NonNullable<P['searchToggle']>, 'enabled'>;
+  themeSwitch: Omit<NonNullable<P["themeSwitch"]>, "enabled">;
+  searchToggle: Omit<NonNullable<P["searchToggle"]>, "enabled">;
 }
 
 export function baseSlots({ useProps }: { useProps: () => BaseSlotsProps }) {
@@ -77,10 +77,10 @@ export function baseSlots({ useProps }: { useProps: () => BaseSlotsProps }) {
     return <FullSearchTrigger {...props} {...searchToggle.full} />;
   }
 
-  function InlineNavTitle({ href: defaultUrl = '/', ...props }: ComponentProps<'a'>) {
+  function InlineNavTitle({ href: defaultUrl = "/", ...props }: ComponentProps<"a">) {
     const { url = defaultUrl, title } = useProps().nav ?? {};
 
-    if (typeof title === 'function') return title({ href: url, ...props });
+    if (typeof title === "function") return title({ href: url, ...props });
     return (
       <Link href={url} {...props}>
         {title}

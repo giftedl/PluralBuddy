@@ -8,61 +8,61 @@ import { AlertView } from "@/views/alert";
 import { SystemSettingsView } from "@/views/system-settings";
 
 export default class PublicProfileBtn extends ComponentCommand {
-	componentType = "Button" as const;
+  componentType = "Button" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludeProxyTags.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return InteractionIdentifier.Systems.Configuration.GeneralTab.ToggleIncludeProxyTags.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		const { system } = await ctx.retrievePUser();
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    const { system } = await ctx.retrievePUser();
 
-		if (system === undefined) {
-			return await ctx.editOrReply({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (system === undefined) {
+      return await ctx.editOrReply({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		await createSystemOperation(
-			system,
-			{
-				flags: getSystemFeatures(system).keepProxyTags
-					? getSystemFeatures(system).disable(SystemFlags.KEEP_PROXY_TAGS)
-					: getSystemFeatures(system).enable(SystemFlags.KEEP_PROXY_TAGS),
-			},
-			await ctx.userTranslations(),
-			"discord",
-			{
-				flippedProxyTags: true,
-			},
-		);
+    await createSystemOperation(
+      system,
+      {
+        flags: getSystemFeatures(system).keepProxyTags
+          ? getSystemFeatures(system).disable(SystemFlags.KEEP_PROXY_TAGS)
+          : getSystemFeatures(system).enable(SystemFlags.KEEP_PROXY_TAGS),
+      },
+      await ctx.userTranslations(),
+      "discord",
+      {
+        flippedProxyTags: true,
+      },
+    );
 
-		return await ctx.update({
-			components: [
-				...new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(system)?.preferAccessiblity,
-				).topView("general", system.associatedUserId),
-				...(await new SystemSettingsView(
-					await ctx.userTranslations(),
-					getSystemFeatures(system)?.preferAccessiblity,
-				).generalSettings(
-					{
-						...system,
-						flags: getSystemFeatures(system).keepProxyTags
-							? getSystemFeatures(system).disable(SystemFlags.KEEP_PROXY_TAGS)
-							: getSystemFeatures(system).enable(SystemFlags.KEEP_PROXY_TAGS),
-					},
-					ctx.guildId,
-					2,
-				)),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.update({
+      components: [
+        ...new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(system)?.preferAccessiblity,
+        ).topView("general", system.associatedUserId),
+        ...(await new SystemSettingsView(
+          await ctx.userTranslations(),
+          getSystemFeatures(system)?.preferAccessiblity,
+        ).generalSettings(
+          {
+            ...system,
+            flags: getSystemFeatures(system).keepProxyTags
+              ? getSystemFeatures(system).disable(SystemFlags.KEEP_PROXY_TAGS)
+              : getSystemFeatures(system).enable(SystemFlags.KEEP_PROXY_TAGS),
+          },
+          ctx.guildId,
+          2,
+        )),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

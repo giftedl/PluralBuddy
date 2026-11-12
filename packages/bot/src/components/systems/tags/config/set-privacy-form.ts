@@ -10,121 +10,107 @@ import { TagView } from "@/views/tags";
 import { TagProtectionFlags } from "@/types/tag";
 import { combine } from "@/lib/privacy-bitmask";
 import { w } from "@/webhooks";
-import {writeBack} from "@/lib/pk-sync-engine.ts";
+import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetUsernameButton extends ModalCommand {
-	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyForm.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ModalContext) {
+    return InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyForm.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ModalContext) {
-		const tagId =
-			InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyForm.substring(
-				ctx.customId,
-			)[0];
+  override async run(ctx: ModalContext) {
+    const tagId =
+      InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyForm.substring(
+        ctx.customId,
+      )[0];
 
-		const systemId = ctx.author.id;
-		const query = tagCollection.findOne({
-			tagId,
-			systemId,
-		});
-		let tag = await query;
+    const systemId = ctx.author.id;
+    const query = tagCollection.findOne({
+      tagId,
+      systemId,
+    });
+    let tag = await query;
 
-		if (tag === null) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_TAG_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (tag === null) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const newTagPrivacy =
-			(ctx.interaction.getInputValue(
-				InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyType.create(),
-			) as string[] | undefined) ?? [];
+    const newTagPrivacy =
+      (ctx.interaction.getInputValue(
+        InteractionIdentifier.Systems.Configuration.FormSelection.Tags.TagPrivacyType.create(),
+      ) as string[] | undefined) ?? [];
 
-		let privacyFlag = 0;
-		privacyFlag = combine(
-			...newTagPrivacy.map((val) => {
-				if (
-					val ===
-					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_NAME.create()
-				) {
-					return TagProtectionFlags.NAME;
-				}
-				if (
-					val ===
-					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_ALTERS.create()
-				) {
-					return TagProtectionFlags.ALTERS;
-				}
-				if (
-					val ===
-					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_COLOR.create()
-				) {
-					return TagProtectionFlags.COLOR;
-				}
-				if (
-					val ===
-					InteractionIdentifier.Selection.PrivacyValues.PRIVACY_DESCRIPTION.create()
-				) {
-					return TagProtectionFlags.DESCRIPTION;
-				}
+    let privacyFlag = 0;
+    privacyFlag = combine(
+      ...newTagPrivacy.map((val) => {
+        if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_NAME.create()) {
+          return TagProtectionFlags.NAME;
+        }
+        if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_ALTERS.create()) {
+          return TagProtectionFlags.ALTERS;
+        }
+        if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_COLOR.create()) {
+          return TagProtectionFlags.COLOR;
+        }
+        if (val === InteractionIdentifier.Selection.PrivacyValues.PRIVACY_DESCRIPTION.create()) {
+          return TagProtectionFlags.DESCRIPTION;
+        }
 
-				return TagProtectionFlags.ALTERS;
-			}),
-		);
+        return TagProtectionFlags.ALTERS;
+      }),
+    );
 
-		await tagCollection.updateOne(
-			{ tagId, systemId },
-			{
-				$set: {
-					public: privacyFlag,
-				},
-			},
-		);
+    await tagCollection.updateOne(
+      { tagId, systemId },
+      {
+        $set: {
+          public: privacyFlag,
+        },
+      },
+    );
 
-		w(ctx.author.id, "tag.update", {
-			type: "tag.update",
-			tag: {
-				...tag,
-				public: privacyFlag,
-			},
-		});
+    w(ctx.author.id, "tag.update", {
+      type: "tag.update",
+      tag: {
+        ...tag,
+        public: privacyFlag,
+      },
+    });
 
-        if (tag.fields["@/converter/pk"])
-            writeBack({
-                type: "tag",
-                id: tag.fields["@/converter/pk"],
-                change: {
-                    public: privacyFlag,
-                },
-                syncConfig: (await ctx.retrievePUser()).syncConfiguration,
-            });
+    if (tag.fields["@/converter/pk"])
+      writeBack({
+        type: "tag",
+        id: tag.fields["@/converter/pk"],
+        change: {
+          public: privacyFlag,
+        },
+        syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+      });
 
-        tag =
-			(await tagCollection.findOne({
-				tagId,
-				systemId,
-			})) ?? tag;
+    tag =
+      (await tagCollection.findOne({
+        tagId,
+        systemId,
+      })) ?? tag;
 
-		return await ctx.interaction.update({
-			components: [
-				...new TagView(await ctx.userTranslations()).tagTopView(
-					"general",
-					tag.tagId.toString(),
-					tag.tagFriendlyName,
-				),
-				...new TagView(await ctx.userTranslations()).tagGeneral(
-					tag,
-					(await ctx.getDefaultPrefix()) ?? "pb;",
-					ctx.interaction?.message?.messageReference === undefined,
-				),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.interaction.update({
+      components: [
+        ...new TagView(await ctx.userTranslations()).tagTopView(
+          "general",
+          tag.tagId.toString(),
+          tag.tagFriendlyName,
+        ),
+        ...new TagView(await ctx.userTranslations()).tagGeneral(
+          tag,
+          (await ctx.getDefaultPrefix()) ?? "pb;",
+          ctx.interaction?.message?.messageReference === undefined,
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

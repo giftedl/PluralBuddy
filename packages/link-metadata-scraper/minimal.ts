@@ -7,8 +7,8 @@ const getMetaTags = async (url: string) => {
   const html = await res.text();
   const document = new DOMParser().parseFromString(html, "text/html");
   const metaTags = document.querySelectorAll("meta");
-  const documentMeta = (Array.from(metaTags) as Element[])
-    .reduce((acc, meta) => {
+  const documentMeta = (Array.from(metaTags) as Element[]).reduce(
+    (acc, meta) => {
       const property = meta.getAttribute("property");
       const name = meta.getAttribute("name");
       const content = meta.getAttribute("content");
@@ -18,7 +18,9 @@ const getMetaTags = async (url: string) => {
       if (name) acc[name] = content;
 
       return acc;
-    }, {} as Record<string, string>);
+    },
+    {} as Record<string, string>,
+  );
   documentMeta.title ??= document.querySelector("title")?.textContent;
 
   return documentMeta;

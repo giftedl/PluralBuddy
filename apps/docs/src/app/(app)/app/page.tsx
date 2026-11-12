@@ -3,5 +3,5 @@
 import PluralBuddyApp from "./[...path]/page";
 
 export default function PluralBuddyIndexApp() {
-	return <PluralBuddyApp />
+  return <PluralBuddyApp />;
 }

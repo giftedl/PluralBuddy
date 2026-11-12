@@ -13,300 +13,269 @@ import { Badge } from "../ui/badge";
 import { buttonVariants } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "../ui/dialog";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
 import {
-	Drawer,
-	DrawerContent,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from "../ui/drawer";
-import {
-	Field,
-	FieldDescription,
-	FieldError,
-	FieldGroup,
-	FieldLabel,
-	FieldLegend,
-	FieldSet,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
 } from "../ui/field";
 import { Input } from "../ui/input";
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupButton,
-	InputGroupInput,
-} from "../ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "../ui/input-group";
 import { Button } from "../ui/shadcn-button";
 import { Spinner } from "../ui/spinner";
 
 export const scopeList = [
-	{ title: "profile", description: "Access to your profile data – required." },
-	{ title: "openid", description: "Access to your Discord user ID" },
-	{
-		title: "offline_access",
-		description: "Access to refresh access to this service",
-	},
-	{ title: "alters:read", description: "Access to read alter data" },
-	{ title: "alters:write", description: "Access to change alter settings" },
-	{ title: "tags:read", description: "Access to read tag data" },
-	{ title: "tags:write", description: "Access to change tag data" },
-	{ title: "tags:alters", description: "Access to assign tags to alters" },
-	{ title: "system:read", description: "Access to system data" },
-	{ title: "system:write", description: "Access to change system settings" },
-	{
-		title: "system:admin",
-		description: "Access to read and write to systems AND alters.",
-	},
-	{
-		title: "system:ai-ap",
-		description: "Create a custom auto-proxy mode for this application.",
-	},
+  { title: "profile", description: "Access to your profile data – required." },
+  { title: "openid", description: "Access to your Discord user ID" },
+  {
+    title: "offline_access",
+    description: "Access to refresh access to this service",
+  },
+  { title: "alters:read", description: "Access to read alter data" },
+  { title: "alters:write", description: "Access to change alter settings" },
+  { title: "tags:read", description: "Access to read tag data" },
+  { title: "tags:write", description: "Access to change tag data" },
+  { title: "tags:alters", description: "Access to assign tags to alters" },
+  { title: "system:read", description: "Access to system data" },
+  { title: "system:write", description: "Access to change system settings" },
+  {
+    title: "system:admin",
+    description: "Access to read and write to systems AND alters.",
+  },
+  {
+    title: "system:ai-ap",
+    description: "Create a custom auto-proxy mode for this application.",
+  },
 ] as const;
 
 const formSchema = z.object({
-	applicationName: z.string().max(90).min(3),
-	redirectUris: z.string().max(300).array().max(10),
-	scopes: z.enum(scopeList.map((c) => c.title)).array(),
+  applicationName: z.string().max(90).min(3),
+  redirectUris: z.string().max(300).array().max(10),
+  scopes: z.enum(scopeList.map((c) => c.title)).array(),
 });
 
 export function CreateNewAppForm({ children }: { children: ReactNode }) {
-	const router = useRouter();
-	const [loading, setLoading] = useState(false);
-	const form = useForm({
-		defaultValues: {
-			applicationName: "",
-			redirectUris: [] as string[],
-			scopes: ["profile"] as string[],
-		},
-		onSubmit: async ({ value }) => {
-			setLoading(true);
-			// Do something with form data
-			console.log("creating new dev app ->", value);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const form = useForm({
+    defaultValues: {
+      applicationName: "",
+      redirectUris: [] as string[],
+      scopes: ["profile"] as string[],
+    },
+    onSubmit: async ({ value }) => {
+      setLoading(true);
+      // Do something with form data
+      console.log("creating new dev app ->", value);
 
-			// @ts-ignore
-			const result = await authClient.oauth2.createClient({
-				redirect_uris: value.redirectUris,
-				scope: value.scopes.join(" "),
-				client_name: value.applicationName,
-			});
+      // @ts-ignore
+      const result = await authClient.oauth2.createClient({
+        redirect_uris: value.redirectUris,
+        scope: value.scopes.join(" "),
+        client_name: value.applicationName,
+      });
 
-			if (result.error) {
-				setLoading(false);
-				return toast.error(result.error.message);
-			}
+      if (result.error) {
+        setLoading(false);
+        return toast.error(result.error.message);
+      }
 
-			router.push(`/developers/application/${result.data?.client_id}`);
-		},
-		validators: {
-			onSubmit: formSchema,
-		},
-	});
-	const isDesktop = useMediaQuery("(min-width: 768px)");
+      router.push(`/developers/application/${result.data?.client_id}`);
+    },
+    validators: {
+      onSubmit: formSchema,
+    },
+  });
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
-	const FormContents = () => (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				form.handleSubmit();
-			}}
-		>
-			<FieldSet>
-				<FieldGroup>
-					<form.Field name="applicationName">
-						{(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
-							return (
-								<Field data-invalid={isInvalid} aria-required>
-									<FieldLabel htmlFor="street">Application Name</FieldLabel>
-									<FieldDescription>
-										This is what shows up when the user is in the consent screen
-										checkpoint.
-									</FieldDescription>
-									<Input
-										type="text"
-										placeholder="Acme Inc."
-										aria-invalid={isInvalid}
-										id={field.name}
-										name={field.name}
-										value={field.state.value}
-										onBlur={field.handleBlur}
-										onChange={(e) => field.handleChange(e.target.value)}
-									/>
+  const FormContents = () => (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+    >
+      <FieldSet>
+        <FieldGroup>
+          <form.Field name="applicationName">
+            {(field) => {
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid} aria-required>
+                  <FieldLabel htmlFor="street">Application Name</FieldLabel>
+                  <FieldDescription>
+                    This is what shows up when the user is in the consent screen checkpoint.
+                  </FieldDescription>
+                  <Input
+                    type="text"
+                    placeholder="Acme Inc."
+                    aria-invalid={isInvalid}
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
 
-									{isInvalid && <FieldError errors={field.state.meta.errors} />}
-								</Field>
-							);
-						}}
-					</form.Field>
-					<form.Field name="redirectUris" mode="array">
-						{(field) => <RedirectURI field={field} />}
-					</form.Field>
-					<form.Field name="scopes" mode="array">
-						{(field) => {
-							const isInvalid =
-								field.state.meta.isTouched && !field.state.meta.isValid;
-							return (
-								<FieldSet>
-									<FieldLegend variant="label">Scopes</FieldLegend>
-									<FieldGroup
-										data-slot="checkbox-group"
-										className="grid grid-cols-2"
-									>
-										{scopeList.map((scope) => (
-											<div key={scope.title} className="space-y-1">
-												<Field
-													orientation="horizontal"
-													data-invalid={isInvalid}
-												>
-													<Checkbox
-														id={`form-tanstack-checkbox-${scope.title}`}
-														name={field.name}
-														aria-invalid={isInvalid}
-														checked={field.state.value.includes(scope.title)}
-														disabled={scope.title === "profile"}
-														onCheckedChange={(checked) => {
-															if (checked) {
-																field.pushValue(scope.title);
-															} else {
-																const index = field.state.value.indexOf(
-																	scope.title,
-																);
-																if (index > -1) {
-																	field.removeValue(index);
-																}
-															}
-														}}
-													/>
-													<FieldLabel
-														htmlFor={`form-tanstack-checkbox-${scope}`}
-														className="font-mono"
-													>
-														{scope.title}
-													</FieldLabel>
-												</Field>
-												<FieldDescription>{scope.description}</FieldDescription>
-											</div>
-										))}
-									</FieldGroup>
-									{isInvalid && <FieldError errors={field.state.meta.errors} />}
-								</FieldSet>
-							);
-						}}
-					</form.Field>
-				</FieldGroup>
-			</FieldSet>
-			<Field orientation="horizontal" className="mt-6">
-				<button
-					type="submit"
-					className={cn(buttonVariants({ variant: "primary" }), "w-full")}
-					disabled={loading}
-				>
-					{loading && <Spinner />}
-					Submit
-				</button>
-			</Field>
-		</form>
-	);
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          </form.Field>
+          <form.Field name="redirectUris" mode="array">
+            {(field) => <RedirectURI field={field} />}
+          </form.Field>
+          <form.Field name="scopes" mode="array">
+            {(field) => {
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <FieldSet>
+                  <FieldLegend variant="label">Scopes</FieldLegend>
+                  <FieldGroup data-slot="checkbox-group" className="grid grid-cols-2">
+                    {scopeList.map((scope) => (
+                      <div key={scope.title} className="space-y-1">
+                        <Field orientation="horizontal" data-invalid={isInvalid}>
+                          <Checkbox
+                            id={`form-tanstack-checkbox-${scope.title}`}
+                            name={field.name}
+                            aria-invalid={isInvalid}
+                            checked={field.state.value.includes(scope.title)}
+                            disabled={scope.title === "profile"}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.pushValue(scope.title);
+                              } else {
+                                const index = field.state.value.indexOf(scope.title);
+                                if (index > -1) {
+                                  field.removeValue(index);
+                                }
+                              }
+                            }}
+                          />
+                          <FieldLabel
+                            htmlFor={`form-tanstack-checkbox-${scope}`}
+                            className="font-mono"
+                          >
+                            {scope.title}
+                          </FieldLabel>
+                        </Field>
+                        <FieldDescription>{scope.description}</FieldDescription>
+                      </div>
+                    ))}
+                  </FieldGroup>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </FieldSet>
+              );
+            }}
+          </form.Field>
+        </FieldGroup>
+      </FieldSet>
+      <Field orientation="horizontal" className="mt-6">
+        <button
+          type="submit"
+          className={cn(buttonVariants({ variant: "primary" }), "w-full")}
+          disabled={loading}
+        >
+          {loading && <Spinner />}
+          Submit
+        </button>
+      </Field>
+    </form>
+  );
 
-	if (isDesktop)
-		return (
-			<Dialog>
-				<DialogTrigger asChild>{children}</DialogTrigger>
-				<DialogContent className="max-h-[700px] overflow-auto">
-					<DialogHeader>
-						<DialogTitle>Create OAuth Application</DialogTitle>
-					</DialogHeader>
+  if (isDesktop)
+    return (
+      <Dialog>
+        <DialogTrigger asChild>{children}</DialogTrigger>
+        <DialogContent className="max-h-[700px] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Create OAuth Application</DialogTitle>
+          </DialogHeader>
 
-					<FormContents />
-				</DialogContent>
-			</Dialog>
-		);
+          <FormContents />
+        </DialogContent>
+      </Dialog>
+    );
 
-	return (
-		<Drawer>
-			<DrawerTrigger asChild>{children}</DrawerTrigger>
-			<DrawerContent>
-				<DrawerHeader className="text-left">
-					<DrawerTitle>Create OAuth Application</DrawerTitle>
-				</DrawerHeader>
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>{children}</DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Create OAuth Application</DrawerTitle>
+        </DrawerHeader>
 
-				<div className="p-8 overflow-y-auto h-full">
-					<FormContents />
-				</div>
-			</DrawerContent>
-		</Drawer>
-	);
+        <div className="p-8 overflow-y-auto h-full">
+          <FormContents />
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
 
-	function RedirectURI({ field }: { field: any }) {
-		const [value, setValue] = useState("");
-		const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+  function RedirectURI({ field }: { field: any }) {
+    const [value, setValue] = useState("");
+    const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
-		return (
-			<Field data-invalid={isInvalid}>
-				<FieldLabel>Redirect URI(s)</FieldLabel>
-				<FieldDescription>
-					This is the allowed redirect URI's for the application.
-				</FieldDescription>
-				<InputGroup>
-					<InputGroupInput
-						placeholder="https://acme.com/api/callback"
-						value={value}
-						onChange={(e) => {
-							setValue(e.target.value);
-						}}
-						aria-invalid={isInvalid}
-					/>
-					<InputGroupAddon align="inline-end">
-						<InputGroupButton
-							variant="secondary"
-							onClick={() => {
-								if (value !== "") field.pushValue(value);
-								setValue("");
-							}}
-						>
-							Add
-						</InputGroupButton>
-					</InputGroupAddon>
-				</InputGroup>
-				<FieldError
-					errors={[
-						...field.state.meta.errors,
-					]}
-				/>
+    return (
+      <Field data-invalid={isInvalid}>
+        <FieldLabel>Redirect URI(s)</FieldLabel>
+        <FieldDescription>This is the allowed redirect URI's for the application.</FieldDescription>
+        <InputGroup>
+          <InputGroupInput
+            placeholder="https://acme.com/api/callback"
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
+            aria-invalid={isInvalid}
+          />
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              variant="secondary"
+              onClick={() => {
+                if (value !== "") field.pushValue(value);
+                setValue("");
+              }}
+            >
+              Add
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+        <FieldError errors={[...field.state.meta.errors]} />
 
-				<div className="flex items-center gap-1">
-					{field.state.value.map((_: unknown, index: number) => (
-						<form.Field
-							name={`redirectUris[${index}]`}
-							key={`${Math.random()}-${index}`}
-						>
-							{(subField) => {
-								return (
-									<Badge className="w-min">
-										{subField.state.value}{" "}
-										<Button
-											onClick={() => field.removeValue(index)}
-											aria-label={`Remove redirect URI ${index + 1}`}
-											className="size-4"
-										>
-											<X />
-										</Button>
-									</Badge>
-								);
-							}}
-						</form.Field>
-					))}
-				</div>
-			</Field>
-		);
-	}
+        <div className="flex items-center gap-1">
+          {field.state.value.map((_: unknown, index: number) => (
+            <form.Field name={`redirectUris[${index}]`} key={`${Math.random()}-${index}`}>
+              {(subField) => {
+                return (
+                  <Badge className="w-min">
+                    {subField.state.value}{" "}
+                    <Button
+                      onClick={() => field.removeValue(index)}
+                      aria-label={`Remove redirect URI ${index + 1}`}
+                      className="size-4"
+                    >
+                      <X />
+                    </Button>
+                  </Badge>
+                );
+              }}
+            </form.Field>
+          ))}
+        </div>
+      </Field>
+    );
+  }
 }

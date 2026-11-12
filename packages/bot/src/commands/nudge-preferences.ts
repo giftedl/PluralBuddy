@@ -7,51 +7,49 @@ import { Command, type CommandContext, Declare } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 
 @Declare({
-	name: "nudge-preferences",
-	description: "Configure options about nudging",
-	aliases: ["nudge-pref", "np"],
-	contexts: ["Guild", "BotDM", "PrivateChannel"],
-	integrationTypes: ["GuildInstall", "UserInstall"],
+  name: "nudge-preferences",
+  description: "Configure options about nudging",
+  aliases: ["nudge-pref", "np"],
+  contexts: ["Guild", "BotDM", "PrivateChannel"],
+  integrationTypes: ["GuildInstall", "UserInstall"],
 })
 export default class NudgePreferencesCommand extends Command {
-	override async run(ctx: CommandContext) {
-		await ctx.deferReply(true);
-		const user = await ctx.retrievePUser();
+  override async run(ctx: CommandContext) {
+    await ctx.deferReply(true);
+    const user = await ctx.retrievePUser();
 
-		// Database migration (12/04/25)
-		if (user.nudging === undefined) {
-			await userCollection.updateOne(
-				{ userId: user.userId },
-				{
-					$set: {
-						nudging: {
-							blockedUsers: [],
-							currentlyEnabled: true,
-							dmReply: false,       
-							serverReplying: false,  
-						},
-					},
-				},
-			);
+    // Database migration (12/04/25)
+    if (user.nudging === undefined) {
+      await userCollection.updateOne(
+        { userId: user.userId },
+        {
+          $set: {
+            nudging: {
+              blockedUsers: [],
+              currentlyEnabled: true,
+              dmReply: false,
+              serverReplying: false,
+            },
+          },
+        },
+      );
 
-			user.nudging = {
-				blockedUsers: [],
-				currentlyEnabled: true,
-				dmReply: false,
-				serverReplying: false,
-			};
-		}
+      user.nudging = {
+        blockedUsers: [],
+        currentlyEnabled: true,
+        dmReply: false,
+        serverReplying: false,
+      };
+    }
 
-		return await ctx.ephemeral(
-			{
-				components: new NudgePreferences(
-					await ctx.userTranslations(),
-				).nudgePreferences(user),
-				flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-			},
-			undefined,
-			undefined,
-			ctx,
-		);
-	}
+    return await ctx.ephemeral(
+      {
+        components: new NudgePreferences(await ctx.userTranslations()).nudgePreferences(user),
+        flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+      },
+      undefined,
+      undefined,
+      ctx,
+    );
+  }
 }

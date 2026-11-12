@@ -4,18 +4,16 @@ import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 
 export default class DisabledOption extends ComponentCommand {
-	componentType = "StringSelect" as const;
+  componentType = "StringSelect" as const;
 
-	override filter(context: ComponentContext<typeof this.componentType>) {
-		return context.interaction.values[0] === "--";
-	}
+  override filter(context: ComponentContext<typeof this.componentType>) {
+    return context.interaction.values[0] === "--";
+  }
 
-	override async run(ctx: ComponentContext<typeof this.componentType>) {
-		return await ctx.write({
-			components: new AlertView(await ctx.userTranslations()).errorView(
-				"OPTION_DISABLED",
-			),
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+  override async run(ctx: ComponentContext<typeof this.componentType>) {
+    return await ctx.write({
+      components: new AlertView(await ctx.userTranslations()).errorView("OPTION_DISABLED"),
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

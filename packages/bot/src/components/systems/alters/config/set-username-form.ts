@@ -10,94 +10,91 @@ import { w } from "@/webhooks";
 import { writeBack } from "@/lib/pk-sync-engine.ts";
 
 export default class SetUsernameButton extends ModalCommand {
-	override filter(context: ModalContext) {
-		return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameForm.startsWith(
-			context.customId,
-		);
-	}
+  override filter(context: ModalContext) {
+    return InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameForm.startsWith(
+      context.customId,
+    );
+  }
 
-	override async run(ctx: ModalContext) {
-		const alterId =
-			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameForm.substring(
-				ctx.customId,
-			)[0];
+  override async run(ctx: ModalContext) {
+    const alterId =
+      InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameForm.substring(
+        ctx.customId,
+      )[0];
 
-		const systemId = ctx.author.id;
-		const query = alterCollection.findOne({
-			alterId: Number(alterId),
-			systemId,
-		});
-		let alter = await query;
+    const systemId = ctx.author.id;
+    const query = alterCollection.findOne({
+      alterId: Number(alterId),
+      systemId,
+    });
+    let alter = await query;
 
-		if (alter === null) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_ALTER_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (alter === null) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_ALTER_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const newAlterUsername = ctx.interaction.getInputValue(
-			InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameType.create(),
-			true,
-		);
+    const newAlterUsername = ctx.interaction.getInputValue(
+      InteractionIdentifier.Systems.Configuration.FormSelection.Alters.AlterUsernameType.create(),
+      true,
+    );
 
-		if (newAlterUsername.includes(" ")) {
-			return await ctx.write({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ALTER_SET_USERNAME_SPACES",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (newAlterUsername.includes(" ")) {
+      return await ctx.write({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ALTER_SET_USERNAME_SPACES",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		await alterCollection.updateOne(
-			{ alterId: Number(alterId), systemId },
-			{
-				$set: {
-					username: newAlterUsername as string,
-				},
-			},
-		);
+    await alterCollection.updateOne(
+      { alterId: Number(alterId), systemId },
+      {
+        $set: {
+          username: newAlterUsername as string,
+        },
+      },
+    );
 
-		w(ctx.author.id, "alter.update", {
-			type: "alter.update",
-			alter: {
-				...alter,
-				username: newAlterUsername,
-			},
-		});
+    w(ctx.author.id, "alter.update", {
+      type: "alter.update",
+      alter: {
+        ...alter,
+        username: newAlterUsername,
+      },
+    });
 
-		if (alter.fields["@/converter/pk"])
-			writeBack({
-				type: "alter",
-				id: alter.fields["@/converter/pk"],
-				change: {
-					username: newAlterUsername as string | undefined,
-				},
-				syncConfig: (await ctx.retrievePUser()).syncConfiguration,
-			});
+    if (alter.fields["@/converter/pk"])
+      writeBack({
+        type: "alter",
+        id: alter.fields["@/converter/pk"],
+        change: {
+          username: newAlterUsername as string | undefined,
+        },
+        syncConfig: (await ctx.retrievePUser()).syncConfiguration,
+      });
 
-		alter =
-			(await alterCollection.findOne({
-				alterId: Number(alterId),
-				systemId,
-			})) ?? alter;
+    alter =
+      (await alterCollection.findOne({
+        alterId: Number(alterId),
+        systemId,
+      })) ?? alter;
 
-		return await ctx.interaction.update({
-			components: [
-				...new AlterView(await ctx.userTranslations()).alterTopView(
-					"general",
-					alter.alterId.toString(),
-					alter.username,
-				),
-				...(await new AlterView(await ctx.userTranslations()).alterGeneralView(
-					alter,
-					ctx.guildId,
-				)),
-			],
-			flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
-		});
-	}
+    return await ctx.interaction.update({
+      components: [
+        ...new AlterView(await ctx.userTranslations()).alterTopView(
+          "general",
+          alter.alterId.toString(),
+          alter.username,
+        ),
+        ...(await new AlterView(await ctx.userTranslations()).alterGeneralView(alter, ctx.guildId)),
+      ],
+      flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+    });
+  }
 }

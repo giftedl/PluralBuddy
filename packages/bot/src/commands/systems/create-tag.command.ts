@@ -1,12 +1,16 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
-import { 
-	type CommandContext,Container, 
-	createStringOption,
-	Declare,
-	type OKFunction,
-	Options,SubCommand, TextDisplay, } from "seyfert";
+import {
+  type CommandContext,
+  Container,
+  createStringOption,
+  Declare,
+  type OKFunction,
+  Options,
+  SubCommand,
+  TextDisplay,
+} from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import z from "zod";
 import { getEmojiFromTagColor } from "@/lib/emojis";
@@ -21,149 +25,138 @@ import { AlertView } from "@/views/alert";
 import { w } from "@/webhooks";
 
 const options = {
-	color: createStringOption({
-		description: "The color for the tag.",
-		required: true,
-		choices: tagColors.map((c) => {
-			return { name: c, value: c };
-		}),
-	}),
-	"display-name": createStringOption({
-		description: "The display name for the tag.",
-		required: true,
-		max_length: 100,
-		min_length: 3,
-	}),
+  color: createStringOption({
+    description: "The color for the tag.",
+    required: true,
+    choices: tagColors.map((c) => {
+      return { name: c, value: c };
+    }),
+  }),
+  "display-name": createStringOption({
+    description: "The display name for the tag.",
+    required: true,
+    max_length: 100,
+    min_length: 3,
+  }),
 };
 
 @Declare({
-	name: "create-tag",
-	description: "Creates a new tag",
-	aliases: ["ct", "tag", "new-tag", "cat"],
-	contexts: ["BotDM", "Guild"],
+  name: "create-tag",
+  description: "Creates a new tag",
+  aliases: ["ct", "tag", "new-tag", "cat"],
+  contexts: ["BotDM", "Guild"],
 })
 @Options(options)
 export default class CreateTagCommand extends SubCommand {
-	override async run(ctx: CommandContext<typeof options>) {
-		const { "display-name": displayName, color } = ctx.options;
+  override async run(ctx: CommandContext<typeof options>) {
+    const { "display-name": displayName, color } = ctx.options;
 
-		await ctx.write(ctx.loading(await ctx.userTranslations()));
+    await ctx.write(ctx.loading(await ctx.userTranslations()));
 
-		const user = await ctx.retrievePUser();
-		const server = await ctx.retrievePGuild();
+    const user = await ctx.retrievePUser();
+    const server = await ctx.retrievePGuild();
 
-		const existingTag = await tagCollection.findOne({
-			systemId: user.system?.associatedUserId,
-			tagFriendlyName: displayName,
-		});
+    const existingTag = await tagCollection.findOne({
+      systemId: user.system?.associatedUserId,
+      tagFriendlyName: displayName,
+    });
 
-		if (existingTag) {
-			return await ctx.editResponse({
-				components: [
-					...new AlertView(await ctx.userTranslations()).errorViewCustom(
-						(await ctx.userTranslations()).TAG_ALREADY_EXISTS.replace(
-							"%display%",
-							displayName,
-						),
-					),
-				],
-			});
-		}
-		if (user.system === undefined) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"ERROR_SYSTEM_DOESNT_EXIST",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
-		if (user.system.tagIds.length >= 1000) {
-			return await ctx.editResponse({
-				components: new AlertView(await ctx.userTranslations()).errorView(
-					"TOO_MANY_TAGS",
-				),
-				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
-			});
-		}
+    if (existingTag) {
+      return await ctx.editResponse({
+        components: [
+          ...new AlertView(await ctx.userTranslations()).errorViewCustom(
+            (await ctx.userTranslations()).TAG_ALREADY_EXISTS.replace("%display%", displayName),
+          ),
+        ],
+      });
+    }
+    if (user.system === undefined) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView(
+          "ERROR_SYSTEM_DOESNT_EXIST",
+        ),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
+    if (user.system.tagIds.length >= 1000) {
+      return await ctx.editResponse({
+        components: new AlertView(await ctx.userTranslations()).errorView("TOO_MANY_TAGS"),
+        flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+      });
+    }
 
-		const tag = PTagObject.safeParse({
-			tagId: Number(DiscordSnowflake.generate()).toString(),
-			systemId: user.system.associatedUserId,
+    const tag = PTagObject.safeParse({
+      tagId: Number(DiscordSnowflake.generate()).toString(),
+      systemId: user.system.associatedUserId,
 
-			tagFriendlyName: displayName,
-			tagColor: color,
+      tagFriendlyName: displayName,
+      tagColor: color,
 
-			associatedAlters: [],
+      associatedAlters: [],
 
-			/** @see {@link TagProtectionFlags} */
-			public: getSystemFeatures(user.system).publicDefault
-				? getMaxTagPublicValue()
-				: 0,
-		});
+      /** @see {@link TagProtectionFlags} */
+      public: getSystemFeatures(user.system).publicDefault ? getMaxTagPublicValue() : 0,
+    });
 
-		if (tag.error) {
-			return await ctx.editResponse({
-				components: [
-					...new AlertView(
-						await ctx.userTranslations(),
-					).errorViewCustom(`There was an error while creating that tag:
+    if (tag.error) {
+      return await ctx.editResponse({
+        components: [
+          ...new AlertView(await ctx.userTranslations())
+            .errorViewCustom(`There was an error while creating that tag:
 
 \`\`\`
 ${z.prettifyError(tag.error)}
 \`\`\`                        `),
-				],
-			});
-		}
+        ],
+      });
+    }
 
-		await writeUserById(user.system.associatedUserId, {
-			...(await getUserById(user.system.associatedUserId)),
-			system: {
-				...user.system,
-				tagIds: [...user.system.tagIds, tag.data.tagId],
-			},
-		});
+    await writeUserById(user.system.associatedUserId, {
+      ...(await getUserById(user.system.associatedUserId)),
+      system: {
+        ...user.system,
+        tagIds: [...user.system.tagIds, tag.data.tagId],
+      },
+    });
 
-		tagCollection.insertOne(tag.data);
+    tagCollection.insertOne(tag.data);
 
-		writeBack({
-			type: "create-tag",
-			id: String(tag.data.tagId),
-			change: { ...tag.data, userId: user.userId },
-			syncConfig: user.syncConfiguration,
-		});
+    writeBack({
+      type: "create-tag",
+      id: String(tag.data.tagId),
+      change: { ...tag.data, userId: user.userId },
+      syncConfig: user.syncConfiguration,
+    });
 
-		w(ctx.author.id, "tag.create", {
-			tag: tag.data,
-			type: "tag.create",
-			userId: ctx.author.id,
-		});
+    w(ctx.author.id, "tag.create", {
+      tag: tag.data,
+      type: "tag.create",
+      userId: ctx.author.id,
+    });
 
-
-		await ctx.editResponse({
-			components: [
-				...new AlertView(await ctx.userTranslations()).successViewCustom(
-					(await ctx.userTranslations()).CREATE_NEW_TAG_DONE.replace(
-						"%command%",
-						mentionCommand(
-							(await ctx.getDefaultPrefix()) ?? "pb;",
-							"tag",
-							ctx.message === undefined,
-							tag.data.tagFriendlyName,
-						),
-					)
-						.replaceAll("%tag_name%", tag.data.tagFriendlyName)
-						.replace("%color_emoji%", getEmojiFromTagColor(color)),
-				),
-				...(tag.data.tagFriendlyName.includes(" ")
-					? [
-							new Container().setComponents(
-								new TextDisplay().setContent(
-									(await ctx.userTranslations()).TAG_SPACE_WARNING,
-								),
-							),
-						]
-					: []),
-			],
-		});
-	}
+    await ctx.editResponse({
+      components: [
+        ...new AlertView(await ctx.userTranslations()).successViewCustom(
+          (await ctx.userTranslations()).CREATE_NEW_TAG_DONE.replace(
+            "%command%",
+            mentionCommand(
+              (await ctx.getDefaultPrefix()) ?? "pb;",
+              "tag",
+              ctx.message === undefined,
+              tag.data.tagFriendlyName,
+            ),
+          )
+            .replaceAll("%tag_name%", tag.data.tagFriendlyName)
+            .replace("%color_emoji%", getEmojiFromTagColor(color)),
+        ),
+        ...(tag.data.tagFriendlyName.includes(" ")
+          ? [
+              new Container().setComponents(
+                new TextDisplay().setContent((await ctx.userTranslations()).TAG_SPACE_WARNING),
+              ),
+            ]
+          : []),
+      ],
+    });
+  }
 }

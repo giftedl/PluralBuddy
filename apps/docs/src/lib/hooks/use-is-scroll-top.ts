@@ -1,5 +1,5 @@
-'use client';
-import { useEffect, useState } from 'react';
+"use client";
+import { useEffect, useState } from "react";
 
 export function useIsScrollTop({ enabled = true }: { enabled?: boolean }) {
   const [isTop, setIsTop] = useState<boolean | undefined>();
@@ -12,9 +12,9 @@ export function useIsScrollTop({ enabled = true }: { enabled?: boolean }) {
     };
 
     listener();
-    window.addEventListener('scroll', listener);
+    window.addEventListener("scroll", listener);
     return () => {
-      window.removeEventListener('scroll', listener);
+      window.removeEventListener("scroll", listener);
     };
   }, [enabled]);
 
