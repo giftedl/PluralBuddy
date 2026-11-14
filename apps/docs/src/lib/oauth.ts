@@ -52,7 +52,8 @@ export async function authenticateOAuth(
       		requiredClaims: ["azp"],
 		},
 		jwksUrl: `${process.env.BETTER_AUTH_URL}/api/auth/jwks`,
-		requiredScopes,
+		// Does not use Better Auth's scope management
+		requiredScopes: [],
 	}).catch((e) => {
 		console.log(e)
 		if (e?.body?.code === "INVALID_SCOPE_SYSTEMREAD")
