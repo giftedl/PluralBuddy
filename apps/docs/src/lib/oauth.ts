@@ -153,13 +153,16 @@ export async function userlessOAuth(
 		};
 	}
 
-	const token = await verifyAccessToken(accessToken, {
+	const token = await verifyAccessTokenRequest(
+		requestToResourceInput(request), {
 		verifyOptions: {
 			issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
 			audience: process.env.BETTER_AUTH_URL ?? "",
+      		typ: "at+jwt",
+      		requiredClaims: ["azp"],
 		},
-		scopes: requiredScopes,
 		jwksUrl: `${process.env.BETTER_AUTH_URL}/api/auth/jwks`,
+		requiredScopes,
 	}).catch((e) => {
 		if (e?.body?.code === "INVALID_SCOPE_SYSTEMREAD")
 			return {

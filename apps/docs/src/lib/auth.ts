@@ -1,4 +1,4 @@
-import { oauthProvider } from "@/oauth-provider";
+import { oauthProvider } from "@better-auth/oauth-provider";
 import { dash } from "@better-auth/infra";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { betterAuth } from "better-auth";
