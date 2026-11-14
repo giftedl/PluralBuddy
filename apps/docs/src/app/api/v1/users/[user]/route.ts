@@ -2,7 +2,6 @@
 
 import { auth } from "@/lib/auth";
 import { createOAuthFunction } from "@/server/wrapper";
-import { APIError, verifyAccessToken } from "better-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const GET = createOAuthFunction<{ user: string }>(
