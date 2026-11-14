@@ -35,18 +35,12 @@ export async function replace(
         }) satisfies PAlter,
     );
 
-<<<<<<< HEAD
-  for (const replacedAlter of newAlters) {
-    await alterCollection.replaceOne({ alterId: replacedAlter.alterId }, replacedAlter);
-  }
-=======
 	for (const replacedAlter of newAlters) {
 		await alterCollection.replaceOne(
 			{ $and: [{ alterId: replacedAlter.alterId }, { systemId: input.existing.userId }] },
 			replacedAlter,
 		);
 	}
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const newTags = input.import.tags
     .filter((v) => input.existing.tags.some((c) => c.tagFriendlyName === v.tagFriendlyName))
@@ -64,18 +58,12 @@ export async function replace(
         }) satisfies PTag,
     );
 
-<<<<<<< HEAD
-  for (const replacedTag of newTags) {
-    await tagCollection.replaceOne({ tagId: replacedTag.tagId }, replacedTag);
-  }
-=======
 	for (const replacedTag of newTags) {
 		await tagCollection.replaceOne(
 			{ $and: [{ tagId: replacedTag.tagId }, { systemId: input.existing.userId }]},
 			airgapOne(input.existing.userId, replacedTag),
 		);
 	}
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   return ImportOutput.parse({
     alters: newAlters,
@@ -136,15 +124,10 @@ export async function add(
 
   console.log(newAlters.length);
 
-<<<<<<< HEAD
-  if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
-  if (newTags.length > 0) await tagCollection.insertMany(newTags);
-=======
 	if (newAlters.length > 0)
 		await alterCollection.insertMany(airgap(input.existing.userId, newAlters));
 	if (newTags.length > 0)
 		await tagCollection.insertMany(airgap(input.existing.userId, newTags));
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   await userCollection.updateOne(
     {
@@ -196,11 +179,6 @@ export async function deleteM(
     input.import.alters.some((c) => c.username !== v.username),
   );
 
-<<<<<<< HEAD
-  await alterCollection.deleteMany({
-    alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
-  });
-=======
 	await alterCollection.deleteMany({
 		$and: [
 			{
@@ -209,30 +187,11 @@ export async function deleteM(
 			{ systemId: input.existing.userId }
 		],
 	});
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const pendingDeletedTags = input.existing.tags.filter((v) =>
     input.import.tags.some((c) => c.tagFriendlyName !== v.tagFriendlyName),
   );
 
-<<<<<<< HEAD
-  await tagCollection.deleteMany({
-    tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
-  });
-  await userCollection.updateOne(
-    {
-      userId: input.existing.userId,
-    },
-    {
-      $pull: {
-        "system.alterIds": {
-          $each: pendingDeletedAlters.map((v) => v.alterId),
-        },
-        "system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
-      },
-    },
-  );
-=======
 	await tagCollection.deleteMany({
 		$and: [
 			{
@@ -256,7 +215,6 @@ export async function deleteM(
 			},
 		},
 	);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   return ImportOutput.parse({
     alters: pendingDeletedAlters,

@@ -104,17 +104,6 @@ export default class EditAlterPictureCommand extends SubCommand {
           storagePrefix: user.storagePrefix,
         });
 
-<<<<<<< HEAD
-      await alterCollection.updateOne(
-        { alterId: alter.alterId },
-        {
-          $set:
-            se && ctx.guildId
-              ? { [`avatarUrlMap.${ctx.guildId}`]: undefined }
-              : { avatarUrl: null },
-        },
-      );
-=======
 			await alterCollection.updateOne(
 				{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 				{
@@ -124,7 +113,6 @@ export default class EditAlterPictureCommand extends SubCommand {
 							: { avatarUrl: null },
 				},
 			);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
       w(ctx.author.id, "alter.update", {
         type: "alter.update",
@@ -201,17 +189,6 @@ export default class EditAlterPictureCommand extends SubCommand {
         storagePrefix: user.storagePrefix,
       });
 
-<<<<<<< HEAD
-    await alterCollection.updateOne(
-      { alterId: alter.alterId },
-      {
-        $set:
-          se && ctx.guildId
-            ? { [`avatarUrlMap.${ctx.guildId}`]: attachmentText }
-            : { avatarUrl: attachmentText },
-      },
-    );
-=======
 		await alterCollection.updateOne(
 			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{
@@ -221,7 +198,6 @@ export default class EditAlterPictureCommand extends SubCommand {
 						: { avatarUrl: attachmentText },
 			},
 		);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     w(ctx.author.id, "alter.update", {
       type: "alter.update",

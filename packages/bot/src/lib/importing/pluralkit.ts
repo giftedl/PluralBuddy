@@ -24,100 +24,6 @@ export type PKEntry = z.infer<typeof PluralKitImportEntry>;
 export async function replace(
   input: z.infer<typeof PluralKitImportEntry>,
 ): Promise<z.infer<typeof ImportOutput>> {
-<<<<<<< HEAD
-  const { existing, import: pk } = PluralKitImportEntry.parse(input);
-  const newAlters = existing.alters
-    .filter((alter) =>
-      pk.members.some(
-        (v) =>
-          v.name
-            .replaceAll(" ", "")
-            .replaceAll("/", "")
-            .replaceAll("\\", "")
-            .replaceAll("@", "") === alter.username,
-      ),
-    )
-    .map((alter) => ({
-      pluralbuddy: alter,
-      member: pk.members.find(
-        (v) =>
-          v.name
-            .replaceAll(" ", "")
-            .replaceAll("/", "")
-            .replaceAll("\\", "")
-            .replaceAll("@", "") === alter.username,
-      ),
-    }))
-    .filter((c) => c.member !== undefined)
-    .map(
-      ({ pluralbuddy, member }) =>
-        member !== undefined && {
-          zodData: PAlterObject.safeParse({
-            alterId: pluralbuddy.alterId,
-            systemId: existing.userId,
-            username: member.name
-              .replaceAll(" ", "")
-              .replaceAll("/", "")
-              .replaceAll("\\", "")
-              .replaceAll("@", ""),
-            displayName: member.display_name ?? member.name,
-            nameMap: pluralbuddy.nameMap,
-            color: member.color !== null ? `#${member.color}` : null,
-            alterMode: "webhook",
-            description: member.description,
-            created: new Date(),
-            pronouns: member.pronouns,
-            avatarUrl: member.avatar_url ?? member.webhook_avatar_url,
-            webhookAvatarUrl: null,
-            banner: member.banner,
-            lastMessageTimestamp: null,
-            messageCount: 0,
-            proxyTags: member.proxy_tags.map((tag, i) => {
-              return {
-                prefix: tag.prefix?.replaceAll('"', "") ?? "",
-                suffix: tag.suffix?.replaceAll('"', "") ?? "",
-                id: createRandomId(i).toString(),
-              };
-            }),
-            tagIds: pluralbuddy.tagIds,
-            public: combine(
-              ...[
-                ...(member.privacy.visibility === "public"
-                  ? [AlterProtectionFlags.VISIBILITY]
-                  : []),
-                ...(member.privacy.pronoun_privacy === "public"
-                  ? [AlterProtectionFlags.PRONOUNS]
-                  : []),
-                ...(member.privacy.description_privacy === "public"
-                  ? [AlterProtectionFlags.DESCRIPTION]
-                  : []),
-                ...(member.privacy.avatar_privacy === "public"
-                  ? [AlterProtectionFlags.AVATAR]
-                  : []),
-                ...(member.privacy.banner_privacy === "public"
-                  ? [AlterProtectionFlags.BANNER]
-                  : []),
-                ...(member.privacy.metadata_privacy === "public"
-                  ? [AlterProtectionFlags.MESSAGE_COUNT, AlterProtectionFlags.TAGS]
-                  : []),
-                ...(member.privacy.name_privacy === "public"
-                  ? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
-                  : []),
-              ],
-            ),
-            avatarUrlMap: {},
-            flags: 0,
-            fields: {},
-          } satisfies PAlter),
-          originalPkId: member.id,
-        },
-    )
-    .filter((res) => res !== false);
-
-  for (const replacedAlter of newAlters.map((c) => c.zodData).filter((v) => v.data !== undefined)) {
-    await alterCollection.replaceOne({ alterId: replacedAlter.data?.alterId }, replacedAlter.data);
-  }
-=======
 	const { existing, import: pk } = PluralKitImportEntry.parse(input);
 	const newAlters = existing.alters
 		.filter((alter) =>
@@ -223,7 +129,6 @@ export async function replace(
 			airgapOne(existing.userId, replacedAlter.data),
 		);
 	}
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const correspondingPKTags = existing.tags
     .filter((tag) => pk.groups.some((v) => v.display_name ?? v.name === tag.tagFriendlyName))
@@ -245,26 +150,6 @@ export async function replace(
 
           associatedAlters: pluralbuddy.associatedAlters,
 
-<<<<<<< HEAD
-          public: combine(
-            ...[
-              ...(group.privacy.description_privacy === "public"
-                ? [TagProtectionFlags.DESCRIPTION]
-                : []),
-              ...(group.privacy.name_privacy === "public" ? [TagProtectionFlags.NAME] : []),
-              ...(group.privacy.metadata_privacy === "public"
-                ? [TagProtectionFlags.ALTERS, TagProtectionFlags.COLOR]
-                : []),
-            ],
-          ),
-          fields: {},
-        } satisfies PTag),
-    )
-    .filter((res) => res !== false);
-
-  for (const replacedTag of correspondingPKTags.filter((v) => v.data !== undefined))
-    await tagCollection.replaceOne({ tagId: replacedTag.data?.tagId }, replacedTag.data);
-=======
 					public: combine(
 						...[
 							...(group.privacy.description_privacy === "public"
@@ -295,7 +180,6 @@ export async function replace(
 			},
 			airgapOne(existing.userId, replacedTag.data),
 		);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   return ImportOutput.parse({
     alters: newAlters.map((c) => c.zodData.data).filter((c) => c !== undefined),
@@ -313,91 +197,6 @@ export async function add(
 ): Promise<z.infer<typeof ImportOutput>> {
   const { existing, import: pk } = PluralKitImportEntry.parse(input);
 
-<<<<<<< HEAD
-  const newAlters = pk.members
-    .filter((v) =>
-      existing.alters.length > 0
-        ? existing.alters.some(
-            (c) =>
-              c.username !==
-              v.name
-                .replaceAll(" ", "")
-                .replaceAll("/", "")
-                .replaceAll("\\", "")
-                .replaceAll("@", ""),
-          )
-        : true,
-    )
-    .map(
-      (member, i) =>
-        member !== undefined && {
-          zodData: PAlterObject.safeParse({
-            alterId: Number(createRandomId(i)),
-            systemId: existing.userId,
-            username: member.name
-              .replaceAll(" ", "")
-              .replaceAll("/", "")
-              .replaceAll("\\", "")
-              .replaceAll("@", ""),
-            displayName: member.display_name ?? member.name,
-            nameMap: [],
-            color: member.color !== null ? `#${member.color}` : null,
-            alterMode: "webhook",
-            description: member.description,
-            created: new Date(),
-            pronouns: member.pronouns,
-            avatarUrl: member.avatar_url ?? member.webhook_avatar_url,
-            webhookAvatarUrl: null,
-            banner: member.banner,
-            lastMessageTimestamp: null,
-            messageCount: 0,
-            proxyTags: member.proxy_tags.map((tag) => {
-              return {
-                prefix: (tag.prefix ?? "").replaceAll('"', "") ?? "",
-                suffix: (tag.suffix ?? "").replaceAll('"', "") ?? "",
-                id: Number(createRandomId(i)).toString(),
-              };
-            }),
-            tagIds: [],
-            public: combine(
-              ...[
-                ...(member.privacy.visibility === "public"
-                  ? [AlterProtectionFlags.VISIBILITY]
-                  : []),
-                ...(member.privacy.pronoun_privacy === "public"
-                  ? [AlterProtectionFlags.PRONOUNS]
-                  : []),
-                ...(member.privacy.description_privacy === "public"
-                  ? [AlterProtectionFlags.DESCRIPTION]
-                  : []),
-                ...(member.privacy.avatar_privacy === "public"
-                  ? [AlterProtectionFlags.AVATAR]
-                  : []),
-                ...(member.privacy.banner_privacy === "public"
-                  ? [AlterProtectionFlags.BANNER]
-                  : []),
-                ...(member.privacy.metadata_privacy === "public"
-                  ? [AlterProtectionFlags.MESSAGE_COUNT, AlterProtectionFlags.TAGS]
-                  : []),
-                ...(member.privacy.name_privacy === "public"
-                  ? [AlterProtectionFlags.NAME, AlterProtectionFlags.USERNAME]
-                  : []),
-              ],
-            ),
-            avatarUrlMap: {},
-            flags: 0,
-            fields: {},
-          } satisfies PAlter),
-          originalPkId: member.id,
-        },
-    )
-    .filter((v) => v !== false)
-    .map((v) => v.zodData)
-    .filter((v) => v.data !== undefined)
-    .map((v) => v.data);
-
-  if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
-=======
 	const newAlters = pk.members
 		.filter((v) =>
 			existing.alters.length > 0
@@ -485,7 +284,6 @@ export async function add(
 
 	if (newAlters.length > 0)
 		await alterCollection.insertMany(airgap(input.existing.userId, newAlters));
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const newTags = pk.groups
     .filter((v) =>
@@ -524,12 +322,8 @@ export async function add(
   if (newAlters.length + input.existing.alters.length >= 2000) throw new Error("Too many alters");
   if (newTags.length + input.existing.tags.length >= 1000) throw new Error("Too many tags");
 
-<<<<<<< HEAD
-  if (newTags.length > 0) await tagCollection.insertMany(newTags);
-=======
 	if (newTags.length > 0)
 		await tagCollection.insertMany(airgap(existing.userId, newTags));
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   await userCollection.updateOne(
     {
@@ -585,11 +379,6 @@ export async function deleteM(
     ),
   );
 
-<<<<<<< HEAD
-  await alterCollection.deleteMany({
-    alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
-  });
-=======
 	await alterCollection.deleteMany({
 		$and: [
 			{
@@ -598,17 +387,11 @@ export async function deleteM(
 			{ systemId: input.existing.userId },
 		],
 	});
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const pendingDeletedTags = input.existing.tags.filter((v) =>
     input.import.groups.some((c) => c.name === v.tagFriendlyName),
   );
 
-<<<<<<< HEAD
-  await tagCollection.deleteMany({
-    tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
-  });
-=======
 	await tagCollection.deleteMany({
 		$and: [
 			{
@@ -619,7 +402,6 @@ export async function deleteM(
 			},
 		],
 	});
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   await userCollection.updateOne(
     {

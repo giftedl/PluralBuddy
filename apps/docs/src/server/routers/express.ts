@@ -166,49 +166,6 @@ export const ExpressRouter = router({
   // 		return {};
   // 	}),
 
-<<<<<<< HEAD
-  edit: baseProcedure
-    .input(
-      z.object({
-        alter_id: z.string(),
-        options: z.object({
-          usesContainer: z.boolean().optional().default(false),
-          profileName: z.string().optional(),
-        }),
-      }),
-    )
-    .query(async ({ input, ctx }) => {
-      const session = ctx.session;
-
-      if (!session) throw new Error("Session error.");
-
-      const client = new MongoClient(process.env.MONGO ?? "");
-      await client.connect();
-
-      const db = client.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`);
-      const applications = db.collection<PExpressApplication>("applications");
-      const owner = await getDiscordIdBySessionId(session.user.id);
-      const application = await applications
-        .find({ owner, alterId: Number(input.alter_id) })
-        .toArray();
-
-      if (!application) throw new Error("Doesn't exist");
-
-      if (input.options.profileName === "") input.options.profileName = undefined;
-
-      await applications.updateOne(
-        {
-          owner,
-          alterId: Number(input.alter_id),
-        },
-        {
-          $set: input.options,
-        },
-      );
-
-      return { ...application, ...input.options };
-    }),
-=======
 	// edit: baseProcedure
 	// 	.input(
 	// 		z.object({
@@ -252,7 +209,6 @@ export const ExpressRouter = router({
 
 	// 		return { ...application, ...input.options };
 	// 	}),
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 });
 
 function hexToBuffer(hex: string) {

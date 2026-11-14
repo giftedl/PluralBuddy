@@ -37,41 +37,6 @@ const countedMessages = new Gauge({
   },
 });
 const configuredGuildCount = new Gauge({
-<<<<<<< HEAD
-  name: "pluralbuddy_counted_mongo_configured_guilds",
-  help: "Total amount of counted, Mongo-adjacent, possibly-configured guilds.",
-  async collect() {
-    const configuredGuilds = await guildCollection.countDocuments();
-    this.set(configuredGuilds);
-  },
-});
-const systemCount = new Gauge({
-  name: "pluralbuddy_counted_systems",
-  help: "Total amount of systems in PluralBuddy.",
-  async collect() {
-    const systems = await userCollection.countDocuments();
-    this.set(systems);
-  },
-});
-const totalShards = new Gauge({
-  name: "pluralbuddy_counted_total_shards",
-  help: "Total amount of shards running in the gateway.",
-  async collect() {
-    this.set(client.gateway.totalShards);
-  },
-});
-const totalTags = new Gauge({
-  name: "pluralbuddy_counted_total_tags",
-  help: "Total amount of tags in the database.",
-  async collect() {
-    const tags = await tagCollection.countDocuments();
-    this.set(tags);
-  },
-});
-export const discordApiLatency = new Summary({
-  name: "pluralbuddy_observed_discord_latency",
-  help: "Observed amount of latency from Discord.",
-=======
 	name: "pluralbuddy_counted_mongo_configured_guilds",
 	help: "Total amount of counted, Mongo-adjacent, possibly-configured guilds.",
 	async collect() {
@@ -105,7 +70,6 @@ const totalTags = new Gauge({
 export const discordApiLatency = new Summary({
 	name: "pluralbuddy_observed_discord_latency",
 	help: "Observed amount of latency from Discord.",
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 });
 
 export async function gatherStatisticalData() {

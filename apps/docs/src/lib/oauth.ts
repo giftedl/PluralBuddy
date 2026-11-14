@@ -4,21 +4,11 @@ import { requestToResourceInput, verifyAccessTokenRequest } from "better-auth/oa
 import { MongoClient, ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
-<<<<<<< HEAD
-import { verifyAccessTokenRequest } from "better-auth/oauth2";
-
-export async function authenticateOAuth(
-  request: NextRequest,
-  requiredScopes: string[],
-  origin: string | undefined = process.env.BETTER_AUTH_URL,
-  mongoClient?: MongoClient,
-=======
 
 export async function authenticateOAuth(
 	request: NextRequest,
 	requiredScopes: string[],
 	mongoClient?: MongoClient
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 ): Promise<
   | { response: NextResponse }
   | { mongo: MongoClient; accountId: string; clientId: string | null; scopes: string[] }
@@ -39,43 +29,6 @@ export async function authenticateOAuth(
     };
   }
 
-<<<<<<< HEAD
-  // Prevent double rate-limit access attacks by requiring Bearer to start all tokens.
-  // Since Vercel only rate limits based on what exactly is in the Authorization header. (regardless of if Bearer is preceeding or not.)
-  if (!authorization?.startsWith("Bearer")) {
-    return {
-      response: NextResponse.json(
-        {
-          errors: [{ type: "no-access-token", friendly: "no access token" }],
-        },
-        { status: 401 },
-      ),
-    };
-  }
-  const token = await verifyAccessTokenRequest(accessToken, {
-    verifyOptions: {
-      issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
-      audience: origin ?? "",
-    },
-    jwksUrl: `${origin}/api/auth/jwks`,
-  }).catch((e) => {
-    if (e?.body?.code === "INVALID_SCOPE_SYSTEMREAD")
-      return {
-        response: NextResponse.json(
-          {
-            errors: [{ type: "invalid-scopes", friendly: e?.body?.message }],
-          },
-          { status: 401 },
-        ),
-      };
-    return {
-      response: NextResponse.json(
-        { errors: [{ type: "invalid-auth", friendly: "invalid auth token." }] },
-        { status: 401 },
-      ),
-    };
-  });
-=======
 	// Prevent double rate-limit access attacks by requiring Bearer to start all tokens.
 	// Since Vercel only rate limits based on what exactly is in the Authorization header. (regardless of if Bearer is preceeding or not.)
 	// if (!authorization?.startsWith("Bearer")) {
@@ -121,7 +74,6 @@ export async function authenticateOAuth(
 			),
 		};
 	});
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   if (token && "response" in token) return { response: token.response as NextResponse };
 
@@ -157,23 +109,6 @@ export async function authenticateOAuth(
 
   if (!mongoClient) await client.connect();
 
-<<<<<<< HEAD
-  if (!token) {
-    return {
-      response: NextResponse.json(
-        {
-          errors: [{ type: "unknown-token", friendly: "unknown auth token" }],
-        },
-        { status: 401 },
-      ),
-    };
-  }
-
-  const discordAccountId = await client
-    .db(`${process.env.ENV}-pluralbuddy-app`)
-    .collection("account")
-    .findOne({ userId: new ObjectId(token.sub) });
-=======
 	if (!token) {
 		return {
 			response: NextResponse.json(
@@ -188,7 +123,6 @@ export async function authenticateOAuth(
 		.db(`${process.env.ENV}-pluralbuddy-app`)
 		.collection("account")
 		.findOne({ userId: new ObjectId(token.sub) });
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   return {
     mongo: client,
@@ -218,32 +152,6 @@ export async function userlessOAuth(
     };
   }
 
-<<<<<<< HEAD
-  const token = await verifyAccessToken(accessToken, {
-    verifyOptions: {
-      issuer: `${process.env.BETTER_AUTH_URL}/api/auth`,
-      audience: process.env.BETTER_AUTH_URL ?? "",
-    },
-    scopes: requiredScopes,
-    jwksUrl: `${process.env.BETTER_AUTH_URL}/api/auth/jwks`,
-  }).catch((e) => {
-    if (e?.body?.code === "INVALID_SCOPE_SYSTEMREAD")
-      return {
-        response: NextResponse.json(
-          {
-            errors: [{ type: "invalid-scopes", friendly: e?.body?.message }],
-          },
-          { status: 403 },
-        ),
-      };
-    return {
-      response: NextResponse.json(
-        { errors: [{ type: "invalid-auth", friendly: "invalid auth token." }] },
-        { status: 401 },
-      ),
-    };
-  });
-=======
 	const token = await verifyAccessTokenRequest(
 		requestToResourceInput(request), {
 		verifyOptions: {
@@ -271,14 +179,8 @@ export async function userlessOAuth(
 			),
 		};
 	});
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   if (token && "response" in token) return { response: token.response as NextResponse };
 
-<<<<<<< HEAD
-  return { success: true };
-}
-=======
 	return { success: true };
 }
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63

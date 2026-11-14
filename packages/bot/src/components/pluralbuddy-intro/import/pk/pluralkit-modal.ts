@@ -275,11 +275,6 @@ export default class PluralBuddyImportModal extends ModalCommand {
       .filter((v) => v.success)
       .map((v) => v.data.alterId);
 
-<<<<<<< HEAD
-    systemData.tagIds = parsedGroupsSafe.filter((v) => v.success).map((v) => v.data.tagId);
-
-    const newExport = new PluralKitConverter().toImport(parsed.data);
-=======
 		systemData.tagIds = parsedGroupsSafe
 			.filter((v) => v.success)
 			.map((v) => v.data.tagId);
@@ -292,7 +287,6 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			);
 		if (parsedGroupsSafe.filter((v) => v.success).length !== 0)
 			await tagCollection.insertMany(airgap(ctx.author.id, newExport.tags));
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     if (parsedSafe.filter((v) => v.zodData.success).length !== 0)
       await alterCollection.insertMany(newExport.alters);

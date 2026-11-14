@@ -10,21 +10,6 @@ const TagEditInput = PTagObject.omit({
   .partial()
   .default({});
 
-<<<<<<< HEAD
-export const POST = createOAuthFunction<{ user: string; tag: string }, typeof TagEditInput>(
-  {
-    bodyResolver: TagEditInput,
-    scopes: ["alters:write", "system:admin"],
-    expectSystem: true,
-    mustMatchOAuth: true,
-  },
-  async (ctx) => {
-    const { tag } = ctx.urlData.params;
-    const tagObj = await ctx.fetchTag({
-      systemId: ctx.auth.accountId,
-      tagId: tag,
-    });
-=======
 export const POST = createOAuthFunction<
 	{ user: string; tag: string },
 	typeof TagEditInput
@@ -42,7 +27,6 @@ export const POST = createOAuthFunction<
 			tagId: tag,
 		});
 		
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     if (!tagObj) {
       return ctx.error({ type: "unknown-tag", friendly: "Couldn't find this tag." }, 404);

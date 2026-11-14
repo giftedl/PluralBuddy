@@ -4,13 +4,6 @@ import { analyticsCollection } from "@/mongodb";
 import { createEvent } from "seyfert";
 
 export default createEvent({
-<<<<<<< HEAD
-  data: { name: "ready", once: true },
-  run: async (user, client) => {
-    await initializeApplicationCommands();
-    if (analyticsCollection !== undefined) startStatisticalTimer();
-  },
-=======
 	data: { name: "ready", once: true },
 	run: async (user, client) => {
 		await initializeApplicationCommands();
@@ -20,5 +13,4 @@ export default createEvent({
 		// This is production only.
 		// startUptimeHeartbeat(client);
 	},
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 });

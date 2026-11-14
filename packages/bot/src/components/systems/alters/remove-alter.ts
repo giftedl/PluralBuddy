@@ -37,16 +37,9 @@ export default class RemoveAlterButton extends ComponentCommand {
       });
     }
 
-<<<<<<< HEAD
-    await alterCollection.findOneAndDelete({
-      alterId: Number(alter.alterId),
-      systemId,
-    });
-=======
 		await alterCollection.findOneAndDelete({
 			$and: [{ alterId: alter.alterId }, { systemId: systemId }],
 		});
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     await userCollection.updateOne(
       { userId: ctx.author.id },

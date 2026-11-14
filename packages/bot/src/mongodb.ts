@@ -21,15 +21,6 @@ import type { PMessage } from "./types/message";
 import type { POperation } from "./types/operation";
 import type { PTag } from "./types/tag";
 import type { PUser } from "./types/user";
-<<<<<<< HEAD
-import {
-  generateAlterSchema,
-  generateTagSchema,
-  generateUserSchema,
-  type MongoSchema,
-} from "./lib/db/create-db-schemas";
-=======
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
 export let mongoClient: MongoClient;
 export let mainDb: Db;
@@ -104,13 +95,8 @@ export async function setupDatabases() {
   frontsCollection = mainDb.collection("fronts");
   importTranscriptCollection = mainDb.collection("import-transcripts");
 
-<<<<<<< HEAD
-  await createPeriodicExpirationDates();
-  await setValidation();
-=======
 	if (!readOnly) {
 		await createPeriodicExpirationDates();
 		await setValidation();
 	}
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 }

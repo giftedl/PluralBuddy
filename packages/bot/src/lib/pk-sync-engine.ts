@@ -1,18 +1,6 @@
 import { Double, ObjectId } from "bson";
 import pkceChallenge from "pkce-challenge";
 import {
-<<<<<<< HEAD
-  type PAlter,
-  PAlterObject,
-  PluralKitAPISystem,
-  PluralKitConverter,
-  type PluralKitGroup,
-  type PluralKitMember,
-  type PSystem,
-  type PTag,
-  PTagObject,
-  type PUser,
-=======
 	type PAlter,
 	PAlterObject,
 	PluralKitAPISystem,
@@ -24,7 +12,6 @@ import {
 	type PTag,
 	PTagObject,
 	type PUser,
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 } from "plurography";
 import { Cache, CacheFrom } from "seyfert";
 import type z from "zod";
@@ -194,38 +181,6 @@ export function runSandboxActions({
       deletionTags.push(v);
     });
 
-<<<<<<< HEAD
-  return {
-    system: {
-      destructive: {
-        ...pluralbuddy.system,
-        ...simulatedSystemChange,
-        alterIds: [
-          ...pluralbuddy.system.alterIds.filter(
-            (c) => !deletionAlters.some((v) => v.alterId === c),
-          ),
-          ...creationAlters.map((v) => v.alterId),
-        ],
-        tagIds: [
-          ...pluralbuddy.system.tagIds.filter((c) => !deletionTags.some((v) => v.tagId === c)),
-          ...creationTags.map((v) => v.tagId),
-        ],
-      },
-      nondestructive: {
-        ...pluralbuddy.system,
-        ...simulatedSystemChange,
-        alterIds: [...pluralbuddy.system.alterIds, ...creationAlters.map((v) => v.alterId)],
-        tagIds: [...pluralbuddy.system.tagIds, ...creationTags.map((v) => v.tagId)],
-      },
-    },
-    alters: {
-      add: creationAlters,
-      update: updateAlters,
-      remove: deletionAlters,
-    },
-    tags: { add: creationTags, update: updateTags, remove: deletionTags },
-  };
-=======
 	return {
 		system: {
 			destructive: {
@@ -264,7 +219,6 @@ export function runSandboxActions({
 		},
 		tags: { add: creationTags, update: updateTags, remove: deletionTags },
 	};
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 }
 
 function sortObject(
@@ -478,16 +432,6 @@ export async function automaticallySync({ syncConfiguration, userId, system: sys
     clearProxyCacheIfNeeded(v),
   );
 
-<<<<<<< HEAD
-  await userCollection.updateOne(
-    { userId },
-    {
-      $set: {
-        system: destructive ? transcript.system.destructive : transcript.system.nondestructive,
-      },
-    },
-  );
-=======
 	await userCollection
 		.updateOne(
 			{ userId },
@@ -500,7 +444,6 @@ export async function automaticallySync({ syncConfiguration, userId, system: sys
 			},
 		)
 		.catch((v) => console.error("error while updating", v));
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 }
 
 export async function clearProxyCacheIfNeeded(

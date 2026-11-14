@@ -38,20 +38,6 @@ export async function MarketingHomeMoreSection() {
             <h1 className="text-2xl text-primary font-bold">Always open-source</h1>
             <h1 className="tracking-tighter text-2xl font-light">and always free.</h1>
 
-<<<<<<< HEAD
-            <p className="text-muted-foreground mt-2">
-              PluralBuddy is{" "}
-              <Link
-                href="https://gftl.fyi/github"
-                className="text-primary underline"
-                target="_blank"
-              >
-                open source
-              </Link>{" "}
-              under the extremely permissive MIT license, and will never have subscriptions or use a
-              commerical model. Plurality for all!
-            </p>
-=======
 						<p className="text-muted-foreground mt-2">
 							PluralBuddy is{" "}
 							<Link
@@ -64,7 +50,6 @@ export async function MarketingHomeMoreSection() {
 							under the extremely permissive Apache v2.0 license, and will never have
 							subscriptions or use a commerical model. Plurality for all!
 						</p>
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
             <div className="relative h-50 w-full">
               <div className="absolute z-0 min-h-full justify-center flex items-center w-full">

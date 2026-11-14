@@ -83,17 +83,10 @@ ${alter.description ?? "⛔ Your alter has no description."}
       );
     }
 
-<<<<<<< HEAD
-    await alterCollection.updateOne(
-      { alterId: alter.alterId },
-      { $set: { description: alterDescription } },
-    );
-=======
 		await alterCollection.updateOne(
 			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{ $set: { description: alterDescription } },
 		);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     w(ctx.author.id, "alter.update", {
       type: "alter.update",

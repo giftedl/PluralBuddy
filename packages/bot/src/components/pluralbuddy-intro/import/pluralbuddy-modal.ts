@@ -154,15 +154,6 @@ export default class PluralBuddyImportModal extends ModalCommand {
     data.system.alterIds = newAlters.map((v) => v.alterId);
     data.system.tagIds = newTags.map((v) => v.tagId);
 
-<<<<<<< HEAD
-    if (patchedAlters.length > 0) await alterCollection.insertMany(patchedAlters);
-    if (newTags.length > 0) await tagCollection.insertMany(newTags);
-
-    await writeUserById(ctx.author.id, {
-      ...(await getUserById(ctx.author.id)),
-      system: data.system,
-    });
-=======
 		if (patchedAlters.length > 0)
 			await alterCollection.insertMany(airgap(ctx.author.id, patchedAlters));
 		if (newTags.length > 0)
@@ -172,7 +163,6 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			...(await getUserById(ctx.author.id)),
 			system: airgapSystem(ctx.author.id, {...data.system, systemAutoproxy: [], subAccounts: []}),
 		});
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     await ctx.editOrReply({
       components: [

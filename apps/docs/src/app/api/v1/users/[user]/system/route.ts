@@ -66,24 +66,6 @@ export const POST = createOAuthFunction<unknown, typeof CreateSystemParams>(
       disabledGuilds: body.disabledGuilds ?? [],
     } satisfies PSystem;
 
-<<<<<<< HEAD
-    await ctx.userCollection.findOneAndReplace(
-      { userId: ctx.auth.accountId },
-      {
-        userId: ctx.auth.accountId,
-        blocked: false,
-        storagePrefix: user?.storagePrefix ?? assetStringGeneration(8),
-        terminology: user?.terminology ?? terminologyDefaults,
-        // @ts-ignore
-        system,
-        userLang: "en",
-        nudging: user?.nudging ?? defaultNudgingStructure(),
-      },
-      {
-        upsert: true,
-      },
-    );
-=======
 		await ctx.userCollection.findOneAndReplace(
 			{ userId: ctx.auth.accountId },
 			{
@@ -100,7 +82,6 @@ export const POST = createOAuthFunction<unknown, typeof CreateSystemParams>(
 				upsert: true,
 			},
 		);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     return ctx.respond(system);
   },

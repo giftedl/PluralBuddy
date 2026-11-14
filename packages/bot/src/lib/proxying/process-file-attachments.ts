@@ -14,21 +14,6 @@ export async function processFileAttachments(
   fileAttachments: Array<{ buff: Buffer; spoilered: boolean; name: string }>;
   hasTextContent: boolean;
 }> {
-<<<<<<< HEAD
-  const fileAttachments: Array<{
-    buff: Buffer;
-    spoilered: boolean;
-    name: string;
-  }> = [];
-  const userPerms = await client.channels.memberPermissions(
-    message.channelId,
-    await client.members.fetch(
-      realGuildId ?? (message.guildId as string),
-      sendingUserId ?? message.user.id,
-    ),
-    true,
-  );
-=======
 	if (!message.member) return { fileAttachments: [], hasTextContent: false };
 
 	const fileAttachments: Array<{
@@ -41,7 +26,6 @@ export async function processFileAttachments(
 		message.member,
 		true,
 	);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   // Only process file attachments (not URLs)
   if (userPerms.has(["AttachFiles"]) ?? false) {

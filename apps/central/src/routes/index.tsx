@@ -22,7 +22,7 @@ function App() {
         <SpinnerView />
       </LoadingProfileState>
       <SignedIn>
-        <div className="px-3 pt-6">
+        <div className="px-4 pt-6">
           <h1 className="text-3xl tracking-tight font-semibold">Welcome back, {profile?.name}!</h1>
         </div>
       </SignedIn>

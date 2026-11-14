@@ -122,42 +122,6 @@ ${alter.displayName}
 
       let finishedNameMap = alter.nameMap;
 
-<<<<<<< HEAD
-      if (nameMapHasServer) {
-        // Update the name for this server using $[<identifier>] and pass arrayFilters outside $set
-        await alterCollection.updateOne(
-          { alterId: Number(alter.alterId), systemId },
-          {
-            $set: {
-              "nameMap.$[serverEntry].name": alterNewName as string,
-            },
-          },
-          {
-            arrayFilters: [{ "serverEntry.server": ctx.guildId }],
-          },
-        );
-
-        finishedNameMap = [
-          ...finishedNameMap.filter((v) => ctx.guildId !== v.server),
-          {
-            server: ctx.guildId ?? "",
-            name: alterNewName,
-          },
-        ];
-      } else {
-        // Append a new mapping to the nameMap array
-        await alterCollection.updateOne(
-          { alterId: Number(alter.alterId), systemId },
-          {
-            $push: {
-              nameMap: {
-                server: ctx.guildId as string,
-                name: alterNewName as string,
-              },
-            },
-          },
-        );
-=======
 			if (nameMapHasServer) {
 				// Update the name for this server using $[<identifier>] and pass arrayFilters outside $set
 				await alterCollection.updateOne(
@@ -192,7 +156,6 @@ ${alter.displayName}
 						},
 					},
 				);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
         finishedNameMap = [
           ...finishedNameMap,
@@ -203,21 +166,6 @@ ${alter.displayName}
         ];
       }
 
-<<<<<<< HEAD
-      w(ctx.author.id, "alter.update", {
-        type: "alter.update",
-        alter: {
-          ...alter,
-          nameMap: finishedNameMap,
-        },
-      });
-    } else {
-      // Not server specific
-      await alterCollection.updateOne(
-        { alterId: alter.alterId },
-        { $set: { displayName: alterNewName } },
-      );
-=======
 			w(ctx.author.id, "alter.update", {
 				type: "alter.update",
 				alter: {
@@ -231,7 +179,6 @@ ${alter.displayName}
 				{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 				{ $set: { displayName: alterNewName } },
 			);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
       w(ctx.author.id, "alter.update", {
         type: "alter.update",

@@ -1,13 +1,8 @@
 {
   "name": "plurography",
   "version": "0.6.0",
-<<<<<<< HEAD
-  "license": "MIT",
-  "type": "module",
-=======
   "type": "module",
   "license": "Apache-2.0",
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
   "main": "./dist/index.js",
   "module": "src/index.ts",
   "types": "./dist/index.d.ts",

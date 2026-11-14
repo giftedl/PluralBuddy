@@ -42,15 +42,6 @@ export default class QuickSync extends ComponentCommand {
       });
     }
 
-<<<<<<< HEAD
-    const token =
-      syncConfiguration?.pluralkit?.token === undefined
-        ? null
-        : await decryptToken(
-            syncConfiguration.pluralkit.token.i,
-            syncConfiguration.pluralkit.token.v,
-          );
-=======
 		const token =
 			syncConfiguration?.pluralkit?.token === undefined
 				? null
@@ -58,7 +49,6 @@ export default class QuickSync extends ComponentCommand {
 						syncConfiguration.pluralkit.token.i,
 						syncConfiguration.pluralkit.token.v,
 					);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     if (!token) return await ctx.deferUpdate();
 
@@ -72,17 +62,10 @@ export default class QuickSync extends ComponentCommand {
       flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
     });
 
-<<<<<<< HEAD
-    const system = await pk(token).systemsCollection.findOne({ userId: "@me" });
-    const members = await pk(token).membersCollection.find({ userId: "@me" });
-    const groups = await pk(token).groupsCollection.find({ userId: "@me" });
-    logger?.info("found pk objects");
-=======
 		const system = await pk(token).systemsCollection.findOne({ userId: "@me" });
 		const members = await pk(token).membersCollection.find({ userId: "@me" });
 		const groups = await pk(token).groupsCollection.find({ userId: "@me" });
 		logger?.info("found pk objects");
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     const alters = await alterCollection.find({ systemId: ctx.author.id }).toArray();
     const tags = await tagCollection.find({ systemId: ctx.author.id }).toArray();
@@ -97,20 +80,6 @@ export default class QuickSync extends ComponentCommand {
       },
     });
 
-<<<<<<< HEAD
-    if (transcript.alters.add.length > 0) await alterCollection.insertMany(transcript.alters.add);
-
-    await Promise.all(
-      transcript.alters.update.map(async (element) => {
-        await alterCollection.replaceOne(
-          { alterId: element.alterId, systemId: element.systemId },
-          element,
-        );
-      }),
-    );
-
-    transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v));
-=======
 		if (transcript.alters.add.length > 0)
 			await alterCollection
 				.insertMany(transcript.alters.add)
@@ -128,30 +97,9 @@ export default class QuickSync extends ComponentCommand {
 		);
 
 		transcript.alters.update.forEach((v) => clearProxyCacheIfNeeded(v));
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     if (transcript.tags.add.length > 0) await tagCollection.insertMany(transcript.tags.add);
 
-<<<<<<< HEAD
-    await Promise.all(
-      transcript.tags.update.map(async (element) => {
-        await tagCollection.replaceOne(
-          { tagId: element.tagId, systemId: element.systemId },
-          element,
-        );
-      }),
-    );
-
-    await userCollection.updateOne(
-      { userId: ctx.author.id },
-      { $set: { system: transcript.system.nondestructive } },
-    );
-
-    await userCollection.updateOne(
-      { userId: ctx.author.id },
-      { $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
-    );
-=======
 		await Promise.all(
 			transcript.tags.update.map(async (element) => {
 				await tagCollection
@@ -176,7 +124,6 @@ export default class QuickSync extends ComponentCommand {
 				{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
 			)
 			.catch((v) => console.error("error while updating u2", v));
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     return await ctx.interaction.editResponse({
       components: [

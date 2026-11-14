@@ -81,16 +81,6 @@ export default class EditAlterProxyModeCommand extends SubCommand {
       );
     }
 
-<<<<<<< HEAD
-    await alterCollection.updateOne(
-      { alterId: Number(alter.alterId), systemId },
-      {
-        $set: {
-          alterMode: alterProxy,
-        },
-      },
-    );
-=======
 		await alterCollection.updateOne(
 			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
 			{
@@ -99,7 +89,6 @@ export default class EditAlterProxyModeCommand extends SubCommand {
 				},
 			},
 		);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     w(ctx.author.id, "alter.update", {
       type: "alter.update",

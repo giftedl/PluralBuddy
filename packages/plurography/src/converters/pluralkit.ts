@@ -14,23 +14,6 @@ import { PluralKitGroup } from "../pluralkit/group";
 import { PluralKitMember } from "../pluralkit/member";
 import Converter from ".";
 
-<<<<<<< HEAD
-export default class PluralKitConverter implements Converter<{
-  system: PluralKitSystemType;
-  alter: z.infer<typeof PluralKitMember>;
-  tag: z.infer<typeof PluralKitGroup>;
-  import: PluralKitSystemType;
-}> {
-  to(system: PluralKitSystemType): PSystem {
-    return PSystemObject.parse({
-      associatedUserId: String(system.accounts[0]),
-      systemName: system.name ?? "Untitled System",
-      systemAvatar: system.avatar_url ?? undefined,
-      systemBanner: system.banner ?? undefined,
-      systemDescription: system.description ?? undefined,
-      systemDisplayTag: system.tag ?? undefined,
-      systemPronouns: system.pronouns ?? undefined,
-=======
 export default class PluralKitConverter
 	implements
 		Converter<{
@@ -49,7 +32,6 @@ export default class PluralKitConverter
 			systemDescription: system.description ?? undefined,
 			systemDisplayTag: system.tag ?? undefined,
 			systemPronouns: system.pronouns ?? undefined,
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
       alterIds: [],
       createdAt: system.created,
@@ -358,29 +340,6 @@ export default class PluralKitConverter
       description: tag.tagDescription,
       color: tag.tagColor ? tagHexColors[tagColors.indexOf(tag.tagColor)] : undefined,
 
-<<<<<<< HEAD
-      privacy: tag.public
-        ? {
-            name_privacy: listFromMaskTags(tag.public).includes(TagProtectionFlags.NAME)
-              ? "public"
-              : "private",
-            description_privacy: listFromMaskTags(tag.public).includes(
-              TagProtectionFlags.DESCRIPTION,
-            )
-              ? "public"
-              : "private",
-            banner_privacy: "private",
-            icon_privacy: "private",
-            list_privacy: listFromMaskTags(tag.public).includes(TagProtectionFlags.ALTERS)
-              ? "public"
-              : "private",
-            metadata_privacy: "private",
-            visibility: "private",
-          }
-        : undefined,
-    } satisfies Partial<z.infer<typeof PluralKitGroup>>;
-  }
-=======
 	toImport(data: PluralKitSystemType, forceUserId?: string): z.infer<typeof ImportNotation> {
 		let alters = data.members.map((v, i) =>
 			this.toAlter(v, i, String(forceUserId)),
@@ -389,7 +348,6 @@ export default class PluralKitConverter
 			this.toTag(v, i, String(forceUserId)),
 		);
 		const systemData = this.to(data, forceUserId);
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   toImport(data: PluralKitSystemType): z.infer<typeof ImportNotation> {
     let alters = data.members.map((v, i) => this.toAlter(v, i, String(data.accounts[0])));

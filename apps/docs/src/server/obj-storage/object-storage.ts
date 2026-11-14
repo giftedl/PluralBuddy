@@ -69,14 +69,6 @@ export function getOldObject({
   imageProperty?: string | null;
   storagePrefix: string;
 }) {
-<<<<<<< HEAD
-  return (imageProperty ?? "").startsWith("https://pluralbuddy.giftedly.dev") ||
-    (imageProperty ?? "").startsWith(
-      `https://img.pb${process.env.BUCKET_NAME?.endsWith("-canary") ? "c" : ""}.giftedly.dev`,
-    )
-    ? `/${storagePrefix}${(imageProperty ?? "").split(storagePrefix)[1]}`
-    : undefined;
-=======
 	const safeCheck = /^[A-Za-z0-9_-]{1,64}$/;
 
 	if (imageProperty && !safeCheck.test(imageProperty))
@@ -90,7 +82,6 @@ export function getOldObject({
 		)
 		? `/${storagePrefix}${(imageProperty ?? "").split(storagePrefix)[1]}`
 		: undefined;
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 }
 export async function deleteOldObject({
   imageProperty = "",

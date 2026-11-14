@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
-import { ComponentCommand, type ComponentContext, ModalCommand, ModalContext } from "seyfert";
-=======
 /**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 import {
 	ComponentCommand,
@@ -9,7 +5,6 @@ import {
 	ModalCommand,
 	ModalContext,
 } from "seyfert";
->>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
