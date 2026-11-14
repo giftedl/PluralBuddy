@@ -95,6 +95,7 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
 				redirect_uris: value.redirectUris,
 				scope: value.scopes.join(" "),
 				client_name: value.applicationName,
+				token_endpoint_auth_method: "client_secret_post"
 			});
 
 			if (result.error) {

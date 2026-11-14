@@ -1,9 +1,9 @@
+import { oauthProvider } from "@/oauth-provider";
 import { dash } from "@better-auth/infra";
-import { oauthProvider } from "@better-auth/oauth-provider";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { jwt, oidcProvider, openAPI } from "better-auth/plugins"
+import { jwt } from "better-auth/plugins"
 import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
 import { MongoClient } from "mongodb";
 
@@ -20,55 +20,24 @@ export const auth = betterAuth({
 	socialProviders: {
 		discord: {
 			enabled: true,
+			authorizationEndpoint: "https://discord.com/oauth2/authorize?integration_type=1",
 			clientId: process.env.CLIENT_ID as string,
 			clientSecret: process.env.CLIENT_SECRET as string,
 			
-			prompt: "none&integration_type=1" as 'none',
+			prompt: "none",
 			overrideUserInfoOnSignIn: true,
 			disableDefaultScope: true,
 			scope: ["identify", "applications.commands"],
-			getUserInfo: async (token) => {
-
-				// Custom implementation to get user info
-				const response = await fetch("https://discord.com/api/v10/users/@me", {
-					headers: {
-						Authorization: `Bearer ${token.accessToken}`,
-					},
-				});
-				let imageUrl = null;
-
-				const profile: RESTGetAPICurrentUserResult = await response.json();
-
-				if (profile.avatar === null) {
-					const defaultAvatarNumber =
-						profile.discriminator === "0"
-							? Number(BigInt(profile.id) >> BigInt(22)) % 6
-							: parseInt(profile.discriminator) % 5;
-					imageUrl = `https://cdn.discordapp.com/embed/avatars/${defaultAvatarNumber}.png`;
-				} else {
-					const format = profile.avatar.startsWith("a_") ? "gif" : "png";
-					imageUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.${format}`;
-				}
-
-				return {
-					user: {
-						
-						id: profile.id,
-						name: profile.username,
-						email: `${profile.id}@redacted.giftedly.dev`,
-						image: imageUrl,
-						// Yep, thats totally the real email. Trust me.
-						emailVerified: true,
-					},
-					data: profile,
-				};
-			},
+			mapProfileToUser: (profile) => ({
+				email: profile.email ?? `${profile.id}@discord.placeholder.invalid`,
+			}),
 		},
 	},
 	plugins: [
 		jwt(),
 		dash(),
 		oauthProvider({
+			enforcePerClientResources: false,
 			customAccessTokenClaims: ({user}) => {
 				return {
 					sub: user?.id
