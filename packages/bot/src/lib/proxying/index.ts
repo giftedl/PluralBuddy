@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { addBreadcrumb, captureEvent } from "@sentry/bun";
 import { getColor } from "colorthief";
@@ -387,6 +387,7 @@ export const getModernComponentsMappings = (
     name: string;
   }[] = [],
 ): ApplicableWebhookWritePayload["body"] => {
+<<<<<<< HEAD
   if (
     components.length === 2 &&
     components[1]?.data.type === ComponentType.TextDisplay &&
@@ -396,6 +397,24 @@ export const getModernComponentsMappings = (
       content: `${(components[0] as TextDisplay)?.data.content}\n${(components[1] as TextDisplay)?.data.content}`,
     };
   }
+=======
+	if (components[0]?.data.type === ComponentType.Container) return {
+		components,
+		flags:
+			components.length !== 0
+				? MessageFlags.IsComponentsV2
+				: (0 as MessageFlags),
+	};
+	if (
+		components.length === 2 &&
+		components[1]?.data.type === ComponentType.TextDisplay &&
+		components[1]?.data.content?.startsWith("https://klipy.com/gifs")
+	) {
+		return {
+			content: `${(components[0] as TextDisplay)?.data.content}\n${(components[1] as TextDisplay)?.data.content}`,
+		};
+	}
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const isSticker = (i: number) =>
     components[i]?.data.type === ComponentType.MediaGallery &&

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import {
@@ -15,10 +15,10 @@ import { createRandomId } from "@/lib/random-id";
 import { ImportNotation } from "@/lib/export";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { alterCollection, tagCollection } from "@/mongodb";
-import { PSystemObject } from "@/types/system";
 import { getUserById, writeUserById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
+import { airgap, airgapSystem } from "@/lib/airgap-database";
 
 export default class PluralBuddyImportModal extends ModalCommand {
   override filter(ctx: ModalContext) {
@@ -154,6 +154,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
     data.system.alterIds = newAlters.map((v) => v.alterId);
     data.system.tagIds = newTags.map((v) => v.tagId);
 
+<<<<<<< HEAD
     if (patchedAlters.length > 0) await alterCollection.insertMany(patchedAlters);
     if (newTags.length > 0) await tagCollection.insertMany(newTags);
 
@@ -161,6 +162,17 @@ export default class PluralBuddyImportModal extends ModalCommand {
       ...(await getUserById(ctx.author.id)),
       system: data.system,
     });
+=======
+		if (patchedAlters.length > 0)
+			await alterCollection.insertMany(airgap(ctx.author.id, patchedAlters));
+		if (newTags.length > 0)
+			await tagCollection.insertMany(airgap(ctx.author.id, newTags));
+
+		await writeUserById(ctx.author.id, {
+			...(await getUserById(ctx.author.id)),
+			system: airgapSystem(ctx.author.id, {...data.system, systemAutoproxy: [], subAccounts: []}),
+		});
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     await ctx.editOrReply({
       components: [

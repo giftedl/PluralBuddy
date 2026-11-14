@@ -43,6 +43,7 @@ export const POST = createOAuthFunction<{ user: string }, typeof SystemFrontInpu
       );
     }
 
+<<<<<<< HEAD
     await ctx.frontCollection.replaceOne(
       {
         clientId: ctx.auth.clientId,
@@ -57,6 +58,28 @@ export const POST = createOAuthFunction<{ user: string }, typeof SystemFrontInpu
       },
       { upsert: true },
     );
+=======
+		await ctx.frontCollection.replaceOne(
+			{
+				$and: [
+					{
+						clientId: ctx.auth.clientId,
+					},
+					{
+						systemId: ctx.auth.accountId,
+					},
+				],
+			},
+			{
+				clientId: ctx.auth.clientId,
+				systemId: ctx.auth.accountId,
+				alterId: input.alter,
+				timestamp: new Date(),
+				aiapId: ((client.metadata ?? {}) as Record<string, string>).aaid,
+			},
+			{ upsert: true },
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     return ctx.respond({ success: true });
   },

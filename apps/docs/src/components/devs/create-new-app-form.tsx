@@ -79,12 +79,22 @@ export function CreateNewAppForm({ children }: { children: ReactNode }) {
       // Do something with form data
       console.log("creating new dev app ->", value);
 
+<<<<<<< HEAD
       // @ts-ignore
       const result = await authClient.oauth2.createClient({
         redirect_uris: value.redirectUris,
         scope: value.scopes.join(" "),
         client_name: value.applicationName,
       });
+=======
+			// @ts-ignore
+			const result = await authClient.oauth2.createClient({
+				redirect_uris: value.redirectUris,
+				scope: value.scopes.join(" "),
+				client_name: value.applicationName,
+				token_endpoint_auth_method: "client_secret_post"
+			});
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
       if (result.error) {
         setLoading(false);

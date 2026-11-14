@@ -13,7 +13,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   redis:
-    image: redis:7.2
+    image: redis:8.0
     env_file: ".env"
     container_name: pluralbuddy-redis
     ports:

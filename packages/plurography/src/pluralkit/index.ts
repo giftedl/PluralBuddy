@@ -1,6 +1,6 @@
 /**
  * PluralBuddy Discord Bot
- *  - is licensed under MIT License.
+ *  - is licensed under Apache License 2.0.
  */
 
 import z from "zod";

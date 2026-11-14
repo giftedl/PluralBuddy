@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { getSimilarWebhooks } from "@/lib/proxying/util";
 import { messagesCollection } from "@/mongodb";

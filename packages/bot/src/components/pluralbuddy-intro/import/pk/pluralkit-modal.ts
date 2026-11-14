@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { PluralKitConverter, PluralKitSystem, terminologyDefaults } from "plurography";
 import {
@@ -27,6 +27,7 @@ import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { type PSystem, PSystemObject } from "@/types/system";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
+import { airgap } from "@/lib/airgap-database";
 
 export default class PluralBuddyImportModal extends ModalCommand {
   override filter(ctx: ModalContext) {
@@ -274,9 +275,24 @@ export default class PluralBuddyImportModal extends ModalCommand {
       .filter((v) => v.success)
       .map((v) => v.data.alterId);
 
+<<<<<<< HEAD
     systemData.tagIds = parsedGroupsSafe.filter((v) => v.success).map((v) => v.data.tagId);
 
     const newExport = new PluralKitConverter().toImport(parsed.data);
+=======
+		systemData.tagIds = parsedGroupsSafe
+			.filter((v) => v.success)
+			.map((v) => v.data.tagId);
+			
+		const newExport = new PluralKitConverter().toImport(parsed.data, ctx.author.id);
+
+		if (parsedSafe.filter((v) => v.zodData.success).length !== 0)
+			await alterCollection.insertMany(
+				airgap(ctx.author.id, newExport.alters)
+			);
+		if (parsedGroupsSafe.filter((v) => v.success).length !== 0)
+			await tagCollection.insertMany(airgap(ctx.author.id, newExport.tags));
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     if (parsedSafe.filter((v) => v.zodData.success).length !== 0)
       await alterCollection.insertMany(newExport.alters);

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import type { Document } from "mongodb";
 import {
@@ -69,10 +69,17 @@ export default class EditAlterNameCommand extends SubCommand {
       );
     }
 
+<<<<<<< HEAD
     await alterCollection.updateOne(
       { alterId: alter.alterId },
       { $set: { username: alterNewName } },
     );
+=======
+		await alterCollection.updateOne(
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
+			{ $set: { username: alterNewName } },
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     w(ctx.author.id, "alter.update", {
       type: "alter.update",

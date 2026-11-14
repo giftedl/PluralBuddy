@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { BaseResource, type CacheFrom } from "seyfert/lib/cache";
 import type { MakeDeepPartial } from "seyfert/lib/common";

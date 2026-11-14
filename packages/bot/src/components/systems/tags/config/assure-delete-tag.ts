@@ -25,6 +25,7 @@ export default class ConfigureAlter extends ComponentCommand {
     });
     const tag = await query;
 
+<<<<<<< HEAD
     if (tag === null) {
       return await ctx.interaction.update({
         components: new AlertView(await ctx.userTranslations()).errorView("ERROR_TAG_DOESNT_EXIST"),
@@ -36,6 +37,21 @@ export default class ConfigureAlter extends ComponentCommand {
       { userId: ctx.author.id },
       { $pull: { "system.tagIds": tag.tagId } },
     );
+=======
+		if (tag === null) {
+			return await ctx.interaction.update({
+				components: new AlertView(await ctx.userTranslations()).errorView(
+					"ERROR_TAG_DOESNT_EXIST",
+				),
+				flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
+			});
+		}
+		await tagCollection.deleteOne({ tagId: tag.tagId, systemId: systemId });
+		await userCollection.updateOne(
+			{ userId: ctx.author.id },
+			{ $pull: { "system.tagIds": tag.tagId } },
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     return await ctx.interaction.update({
       components: [

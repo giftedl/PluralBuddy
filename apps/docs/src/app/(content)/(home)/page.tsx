@@ -22,6 +22,7 @@ import { MarketingHomeMoreSection } from "@/components/marketing-home/more-secti
 import { MarketingHomeServerSection } from "@/components/marketing-home/server-section";
 import { MarketingHomeShowcase } from "@/components/marketing-home/showcase";
 import { MarketingHomeUserSection } from "@/components/marketing-home/user-section";
+import { Footer } from "@/components/footer";
 
 // export const metadata: Metadata = {
 // 	title: "PluralBuddy",
@@ -40,6 +41,7 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   await correctSSRLocale();
 
+<<<<<<< HEAD
   return (
     <div className="bg-surface-2 justify-center text-center flex-1 bg-mantle">
       <DressedEmbedLayout>
@@ -55,6 +57,23 @@ export default async function HomePage() {
         <div className="xl:px-3 xl:mx-30">
           <MarketingHomeHero />
           <MarketingHomeShowcase />
+=======
+	return (
+		<div className="bg-surface-2 justify-center text-center flex-1 bg-mantle">
+			<DressedEmbedLayout>
+				<Container accent_color={0xfccee8}>
+					{await getRealisticAbout()}
+					<ActionRow>
+						<Button url="https://gftl.fyi/invite" label="Invite PluralBuddy" />
+					</ActionRow>
+				</Container>
+			</DressedEmbedLayout>
+			<div className="overflow-clip z-1 relative rounded-b-[36px] border-b bg-background xl:pt-22 pt-14 [box-shadow:0_30px_60px_var(--background),0_1px_0_var(--background)]">
+				<Hero />
+				<div className="xl:px-3 xl:mx-30">
+					<MarketingHomeHero />
+					<MarketingHomeShowcase />
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
           <div className="max-xl:px-8">
             <MarketingHomeUserSection />
@@ -62,6 +81,7 @@ export default async function HomePage() {
 
             <MarketingHomeServerSection />
 
+<<<<<<< HEAD
             <MarketingHomeMoreSection />
           </div>
         </div>
@@ -118,6 +138,25 @@ export default async function HomePage() {
       </div>
     </div>
   );
+=======
+						<MarketingHomeMoreSection />
+					</div>
+				</div>
+				<div className="relative mt-20">
+					<FinalRemark />
+					<span className="absolute bottom-0 z-10 grid text-xs gap-2 w-full py-5 bg-[linear-gradient(transparent,var(--mantle)_60%)] rounded-2xl px-4">
+						<span>
+							<sup>1</sup> {m["HomePage.sup_1"]()}
+						</span>
+					</span>
+				</div>
+			</div>
+			<div className="overflow-hidden sticky bottom-0 z-0 pb-20">
+				<Footer />
+			</div>
+		</div>
+	);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 }
 
 function FooterItem({ children, link }: { children: JSX.Element | string; link: string }) {

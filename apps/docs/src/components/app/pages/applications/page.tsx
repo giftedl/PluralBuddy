@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { cn } from "@/lib/utils";
 import { EllipsisIcon, LayoutGrid, Pencil, Plus, Trash } from "lucide-react";

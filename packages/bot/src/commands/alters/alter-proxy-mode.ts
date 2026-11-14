@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { SubCommand } from "seyfert";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
@@ -81,6 +81,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
       );
     }
 
+<<<<<<< HEAD
     await alterCollection.updateOne(
       { alterId: Number(alter.alterId), systemId },
       {
@@ -89,6 +90,16 @@ export default class EditAlterProxyModeCommand extends SubCommand {
         },
       },
     );
+=======
+		await alterCollection.updateOne(
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
+			{
+				$set: {
+					alterMode: alterProxy,
+				},
+			},
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     w(ctx.author.id, "alter.update", {
       type: "alter.update",

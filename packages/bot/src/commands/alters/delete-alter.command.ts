@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { Middlewares, SubCommand } from "seyfert";
 import { autocompleteAlters } from "@/lib/autocomplete-alters";
@@ -32,6 +32,7 @@ const options = {
 })
 @Options(options)
 export default class DeleteAlterCommand extends SubCommand {
+<<<<<<< HEAD
   override async run(ctx: CommandContext<typeof options>) {
     await ctx.deferReply(true);
     const { "alter-name": alterName } = ctx.options;
@@ -44,6 +45,22 @@ export default class DeleteAlterCommand extends SubCommand {
             $or: [{ username: alterName }, { alterId: Number(alterName) }],
             systemId,
           })));
+=======
+	override async run(ctx: CommandContext<typeof options>) {
+		await ctx.deferReply(true);
+		const { "alter-name": alterName } = ctx.options;
+		const systemId = ctx.author.id;
+		const alter =
+			ctx.contextAlter() ??
+			(await (Number.isNaN(Number.parseInt(alterName))
+				? alterCollection.findOne({
+						$and: [{ $or: [{ username: alterName }] }, { systemId }],
+					})
+				: alterCollection.findOne({
+						$or: [{ username: alterName }, { alterId: Number(alterName) }],
+						systemId,
+					})));
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     if (alter === null) {
       return await ctx.ephemeral(

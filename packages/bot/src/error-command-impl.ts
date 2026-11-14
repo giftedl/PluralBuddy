@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 // biome-ignore-all lint/suspicious/noExplicitAny: Most explicit any's here are unavoidable.
 
 import type {

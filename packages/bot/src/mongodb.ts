@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { type Collection, Db, MongoClient } from "mongodb";
 import {
@@ -12,6 +12,7 @@ import {
   type PImportTranscript,
   type PIntegrationFront,
 } from "plurography";
+import { generateAlterSchema, generateTagSchema, generateUserSchema, type MongoSchema } from "./lib/db/create-db-schemas";
 import { connectMongo } from "./lib/libby";
 import type { PAlter } from "./types/alter";
 import type { PAnalytics } from "./types/analytics";
@@ -20,12 +21,15 @@ import type { PMessage } from "./types/message";
 import type { POperation } from "./types/operation";
 import type { PTag } from "./types/tag";
 import type { PUser } from "./types/user";
+<<<<<<< HEAD
 import {
   generateAlterSchema,
   generateTagSchema,
   generateUserSchema,
   type MongoSchema,
 } from "./lib/db/create-db-schemas";
+=======
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
 export let mongoClient: MongoClient;
 export let mainDb: Db;
@@ -41,6 +45,8 @@ export let frontsCollection: Collection<PIntegrationFront>;
 export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
 export let analyticsCollection: Collection<PAnalytics>;
+
+const readOnly = false;
 
 export async function setupMongoDB() {
   mongoClient = new MongoClient(process.env.MONGO ?? "");
@@ -98,6 +104,13 @@ export async function setupDatabases() {
   frontsCollection = mainDb.collection("fronts");
   importTranscriptCollection = mainDb.collection("import-transcripts");
 
+<<<<<<< HEAD
   await createPeriodicExpirationDates();
   await setValidation();
+=======
+	if (!readOnly) {
+		await createPeriodicExpirationDates();
+		await setValidation();
+	}
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 }

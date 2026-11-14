@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { cloneDeep } from "lodash";
 import {
@@ -269,6 +269,7 @@ const replaceTranslations = (
         conflictingPlaceholders[match[0]] = `{{ ${crypto.randomUUID()} }}`;
       });
 
+<<<<<<< HEAD
       Object.entries(conflictingPlaceholders).forEach(([k, v]) => {
         clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
           c as keyof DefaultLocale
@@ -301,6 +302,52 @@ const replaceTranslations = (
         ].replaceAll(v, k);
       });
     });
+=======
+			Object.entries(conflictingPlaceholders).forEach(([k, v]) => {
+				clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
+					c as keyof DefaultLocale
+				].replaceAll(k, v);
+			});
+			clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
+				c as keyof DefaultLocale
+			]
+				.replaceAll("systems", `${terminology.system_plural}`)
+				.replaceAll("system", `${terminology.system}`)
+				.replaceAll("System", `${terminology.system_capital}`)
+				.replaceAll(
+					"an alter",
+					`a${startsWithArray(terminology.alters, ENGLISH_VOWELS) ? "n" : ""} ${terminology.alters}`,
+				)
+				.replaceAll(
+					"a tag",
+					`a${startsWithArray(terminology.tags, ENGLISH_VOWELS) ? "n" : ""} ${terminology.alters}`,
+				)
+				.replaceAll("Alter", terminology.alters_capital)
+				.replaceAll("alter", terminology.alters)
+				.replaceAll("tags", terminology.tags_plural)
+				.replaceAll("tag", terminology.tags)
+				.replaceAll("Tag", terminology.tags_capital)
+				.replaceAll(
+					`proxy ${terminology.tags_plural}`,
+					terminology.proxy_tags_plural,
+				)
+				.replaceAll(`proxy ${terminology.tags}`, terminology.proxy_tag)
+				.replaceAll(
+					`Proxy ${terminology.tags_capital}s`,
+					terminology.proxy_tags_capital,
+				)
+				.replaceAll(
+					`Proxy ${terminology.tags_capital}`,
+					terminology.proxy_tags_capital,
+				)
+				.replaceAll("display tag", terminology.display_tag);
+			Object.entries(conflictingPlaceholders).forEach(([k, v]) => {
+				clonedTranslations[c as keyof DefaultLocale] = clonedTranslations[
+					c as keyof DefaultLocale
+				].replaceAll(v, k);
+			});
+		});
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   replace();
 

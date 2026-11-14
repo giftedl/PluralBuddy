@@ -11,6 +11,9 @@ COPY . .
 RUN bun install
 
 ARG GIT_COMMIT
+# Build-time placeholders: lib/auth.ts constructs a MongoClient at import time,
+# `new MongoClient("")` throws during page-data collection.
+# Real value in pod env at runtime.
 
 ARG MONGO=mongodb://build-placeholder:27017
 ARG ENV=production

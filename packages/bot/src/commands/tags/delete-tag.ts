@@ -86,11 +86,19 @@ export default class EditTagDisplayNameCommand extends SubCommand {
       );
     }
 
+<<<<<<< HEAD
     await tagCollection.deleteOne({ tagId: tag.tagId });
     await userCollection.updateOne(
       { userId: ctx.author.id },
       { $pull: { "system.tagIds": tag.tagId } },
     );
+=======
+		await tagCollection.deleteOne({ tagId: tag.tagId, systemId: systemId });
+		await userCollection.updateOne(
+			{ userId: ctx.author.id },
+			{ $pull: { "system.tagIds": tag.tagId } },
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     return await ctx.editResponse({
       components: [

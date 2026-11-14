@@ -59,6 +59,7 @@ export const POST = createOAuthFunction<
       }
     }
 
+<<<<<<< HEAD
     await ctx.alterCollection.updateOne(
       {
         alterId: Number(ctx.urlData.params.alter),
@@ -70,6 +71,25 @@ export const POST = createOAuthFunction<
         },
       },
     );
+=======
+		await ctx.alterCollection.updateOne(
+			{
+				$and: [
+					{
+						alterId: Number(ctx.urlData.params.alter),
+					},
+					{
+						systemId: ctx.auth.accountId,
+					},
+				],
+			},
+			{
+				$set: {
+					avatarUrl: avatar,
+				},
+			},
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     return ctx.respond({ ...alterObj, avatarUrl: avatar });
   },

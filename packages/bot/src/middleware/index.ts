@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { administrativeGuildPermissions } from "./administrative-guild-permissions.middleware";
 import { globalBlockUserMiddleware } from "./global-block.middleware";

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import {
   type Attachment,
@@ -104,6 +104,7 @@ export default class EditAlterPictureCommand extends SubCommand {
           storagePrefix: user.storagePrefix,
         });
 
+<<<<<<< HEAD
       await alterCollection.updateOne(
         { alterId: alter.alterId },
         {
@@ -113,6 +114,17 @@ export default class EditAlterPictureCommand extends SubCommand {
               : { avatarUrl: null },
         },
       );
+=======
+			await alterCollection.updateOne(
+				{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
+				{
+					$set:
+						se && ctx.guildId
+							? { [`avatarUrlMap.${ctx.guildId}`]: undefined }
+							: { avatarUrl: null },
+				},
+			);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
       w(ctx.author.id, "alter.update", {
         type: "alter.update",
@@ -189,6 +201,7 @@ export default class EditAlterPictureCommand extends SubCommand {
         storagePrefix: user.storagePrefix,
       });
 
+<<<<<<< HEAD
     await alterCollection.updateOne(
       { alterId: alter.alterId },
       {
@@ -198,6 +211,17 @@ export default class EditAlterPictureCommand extends SubCommand {
             : { avatarUrl: attachmentText },
       },
     );
+=======
+		await alterCollection.updateOne(
+			{ $and: [{ alterId: alter.alterId }, { systemId: systemId }] },
+			{
+				$set:
+					se && ctx.guildId
+						? { [`avatarUrlMap.${ctx.guildId}`]: attachmentText }
+						: { avatarUrl: attachmentText },
+			},
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     w(ctx.author.id, "alter.update", {
       type: "alter.update",

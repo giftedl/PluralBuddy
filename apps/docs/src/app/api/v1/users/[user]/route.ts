@@ -1,8 +1,7 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { auth } from "@/lib/auth";
 import { createOAuthFunction } from "@/server/wrapper";
-import { APIError, verifyAccessToken } from "better-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const GET = createOAuthFunction<{ user: string }>(

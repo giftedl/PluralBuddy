@@ -1,11 +1,19 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import {
+<<<<<<< HEAD
   type Redacted,
   type PAlter,
   AlterProtectionFlags,
   type PTag,
   TagProtectionFlags,
+=======
+	AlterProtectionFlags,
+	type PAlter,
+	type PTag,
+	type Redacted,
+	TagProtectionFlags,
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 } from "plurography";
 import { has } from "./privacy-bitmask";
 
@@ -16,7 +24,16 @@ export function redactAlter(
 ): Redacted<PAlter> {
   if (!alter) return null;
 
+<<<<<<< HEAD
   if (isSelf) return alter;
+=======
+	if (isSelf) return {
+		...alter,
+		fields: {
+			[clientId]: alter.fields[clientId],
+		},
+	};
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   if (!has(AlterProtectionFlags.VISIBILITY, alter.public)) {
     return { redacted: true };

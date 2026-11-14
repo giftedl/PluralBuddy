@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import { PluralKitConfiguration, PluralKitSystem } from "./pluralkit";
 import { PluralKitAPISystem } from "./pluralkit/api-system";

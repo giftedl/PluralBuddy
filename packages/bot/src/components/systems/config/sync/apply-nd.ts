@@ -127,11 +127,20 @@ export default class SetPronounsButton extends ComponentCommand {
       flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
     });
 
+<<<<<<< HEAD
     await importTranscriptCollection.deleteOne({ _id: new ObjectId(id) });
     await userCollection.updateOne(
       { userId: ctx.author.id },
       { $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
     );
+=======
+		await importTranscriptCollection.deleteOne({ _id: new ObjectId(id) });
+		await userCollection.updateOne(
+			{ userId: ctx.author.id },
+			{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
+		)
+			.catch((v) => console.error("error while updating u2", v));
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     await ctx.interaction.editResponse({
       components: new AlertView(await ctx.userTranslations()).successViewCustom(

@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 export function extractTenorId(url: string): string | null {
   const tenorUrlRegex = /https?:\/\/tenor\.com\/view\/.+?-(\d+)/;

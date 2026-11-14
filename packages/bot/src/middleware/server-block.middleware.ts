@@ -40,6 +40,7 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
     });
   }
 
+<<<<<<< HEAD
   if (blockedRoles.length !== 0)
     if (((await ctx.member?.roles.list(true)) ?? []).some((c) => blockedRoles.includes(c.id))) {
       if (ctx instanceof ComponentContext && ctx.message) {
@@ -87,6 +88,32 @@ export const serverBlock = createMiddleware<void>(async (middle) => {
         return await middle.stop();
       }
     }
+=======
+	if (blockedRoles.length !== 0)
+		if (
+			((await ctx.member?.roles.list(true)) ?? []).some((c) =>
+				blockedRoles.includes(c.id),
+			)
+		) {
+			if (ctx instanceof ComponentContext && ctx.message) {
+				(ctx.message as Message).delete().catch((_) => null);
+			}
+			try {
+				await ctx.author.write({
+					components: new AlertView(
+						await ctx.userTranslations(),
+					).errorViewCustom(
+						(await ctx.userTranslations()).BLOCKED.replace(
+							"{{ guild }}",
+							(await ctx.guild())?.name ?? "",
+						),
+					),
+					flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+				});
+			} catch (_) {}
+			return await middle.stop();
+		}
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   return middle.next();
 });

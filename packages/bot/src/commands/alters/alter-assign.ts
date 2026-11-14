@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import {
   ActionRow,
@@ -111,6 +111,7 @@ export default class AssignTag extends SubCommand {
       );
     }
 
+<<<<<<< HEAD
     await alterCollection.updateOne(
       { alterId: alter.alterId, systemId },
       { $push: { tagIds: tag.tagId } },
@@ -119,6 +120,16 @@ export default class AssignTag extends SubCommand {
       { tagId: tag.tagId, systemId },
       { $push: { associatedAlters: alter.alterId.toString() } },
     );
+=======
+		await alterCollection.updateOne(
+			{ $and: [{ alterId: alter.alterId,}, { systemId }]},
+			{ $push: { tagIds: tag.tagId } },
+		);
+		await tagCollection.updateOne(
+			{ $and: [{ tagId: tag.tagId }, { systemId }] },
+			{ $push: { associatedAlters: alter.alterId.toString() } },
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     w(ctx.author.id, "alter.update", {
       type: "alter.update",

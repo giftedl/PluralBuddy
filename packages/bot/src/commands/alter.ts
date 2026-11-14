@@ -1,4 +1,4 @@
-/**  * PluralBuddy Discord Bot  *  - is licensed under MIT License.  */
+/**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
 
 import {
   ActionRow,
@@ -33,6 +33,8 @@ const options = {
   }),
 };
 
+const publicAlterModeOnly = false;
+
 @Declare({
   name: "alter",
   description: "Query an alter",
@@ -52,6 +54,7 @@ export default class SystemCommand extends Command {
         ? (ctx.message as unknown as Message).content.endsWith("-p")
         : publicMode;
 
+<<<<<<< HEAD
     let query = null;
     const userAlterMatch = /^(\d+)\/(.+)$/.exec(alterName);
     if (userAlterMatch) {
@@ -100,6 +103,83 @@ export default class SystemCommand extends Command {
         );
       }
     }
+=======
+		let query = null;
+		const userAlterMatch = /^(\d+)\/(.+)$/.exec(alterName);
+		if (userAlterMatch && !publicAlterModeOnly) {
+			// If format is <user-id>/<alter>, query from another system
+			const [_, otherSystemId, otherAlterName] = userAlterMatch;
+			query = alterCollection.findOne({
+				$or: [
+					{ username: otherAlterName },
+					{ alterId: Number(otherAlterName) },
+				],
+				systemId: otherSystemId,
+			});
+		} else {
+			try {
+				// Otherwise, query for current user's alters
+				query = Number.isNaN(Number.parseInt(alterName))
+					? ((await alterCollection.findOne({
+							$and: [
+								{
+									username: alterName,
+								},
+								{
+									systemId,
+								},
+							],
+						})) ??
+						(await alterCollection.findOne({
+							$and: [
+								{
+									username: { $regex: new RegExp(alterName, "i") },
+								},
+								{
+									systemId,
+								},
+							],
+						})))
+					: ((await alterCollection.findOne({
+							$and: [
+								{
+									$or: [
+										{ username: { $regex: new RegExp(alterName, "i") } },
+										{ alterId: Number(alterName) },
+									],
+								},
+
+								{ systemId },
+							],
+						})) ??
+						(await alterCollection.findOne({
+							$and: [
+								{
+									$or: [
+										{ username: { $regex: new RegExp(alterName, "i") } },
+										{ alterId: Number(alterName) },
+									],
+								},
+								{
+									systemId,
+								},
+							],
+						})));
+			} catch (_) {
+				return await ctx.ephemeral(
+					{
+						components: new AlertView(await ctx.userTranslations()).errorView(
+							"MONGO_REGEX_ERROR",
+						),
+						flags: MessageFlags.IsComponentsV2 + MessageFlags.Ephemeral,
+					},
+					undefined,
+					undefined,
+					ctx,
+				);
+			}
+		}
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
     const alter = await query;
 

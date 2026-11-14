@@ -5,6 +5,7 @@ import { alterCollection, messagesCollection } from "@/mongodb";
 import { cacheSystemMap } from "./dm-replying";
 
 const replifyContents = (contents: string) =>
+<<<<<<< HEAD
   contents
     .replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
     .substring(0, 74)
@@ -18,6 +19,22 @@ const replifyContents = (contents: string) =>
     .replaceAll("@everyone", "--")
     .replaceAll(/<#(.*)>/g, "")
     .replaceAll(/<@&(.*)>/g, "");
+=======
+	contents
+		.replace(/<a?:([a-z|A-Z|0-9]+):[0-9]+>/, ":$1:")
+		.substring(0, 74)
+		.replaceAll("https://", "")
+		.replaceAll("http://", "")
+		.replaceAll("discord.com", "discord")
+		.replaceAll("\n", "")
+		.replaceAll("]", "")
+		.replaceAll("[", "")
+		.replaceAll(/<@!?(\d+)>/g, "")
+		.replaceAll("@everyone", "--")
+		.replaceAll(/<#(.*)>/g, "")
+	    .replaceAll("```", "`")
+		.replaceAll(/<@&(.*)>/g, "");
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
 export async function getReferencedMessageString(message: Message, proxyWHId: string) {
   let userString = `<@${message.referencedMessage?.author.id}>`;

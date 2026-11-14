@@ -1,6 +1,6 @@
 # PluralBuddy
 
-[![MIT License](https://img.shields.io/github/license/giftedl/PluralBuddy)](LICENSE)
+[![Apache License](https://img.shields.io/github/license/giftedl/PluralBuddy)](LICENSE)
 
 The plurality bot finally built correctly.
 

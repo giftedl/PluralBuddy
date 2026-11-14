@@ -13,6 +13,7 @@ import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { combine } from "../privacy-bitmask";
 import { createRandomId } from "../random-id";
 import { ImportEntry, ImportOutput } from ".";
+import { airgap, airgapOne } from "../airgap-database";
 
 const TupperBoxImportEntry = z.object({
   existing: ImportEntry,
@@ -55,6 +56,7 @@ export async function replace(
         if (slicableItem) combinedBrackets.push(slicableItem);
       });
 
+<<<<<<< HEAD
       return (
         member !== undefined && {
           zodData: PAlterObject.safeParse({
@@ -99,6 +101,57 @@ export async function replace(
   for (const replacedAlter of newAlters.map((c) => c.zodData).filter((v) => v.data !== undefined)) {
     await alterCollection.replaceOne({ alterId: replacedAlter.data?.alterId }, replacedAlter.data);
   }
+=======
+			return (
+				member !== undefined && {
+					zodData: PAlterObject.safeParse({
+						alterId: pluralbuddy.alterId,
+						systemId: existing.userId,
+						username: member.name
+							.replaceAll(" ", "")
+							.replaceAll("/", "")
+							.replaceAll("\\", "")
+							.replaceAll("@", ""),
+						displayName: member.nick ?? member.name,
+						nameMap: pluralbuddy.nameMap,
+						color: pluralbuddy.color,
+						alterMode: "webhook",
+						description: member.description,
+						created: new Date(),
+						pronouns: pluralbuddy.pronouns,
+						avatarUrl: member.avatar_url ?? pluralbuddy.avatarUrl,
+						webhookAvatarUrl: null,
+						banner: member.banner,
+						lastMessageTimestamp: null,
+						messageCount: 0,
+						proxyTags: combinedBrackets.map(([prefix, suffix], i) => {
+							return {
+								prefix: prefix?.replaceAll('"', "") ?? "",
+								suffix: suffix?.replaceAll('"', "") ?? "",
+								id: Number(createRandomId(i)).toString(),
+							};
+						}),
+						tagIds: pluralbuddy.tagIds,
+						public: pluralbuddy.public,
+						avatarUrlMap: {},
+						fields: {},
+						flags: 0,
+					} satisfies PAlter),
+					originalPkId: member.id,
+				}
+			);
+		})
+		.filter((res) => res !== false);
+
+	for (const replacedAlter of newAlters
+		.map((c) => c.zodData)
+		.filter((v) => v.data !== undefined)) {
+		await alterCollection.replaceOne(
+			{ $and: [{ alterId: replacedAlter.data?.alterId}, { systemId: existing.userId }] },
+			airgapOne(existing.userId, replacedAlter.data),
+		);
+	}
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const correspondingTBTags = existing.tags
     .filter((tag) => tb.groups.some((v) => v.name === tag.tagFriendlyName))
@@ -126,8 +179,18 @@ export async function replace(
     )
     .filter((res) => res !== false);
 
+<<<<<<< HEAD
   for (const replacedTag of correspondingTBTags.filter((v) => v.data !== undefined))
     await tagCollection.replaceOne({ tagId: replacedTag.data?.tagId }, replacedTag.data);
+=======
+	for (const replacedTag of correspondingTBTags.filter(
+		(v) => v.data !== undefined,
+	))
+		await tagCollection.replaceOne(
+			{ $and: [{tagId: replacedTag.data?.tagId }, {systemId: existing.userId}]},
+			airgapOne(existing.userId, replacedTag.data),
+		);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   return ImportOutput.parse({
     alters: newAlters.map((c) => c.zodData.data).filter((c) => c !== undefined),
@@ -167,6 +230,7 @@ export async function add(
         if (slicableItem) combinedBrackets.push(slicableItem);
       });
 
+<<<<<<< HEAD
       return (
         member !== undefined && {
           zodData: PAlterObject.safeParse({
@@ -213,6 +277,54 @@ export async function add(
     .map((v) => v.data);
 
   if (newAlters.length > 0) await alterCollection.insertMany(newAlters);
+=======
+			return (
+				member !== undefined && {
+					zodData: PAlterObject.safeParse({
+						alterId: Number(createRandomId(i)),
+						systemId: existing.userId,
+						username: member.name
+							.replaceAll(" ", "")
+							.replaceAll("/", "")
+							.replaceAll("\\", "")
+							.replaceAll("@", ""),
+						displayName: member.nick ?? member.name,
+						nameMap: [],
+						color: null,
+						alterMode: "webhook",
+						description: member.description,
+						created: new Date(),
+						pronouns: null,
+						avatarUrl: member.avatar_url,
+						webhookAvatarUrl: null,
+						banner: member.banner,
+						lastMessageTimestamp: null,
+						messageCount: 0,
+						proxyTags: combinedBrackets.map(([prefix, suffix], i) => {
+							return {
+								prefix: prefix?.replaceAll('"', "") ?? "",
+								suffix: suffix?.replaceAll('"', "") ?? "",
+								id: Number(createRandomId(i)).toString(),
+							};
+						}),
+						tagIds: [],
+						// TupperBox has no permission values... lol
+						public: 0,
+						avatarUrlMap: {},
+						fields: {},
+						flags: 0,
+					} satisfies PAlter),
+					originalPkId: member.id,
+				}
+			);
+		})
+		.filter((v) => v !== false)
+		.map((v) => v.zodData)
+		.filter((v) => v.data !== undefined)
+		.map((v) => v.data);
+
+	if (newAlters.length > 0) await alterCollection.insertMany(airgap(existing.userId, newAlters));
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const newTags = tb.groups
     .filter((v) =>
@@ -239,7 +351,12 @@ export async function add(
   if (newAlters.length + input.existing.alters.length >= 2000) throw new Error("Too many alters");
   if (newTags.length + input.existing.tags.length >= 1000) throw new Error("Too many tags");
 
+<<<<<<< HEAD
   if (newTags.length > 0) await tagCollection.insertMany(newTags);
+=======
+	if (newTags.length > 0)
+		await tagCollection.insertMany(airgap(existing.userId, newTags));
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   await userCollection.updateOne(
     {
@@ -291,14 +408,28 @@ export async function deleteM(
     input.import.tuppers.some((c) => v.username !== c.name),
   );
 
+<<<<<<< HEAD
   await alterCollection.deleteMany({
     alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
   });
+=======
+	await alterCollection.deleteMany({
+		$and: [
+			{
+				systemId: input.existing.userId,
+			},
+			{
+				alterId: { $in: pendingDeletedAlters.map((v) => v.alterId) },
+			},
+		],
+	});
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   const pendingDeletedTags = input.existing.tags.filter((v) =>
     input.import.groups.some((c) => c.name === v.tagFriendlyName),
   );
 
+<<<<<<< HEAD
   await tagCollection.deleteMany({
     tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
   });
@@ -315,6 +446,31 @@ export async function deleteM(
       },
     },
   );
+=======
+	await tagCollection.deleteMany({
+		$and: [
+			{
+				systemId: input.existing.userId,
+			},
+			{
+				tagId: { $in: pendingDeletedTags.map((v) => v.tagId) },
+			},
+		],
+	});
+	await userCollection.updateOne(
+		{
+			userId: input.existing.userId,
+		},
+		{
+			$pull: {
+				"system.alterIds": {
+					$each: pendingDeletedAlters.map((v) => v.alterId),
+				},
+				"system.tagIds": { $each: pendingDeletedTags.map((v) => v.tagId) },
+			},
+		},
+	);
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
   return ImportOutput.parse({
     alters: pendingDeletedAlters,

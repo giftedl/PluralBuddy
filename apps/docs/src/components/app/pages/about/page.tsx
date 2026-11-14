@@ -55,6 +55,7 @@ export function AboutPage() {
         </Card>
       </main>
 
+<<<<<<< HEAD
       <div className="w-full h-full min-h-screen p-4">
         <div className="relative">
           <Dithering
@@ -100,6 +101,53 @@ export function AboutPage() {
                   <CardDescription>
                     PluralBuddy would not be possible without these people.
                   </CardDescription>
+=======
+			<div className="w-full h-full min-h-screen p-4">
+				<div className="relative">
+					<Dithering
+						height={720}
+						colorBack="#000000000"
+						colorFront="#ed4b9b"
+						className="absolute z-0 rounded-xl border top-0 h-180 w-full"
+						shape="ripple"
+						type="4x4"
+						size={2.4}
+						speed={2}
+						scale={1.56}
+						offsetX={0  }
+						offsetY={0.8}
+					/>
+					<div className="absolute flex justify-between flex-col items-center z-10 w-full p-4 space-y-2">
+						<div className="space-y-2 max-w-150">
+							<Card className=" bg-background/60 backdrop-blur-xl h-full w-full">
+								<CardContent className="text-center">
+									<CardTitle>PluralBuddy – the fast plurality bot</CardTitle>
+									<CardDescription className="flex items-center gap-1 text-center w-full justify-center">
+										v26.1.1
+									</CardDescription>
+								</CardContent>
+							</Card>
+							<Card className=" bg-background/60  backdrop-blur-xl h-full w-full">
+								<CardContent className="text-center">
+									<CardTitle className="text-xl">
+										Created by{" "}
+										<Link className="text-primary" href="https://giftedly.dev">
+											giftedly 💝
+										</Link>{" "}
+										with a TON of TypeScript.
+									</CardTitle>
+									<CardDescription className="flex items-center gap-1 text-center w-full justify-center">
+										PluralBuddy is licensed under the Apache 2.0 License.
+									</CardDescription>
+								</CardContent>
+							</Card>
+							<Card className=" bg-background/90  backdrop-blur-xl h-full w-full">
+								<CardContent>
+									<CardTitle>Credits</CardTitle>
+									<CardDescription>
+										PluralBuddy would not be possible without these people.
+									</CardDescription>
+>>>>>>> 2bc1cfa15f9539ae844af4a92ea7b0715d42df63
 
                   <Item variant="outline" className="mt-4">
                     <ItemMedia>
