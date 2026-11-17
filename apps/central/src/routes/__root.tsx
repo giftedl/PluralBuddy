@@ -14,6 +14,7 @@ import { AuthenticationProvider } from "#/logic/auth-ctx";
 import { SignedOut } from "#/components/auth/signed-out";
 import { SignedIn } from "#/components/auth/signed-in";
 import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
+import { SidebarProvider } from "#/components/sidebar";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -53,6 +54,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <QueryClientProvider client={queryClient}>
             <AuthenticationProvider>
               <AppTopbar />
+              <SidebarProvider>
+                {children}
+              </SidebarProvider>
             </AuthenticationProvider>
           </QueryClientProvider>
           <TanStackDevtools

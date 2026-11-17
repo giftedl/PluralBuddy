@@ -13,7 +13,7 @@ configs:
           action: ALLOW
         - name: generic-browser
           user_agent_regex: Mozilla
-          action: CHALLENGE
+          action: DENY
   nginx:
     content: |
       events {
