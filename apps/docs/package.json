@@ -16,7 +16,7 @@
 		"@base-ui/react": "^1.6.0",
 		"@better-auth/core": "^1.7.23",
 		"@better-auth/infra": "0.3.7",
-		"@better-auth/oauth-provider": "https://github.com/giftedl/jwt-enforce-better-auth-oauth-provider#ff4b5cea9d9b966377d0fcff05c083b46be7a356",
+		"@better-auth/oauth-provider": "https://github.com/giftedl/jwt-enforce-better-auth-oauth-provider#117b9598f8831dd9db9f464c6c9f2c8541ef92ef",
 		"@better-auth/utils": "^0.5.1",
 		"@colordx/core": "^7.2.0",
 		"@discordjs/builders": "^1.13.1",
