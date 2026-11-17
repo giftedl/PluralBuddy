@@ -35,6 +35,7 @@ export const register = (registry: OpenAPIRegistry) =>
 							associatedUserId: true,
 							systemOperationDM: true,
 							subAccounts: true,
+							verifiedSubAccounts: true,
 						})
 							.partial()
 							.default({}),

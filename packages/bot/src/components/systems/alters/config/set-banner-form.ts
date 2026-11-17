@@ -25,7 +25,7 @@ export default class SetPFPForm extends ModalCommand {
 			)[0];
 
 		const user = await ctx.retrievePUser();
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],
 		});

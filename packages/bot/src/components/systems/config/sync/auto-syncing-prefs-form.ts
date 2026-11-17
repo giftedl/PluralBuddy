@@ -64,7 +64,7 @@ export default class SetPronounsButton extends ModalCommand {
 		if (!enabled) destructive = false;
 
 		await userCollection.updateOne(
-			{ userId: ctx.author.id },
+			{ userId: await ctx.systemId() },
 			{
 				$set: {
 					"syncConfiguration.pluralkit.automatic.enabled": enabled,

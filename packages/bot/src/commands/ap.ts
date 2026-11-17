@@ -110,11 +110,11 @@ export default class AutoProxyCommand extends Command {
 		const query = await (Number.isNaN(Number.parseInt(firstAlter))
 			? alterCollection.findOne({
 					$or: [{ username: firstAlter }],
-					systemId: ctx.author.id,
+					systemId: await ctx.systemId(),
 				})
 			: alterCollection.findOne({
 					$or: [{ username: firstAlter }, { alterId: Number(firstAlter) }],
-					systemId: ctx.author.id,
+					systemId: await ctx.systemId(),
 				}));
 		const oauthConsents = await getOAuthConsents(ctx.author.id);
 		if (

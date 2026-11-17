@@ -45,7 +45,7 @@ export default class LatchAutoProxySelectMenu extends ComponentCommand {
 		}
 
 		if (initalAlterId) {
-			const systemId = ctx.author.id;
+			const systemId = await ctx.systemId();
 			const query = alterCollection.findOne({
 				alterId: Number(initalAlterId),
 				systemId,

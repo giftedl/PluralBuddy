@@ -44,7 +44,7 @@ export default class EditCommand extends Command {
 				case msgId !== undefined:
 					return await messagesCollection.findOne(
 						{
-							systemId: ctx.author.id,
+							systemId: await ctx.systemId(),
 							channelId: ctx.channelId,
 							messageId: msgId,
 						},
@@ -58,7 +58,7 @@ export default class EditCommand extends Command {
 					});
 				default:
 					return await messagesCollection.findOne(
-						{ systemId: ctx.author.id, channelId: ctx.channelId },
+						{ systemId: await ctx.systemId(), channelId: ctx.channelId },
 						{ sort: { createdAt: -1 } },
 					);
 			}
@@ -75,7 +75,7 @@ export default class EditCommand extends Command {
 		}
 
 		if (
-			message?.systemId !== ctx.author.id ||
+			message?.systemId !== await ctx.systemId() ||
 			message.guildId !== ctx.guildId
 		) {
 			return await ctx.editResponse({

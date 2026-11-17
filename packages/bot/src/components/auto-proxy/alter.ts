@@ -42,7 +42,7 @@ export default class AlterAutoProxySelectMenu extends ComponentCommand {
 			});
 		}
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = alterCollection.findOne({
 			alterId: Number(alterId),
 			systemId,

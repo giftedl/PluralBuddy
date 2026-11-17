@@ -1,12 +1,7 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */ /**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
-import {
-	ComponentCommand,
-	ModalCommand,
-	type ModalContext,
-	type ComponentContext,
-} from "seyfert";
+import { ModalCommand, type ModalContext } from "seyfert";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { defaultUserStructure, writeUserById } from "@/types/user";
+import { writePersonalSettingsById } from "@/types/user";
 import { AlertView } from "@/views/alert";
 import { MessageFlags } from "seyfert/lib/types";
 import { NudgePreferences } from "@/views/nudge-preferences";
@@ -39,7 +34,7 @@ export default class AddUserForm extends ModalCommand {
 		const newBlockedUsers = user.nudging.blockedUsers.filter(
 			(id: string) => id !== userId,
 		);
-		await writeUserById(user.userId, {
+		await writePersonalSettingsById(ctx.author.id, {
 			...user,
 			nudging: { ...user.nudging, blockedUsers: newBlockedUsers },
 		});

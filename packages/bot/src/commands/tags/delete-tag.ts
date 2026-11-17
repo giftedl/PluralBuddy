@@ -33,7 +33,7 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { "tag-name": tagName } = ctx.options;
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = Number.isNaN(Number.parseInt(tagName))
 			? tagCollection.findOne({ $or: [{ tagFriendlyName: tagName }], systemId })
 			: tagCollection.findOne({
@@ -88,7 +88,7 @@ export default class EditTagDisplayNameCommand extends SubCommand {
 
 		await tagCollection.deleteOne({ tagId: tag.tagId, systemId: systemId });
 		await userCollection.updateOne(
-			{ userId: ctx.author.id },
+			{ userId: systemId },
 			{ $pull: { "system.tagIds": tag.tagId } },
 		);
 

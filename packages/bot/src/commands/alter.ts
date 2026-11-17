@@ -45,7 +45,7 @@ const publicAlterModeOnly = false;
 export default class SystemCommand extends Command {
 	override async run(ctx: CommandContext<typeof options>) {
 		const { alter: alterName, public: publicMode } = ctx.options;
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		await ctx.deferReply(!publicMode);
 
 		const publicMessage = publicMode
@@ -170,20 +170,20 @@ export default class SystemCommand extends Command {
 				components: [
 					...(await new AlterView(
 						await ctx.userTranslations(),
-					).alterProfileView(alter, alter.systemId !== ctx.author.id)),
-					...(publicMessage && alter.systemId === ctx.author.id
+					).alterProfileView(alter, alter.systemId !== await ctx.systemId())),
+					...(publicMessage && alter.systemId === await ctx.systemId()
 						? [
 								new TextDisplay().setContent(
 									`-#  ${emojis.lineRight} Some options were hidden because this message is in public mode.`,
 								),
 							]
 						: []),
-					...(!publicMessage && alter.systemId === ctx.author.id
+					...(!publicMessage && alter.systemId === await ctx.systemId()
 						? new AlterView(await ctx.userTranslations()).alterConfigureButton(
 								alter,
 							)
 						: []),
-					...(!publicMessage && alter.systemId === ctx.author.id
+					...(!publicMessage && alter.systemId === await ctx.systemId()
 						? new AlterView(await ctx.userTranslations()).alterProxyModes(
 								alter,
 								ctx.guildId,

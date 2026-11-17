@@ -24,6 +24,7 @@ const CreateSystemParams = PSystemObject.omit({
 	associatedUserId: true,
 	systemOperationDM: true,
 	subAccounts: true,
+	verifiedSubAccounts: true,
 })
 	.partial()
 	.and(z.object({ systemName: z.string().max(100).min(1) }));
@@ -53,7 +54,8 @@ export const POST = createOAuthFunction<unknown, typeof CreateSystemParams>(
 			flags: 0,
 			...body,
 			displayTagMap: body.displayTagMap ?? {},
-			disabledGuilds: body.disabledGuilds ?? []
+			disabledGuilds: body.disabledGuilds ?? [],
+			verifiedSubAccounts: [],
 		} satisfies PSystem;
 
 		await ctx.userCollection.findOneAndReplace(

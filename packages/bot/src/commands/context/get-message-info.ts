@@ -60,7 +60,7 @@ export default class GetMessageInfoCommand extends ContextMenuCommand {
 				user.system,
 				ctx.target,
 				await (await ctx.guild())?.members.fetch(user.userId, true)!,
-				alter.systemId !== ctx.author.id,
+				alter.systemId !== await ctx.systemId(),
 			),
 			flags: MessageFlags.Ephemeral + MessageFlags.IsComponentsV2,
 			allowed_mentions: { parse: [] },

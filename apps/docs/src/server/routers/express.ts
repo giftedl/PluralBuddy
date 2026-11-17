@@ -6,7 +6,7 @@ import {
 import { Double, MongoClient } from "mongodb";
 import { PAlter, PExpressApplication } from "plurography";
 import z from "zod";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
+import { getSystemIdBySessionId } from "@/lib/discord-id";
 import { baseProcedure } from "../init";
 import { router } from "../trpc";
 
@@ -31,7 +31,7 @@ export const ExpressRouter = router({
 			);
 			const applications = db.collection<PExpressApplication>("applications");
 			const alters = db.collection<PAlter>("alters");
-			const owner = await getDiscordIdBySessionId(session.user.id);
+			const owner = await getSystemIdBySessionId(session.user.id);
 			const applicationsList = await applications
 				.find({ owner })
 				.skip(input.skip ?? 0)

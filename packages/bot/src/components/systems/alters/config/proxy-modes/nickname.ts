@@ -21,7 +21,7 @@ export default class NicknameButton extends ComponentCommand {
 			InteractionIdentifier.Systems.Configuration.Alters.ProxyMode.Nickname.substring(
 				ctx.customId,
 			)[0];
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 
 		const query = alterCollection.findOne({
 			$and: [{ alterId: Number(alterId) }, { systemId }],

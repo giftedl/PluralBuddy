@@ -19,7 +19,7 @@ export const globalBlockUserMiddleware = createMiddleware<void>(
 			const { "alter-name": alterName } = middle.context.options as {
 				"alter-name": string;
 			};
-			const systemId = ctx.author.id;
+			const systemId = await ctx.systemId();
 
 			const query = Number.isNaN(Number.parseInt(alterName))
 				? alterCollection.findOne({ $or: [{ username: alterName }], systemId })

@@ -212,6 +212,7 @@ export default createEvent({
 				)
 			)?.webhooks ?? (await getSimilarWebhooks(parent ?? message.channelId));
 		const user = await getUserById(message.author.id);
+		const systemId = user.system?.associatedUserId ?? message.author.id;
 		const guild = PGuildObject.parse(
 			(await client.cache.pguild.get(message.guildId ?? ""))?.g ??
 				(await getGuildFromId(message.guildId ?? "")),
@@ -243,7 +244,7 @@ export default createEvent({
 
 				const fronts = await frontsCollection.findOne({
 					aiapId: apMode?.autoproxyMode,
-					systemId: message.author.id,
+					systemId,
 				});
 
 				if (fronts?.alterId) {
@@ -258,7 +259,7 @@ export default createEvent({
 			if (alter) {
 				const fetchedAlter = await alterCollection.findOne({
 					alterId: Number(alter),
-					systemId: message.author.id,
+					systemId,
 				});
 				if (
 					message.guildId &&
@@ -539,7 +540,7 @@ export default createEvent({
 			if (alter) {
 				const fetchedAlter = await alterCollection.findOne({
 					alterId: Number(alter),
-					systemId: message.author.id,
+					systemId,
 				});
 
 				if (

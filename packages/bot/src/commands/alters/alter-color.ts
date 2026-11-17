@@ -46,7 +46,7 @@ export default class EditAlterColorCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { "alter-name": alterName, "alter-color": color } = ctx.options;
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 
 		const alter =
 			ctx.contextAlter() ??
