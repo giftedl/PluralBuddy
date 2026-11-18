@@ -30,8 +30,8 @@ const options = {
 @Declare({
     name: "set-ping-mode",
     description: "Set the ping mode for this server",
-    options,
 })
+@Options(options)
 export default class SetPingModeSlash extends Command {
     override async run(ctx: CommandContext<typeof options>) {
         const pingMode = pingModeSchema.parse(ctx.options.mode);
