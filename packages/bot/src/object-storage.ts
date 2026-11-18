@@ -79,6 +79,11 @@ export function getOldObject({
 	imageProperty?: string | null;
 	storagePrefix: string;
 }) {
+	const safeCheck = /^[A-Za-z0-9_-]{1,64}$/;
+
+	if (imageProperty && !safeCheck.test(imageProperty)) return undefined;
+	if (!safeCheck.test(storagePrefix)) return undefined;
+	
 	return (imageProperty ?? "").startsWith("https://pluralbuddy.giftedly.dev") ||
 		(imageProperty ?? "").startsWith(
 			`https://img.pb${process.env.BUCKET_NAME?.endsWith("-canary") ? "c" : ""}.giftedly.dev`,

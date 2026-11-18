@@ -8,6 +8,7 @@ import {
 	type PluralKitGroup,
 	type PluralKitMember,
 	type PSystem,
+	PSystemObject,
 	type PTag,
 	PTagObject,
 	type PUser,
@@ -215,7 +216,7 @@ export function runSandboxActions({
 					...creationTags.map((v) => v.tagId),
 				],
 			},
-			nondestructive: {
+			nondestructive: PSystemObject.parse({
 				...pluralbuddy.system,
 				...simulatedSystemChange,
 				alterIds: [
@@ -226,7 +227,7 @@ export function runSandboxActions({
 					...pluralbuddy.system.tagIds,
 					...creationTags.map((v) => v.tagId),
 				],
-			},
+			} as z.infer<PSystem>),
 		},
 		alters: {
 			add: creationAlters,
@@ -492,16 +493,18 @@ export async function automaticallySync({
 		clearProxyCacheIfNeeded(v),
 	);
 
-	await userCollection.updateOne(
-		{ userId },
-		{
-			$set: {
-				system: destructive
-					? transcript.system.destructive
-					: transcript.system.nondestructive,
+	await userCollection
+		.updateOne(
+			{ userId },
+			{
+				$set: {
+					system: destructive
+						? transcript.system.destructive
+						: transcript.system.nondestructive,
+				},
 			},
-		},
-	);
+		)
+		.catch((v) => console.error("error while updating", v));
 }
 
 export async function clearProxyCacheIfNeeded(

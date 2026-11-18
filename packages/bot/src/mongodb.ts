@@ -12,6 +12,7 @@ import {
 	type PImportTranscript,
 	type PIntegrationFront,
 } from "plurography";
+import { generateAlterSchema, generateTagSchema, generateUserSchema, type MongoSchema } from "./lib/db/create-db-schemas";
 import { connectMongo } from "./lib/libby";
 import type { PAlter } from "./types/alter";
 import type { PAnalytics } from "./types/analytics";
@@ -20,7 +21,6 @@ import type { PMessage } from "./types/message";
 import type { POperation } from "./types/operation";
 import type { PTag } from "./types/tag";
 import type { PUser } from "./types/user";
-import { generateAlterSchema, generateTagSchema, generateUserSchema, type MongoSchema } from "./lib/db/create-db-schemas";
 
 export let mongoClient: MongoClient;
 export let mainDb: Db;
@@ -37,7 +37,7 @@ export let messagesCollection: Collection<PMessage>;
 export let applicationsCollection: Collection<PExpressApplication>;
 export let analyticsCollection: Collection<PAnalytics>;
 
-const readOnly = true;
+const readOnly = false;
 
 export async function setupMongoDB() {
 	mongoClient = new MongoClient(process.env.MONGO ?? "");

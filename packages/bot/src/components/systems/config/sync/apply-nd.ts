@@ -144,7 +144,8 @@ export default class SetPronounsButton extends ComponentCommand {
 		await userCollection.updateOne(
 			{ userId: ctx.author.id },
 			{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
-		);
+		)
+			.catch((v) => console.error("error while updating u2", v));
 
 		await ctx.interaction.editResponse({
 			components: new AlertView(await ctx.userTranslations()).successViewCustom(
