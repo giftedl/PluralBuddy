@@ -1,30 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, Frown } from "lucide-react";
-import { Button } from "#/components/ui/button.tsx";
+import { LoadingProfileState } from "#/components/auth/loading-profile";
+import { SignedIn } from "#/components/auth/signed-in";
+import { SignedOut } from "#/components/auth/signed-out";
+import { Button } from "#/components/ui/button";
 import { Discord } from "#/components/ui/discord";
 import { Material } from "#/components/ui/material";
 import { Placeholder } from "#/components/ui/placeholder";
-import { useAuth } from "#/hooks/use-auth";
-import { SignedOut } from "#/components/auth/signed-out";
-import { LoadingProfileState } from "#/components/auth/loading-profile";
 import { SpinnerView } from "#/components/ui/spinner-view";
-import { SignedIn } from "#/components/auth/signed-in";
+import { useAuth } from "#/hooks/use-auth";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Frown } from "lucide-react";
 
-export const Route = createFileRoute("/")({ component: App });
+export const Route = createFileRoute("/_requiresAuth")({
+  component: RouteComponent,
+});
 
-function App() {
-  const { login, profile } = useAuth();
+function RouteComponent() {
+  const { login } = useAuth();
 
   return (
-    <main className="w-full relative h-screen">
+    <div className="relative w-full h-full">
       <LoadingProfileState>
         <SpinnerView />
       </LoadingProfileState>
       <SignedIn>
-        <div className="px-4 pt-6">
-          <h1 className="text-3xl tracking-tight font-semibold">Welcome back, {profile?.name}!</h1>
-        </div>
+        <Outlet />
       </SignedIn>
       <SignedOut>
         <Material
@@ -46,6 +45,6 @@ function App() {
           </Placeholder>
         </Material>
       </SignedOut>
-    </main>
+    </div>
   );
 }

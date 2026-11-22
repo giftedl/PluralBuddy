@@ -16,6 +16,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu-v2";
+import { ColorSchemeMenuItems } from "./menu/color-schemes";
 
 export function AppTopbar() {
   const [expandedLabel, setExpandedLabel] = useState(false);
@@ -110,8 +111,6 @@ export function PluralBuddyCentralContext({ central }: { central: BMenu.Handle<u
 }
 
 export function SettingsPopup({ menu }: { menu: BMenu.Handle<unknown> }) {
-  const { setTheme } = useTheme();
-
   return (
     <DropdownMenu handle={menu}>
       <DropdownMenuContent>
@@ -128,24 +127,7 @@ export function SettingsPopup({ menu }: { menu: BMenu.Handle<unknown> }) {
             <SwatchBook className="size-4 stroke-muted-foreground" /> Color schemes
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent side="bottom" sideOffset={0} alignOffset={-10}>
-            <DropdownMenuItem
-              className="flex items-center gap-1.5"
-              onClick={() => setTheme("system")}
-            >
-              <Monitor className="size-4 stroke-muted-foreground" /> System
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center gap-1.5"
-              onClick={() => setTheme("dark")}
-            >
-              <Moon className="size-4 stroke-muted-foreground" /> Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center gap-1.5"
-              onClick={() => setTheme("light")}
-            >
-              <Sun className="size-4 stroke-muted-foreground" /> Light
-            </DropdownMenuItem>
+            <ColorSchemeMenuItems />
           </DropdownMenuSubContent>
           <DropdownMenuSeparator />
           <div className="flex items-center justify-between p-2">

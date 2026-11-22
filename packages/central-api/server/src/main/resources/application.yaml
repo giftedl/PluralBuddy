@@ -18,4 +18,6 @@ ktor:
       - app.pluralbuddy.services.WebsocketsKt.configureWebsockets
       - app.pluralbuddy.services.StatusCodesKt.configureStatusPages
       - app.pluralbuddy.services.MongoDBKt.configureMongo
-      - app.pluralbuddy.services.AuthenticationRoutingKt.configureAuthenticationSecurity
+      - app.pluralbuddy.services.AuthenticationRoutingKt.configureAuthenticationRouter
+      # Routers
+      - app.pluralbuddy.routing.SystemRoutingKt.systemRouting

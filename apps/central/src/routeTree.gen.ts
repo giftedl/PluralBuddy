@@ -9,13 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as RequiresAuthRouteImport } from './routes/_requiresAuth'
+import { Route as RequiresAuthIndexRouteImport } from './routes/_requiresAuth/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 
-const IndexRoute = IndexRouteImport.update({
+const RequiresAuthRoute = RequiresAuthRouteImport.update({
+  id: '/_requiresAuth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RequiresAuthIndexRoute = RequiresAuthIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => RequiresAuthRoute,
 } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
@@ -24,39 +29,47 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof RequiresAuthIndexRoute
   '/auth/callback': typeof AuthCallbackRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/': typeof RequiresAuthIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_requiresAuth': typeof RequiresAuthRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
+  '/_requiresAuth/': typeof RequiresAuthIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/auth/callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/callback'
-  id: '__root__' | '/' | '/auth/callback'
+  to: '/auth/callback' | '/'
+  id: '__root__' | '/_requiresAuth' | '/auth/callback' | '/_requiresAuth/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  RequiresAuthRoute: typeof RequiresAuthRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_requiresAuth': {
+      id: '/_requiresAuth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof RequiresAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_requiresAuth/': {
+      id: '/_requiresAuth/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof RequiresAuthIndexRouteImport
+      parentRoute: typeof RequiresAuthRoute
     }
     '/auth/callback': {
       id: '/auth/callback'
@@ -68,8 +81,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface RequiresAuthRouteChildren {
+  RequiresAuthIndexRoute: typeof RequiresAuthIndexRoute
+}
+
+const RequiresAuthRouteChildren: RequiresAuthRouteChildren = {
+  RequiresAuthIndexRoute: RequiresAuthIndexRoute,
+}
+
+const RequiresAuthRouteWithChildren = RequiresAuthRoute._addFileChildren(
+  RequiresAuthRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  RequiresAuthRoute: RequiresAuthRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,
 }
 export const routeTree = rootRouteImport

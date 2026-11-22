@@ -1,4 +1,4 @@
-import { ChevronDown, Container, LogIn, Settings, SwatchBook, UserGroup } from "lucide-react";
+import { ChevronDown, Container, LogIn, Settings, SwatchBook, Tags, UserGroup } from "lucide-react";
 import { SignedIn } from "./auth/signed-in";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -6,11 +6,16 @@ import { SignedOut } from "./auth/signed-out";
 import { Discord } from "./ui/discord";
 import { Separator } from "./ui/separator";
 import type { ReactNode } from "react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu-v2";
+import { ColorSchemeMenuItems } from "./menu/color-schemes";
+import { useSystem } from "#/hooks/use-system";
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
+  const system = useSystem();
+
   return (
-    <main className="flex max-h-screen w-full overflow-hidden pt-[57px] pl-8">
-      <div className="flex w-full max-w-[300px] flex-col gap-2 border-r pt-7 pr-6">
+    <main className="flex h-screen w-full overflow-hidden pt-[57px] pl-8 max-sm:pr-8">
+      <div className="flex w-full max-w-[300px] max-sm:hidden flex-col gap-2 border-r pt-7 pr-6">
         <SignedIn>
           {(profile) => (
             <Button
@@ -24,7 +29,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
               </Avatar>
               <div className="flex flex-col">
                 <span>{profile.name}</span>
-                <span className="text-muted-foreground">No system</span>
+                <span className="text-muted-foreground">{system?.systemName ?? "No system"}</span>
               </div>
             </Button>
           )}
@@ -50,6 +55,14 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
             >
               <UserGroup size={16} />
               Alters
+            </Button>
+            <Button
+              className="flex w-full items-center justify-start gap-2 text-left text-muted-foreground!"
+              variant="tertiary"
+              rounding="xl"
+            >
+              <Tags size={16} />
+              Tags
             </Button>
           </SignedIn>
           <SignedOut>
@@ -85,17 +98,24 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
             <Settings className="size-4 text-muted-foreground" />
             Settings
           </Button>
-          <Button
-            className="flex w-full items-center justify-between text-left text-muted-foreground!"
-            variant="tertiary"
-            rounding="xl"
-          >
-            <span className="flex items-center gap-2">
-              <SwatchBook className="size-4 text-muted-foreground" />
-              Color scheme
-            </span>
-            <ChevronDown className="size-4" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button
+                className="flex w-full items-center justify-between text-left text-muted-foreground!"
+                variant="tertiary"
+                rounding="xl"
+              >
+                <span className="flex items-center gap-2">
+                  <SwatchBook className="size-4 text-muted-foreground" />
+                  Color scheme
+                </span>
+                <ChevronDown className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <ColorSchemeMenuItems />
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       {children}

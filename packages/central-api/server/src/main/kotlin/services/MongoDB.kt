@@ -12,6 +12,6 @@ fun Application.configureMongo() {
     mongoClient = mongoDatabase;
 }
 
-fun Application.mongo(): MongoDatabase {
+fun mongo(): MongoDatabase {
     return mongoClient!!;
 }

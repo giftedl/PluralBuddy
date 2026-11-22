@@ -11,9 +11,6 @@ import { Separator } from "#/components/ui/separator";
 import { useAuth } from "#/hooks/use-auth";
 import appCss from "../styles.css?url";
 import { AuthenticationProvider } from "#/logic/auth-ctx";
-import { SignedOut } from "#/components/auth/signed-out";
-import { SignedIn } from "#/components/auth/signed-in";
-import { Avatar, AvatarFallback, AvatarImage } from "#/components/ui/avatar";
 import { SidebarProvider } from "#/components/sidebar";
 
 export const Route = createRootRoute({
