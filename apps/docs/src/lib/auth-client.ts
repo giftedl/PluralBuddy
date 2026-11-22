@@ -1,5 +1,5 @@
 import { sentinelClient } from "@better-auth/infra/client";
-import { oauthProviderClient } from "@better-auth/oauth-provider/client";
+import { oauthDeviceAuthorizationClient, oauthProviderClient } from "@better-auth/oauth-provider/client";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
@@ -8,5 +8,6 @@ export const authClient = createAuthClient({
 		sentinelClient({
 			identifyUrl: process.env.BETTER_AUTH_IDENTIFY_URL,
 		}),
+		oauthDeviceAuthorizationClient(), 
 	],
 });

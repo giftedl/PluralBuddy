@@ -1,4 +1,4 @@
-import { oauthProvider } from "@better-auth/oauth-provider";
+import { oauthDeviceAuthorization, oauthProvider } from "@better-auth/oauth-provider";
 import { dash } from "@better-auth/infra";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 import { betterAuth } from "better-auth";
@@ -6,6 +6,7 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { jwt } from "better-auth/plugins"
 import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
 import { MongoClient } from "mongodb";
+import { deviceAuthorization } from "better-auth/plugins"; 
 
 const client = new MongoClient(process.env.MONGO ?? "");
 
@@ -36,6 +37,9 @@ export const auth = betterAuth({
 	plugins: [
 		jwt(),
 		dash(),
+		oauthDeviceAuthorization({ 
+			verificationUri: "/device", 
+		}),
 		oauthProvider({
 			enforcePerClientResources: false,
 			customAccessTokenClaims: ({user}) => {
