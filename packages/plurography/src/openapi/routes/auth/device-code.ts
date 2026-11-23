@@ -11,7 +11,7 @@ export const register = (registry: OpenAPIRegistry) =>
         bearerAuth: [],
       },
     ],
-    path: "/auth/oauth2/token",
+    path: "/auth/device/code",
     responses: {
       "200": {
         description: "Success",

@@ -57,8 +57,71 @@ components:
             system:write: Write to system data
             system:admin: "Read/write to alter, tags & system data."
   schemas:
-    PAlter:
+    PTag:
       type: object
+      properties:
+        tagId:
+          type: string
+        systemId:
+          type: string
+        tagFriendlyName:
+          type: string
+          maxLength: 100
+        tagDescription:
+          type:
+            - string
+            - "null"
+          maxLength: 1000
+        tagColor:
+          type: string
+          enum:
+            - red
+            - orange
+            - amber
+            - yellow
+            - lime
+            - green
+            - emerald
+            - teal
+            - cyan
+            - sky
+            - blue
+            - indigo
+            - violet
+            - purple
+            - fuchsia
+            - pink
+            - rose
+        associatedAlters:
+          type: array
+          items:
+            type: string
+        orderString:
+          type: string
+          minLength: 1
+          maxLength: 4
+        public:
+          type: number
+          minimum: 0
+          description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see the tag's name. |\n| DESCRIPTION     | `2` `(1 << 1)`      | Allows external users to see the tag's description. |\n| ALTERS          | `32` `(1 << 5)`     | Allows external users to see the tag's associated alters. |\n| COLOR           | `64` `(1 << 6)`     | Allows external users to see the tag's banner. |"
+          example: 0
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 150
+          default: {}
+      required:
+        - tagId
+        - systemId
+        - tagFriendlyName
+        - tagColor
+        - associatedAlters
+        - public
+    PAlter:
+      type:
+        - object
+        - "null"
       properties:
         alterId:
           type: number
@@ -191,67 +254,6 @@ components:
         - banner
         - lastMessageTimestamp
         - messageCount
-    PTag:
-      type: object
-      properties:
-        tagId:
-          type: string
-        systemId:
-          type: string
-        tagFriendlyName:
-          type: string
-          maxLength: 100
-        tagDescription:
-          type:
-            - string
-            - "null"
-          maxLength: 1000
-        tagColor:
-          type: string
-          enum:
-            - red
-            - orange
-            - amber
-            - yellow
-            - lime
-            - green
-            - emerald
-            - teal
-            - cyan
-            - sky
-            - blue
-            - indigo
-            - violet
-            - purple
-            - fuchsia
-            - pink
-            - rose
-        associatedAlters:
-          type: array
-          items:
-            type: string
-        orderString:
-          type: string
-          minLength: 1
-          maxLength: 4
-        public:
-          type: number
-          minimum: 0
-          description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see the tag's name. |\n| DESCRIPTION     | `2` `(1 << 1)`      | Allows external users to see the tag's description. |\n| ALTERS          | `32` `(1 << 5)`     | Allows external users to see the tag's associated alters. |\n| COLOR           | `64` `(1 << 6)`     | Allows external users to see the tag's banner. |"
-          example: 0
-        fields:
-          type: object
-          additionalProperties:
-            type: string
-            maxLength: 150
-          default: {}
-      required:
-        - tagId
-        - systemId
-        - tagFriendlyName
-        - tagColor
-        - associatedAlters
-        - public
     PSystem:
       type: object
       properties:
@@ -374,6 +376,166 @@ components:
         - public
   parameters: {}
 paths:
+  "/v1/users/{user}/alters/{alter}":
+    delete:
+      summary: Delete a system alter
+      description: "Delete a system alter by its ID. `{user}` can be `@me` to target the current OAuth user."
+      security:
+        - oAuth2:
+            - alters:write
+      parameters:
+        - name: user
+          in: path
+          required: true
+          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
+          schema:
+            type: string
+        - name: alter
+          in: path
+          required: true
+          description: "`{alter}` is the alter ID."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                      - true
+                required:
+                  - success
+        "400":
+          description: Client error while processing input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - not-matching-oauth
+                            - zod
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
+        "401":
+          description: No access token when authenticating.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
+        "404":
+          description: "Couldn't find the alter"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                      - unknown-alter
+                  friendly:
+                    type: string
+                    enum:
+                      - "Couldn't find this alter."
+                required:
+                  - type
+                  - friendly
+    get:
+      summary: Get a system alter
+      description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
+      security:
+        - oAuth2:
+            - alters:read
+      parameters:
+        - name: user
+          in: path
+          required: true
+          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
+          schema:
+            type: string
+        - name: alter
+          in: path
+          required: true
+          description: "`{alter}` is the alter ID."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isSelf:
+                    type: boolean
+                  data:
+                    $ref: "#/components/schemas/PAlter"
+                required:
+                  - isSelf
+                  - data
+        "401":
+          description: No access token when authenticating.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
   "/v1/users/{user}/front":
     post:
       summary: Front an alter
@@ -485,29 +647,149 @@ paths:
                 required:
                   - type
                   - friendly
-  /v1/stats:
-    get:
-      summary: Get PluralBuddy statistics
-      security: []
-      description: Get data of statistical data related to PluralBuddy.
+  /auth/oauth2/token:
+    post:
+      summary: Obtain an OAuth2.1 access token
+      security:
+        - bearerAuth: []
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                    - authorization_code
+                    - client_credentials
+                    - refresh_token
+                  description: OAuth2 grant type
+                client_id:
+                  type: string
+                  description: OAuth2 client ID
+                client_secret:
+                  type: string
+                  description: OAuth2 client secret
+                code:
+                  type: string
+                  description: Authorization code (for authorization_code grant)
+                code_verifier:
+                  type: string
+                  description: PKCE code verifier (for authorization_code grant)
+                redirect_uri:
+                  type: string
+                  format: uri
+                  description: Redirect URI (for authorization_code grant)
+                refresh_token:
+                  type: string
+                  description: Refresh token (for refresh_token grant)
+                resource:
+                  type: string
+                  description: Requested token resource (ie audience) to obtain a JWT formatted access token
+                  enum:
+                    - https://pluralbuddy.app
+                scope:
+                  type: string
+                  description: Requested scopes (for client_credentials grant)
+              required:
+                - grant_type
       responses:
         "200":
-          description: Successful.
+          description: Access token response
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  guildCount:
+                  access_token:
+                    type: string
+                    description: The access token issued by the authorization server
+                  token_type:
+                    type: string
+                    description: The type of the token issued
+                    enum:
+                      - Bearer
+                  expires_in:
                     type: number
-                  userCount:
-                    type: number
-                  lastDrip:
-                    type: number
+                    description: Lifetime in seconds of the access token
+                  refresh_token:
+                    type: string
+                    description: "Refresh token, if issued"
+                  scope:
+                    type: string
+                    description: Scopes granted by the access token
+                  id_token:
+                    type: string
+                    description: ID Token (if OpenID Connect)
                 required:
-                  - guildCount
-                  - userCount
-                  - lastDrip
+                  - access_token
+                  - token_type
+                  - expires_in
+        "400":
+          description: Invalid request or error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+                  error_uri:
+                    type: string
+                required:
+                  - error
+        "401":
+          description: Unauthorized. Due to missing or invalid authentication.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "403":
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Not Found. The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "429":
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal Server Error. This is a problem with the server that you cannot fix.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
   "/v1/users/{user}/tags/{tag}":
     delete:
       summary: Delete a system tag
@@ -672,270 +954,29 @@ paths:
                         - friendly
                 required:
                   - errors
-  "/v1/users/{user}/alters/{alter}":
-    delete:
-      summary: Delete a system alter
-      description: "Delete a system alter by its ID. `{user}` can be `@me` to target the current OAuth user."
-      security:
-        - oAuth2:
-            - alters:write
-      parameters:
-        - name: user
-          in: path
-          required: true
-          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
-          schema:
-            type: string
-        - name: alter
-          in: path
-          required: true
-          description: "`{alter}` is the alter ID."
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    enum:
-                      - true
-                required:
-                  - success
-        "400":
-          description: Client error while processing input.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - not-matching-oauth
-                            - zod
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-        "401":
-          description: No access token when authenticating.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - no-access-token
-                            - invalid-scopes
-                            - unknown-token
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-        "404":
-          description: "Couldn't find the alter"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum:
-                      - unknown-alter
-                  friendly:
-                    type: string
-                    enum:
-                      - "Couldn't find this alter."
-                required:
-                  - type
-                  - friendly
+  /v1/stats:
     get:
-      summary: Get a system alter
-      description: "Get data about a specific alter by ID. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system alter data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
-      security:
-        - oAuth2:
-            - alters:read
-      parameters:
-        - name: user
-          in: path
-          required: true
-          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
-          schema:
-            type: string
-        - name: alter
-          in: path
-          required: true
-          description: "`{alter}` is the alter ID."
-          schema:
-            type: string
+      summary: Get PluralBuddy statistics
+      security: []
+      description: Get data of statistical data related to PluralBuddy.
       responses:
         "200":
-          description: Success.
+          description: Successful.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  isSelf:
-                    type: boolean
-                  data:
-                    allOf:
-                      - $ref: "#/components/schemas/PAlter"
-                      - type:
-                          - object
-                          - "null"
+                  guildCount:
+                    type: number
+                  userCount:
+                    type: number
+                  lastDrip:
+                    type: number
                 required:
-                  - isSelf
-                  - data
-        "401":
-          description: No access token when authenticating.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - no-access-token
-                            - invalid-scopes
-                            - unknown-token
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-  /auth/oauth2/revoke:
-    post:
-      summary: Revoke OAuth2 access or refresh token
-      security:
-        - bearerAuth: []
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                client_id:
-                  type: string
-                  description: OAuth2 client ID
-                client_secret:
-                  type: string
-                  description: OAuth2 client secret
-                token:
-                  type: string
-                  description: The token to revoke (access or refresh token)
-                token_type_hint:
-                  type: string
-                  enum:
-                    - access_token
-                    - refresh_token
-                  description: Hint about the type of the token submitted for revocation
-              required:
-                - token
-      responses:
-        "200":
-          description: Token revoked successfully. The response body is empty.
-          content:
-            application/json:
-              schema:
-                type: object
-                description: Empty object on success
-        "400":
-          description: Invalid request or error response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                  error_description:
-                    type: string
-                  error_uri:
-                    type: string
-                required:
-                  - error
-        "401":
-          description: Unauthorized. Due to missing or invalid authentication.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
-        "403":
-          description: Forbidden. You do not have permission to access this resource or to perform this action.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        "404":
-          description: Not Found. The requested resource was not found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        "429":
-          description: Too Many Requests. You have exceeded the rate limit. Try again later.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        "500":
-          description: Internal Server Error. This is a problem with the server that you cannot fix.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                  - guildCount
+                  - userCount
+                  - lastDrip
   /auth/oauth2/authorize:
     get:
       summary: Authorize an OAuth2 request
@@ -1018,6 +1059,106 @@ paths:
                   error_description:
                     type: string
                   state:
+                    type: string
+                required:
+                  - error
+        "401":
+          description: Unauthorized. Due to missing or invalid authentication.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        "403":
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Not Found. The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "429":
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal Server Error. This is a problem with the server that you cannot fix.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /auth/oauth2/revoke:
+    post:
+      summary: Revoke OAuth2 access or refresh token
+      security:
+        - bearerAuth: []
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: OAuth2 client ID
+                client_secret:
+                  type: string
+                  description: OAuth2 client secret
+                token:
+                  type: string
+                  description: The token to revoke (access or refresh token)
+                token_type_hint:
+                  type: string
+                  enum:
+                    - access_token
+                    - refresh_token
+                  description: Hint about the type of the token submitted for revocation
+              required:
+                - token
+      responses:
+        "200":
+          description: Token revoked successfully. The response body is empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Empty object on success
+        "400":
+          description: Invalid request or error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+                  error_uri:
                     type: string
                 required:
                   - error
@@ -1209,149 +1350,6 @@ paths:
                 properties:
                   message:
                     type: string
-  /auth/oauth2/token:
-    post:
-      summary: Obtain an OAuth2.1 access token
-      security:
-        - bearerAuth: []
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                grant_type:
-                  type: string
-                  enum:
-                    - authorization_code
-                    - client_credentials
-                    - refresh_token
-                  description: OAuth2 grant type
-                client_id:
-                  type: string
-                  description: OAuth2 client ID
-                client_secret:
-                  type: string
-                  description: OAuth2 client secret
-                code:
-                  type: string
-                  description: Authorization code (for authorization_code grant)
-                code_verifier:
-                  type: string
-                  description: PKCE code verifier (for authorization_code grant)
-                redirect_uri:
-                  type: string
-                  format: uri
-                  description: Redirect URI (for authorization_code grant)
-                refresh_token:
-                  type: string
-                  description: Refresh token (for refresh_token grant)
-                resource:
-                  type: string
-                  description: Requested token resource (ie audience) to obtain a JWT formatted access token
-                  enum:
-                    - https://pluralbuddy.app
-                scope:
-                  type: string
-                  description: Requested scopes (for client_credentials grant)
-              required:
-                - grant_type
-      responses:
-        "200":
-          description: Access token response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  access_token:
-                    type: string
-                    description: The access token issued by the authorization server
-                  token_type:
-                    type: string
-                    description: The type of the token issued
-                    enum:
-                      - Bearer
-                  expires_in:
-                    type: number
-                    description: Lifetime in seconds of the access token
-                  refresh_token:
-                    type: string
-                    description: "Refresh token, if issued"
-                  scope:
-                    type: string
-                    description: Scopes granted by the access token
-                  id_token:
-                    type: string
-                    description: ID Token (if OpenID Connect)
-                required:
-                  - access_token
-                  - token_type
-                  - expires_in
-        "400":
-          description: Invalid request or error response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                  error_description:
-                    type: string
-                  error_uri:
-                    type: string
-                required:
-                  - error
-        "401":
-          description: Unauthorized. Due to missing or invalid authentication.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                required:
-                  - message
-        "403":
-          description: Forbidden. You do not have permission to access this resource or to perform this action.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        "404":
-          description: Not Found. The requested resource was not found.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        "429":
-          description: Too Many Requests. You have exceeded the rate limit. Try again later.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        "500":
-          description: Internal Server Error. This is a problem with the server that you cannot fix.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
   "/v1/messages/{id}":
     get:
       summary: Get PluralBuddy message
@@ -1451,305 +1449,13 @@ paths:
                         - friendly
                 required:
                   - errors
-  "/v1/users/{user}/terminology":
-    get:
-      summary: "Get a user's terminology"
-      description: "Get specific data about a user's terminology. `{user}` can be `@me` to target the current OAuth user."
-      security:
-        - oAuth2:
-            - system:read
-      parameters:
-        - name: user
-          in: path
-          required: true
-          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  alters:
-                    type: string
-                    maxLength: 15
-                    default: alter
-                  alters_plural:
-                    type: string
-                    maxLength: 15
-                    default: alters
-                  alters_capital:
-                    type: string
-                    maxLength: 15
-                    default: Alter
-                  tags:
-                    type: string
-                    maxLength: 15
-                    default: tag
-                  tags_plural:
-                    type: string
-                    maxLength: 15
-                    default: tags
-                  tags_capital:
-                    type: string
-                    maxLength: 15
-                    default: Tag
-                  system:
-                    type: string
-                    maxLength: 15
-                    default: system
-                  system_plural:
-                    type: string
-                    maxLength: 15
-                    default: systems
-                  system_capital:
-                    type: string
-                    maxLength: 15
-                    default: System
-                  display_tag:
-                    type: string
-                    maxLength: 15
-                    default: display tag
-                  proxy_tag:
-                    type: string
-                    maxLength: 15
-                    default: proxy tag
-                  proxy_tags_plural:
-                    type: string
-                    maxLength: 15
-                    default: proxy tags
-                  proxy_tags_capital:
-                    type: string
-                    maxLength: 15
-                    default: Proxy Tags
-        "401":
-          description: No access token when authenticating.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - no-access-token
-                            - invalid-scopes
-                            - unknown-token
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
+  "/v1/users/{user}/system/create-tag":
     post:
-      summary: "Modify a user's terminology"
-      description: "Modify specific data about a user's terminology. `{user}` can be `@me` to target the current OAuth user."
+      summary: Create a system tag
+      description: "Create a system tag. `{user}` can be `@me` to target the current OAuth user."
       security:
         - oAuth2:
-            - system:write
-      parameters:
-        - name: user
-          in: path
-          required: true
-          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                alters:
-                  type: string
-                  maxLength: 15
-                  default: alter
-                alters_plural:
-                  type: string
-                  maxLength: 15
-                  default: alters
-                alters_capital:
-                  type: string
-                  maxLength: 15
-                  default: Alter
-                tags:
-                  type: string
-                  maxLength: 15
-                  default: tag
-                tags_plural:
-                  type: string
-                  maxLength: 15
-                  default: tags
-                tags_capital:
-                  type: string
-                  maxLength: 15
-                  default: Tag
-                system:
-                  type: string
-                  maxLength: 15
-                  default: system
-                system_plural:
-                  type: string
-                  maxLength: 15
-                  default: systems
-                system_capital:
-                  type: string
-                  maxLength: 15
-                  default: System
-                display_tag:
-                  type: string
-                  maxLength: 15
-                  default: display tag
-                proxy_tag:
-                  type: string
-                  maxLength: 15
-                  default: proxy tag
-                proxy_tags_plural:
-                  type: string
-                  maxLength: 15
-                  default: proxy tags
-                proxy_tags_capital:
-                  type: string
-                  maxLength: 15
-                  default: Proxy Tags
-      responses:
-        "200":
-          description: Success.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    enum:
-                      - true
-                required:
-                  - success
-        "401":
-          description: No access token when authenticating.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - no-access-token
-                            - invalid-scopes
-                            - unknown-token
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-  "/v1/users/{user}/system/list-alters":
-    get:
-      summary: List system alters
-      description: "List data about alters in a system. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
-      security:
-        - oAuth2:
-            - alters:read
-      parameters:
-        - name: user
-          in: path
-          required: true
-          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
-          schema:
-            type: string
-        - description: How many entries to show at most if in a pagination. Can only be at most 250 alters.
-          name: max
-          in: query
-          schema:
-            type: number
-            maximum: 250
-        - description: How many entries to skip if in a pagination.
-          name: skip
-          in: query
-          schema:
-            type: number
-      responses:
-        "200":
-          description: Success.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PAlter"
-        "400":
-          description: "You can only show at most 30 alters in a current pagination or you aren't using the current OAuth user."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - not-matching-oauth
-                            - max-too-high
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-        "401":
-          description: No access token when authenticating.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - no-access-token
-                            - invalid-scopes
-                            - unknown-token
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-  "/v1/users/{user}/system/create-alter":
-    post:
-      summary: Create a system alter
-      description: "Create a system alter. `{user}` can be `@me` to target the current OAuth user. Username must be unique."
-      security:
-        - oAuth2:
-            - alters:write
+            - tags:write
       parameters:
         - name: user
           in: path
@@ -1764,102 +1470,50 @@ paths:
               allOf:
                 - type: object
                   properties:
-                    username:
-                      type: string
-                      maxLength: 100
-                      pattern: "^[^\\s@\\\\/]+$"
-                    displayName:
-                      type: string
-                      maxLength: 100
-                    nameMap:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          server:
-                            type: string
-                            maxLength: 20
-                          name:
-                            type: string
-                            maxLength: 100
-                        required:
-                          - server
-                          - name
-                    color:
-                      type:
-                        - string
-                        - "null"
-                      pattern: "^#[0-9A-Fa-f]{6}$/i"
-                    description:
+                    tagDescription:
                       type:
                         - string
                         - "null"
                       maxLength: 1000
-                    pronouns:
-                      type:
-                        - string
-                        - "null"
-                      maxLength: 100
-                    avatarUrl:
-                      type:
-                        - string
-                        - "null"
-                    avatarUrlMap:
-                      type: object
-                      additionalProperties:
-                        type: string
-                      default: {}
-                    webhookAvatarUrl:
-                      type:
-                        - string
-                        - "null"
-                    banner:
-                      type:
-                        - string
-                        - "null"
-                    alterMode:
+                    orderString:
                       type: string
-                      enum:
-                        - nickname
-                        - webhook
-                        - both
-                      default: webhook
+                      minLength: 1
+                      maxLength: 4
                     public:
                       type: number
                       minimum: 0
-                      default: 0
-                      description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| VISIBILITY      | `1` `(1 << 0)`      | Allows external users to see the alter. |\n| NAME            | `2` `(1 << 1)`      | Allows external users to see the alter's name. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see the alter's description. |\n| BANNER          | `8` `(1 << 3)`      | Allows external users to see the alter's banner. |\n| PRONOUNS        | `16` `(1 << 4)`     | Allows external users to see the alter's pronouns. |\n| AVATAR          | `32` `(1 << 5)`     | Allows external users to see the alter's avatar. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see the alter's associated tags. |\n| MESSAGE_COUNT   | `256` `(1 << 8)`    | Allows external users to see the alter's message count. |\n| USERNAME        | `512` `(1 << 9)`    | Allows external users to see the alter's username. |"
-                    flags:
-                      type: number
-                      minimum: 0
-                      default: 0
-                      description: "This is a bitwise operation-based number which determines which features are enabled.\n\n| Alter Flag              | Value                   | Description |\n|-------------------------|-------------------------|-------------|\n| PROXY_TAGS_KEPT         | `1` `(1 << 0)`      | Keeps proxy tags after proxying for this specific alter. |"
+                      description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see the tag's name. |\n| DESCRIPTION     | `2` `(1 << 1)`      | Allows external users to see the tag's description. |\n| ALTERS          | `32` `(1 << 5)`     | Allows external users to see the tag's associated alters. |\n| COLOR           | `64` `(1 << 6)`     | Allows external users to see the tag's banner. |"
+                      example: 0
+                  required:
+                    - public
                 - type: object
                   properties:
-                    username:
+                    color:
                       type: string
-                      maxLength: 100
-                      pattern: "^[^\\s@\\\\/]+$"
+                      enum:
+                        - red
+                        - orange
+                        - amber
+                        - yellow
+                        - lime
+                        - green
+                        - emerald
+                        - teal
+                        - cyan
+                        - sky
+                        - blue
+                        - indigo
+                        - violet
+                        - purple
+                        - fuchsia
+                        - pink
+                        - rose
                     displayName:
                       type: string
+                      minLength: 3
                       maxLength: 100
-                    proxyTags:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          prefix:
-                            type: string
-                            maxLength: 100
-                          suffix:
-                            type: string
-                            maxLength: 100
-                        required:
-                          - prefix
-                          - suffix
-                      default: []
                   required:
-                    - username
+                    - color
                     - displayName
       responses:
         "200":
@@ -1867,7 +1521,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PAlter"
+                $ref: "#/components/schemas/PTag"
         "400":
           description: Client error while processing input.
           content:
@@ -1885,8 +1539,7 @@ paths:
                           enum:
                             - not-matching-oauth
                             - zod
-                            - too-many-alters
-                            - duplicate
+                            - too-many-tags
                         friendly:
                           type: string
                       required:
@@ -1937,10 +1590,10 @@ paths:
                 required:
                   - type
                   - friendly
-  "/v1/users/{user}/fields/alters/{id}":
+  "/v1/users/{user}/system/list-tags":
     get:
-      summary: Get an alter by integration field
-      description: "Get data about a specific alter by integration field. `{user}` can be `@me` to target the current OAuth user."
+      summary: List system tags
+      description: "List data about tags in a system. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
       security:
         - oAuth2:
             - alters:read
@@ -1951,19 +1604,50 @@ paths:
           description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
           schema:
             type: string
-        - name: id
-          in: path
-          required: true
-          description: "`{id}` is the field contents."
+        - description: How many entries to show at most if in a pagination. Can only be at most 250 tags.
+          name: max
+          in: query
           schema:
-            type: string
+            type: number
+            maximum: 250
+        - description: How many entries to skip if in a pagination.
+          name: skip
+          in: query
+          schema:
+            type: number
       responses:
         "200":
           description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PAlter"
+                type: array
+                items:
+                  $ref: "#/components/schemas/PTag"
+        "400":
+          description: "You can only show at most 250 tags in a current pagination or you aren't using the current OAuth user."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - not-matching-oauth
+                            - max-too-high
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
         "401":
           description: No access token when authenticating.
           content:
@@ -1989,13 +1673,13 @@ paths:
                         - friendly
                 required:
                   - errors
-  "/v1/users/{user}/fields/tags/{id}":
-    get:
-      summary: Get a tag by integration field
-      description: "Get data about a specific tag by integration field. `{user}` can be `@me` to target the current OAuth user."
+  "/v1/users/{user}/tags/{tag}/edit":
+    post:
+      summary: Edit a system tag
+      description: "Edit a system tag by its ID. `{user}` can be `@me` to target the current OAuth user."
       security:
         - oAuth2:
-            - alters:read
+            - tags:write
       parameters:
         - name: user
           in: path
@@ -2003,19 +1687,93 @@ paths:
           description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
           schema:
             type: string
-        - name: id
+        - name: tag
           in: path
           required: true
-          description: "`{id}` is the field contents."
+          description: "`{tag}` is the tag ID."
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tagFriendlyName:
+                  type: string
+                  maxLength: 100
+                tagDescription:
+                  type:
+                    - string
+                    - "null"
+                  maxLength: 1000
+                tagColor:
+                  type: string
+                  enum:
+                    - red
+                    - orange
+                    - amber
+                    - yellow
+                    - lime
+                    - green
+                    - emerald
+                    - teal
+                    - cyan
+                    - sky
+                    - blue
+                    - indigo
+                    - violet
+                    - purple
+                    - fuchsia
+                    - pink
+                    - rose
+                orderString:
+                  type: string
+                  minLength: 1
+                  maxLength: 4
+                public:
+                  type: number
+                  minimum: 0
+                  description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see the tag's name. |\n| DESCRIPTION     | `2` `(1 << 1)`      | Allows external users to see the tag's description. |\n| ALTERS          | `32` `(1 << 5)`     | Allows external users to see the tag's associated alters. |\n| COLOR           | `64` `(1 << 6)`     | Allows external users to see the tag's banner. |"
+                  example: 0
+                fields:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    maxLength: 150
+                  default: {}
+              default: {}
       responses:
         "200":
           description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PAlter"
+                $ref: "#/components/schemas/PTag"
+        "400":
+          description: Client error while processing input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - not-matching-oauth
+                            - zod
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
         "401":
           description: No access token when authenticating.
           content:
@@ -2041,6 +1799,24 @@ paths:
                         - friendly
                 required:
                   - errors
+        "404":
+          description: "Couldn't find the tag"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                      - unknown-tag
+                  friendly:
+                    type: string
+                    enum:
+                      - "Couldn't find this tag."
+                required:
+                  - type
+                  - friendly
   "/v1/users/{user}/alters/{alter}/edit":
     post:
       summary: Edit a system alter
@@ -2243,13 +2019,13 @@ paths:
                 required:
                   - type
                   - friendly
-  "/v1/users/{user}/alters/{alter}/upload-avatar":
-    post:
-      summary: Upload alter avatar
-      description: "**You must provide an image in the body.** Upload alter avatar, maximum file size is 1MB. `{user}` can be `@me` to target the current OAuth user."
+  "/v1/users/{user}/system/list-alters":
+    get:
+      summary: List system alters
+      description: "List data about alters in a system. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
       security:
         - oAuth2:
-            - alters:write
+            - alters:read
       parameters:
         - name: user
           in: path
@@ -2257,21 +2033,28 @@ paths:
           description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
           schema:
             type: string
-        - name: alter
-          in: path
-          required: true
-          description: "`{alter}` is the alter ID."
+        - description: How many entries to show at most if in a pagination. Can only be at most 250 alters.
+          name: max
+          in: query
           schema:
-            type: string
+            type: number
+            maximum: 250
+        - description: How many entries to skip if in a pagination.
+          name: skip
+          in: query
+          schema:
+            type: number
       responses:
         "200":
           description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PAlter"
+                type: array
+                items:
+                  $ref: "#/components/schemas/PAlter"
         "400":
-          description: Client error while processing input.
+          description: "You can only show at most 30 alters in a current pagination or you aren't using the current OAuth user."
           content:
             application/json:
               schema:
@@ -2286,8 +2069,7 @@ paths:
                           type: string
                           enum:
                             - not-matching-oauth
-                            - zod
-                            - file-too-big
+                            - max-too-high
                         friendly:
                           type: string
                       required:
@@ -2320,24 +2102,110 @@ paths:
                         - friendly
                 required:
                   - errors
-        "404":
-          description: "Couldn't find the alter"
+  "/v1/users/{user}/fields/tags/{id}":
+    get:
+      summary: Get a tag by integration field
+      description: "Get data about a specific tag by integration field. `{user}` can be `@me` to target the current OAuth user."
+      security:
+        - oAuth2:
+            - alters:read
+      parameters:
+        - name: user
+          in: path
+          required: true
+          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: "`{id}` is the field contents."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PAlter"
+        "401":
+          description: No access token when authenticating.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  type:
-                    type: string
-                    enum:
-                      - unknown-alter
-                  friendly:
-                    type: string
-                    enum:
-                      - "Couldn't find this alter."
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
                 required:
-                  - type
-                  - friendly
+                  - errors
+  "/v1/users/{user}/fields/alters/{id}":
+    get:
+      summary: Get an alter by integration field
+      description: "Get data about a specific alter by integration field. `{user}` can be `@me` to target the current OAuth user."
+      security:
+        - oAuth2:
+            - alters:read
+      parameters:
+        - name: user
+          in: path
+          required: true
+          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: "`{id}` is the field contents."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PAlter"
+        "401":
+          description: No access token when authenticating.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
   "/v1/users/{user}/alters/{alter}/upload-banner":
     post:
       summary: Upload alter banner
@@ -2433,96 +2301,13 @@ paths:
                 required:
                   - type
                   - friendly
-  "/v1/users/{user}/system/list-tags":
-    get:
-      summary: List system tags
-      description: "List data about tags in a system. `{user}` can be `@me` to target the current OAuth user. This endpoint **does** allow for external system tag data (if achievable in conjunction with the system's privacy settings and the logged in OAuth user)."
-      security:
-        - oAuth2:
-            - alters:read
-      parameters:
-        - name: user
-          in: path
-          required: true
-          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
-          schema:
-            type: string
-        - description: How many entries to show at most if in a pagination. Can only be at most 250 tags.
-          name: max
-          in: query
-          schema:
-            type: number
-            maximum: 250
-        - description: How many entries to skip if in a pagination.
-          name: skip
-          in: query
-          schema:
-            type: number
-      responses:
-        "200":
-          description: Success.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PTag"
-        "400":
-          description: "You can only show at most 250 tags in a current pagination or you aren't using the current OAuth user."
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - not-matching-oauth
-                            - max-too-high
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-        "401":
-          description: No access token when authenticating.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                          enum:
-                            - no-access-token
-                            - invalid-scopes
-                            - unknown-token
-                        friendly:
-                          type: string
-                      required:
-                        - type
-                        - friendly
-                required:
-                  - errors
-  "/v1/users/{user}/system/create-tag":
+  "/v1/users/{user}/system/create-alter":
     post:
-      summary: Create a system tag
-      description: "Create a system tag. `{user}` can be `@me` to target the current OAuth user."
+      summary: Create a system alter
+      description: "Create a system alter. `{user}` can be `@me` to target the current OAuth user. Username must be unique."
       security:
         - oAuth2:
-            - tags:write
+            - alters:write
       parameters:
         - name: user
           in: path
@@ -2537,50 +2322,102 @@ paths:
               allOf:
                 - type: object
                   properties:
-                    tagDescription:
+                    username:
+                      type: string
+                      maxLength: 100
+                      pattern: "^[^\\s@\\\\/]+$"
+                    displayName:
+                      type: string
+                      maxLength: 100
+                    nameMap:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          server:
+                            type: string
+                            maxLength: 20
+                          name:
+                            type: string
+                            maxLength: 100
+                        required:
+                          - server
+                          - name
+                    color:
+                      type:
+                        - string
+                        - "null"
+                      pattern: "^#[0-9A-Fa-f]{6}$/i"
+                    description:
                       type:
                         - string
                         - "null"
                       maxLength: 1000
-                    orderString:
+                    pronouns:
+                      type:
+                        - string
+                        - "null"
+                      maxLength: 100
+                    avatarUrl:
+                      type:
+                        - string
+                        - "null"
+                    avatarUrlMap:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      default: {}
+                    webhookAvatarUrl:
+                      type:
+                        - string
+                        - "null"
+                    banner:
+                      type:
+                        - string
+                        - "null"
+                    alterMode:
                       type: string
-                      minLength: 1
-                      maxLength: 4
+                      enum:
+                        - nickname
+                        - webhook
+                        - both
+                      default: webhook
                     public:
                       type: number
                       minimum: 0
-                      description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see the tag's name. |\n| DESCRIPTION     | `2` `(1 << 1)`      | Allows external users to see the tag's description. |\n| ALTERS          | `32` `(1 << 5)`     | Allows external users to see the tag's associated alters. |\n| COLOR           | `64` `(1 << 6)`     | Allows external users to see the tag's banner. |"
-                      example: 0
-                  required:
-                    - public
+                      default: 0
+                      description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| VISIBILITY      | `1` `(1 << 0)`      | Allows external users to see the alter. |\n| NAME            | `2` `(1 << 1)`      | Allows external users to see the alter's name. |\n| DESCRIPTION     | `4` `(1 << 2)`      | Allows external users to see the alter's description. |\n| BANNER          | `8` `(1 << 3)`      | Allows external users to see the alter's banner. |\n| PRONOUNS        | `16` `(1 << 4)`     | Allows external users to see the alter's pronouns. |\n| AVATAR          | `32` `(1 << 5)`     | Allows external users to see the alter's avatar. |\n| TAGS            | `128` `(1 << 7)`    | Allows external users to see the alter's associated tags. |\n| MESSAGE_COUNT   | `256` `(1 << 8)`    | Allows external users to see the alter's message count. |\n| USERNAME        | `512` `(1 << 9)`    | Allows external users to see the alter's username. |"
+                    flags:
+                      type: number
+                      minimum: 0
+                      default: 0
+                      description: "This is a bitwise operation-based number which determines which features are enabled.\n\n| Alter Flag              | Value                   | Description |\n|-------------------------|-------------------------|-------------|\n| PROXY_TAGS_KEPT         | `1` `(1 << 0)`      | Keeps proxy tags after proxying for this specific alter. |"
                 - type: object
                   properties:
-                    color:
+                    username:
                       type: string
-                      enum:
-                        - red
-                        - orange
-                        - amber
-                        - yellow
-                        - lime
-                        - green
-                        - emerald
-                        - teal
-                        - cyan
-                        - sky
-                        - blue
-                        - indigo
-                        - violet
-                        - purple
-                        - fuchsia
-                        - pink
-                        - rose
+                      maxLength: 100
+                      pattern: "^[^\\s@\\\\/]+$"
                     displayName:
                       type: string
-                      minLength: 3
                       maxLength: 100
+                    proxyTags:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          prefix:
+                            type: string
+                            maxLength: 100
+                          suffix:
+                            type: string
+                            maxLength: 100
+                        required:
+                          - prefix
+                          - suffix
+                      default: []
                   required:
-                    - color
+                    - username
                     - displayName
       responses:
         "200":
@@ -2588,7 +2425,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PTag"
+                $ref: "#/components/schemas/PAlter"
         "400":
           description: Client error while processing input.
           content:
@@ -2606,7 +2443,8 @@ paths:
                           enum:
                             - not-matching-oauth
                             - zod
-                            - too-many-tags
+                            - too-many-alters
+                            - duplicate
                         friendly:
                           type: string
                       required:
@@ -2657,13 +2495,13 @@ paths:
                 required:
                   - type
                   - friendly
-  "/v1/users/{user}/tags/{tag}/edit":
+  "/v1/users/{user}/alters/{alter}/upload-avatar":
     post:
-      summary: Edit a system tag
-      description: "Edit a system tag by its ID. `{user}` can be `@me` to target the current OAuth user."
+      summary: Upload alter avatar
+      description: "**You must provide an image in the body.** Upload alter avatar, maximum file size is 1MB. `{user}` can be `@me` to target the current OAuth user."
       security:
         - oAuth2:
-            - tags:write
+            - alters:write
       parameters:
         - name: user
           in: path
@@ -2671,69 +2509,19 @@ paths:
           description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
           schema:
             type: string
-        - name: tag
+        - name: alter
           in: path
           required: true
-          description: "`{tag}` is the tag ID."
+          description: "`{alter}` is the alter ID."
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                tagFriendlyName:
-                  type: string
-                  maxLength: 100
-                tagDescription:
-                  type:
-                    - string
-                    - "null"
-                  maxLength: 1000
-                tagColor:
-                  type: string
-                  enum:
-                    - red
-                    - orange
-                    - amber
-                    - yellow
-                    - lime
-                    - green
-                    - emerald
-                    - teal
-                    - cyan
-                    - sky
-                    - blue
-                    - indigo
-                    - violet
-                    - purple
-                    - fuchsia
-                    - pink
-                    - rose
-                orderString:
-                  type: string
-                  minLength: 1
-                  maxLength: 4
-                public:
-                  type: number
-                  minimum: 0
-                  description: "This is a bitwise operation-based number which determines the protection flags that are public. By default, everything on PluralBuddy is private.\n\n| Public Flag     | Value                   | Description |\n|-----------------|-------------------------|-------------|\n| NAME            | `1` `(1 << 0)`      | Allows external users to see the tag's name. |\n| DESCRIPTION     | `2` `(1 << 1)`      | Allows external users to see the tag's description. |\n| ALTERS          | `32` `(1 << 5)`     | Allows external users to see the tag's associated alters. |\n| COLOR           | `64` `(1 << 6)`     | Allows external users to see the tag's banner. |"
-                  example: 0
-                fields:
-                  type: object
-                  additionalProperties:
-                    type: string
-                    maxLength: 150
-                  default: {}
-              default: {}
       responses:
         "200":
           description: Success.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PTag"
+                $ref: "#/components/schemas/PAlter"
         "400":
           description: Client error while processing input.
           content:
@@ -2751,6 +2539,7 @@ paths:
                           enum:
                             - not-matching-oauth
                             - zod
+                            - file-too-big
                         friendly:
                           type: string
                       required:
@@ -2784,7 +2573,7 @@ paths:
                 required:
                   - errors
         "404":
-          description: "Couldn't find the tag"
+          description: "Couldn't find the alter"
           content:
             application/json:
               schema:
@@ -2793,14 +2582,370 @@ paths:
                   type:
                     type: string
                     enum:
-                      - unknown-tag
+                      - unknown-alter
                   friendly:
                     type: string
                     enum:
-                      - "Couldn't find this tag."
+                      - "Couldn't find this alter."
                 required:
                   - type
                   - friendly
+  /auth/device/code:
+    post:
+      tags:
+        - Device-authorization
+      description: "Request a device and user code\n\nFollow [rfc8628#section-3.2](https://datatracker.ietf.org/doc/html/rfc8628#section-3.2)"
+      security:
+        - bearerAuth: []
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                user_id:
+                  type: string
+                  description: The user ID to which the device code should be pre-bound.
+                scope:
+                  type: string
+                  description: Space-separated list of scopes
+                client_secret:
+                  type: string
+                  description: OAuth client secret
+                client_assertion:
+                  type: string
+                  description: OAuth client assertion
+                client_assertion_type:
+                  type: string
+                  description: OAuth client assertion type
+                resource:
+                  anyOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+                    - enum:
+                        - ""
+                  description: RFC 8707 resource indicator(s) to bind to this authorization request
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  device_code:
+                    type: string
+                    description: The device verification code
+                  user_code:
+                    type: string
+                    description: The user code to display
+                  verification_uri:
+                    type: string
+                    format: uri
+                    description: The URL for user verification. Defaults to /device if not configured.
+                  verification_uri_complete:
+                    type: string
+                    format: uri
+                    description: The complete URL with user code as query parameter.
+                  expires_in:
+                    type: number
+                    description: Lifetime in seconds of the device code
+                  interval:
+                    type: number
+                    description: Minimum polling interval in seconds
+        "400":
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - invalid_request
+                      - invalid_client
+                      - unauthorized_client
+                      - invalid_scope
+                      - invalid_target
+                  error_description:
+                    type: string
+        "401":
+          description: Invalid Basic client authentication
+          headers:
+            WWW-Authenticate:
+              description: Basic client authentication challenge
+              schema:
+                type: string
+                example: Basic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - invalid_client
+                  error_description:
+                    type: string
+                required:
+                  - error
+        "403":
+          description: Forbidden. You do not have permission to access this resource or to perform this action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Not Found. The requested resource was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "429":
+          description: Too Many Requests. You have exceeded the rate limit. Try again later.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - server_error
+                  error_description:
+                    type: string
+  "/v1/users/{user}/terminology":
+    post:
+      summary: "Modify a user's terminology"
+      description: "Modify specific data about a user's terminology. `{user}` can be `@me` to target the current OAuth user."
+      security:
+        - oAuth2:
+            - system:write
+      parameters:
+        - name: user
+          in: path
+          required: true
+          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alters:
+                  type: string
+                  maxLength: 15
+                  default: alter
+                alters_plural:
+                  type: string
+                  maxLength: 15
+                  default: alters
+                alters_capital:
+                  type: string
+                  maxLength: 15
+                  default: Alter
+                tags:
+                  type: string
+                  maxLength: 15
+                  default: tag
+                tags_plural:
+                  type: string
+                  maxLength: 15
+                  default: tags
+                tags_capital:
+                  type: string
+                  maxLength: 15
+                  default: Tag
+                system:
+                  type: string
+                  maxLength: 15
+                  default: system
+                system_plural:
+                  type: string
+                  maxLength: 15
+                  default: systems
+                system_capital:
+                  type: string
+                  maxLength: 15
+                  default: System
+                display_tag:
+                  type: string
+                  maxLength: 15
+                  default: display tag
+                proxy_tag:
+                  type: string
+                  maxLength: 15
+                  default: proxy tag
+                proxy_tags_plural:
+                  type: string
+                  maxLength: 15
+                  default: proxy tags
+                proxy_tags_capital:
+                  type: string
+                  maxLength: 15
+                  default: Proxy Tags
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    enum:
+                      - true
+                required:
+                  - success
+        "401":
+          description: No access token when authenticating.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
+    get:
+      summary: "Get a user's terminology"
+      description: "Get specific data about a user's terminology. `{user}` can be `@me` to target the current OAuth user."
+      security:
+        - oAuth2:
+            - system:read
+      parameters:
+        - name: user
+          in: path
+          required: true
+          description: "`{user}` is a Discord user Snowflake, or `@me`, referencing the current OAuth user."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alters:
+                    type: string
+                    maxLength: 15
+                    default: alter
+                  alters_plural:
+                    type: string
+                    maxLength: 15
+                    default: alters
+                  alters_capital:
+                    type: string
+                    maxLength: 15
+                    default: Alter
+                  tags:
+                    type: string
+                    maxLength: 15
+                    default: tag
+                  tags_plural:
+                    type: string
+                    maxLength: 15
+                    default: tags
+                  tags_capital:
+                    type: string
+                    maxLength: 15
+                    default: Tag
+                  system:
+                    type: string
+                    maxLength: 15
+                    default: system
+                  system_plural:
+                    type: string
+                    maxLength: 15
+                    default: systems
+                  system_capital:
+                    type: string
+                    maxLength: 15
+                    default: System
+                  display_tag:
+                    type: string
+                    maxLength: 15
+                    default: display tag
+                  proxy_tag:
+                    type: string
+                    maxLength: 15
+                    default: proxy tag
+                  proxy_tags_plural:
+                    type: string
+                    maxLength: 15
+                    default: proxy tags
+                  proxy_tags_capital:
+                    type: string
+                    maxLength: 15
+                    default: Proxy Tags
+        "401":
+          description: No access token when authenticating.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - no-access-token
+                            - invalid-scopes
+                            - unknown-token
+                        friendly:
+                          type: string
+                      required:
+                        - type
+                        - friendly
+                required:
+                  - errors
   "/v1/users/{user}/system":
     post:
       summary: Create a system
@@ -3170,10 +3315,10 @@ paths:
                 required:
                   - type
                   - friendly
-  "/v1/users/{user}/system/upload-banner":
+  "/v1/users/{user}/system/upload-avatar":
     post:
-      summary: Upload system banner
-      description: "**You must provide an image in the body.** Upload system banner, maximum file size is 1MB. `{user}` can be `@me` to target the current OAuth user."
+      summary: Upload system avatar
+      description: "**You must provide an image in the body.** Upload system avatar, maximum file size is 1MB. `{user}` can be `@me` to target the current OAuth user."
       security:
         - oAuth2:
             - system:write
@@ -3259,10 +3404,10 @@ paths:
                 required:
                   - type
                   - friendly
-  "/v1/users/{user}/system/upload-avatar":
+  "/v1/users/{user}/system/upload-banner":
     post:
-      summary: Upload system avatar
-      description: "**You must provide an image in the body.** Upload system avatar, maximum file size is 1MB. `{user}` can be `@me` to target the current OAuth user."
+      summary: Upload system banner
+      description: "**You must provide an image in the body.** Upload system banner, maximum file size is 1MB. `{user}` can be `@me` to target the current OAuth user."
       security:
         - oAuth2:
             - system:write
@@ -3406,10 +3551,10 @@ webhooks:
                 - type
                 - message
       responses: {}
-  alter.create:
+  tag.create:
     post:
-      summary: Receive alter creation updates
-      description: Receive alter creation updates via Svix Webhooks built into PluralBuddy.
+      summary: Receive tag creation updates
+      description: Receive tag creation updates via Svix Webhooks built into PluralBuddy.
       requestBody:
         content:
           application/json:
@@ -3421,36 +3566,13 @@ webhooks:
                 type:
                   type: string
                   enum:
-                    - alter.create
-                alter:
-                  $ref: "#/components/schemas/PAlter"
+                    - tag.create
+                tag:
+                  $ref: "#/components/schemas/PTag"
               required:
                 - userId
                 - type
-                - alter
-      responses: {}
-  alter.update:
-    post:
-      summary: Receive alter updates
-      description: Receive alter updates via Svix Webhooks built into PluralBuddy.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userId:
-                  type: string
-                type:
-                  type: string
-                  enum:
-                    - alter.update
-                alter:
-                  $ref: "#/components/schemas/PAlter"
-              required:
-                - userId
-                - type
-                - alter
+                - tag
       responses: {}
   tag.update:
     post:
@@ -3475,10 +3597,10 @@ webhooks:
                 - type
                 - tag
       responses: {}
-  tag.create:
+  alter.update:
     post:
-      summary: Receive tag creation updates
-      description: Receive tag creation updates via Svix Webhooks built into PluralBuddy.
+      summary: Receive alter updates
+      description: Receive alter updates via Svix Webhooks built into PluralBuddy.
       requestBody:
         content:
           application/json:
@@ -3490,13 +3612,36 @@ webhooks:
                 type:
                   type: string
                   enum:
-                    - tag.create
-                tag:
-                  $ref: "#/components/schemas/PTag"
+                    - alter.update
+                alter:
+                  $ref: "#/components/schemas/PAlter"
               required:
                 - userId
                 - type
-                - tag
+                - alter
+      responses: {}
+  alter.create:
+    post:
+      summary: Receive alter creation updates
+      description: Receive alter creation updates via Svix Webhooks built into PluralBuddy.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - alter.create
+                alter:
+                  $ref: "#/components/schemas/PAlter"
+              required:
+                - userId
+                - type
+                - alter
       responses: {}
   system.update:
     post:
