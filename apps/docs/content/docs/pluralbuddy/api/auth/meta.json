@@ -1,11 +1,11 @@
 {
   "title": "Authentication",
   "pages": [
+    "device/code/post",
     "oauth2/token/post",
-    "oauth2/authorize/get",
-    "oauth2/revoke/post",
     "oauth2/introspect/post",
-    "device/code/post"
+    "oauth2/revoke/post",
+    "oauth2/authorize/get"
   ],
   "icon": "Key"
 }
