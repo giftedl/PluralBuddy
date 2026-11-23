@@ -98,6 +98,8 @@ export default createEvent({
 		);
 		handleDMReply(message);
 
+		// Forwarded messages
+		if (message.messageSnapshots?.length !== 0) return;
 		if (message.author.bot === true) return;
 		if (startsWithPrefix(message)) return;
 
