@@ -36,7 +36,6 @@ export const auth = betterAuth({
 		},
 	},
 	plugins: [
-        openAPI(), 
 		jwt(),
 		dash(),
 		oauthDeviceAuthorization({ 

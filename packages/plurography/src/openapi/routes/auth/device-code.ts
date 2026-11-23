@@ -11,6 +11,7 @@ export const register = (registry: OpenAPIRegistry) =>
         bearerAuth: [],
       },
     ],
+    summary: "Get a device-flow code",
     path: "/auth/device/code",
     responses: {
       "200": {
