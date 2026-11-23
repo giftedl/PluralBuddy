@@ -29,19 +29,19 @@ export default function DeviceAuthorizationPage() {
     { client: OAuthClient; scopes: string[]; approvalCode: string } | undefined
   >();
 
+  const formattedCode = userCode.trim().replace(/-/g, "").toUpperCase();
+
+  if (!session?.user && !isPending) {
+    const verificationPath = `/auth/device?user_code=${encodeURIComponent(formattedCode)}`;
+    window.location.href = `/auth/sign-in?redirect=${encodeURIComponent(verificationPath)}`;
+    return;
+  }
+
   const handleSubmit = async (e: MouseEvent<HTMLButtonElement, MouseEvent> | null) => {
     setLoading(true);
     if (e) e.preventDefault();
 
     try {
-      const formattedCode = userCode.trim().replace(/-/g, "").toUpperCase();
-
-      if (!session?.user) {
-        const verificationPath = `/auth/device?user_code=${encodeURIComponent(formattedCode)}`;
-        window.location.href = `/auth/sign-in?redirect=${encodeURIComponent(verificationPath)}`;
-        return;
-      }
-
       // Check if the code is valid using GET /device endpoint
       const response = await authClient.device({
         query: { user_code: formattedCode },
@@ -93,7 +93,7 @@ export default function DeviceAuthorizationPage() {
                     setTimeout(() => {
                       setOpenClient(undefined);
                       setSuccessModal(false);
-                      setLoading(false)
+                      setLoading(false);
                     }, 1500);
                   },
                 }}
