@@ -76,7 +76,12 @@
             "system:admin": "Access to read and write to systems AND alters.",
             "system:ai-ap": "Create custom auto proxy modes as if this integration was a front tracker."
         },
+        "device_auth": "Authorize your device",
+        "device_auth_desc": "Enter the code displayed on the device you're signing in to. Never use a code sent by someone else.",
+        "invalid_code": "Invalid or expired code",
+        "continue": "Continue",
         "error_denying_code": "Error while denying consent code",
+        "error_accepting_code": "Error while accepting consent code",
         "done": "Okay, done!"
     },
     "DeleteComponent": {
