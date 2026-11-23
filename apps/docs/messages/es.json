@@ -76,7 +76,12 @@
             "system:admin": "Acceso a leer y escribir en sistemas y alters.",
             "system:ai-ap": "Crear modos automáticos personalizados de proxy como si esta integración fuera un rastreador frontal."
         },
+        "device_auth": "Authorize your device",
+        "device_auth_desc": "Enter the code displayed on the device you're signing in to. Never use a code sent by someone else.",
+        "invalid_code": "Invalid or expired code",
+        "continue": "Continue",
         "error_denying_code": "Error al denegar el código de consentimiento",
+        "error_accepting_code": "Error while accepting consent code",
         "done": "Vale, ¡listo!"
     },
     "DeleteComponent": {
