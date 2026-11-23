@@ -53,7 +53,7 @@ export default function SignInPage() {
 			<Dithering
 				className="w-screen h-screen absolute"
 				colorBack={resolvedTheme === "dark" ? "#000000" : "#ffffff"}
-				colorFront="#fccee8"
+				colorFront="#7287fd"
 				shape="warp"
 				type="4x4"
 				size={2}

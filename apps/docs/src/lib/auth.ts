@@ -7,6 +7,7 @@ import { jwt } from "better-auth/plugins"
 import { RESTGetAPICurrentUserResult } from "discord-api-types/v10"
 import { MongoClient } from "mongodb";
 import { deviceAuthorization } from "better-auth/plugins"; 
+import { openAPI } from "better-auth/plugins"
 
 const client = new MongoClient(process.env.MONGO ?? "");
 
@@ -35,10 +36,11 @@ export const auth = betterAuth({
 		},
 	},
 	plugins: [
+        openAPI(), 
 		jwt(),
 		dash(),
 		oauthDeviceAuthorization({ 
-			verificationUri: "/device", 
+			verificationUri: "/auth/device", 
 		}),
 		oauthProvider({
 			enforcePerClientResources: false,
