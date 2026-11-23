@@ -135,7 +135,7 @@ export function AuthorizationCardContent({
             switch (handlerResponse.type) {
               case "oauth2":
                 res = await authClient.oauth2.consent({
-                  accept: false,
+                  accept: true,
                   scope: (scopes ?? []).join(" "),
                 });
               case "device-flow":
