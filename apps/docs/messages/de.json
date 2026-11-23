@@ -76,7 +76,12 @@
             "system:admin": "Zugriff auf Lese- und Schreibzugriff auf Systeme UND Systemmitglied.",
             "system:ai-ap": "Erstellen Sie benutzerdefinierte Proxy-Modi als wäre diese Integration ein Front-Tracker."
         },
+        "device_auth": "Authorize your device",
+        "device_auth_desc": "Enter the code displayed on the device you're signing in to. Never use a code sent by someone else.",
+        "invalid_code": "Invalid or expired code",
+        "continue": "Continue",
         "error_denying_code": "Fehler beim Ablehnen des Zustimmungscodes",
+        "error_accepting_code": "Error while accepting consent code",
         "done": "Okay, erledigt!"
     },
     "DeleteComponent": {
