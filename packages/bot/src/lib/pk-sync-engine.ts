@@ -401,22 +401,29 @@ export async function automaticallySync({
 	userId,
 	system: systemPB,
 }: PUser) {
+	const lastSynced = syncConfiguration?.pluralkit?.lastSynced;
 	if (
 		!syncConfiguration?.pluralkit?.automatic?.enabled ||
 		!syncConfiguration.pluralkit.token ||
 		!systemPB ||
-		Date.now() -
-			(syncConfiguration.pluralkit.lastSynced ?? new Date()).valueOf() <
-			1800000
+		(lastSynced && Date.now() - lastSynced.valueOf() < 1800000)
 	) {
 		return;
 	}
 
-	// update first to avoid duplicate requests from subsequent messages
-	await userCollection.updateOne(
-		{ userId },
-		{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
+	// Claim the sync atomically so concurrent message events can't both insert the same alters.
+	const syncClaim = await userCollection.updateOne(
+		{
+			userId,
+			"syncConfiguration.pluralkit.lastSynced": lastSynced ?? null,
+		},
+		{
+			$set: {
+				"syncConfiguration.pluralkit.lastSynced": new Date(),
+			},
+		},
 	);
+	if (syncClaim.matchedCount === 0) return;
 	console.log("sync", userId);
 
 	const token = await decryptToken(
