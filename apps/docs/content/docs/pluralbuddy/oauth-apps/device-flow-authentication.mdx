@@ -1,0 +1,58 @@
+---
+title: Device-flow Authentication
+description: Dual device authentication
+icon: ScreenShare
+---
+
+Device-flow based authentication is used as an alternative to the usual authorization code grant type when the environment doesn't have access to a web browser.
+PluralBuddy uses device-flow authentication as listed in [RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628).
+
+## Steps to getting a token
+
+### Requesting authorization code
+
+You must [first request a code associated with your application](/docs/pluralbuddy/api/auth/device/code/post), which should be shown to the user.
+
+```ts
+const clientId = "...";
+const clientSecret = "...";
+const scope = "profile openid";
+
+const body = JSON.stringify({
+  "client_id": clientId,
+  "client_secret": clientSecret,
+  scope,
+})
+
+await fetch("https://pluralbuddy.app/api/auth/device/code", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body
+});
+```
+
+### Polling for token
+
+After displaying the user code, the application needs access to the token. Poll the normal `/auth/oauth2/token` endpoint every 5-10 seconds until you get a response.
+Polling any quicker may get your IP ratelimited. Make sure you use the standard `urn:ietf:params:oauth:grant-type:device_code` for the `grant_type`.
+
+```ts
+const body = new URLSearchParams({
+  "grant_type": "urn:ietf:params:oauth:grant-type:device_code",
+  "client_id": "...",
+  "client_secret": "...",
+  "scope": "profile openid",
+  // You should've got this under `device_code` in the previous step.
+  "device_code": "..."
+})
+
+await fetch("https://pluralbuddy.app/api/auth/oauth2/token", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body
+})
+```
