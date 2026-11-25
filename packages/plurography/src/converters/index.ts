@@ -1,4 +1,5 @@
 import type z from "zod";
+import OurcanaConverter, { OurcanaExport } from "../ourcana";
 import { OpenPluralExport } from "../openplural/export";
 import { OpenPluralSystem } from "../openplural/system";
 import { PAlter } from "../pluralbuddy/alter";
@@ -17,6 +18,7 @@ export { OpenPluralConverter };
 export { PluralBuddyConverter };
 export { PluralKitConverter };
 export { TupperBoxConverter }; 
+export { OurcanaConverter };
 
 type ClassOf<V> = { new (): V };
 
@@ -80,6 +82,12 @@ export const possibleConverters: Record<
 			"Simplest, has the least data to download - system data isn't included.",
 		converter: TupperBoxConverter,
 		parserZod: TupperBoxSystem
+	},
+	ourcana: {
+		name: "Ourcana",
+		description: "Ourcana system export.",
+		converter: OurcanaConverter,
+		parserZod: OurcanaExport,
 	},
 };
 
