@@ -19,7 +19,16 @@ export async function cleanupIndexingMap() {
 				)
 			) {
 				setTimeout(async () => {
-					const newMessage = await message.fetch();
+					let newMessage;
+					try {
+						newMessage = await message.fetch();
+					} catch(e) {
+						console.error(e)
+						// Or logger.error(e)?
+						// Other code here depending on what you want to have happen upon error, Giftedly
+						return;
+					}
+					
 					if (
 						newMessage.components[0] &&
 						newMessage.components[0].type === ComponentType.Container
