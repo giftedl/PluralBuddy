@@ -14,7 +14,7 @@ import {
 	Options,
 	TextDisplay,
 } from "seyfert";
-import { MessageFlags } from "seyfert/lib/types";
+import { ApplicationIntegrationType, MessageFlags } from "seyfert/lib/types";
 import { emojis } from "@/lib/emojis";
 import { alterCollection } from "../mongodb";
 import { AlertView } from "../views/alert";
@@ -39,7 +39,8 @@ const publicAlterModeOnly = false;
 	name: "alter",
 	description: "Query an alter",
 	aliases: ["a", "m", "member"],
-	contexts: ["BotDM", "Guild"],
+	contexts: ["BotDM", "Guild", "PrivateChannel"],
+	integrationTypes: [ ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall ]
 })
 @Options(options)
 export default class SystemCommand extends Command {
