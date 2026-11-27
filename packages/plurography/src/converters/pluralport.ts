@@ -84,6 +84,7 @@ export default class PluralPortConverter
 				DiscordOpenPluralExtension.parse(system.extensions.discord)
 					?.disabled_guilds ?? [],
 			subAccounts: [],
+			verifiedSubAccounts: [],
 			disabled: system.archived,
 		} satisfies PSystem);
 	}
