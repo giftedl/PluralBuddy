@@ -9,7 +9,7 @@ import {
 } from "plurography";
 import z from "zod";
 import { auth } from "@/lib/auth";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
+import { getSystemIdBySessionId } from "@/lib/discord-id";
 import { api } from "@/lib/rpc";
 import { baseProcedure } from "../init";
 import { router } from "../trpc";
@@ -85,7 +85,7 @@ export const ImportStagingRouter = router({
 
 			if (
 				staging?.originatingSystemId !==
-				(await getDiscordIdBySessionId(session.user.id))
+				(await getSystemIdBySessionId(session.user.id))
 			) {
 				throw new Error("Session doesn't match staging.");
 			}
@@ -128,7 +128,7 @@ export const ImportStagingRouter = router({
 			}
 			if (
 				result.originatingSystemId !==
-				(await getDiscordIdBySessionId(session.user.id))
+				(await getSystemIdBySessionId(session.user.id))
 			) {
 				throw new Error("Unauthorized.");
 			}

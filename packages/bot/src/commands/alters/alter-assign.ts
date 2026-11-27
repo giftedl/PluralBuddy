@@ -44,7 +44,7 @@ export default class AssignTag extends SubCommand {
 		await ctx.deferReply(true);
 		const { "alter-name": alterName, "tag-name": tagName } = ctx.options;
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 
 		const alter =
 			ctx.contextAlter() ??

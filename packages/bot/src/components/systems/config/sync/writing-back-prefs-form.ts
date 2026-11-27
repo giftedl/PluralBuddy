@@ -58,7 +58,7 @@ export default class SetPronounsButton extends ModalCommand {
 			) ?? false;
 
 		await userCollection.updateOne(
-			{ userId: ctx.author.id },
+			{ userId: await ctx.systemId() },
 			{
 				$set: {
 					"syncConfiguration.pluralkit.writeBack.enabled": enabled,

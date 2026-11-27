@@ -39,7 +39,7 @@ export async function runAlterCommand(
 	await ctx.deferReply(true);
 	const { alter: alterName } = ctx.options;
 
-	const systemId = ctx.author.id;
+	const systemId = await ctx.systemId();
 	const query = Number.isNaN(Number.parseInt(alterName))
 		? alterCollection.findOne({ $or: [{ username: alterName }], systemId })
 		: alterCollection.findOne({

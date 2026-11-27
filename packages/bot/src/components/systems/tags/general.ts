@@ -21,7 +21,7 @@ export default class GeneralTagSettings extends ComponentCommand {
 				ctx.customId,
 			)[0];
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const query = tagCollection.findOne({
 			$and: [{ tagId }, { systemId }],
 		});

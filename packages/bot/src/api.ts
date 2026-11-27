@@ -37,6 +37,7 @@ const SystemEditInput = PSystemObject.omit({
 	associatedUserId: true,
 	systemOperationDM: true,
 	subAccounts: true,
+	verifiedSubAccounts: true,
 })
 	.strict()
 	.partial()
@@ -199,6 +200,7 @@ export const clientRoutes = app
 				changedOperation: SystemEditInput,
 				oldSystem: PSystemObject.omit({
 					subAccounts: true,
+					verifiedSubAccounts: true,
 					systemAutoproxy: true,
 				}),
 			}),
@@ -212,7 +214,12 @@ export const clientRoutes = app
 			console.log("notfying.?");
 
 			createSystemOperation(
-				{ ...oldSystem, subAccounts: [], systemAutoproxy: [] },
+				{
+					...oldSystem,
+					subAccounts: [],
+					verifiedSubAccounts: [],
+					systemAutoproxy: [],
+				},
 				changedOperation,
 				translations,
 				method === "exchange" ? "api-exchange" : "api-web",

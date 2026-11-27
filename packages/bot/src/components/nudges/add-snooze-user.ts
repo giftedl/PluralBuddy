@@ -1,16 +1,10 @@
 /**  * PluralBuddy Discord Bot  *  - is licensed under Apache License 2.0.  */
-import {
-	ComponentCommand,
-	type ComponentContext,
-	ModalCommand,
-	ModalContext,
-} from "seyfert";
+import { ComponentCommand, type ComponentContext } from "seyfert";
 import { MessageFlags } from "seyfert/lib/types";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
 import { userCollection } from "@/mongodb";
-import { defaultUserStructure, writeUserById } from "@/types/user";
+import { writePersonalSettingsById } from "@/types/user";
 import { AlertView } from "@/views/alert";
-import { NudgePreferences } from "@/views/nudge-preferences";
 
 export default class AddUserForm extends ComponentCommand {
 	componentType = "Button" as const;
@@ -28,7 +22,7 @@ export default class AddUserForm extends ComponentCommand {
 		// Database migration (12/04/25)
 		if (user.nudging === undefined) {
 			await userCollection.updateOne(
-				{ userId: user.userId },
+				{ userId: ctx.author.id },
 				{
 					$set: {
 						nudging: {
@@ -60,7 +54,7 @@ export default class AddUserForm extends ComponentCommand {
 			});
 		}
 
-		await writeUserById(user.userId, {
+		await writePersonalSettingsById(ctx.author.id, {
 			...user,
 			nudging: {
 				...user.nudging,

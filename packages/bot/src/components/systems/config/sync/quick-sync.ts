@@ -68,15 +68,15 @@ export default class QuickSync extends ComponentCommand {
 		logger?.info("found pk objects");
 
 		const alters = await alterCollection
-			.find({ systemId: ctx.author.id })
+			.find({ systemId: await ctx.systemId() })
 			.toArray();
 		const tags = await tagCollection
-			.find({ systemId: ctx.author.id })
+			.find({ systemId: await ctx.systemId() })
 			.toArray();
 
 		const transcript = runSandboxActions({
 			pluralbuddy: { alters, tags, system: systemPB },
-			authorId: ctx.author.id,
+			authorId: await ctx.systemId(),
 			pluralkit: {
 				members: members,
 				system: system,
@@ -118,14 +118,14 @@ export default class QuickSync extends ComponentCommand {
 
 		await userCollection
 			.updateOne(
-				{ userId: ctx.author.id },
+				{ userId: await ctx.systemId() },
 				{ $set: { system: transcript.system.nondestructive } },
 			)
 			.catch((v) => console.error("error while updating u1", v));
 
 		await userCollection
 			.updateOne(
-				{ userId: ctx.author.id },
+				{ userId: await ctx.systemId() },
 				{ $set: { "syncConfiguration.pluralkit.lastSynced": new Date() } },
 			)
 			.catch((v) => console.error("error while updating u2", v));

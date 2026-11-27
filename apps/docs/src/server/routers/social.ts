@@ -2,7 +2,7 @@ import z from "zod";
 import { baseProcedure, createTRPCRouter } from "../init";
 import { MongoClient } from "mongodb";
 import { PUser } from "plurography";
-import { getDiscordIdBySessionId } from "@/lib/discord-id";
+import { getSystemIdBySessionId } from "@/lib/discord-id";
 import { APIUser } from "discord-api-types/v10";
 import { DiscordSnowflake } from "@sapphire/snowflake";
 
@@ -19,7 +19,7 @@ export const SocialRouter = createTRPCRouter({
 			`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 		);
 		const users = db.collection<PUser>("users");
-		const owner = await getDiscordIdBySessionId(session.user.id);
+		const owner = await getSystemIdBySessionId(session.user.id);
 		const systemUser = await users.findOne({ userId: owner });
 
 		if (!systemUser || !systemUser.system) return { noSystem: true };
@@ -80,7 +80,7 @@ export const SocialRouter = createTRPCRouter({
 				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 			);
 			const users = db.collection<PUser>("users");
-			const owner = await getDiscordIdBySessionId(session.user.id);
+			const owner = await getSystemIdBySessionId(session.user.id);
 			const systemUser = await users.findOne({ userId: owner });
 
 			if (!systemUser || !systemUser.system) return { noSystem: true };
@@ -121,7 +121,7 @@ export const SocialRouter = createTRPCRouter({
 				`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`,
 			);
 			const users = db.collection<PUser>("users");
-			const owner = await getDiscordIdBySessionId(session.user.id);
+			const owner = await getSystemIdBySessionId(session.user.id);
 			const systemUser = await users.findOne({ userId: owner });
 
 			if (!systemUser || !systemUser.system) return { noSystem: true };

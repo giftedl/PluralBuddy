@@ -179,7 +179,7 @@ ${z.prettifyError(alter.error)}
 		writeBack({
 			type: "create-alter",
 			id: String(alter.data.alterId),
-			change: { ...alter.data, userId: ctx.author.id },
+			change: { ...alter.data, userId: user.system.associatedUserId },
 			syncConfig: user.syncConfiguration,
 		});
 
@@ -193,8 +193,8 @@ ${z.prettifyError(alter.error)}
 			}),
 		});
 
-		w(ctx.author.id, "alter.create", {
-			userId: ctx.author.id,
+		w(user.system.associatedUserId, "alter.create", {
+			userId: user.system.associatedUserId,
 			type: "alter.create",
 			alter: alter.data,
 		});

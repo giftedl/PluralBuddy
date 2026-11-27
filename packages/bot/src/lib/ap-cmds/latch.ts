@@ -38,7 +38,7 @@ export async function runLatchCommand(
 	await ctx.deferReply(true);
 	const { "first-alter": alterName } = ctx.options;
 
-	const systemId = ctx.author.id;
+	const systemId = await ctx.systemId();
 	let alter = null;
 	const { system } = await ctx.retrievePUser();
 

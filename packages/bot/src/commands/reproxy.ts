@@ -69,7 +69,7 @@ export default class ReproxyCommand extends Command {
 		const { system } = await ctx.retrievePUser();
 		const { alter: alterName, "change-latch": changeLatch } = ctx.options;
 
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 
 		const alter =
 			ctx.contextAlter() ??
@@ -111,7 +111,7 @@ export default class ReproxyCommand extends Command {
 			?.referencedMessage?.id;
 		const message = await messagesCollection.findOne(
 			{
-				systemId: ctx.author.id,
+				systemId: await ctx.systemId(),
 				channelId: ctx.channelId,
 				...(referencedMessageId ? { messageId: referencedMessageId } : {}),
 			},
@@ -132,7 +132,7 @@ export default class ReproxyCommand extends Command {
 		const { messageId } = message;
 
 		if (
-			message?.systemId !== ctx.author.id ||
+			message?.systemId !== await ctx.systemId() ||
 			message.guildId !== ctx.guildId
 		) {
 			return await ctx.editResponse({

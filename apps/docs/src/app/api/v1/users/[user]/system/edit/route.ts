@@ -13,6 +13,7 @@ const SystemEditInput = PSystemObject.omit({
 	associatedUserId: true,
 	systemOperationDM: true,
 	subAccounts: true,
+	verifiedSubAccounts: true,
 })
 	.strict()
 	.partial()

@@ -35,7 +35,7 @@ export default class DeleteAlterCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { "alter-name": alterName } = ctx.options;
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const alter =
 			ctx.contextAlter() ??
 			(await (Number.isNaN(Number.parseInt(alterName))

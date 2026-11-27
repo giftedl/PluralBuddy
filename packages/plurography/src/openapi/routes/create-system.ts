@@ -11,6 +11,7 @@ const CreateSystemParams = PSystemObject.omit({
     associatedUserId: true,
     systemOperationDM: true,
     subAccounts: true,
+    verifiedSubAccounts: true,
 })
     .partial()
     .and(z.object({ systemName: z.string().max(100).min(1) }));

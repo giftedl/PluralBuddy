@@ -129,10 +129,23 @@ export function createOAuthFunction<
 			db.db(`pluralbuddy${process.env.ENV === "canary" ? "-canary" : ""}`),
 			db.db(`${process.env.ENV}-pluralbuddy-app`),
 		];
+		if ("response" in oauthResponse) return oauthResponse.response;
+
+		const authenticatedAccountId = oauthResponse.accountId;
+		const users = botDb.collection<PUser>("users");
+		const directSystem = await users.findOne({
+			userId: authenticatedAccountId,
+			system: { $exists: true },
+		});
+		const linkedSystem =
+			directSystem ??
+			(await users.findOne({
+				"system.verifiedSubAccounts": authenticatedAccountId,
+			}));
+		const accountId =
+			linkedSystem?.system?.associatedUserId ?? authenticatedAccountId;
 		let selfUserCache: PUser | null = null;
 		let bodyCache: unknown | null = null;
-
-		if ("response" in oauthResponse) return oauthResponse.response;
 
 		const ctx = {
 			db,
@@ -175,8 +188,8 @@ export function createOAuthFunction<
 				if (!userId) {
 					const user =
 						(await users.findOne({
-							userId: oauthResponse.accountId,
-						})) ?? defaultUserStructure(oauthResponse.accountId);
+							userId: accountId,
+						})) ?? defaultUserStructure(accountId);
 					selfUserCache = user;
 					return user;
 				}
@@ -205,7 +218,7 @@ export function createOAuthFunction<
 			},
 
 			auth: {
-				accountId: oauthResponse.accountId,
+				accountId,
 				clientId: oauthResponse.clientId,
 				scopes: oauthResponse.scopes,
 			},
@@ -233,7 +246,7 @@ export function createOAuthFunction<
 		if (options.mustMatchOAuth) {
 			if (
 				(ctx.urlData.params as { user: string }).user !==
-					oauthResponse.accountId &&
+					authenticatedAccountId &&
 				(ctx.urlData.params as { user: string }).user !== "@me"
 			) {
 				return ctx.error({

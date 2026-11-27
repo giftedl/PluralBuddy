@@ -152,6 +152,7 @@ export default class PluralBuddyImportModal extends ModalCommand {
 			public: 0,
 			displayTagMap: {},
 			subAccounts: [],
+			verifiedSubAccounts: [],
 			disabled: false,
 			flags: 0,
 			disabledGuilds: [],

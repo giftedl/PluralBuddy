@@ -42,7 +42,7 @@ export default class EditAlterProxyModeCommand extends SubCommand {
 	override async run(ctx: CommandContext<typeof options>) {
 		await ctx.deferReply(true);
 		const { "alter-name": alterName, "alter-proxy": alterProxy } = ctx.options;
-		const systemId = ctx.author.id;
+		const systemId = await ctx.systemId();
 		const guild = await ctx.retrievePGuild();
 		let alter =
 			ctx.contextAlter() ??

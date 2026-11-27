@@ -12,8 +12,7 @@ import {
 import { ButtonStyle, MessageFlags } from "seyfert/lib/types";
 import { buildExportPayload } from "@/lib/export";
 import { InteractionIdentifier } from "@/lib/interaction-ids";
-import { alterCollection, tagCollection } from "@/mongodb";
-import { writeUserById } from "@/types/user";
+import { alterCollection, tagCollection, userCollection } from "@/mongodb";
 import { AlertView } from "@/views/alert";
 import { LoadingView } from "@/views/loading";
 import { PluralBuddyIntro } from "@/views/pluralbuddy-intro";
@@ -54,16 +53,13 @@ export default class DeleteSystemButton extends ComponentCommand {
 			flags: MessageFlags.Ephemeral,
 		});
 
-		await writeUserById(ctx.author.id, {
-			userLang: user.userLang,
-			userId: ctx.author.id,
-			blocked: false,
-			nudging: user.nudging,
-			storagePrefix: user.storagePrefix,
-		});
+		await userCollection.updateOne(
+			{ userId: user.userId },
+			{ $unset: { system: "" } },
+		);
 
-		await alterCollection.deleteMany({ systemId: ctx.author.id });
-		await tagCollection.deleteMany({ systemId: ctx.author.id });
+		await alterCollection.deleteMany({ systemId: await ctx.systemId() });
+		await tagCollection.deleteMany({ systemId: await ctx.systemId() });
 
 		return await ctx.editOrReply({
 			components: new AlertView(await ctx.userTranslations()).successView(

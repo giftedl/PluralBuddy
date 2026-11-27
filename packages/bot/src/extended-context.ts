@@ -225,6 +225,10 @@ export const extendedContext = extendContext((interaction) => {
 	return {
 		ephemeral,
 		language,
+		systemId: async () => {
+			const user = await getUserById(interaction.user.id);
+			return user.system?.associatedUserId ?? interaction.user.id;
+		},
 		retrievePUser: async () => getUserById(interaction.user.id),
 		retrievePGuild: async () =>
 			PGuildObject.parseAsync(

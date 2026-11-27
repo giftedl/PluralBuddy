@@ -3,7 +3,7 @@
 import z from "zod";
 
 export const defaultPrefixes = {
-	canary: ["pbc;", "pbc!"],
+	canary: ["cbc;", "cbc!"],
 	production: ["pb;", "pb!", "Pb;", "Pb!", "pB;", "pB!", "PB;", "PB!"],
 };
 
