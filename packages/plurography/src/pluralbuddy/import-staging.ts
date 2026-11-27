@@ -8,7 +8,7 @@ export const ImportStageObject = z.object({
 	response: z
 		.object({
 			data: z.string(),
-			dataType: z.enum(["PluralKit", "TupperBox", "PluralBuddy"]),
+			dataType: z.enum(["PluralKit", "TupperBox", "PluralBuddy", "OpenPlural"]),
 		})
 		.nullable()
 		.default(null),

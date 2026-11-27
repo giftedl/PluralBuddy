@@ -2,9 +2,10 @@ import z, { type ZodTypeAny } from "zod";
 import type { clientRoutes } from "./api";
 
 declare const require: (moduleName: string) => any;
-const { ImportNotation, PluralKitSystem, TupperBoxSystem } =
+const { ImportNotation, OpenPluralExport, PluralKitSystem, TupperBoxSystem } =
 	require("plurography") as {
 		ImportNotation: ZodTypeAny;
+		OpenPluralExport: ZodTypeAny;
 		PluralKitSystem: ZodTypeAny;
 		TupperBoxSystem: ZodTypeAny;
 	};
@@ -42,6 +43,12 @@ export const ImportStagingValidation = (type: string) =>
 				if (
 					type === "PluralBuddy" &&
 					ImportNotation.safeParse(JSON.parse(val)).error
+				) {
+					return false;
+				}
+				if (
+					type === "OpenPlural" &&
+					OpenPluralExport.safeParse(JSON.parse(val)).error
 				) {
 					return false;
 				}

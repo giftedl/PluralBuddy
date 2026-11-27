@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import {
 	ImportNotation,
 	ImportStage,
+	OpenPluralExport,
 	PluralKitSystem,
 	TupperBoxSystem,
 } from "plurography";
@@ -19,7 +20,7 @@ export const ImportStagingRouter = router({
 		.input(
 			z
 				.object({
-					from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {
+					from: z.enum(["PluralBuddy", "PluralKit", "TupperBox", "OpenPlural"], {
 						error: "You must select a valid option.",
 					}),
 					importStagingId: z.string(),
@@ -54,6 +55,12 @@ export const ImportStagingRouter = router({
 						if (
 							val.from === "PluralBuddy" &&
 							ImportNotation.safeParse(JSON.parse(val.data)).error
+						) {
+							return false;
+						}
+						if (
+							val.from === "OpenPlural" &&
+							OpenPluralExport.safeParse(JSON.parse(val.data)).error
 						) {
 							return false;
 						}

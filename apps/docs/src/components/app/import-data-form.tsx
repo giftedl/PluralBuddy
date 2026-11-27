@@ -2,6 +2,7 @@
 
 import {
 	ImportNotation,
+	OpenPluralExport,
 	PluralKitConfiguration,
 	PluralKitSystem,
 	PSystemObject,
@@ -55,7 +56,7 @@ import {Spinner} from "../ui/spinner";
 import { useTRPCClient } from "@/server/client";
 
 const formSchema = z.object({
-	from: z.enum(["PluralBuddy", "PluralKit", "TupperBox"], {
+	from: z.enum(["PluralBuddy", "PluralKit", "TupperBox", "OpenPlural"], {
 		error: "You must select a valid option.",
 	}),
 	data: z
@@ -74,14 +75,14 @@ const formSchema = z.object({
 		),
 });
 
+type ImportSource = z.infer<typeof formSchema>["from"];
+
 export function ImportDataForm({ importData }: { importData: ImportStage }) {
 	const [open, setOpen] = useState(false);
 	const [alterCount, setAlterCount] = useState(0);
 	const [tagCount, setTagCount] = useState(0);
 	const router = useNavigate();
-	const [type, setType] = useState<
-		"PluralKit" | "PluralBuddy" | "TupperBox" | ""
-	>("");
+	const [type, setType] = useState<ImportSource | "">("");
 	const [data, setData] = useState("");
 	const [loading, setLoading] = useState(false);
 	const trpc = useTRPCClient();
@@ -95,8 +96,23 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 			onSubmit: formSchema,
 		},
 		onSubmit: async ({ value }) => {
-			setType(value.from as "PluralBuddy" | "PluralKit" | "TupperBox");
-			switch (value.from) {
+			const from = formSchema.shape.from.parse(value.from);
+			setType(from);
+			switch (from) {
+				case "OpenPlural": {
+					const parsedData = OpenPluralExport.safeParse(JSON.parse(value.data));
+
+					if (parsedData.error) {
+						console.error(parsedData.error);
+						toast.error("This is not a valid OpenPlural export.");
+						return;
+					}
+
+					setAlterCount(parsedData.data.members.length);
+					setTagCount(parsedData.data.groups.length);
+
+					break;
+				}
 				case "PluralKit": {
 					const parsedData = PluralKitSystem.safeParse(JSON.parse(value.data));
 
@@ -180,6 +196,7 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 										<SelectSeparator />
 										<SelectItem value="PluralKit">PluralKit</SelectItem>
 										<SelectItem value="TupperBox">TupperBox</SelectItem>
+										<SelectItem value="OpenPlural">OpenPlural</SelectItem>
 									</SelectContent>
 								</Select>
 								{isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -269,6 +286,12 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 							<span>Finalizing Import...</span>
 						</DialogTitle>
 						<ul className="list-disc pl-5 mb-2">
+							{type === "OpenPlural" && (
+								<li>
+									The system profile (name, description, tag, avatar, and
+									banner) will be updated.
+								</li>
+							)}
 							<li>
 								<b>{alterCount} alter(s)</b> will be{" "}
 								{importData.importMode === "replace"
@@ -337,7 +360,7 @@ export function ImportDataForm({ importData }: { importData: ImportStage }) {
 								setLoading(true);
 
 								await trpc.import_staging.markImportStagingDone.mutate({
-									from: type as "PluralBuddy" | "PluralKit" | "TupperBox",
+									from: type as ImportSource,
 									importStagingId: importData.webhook.id,
 									data,
 								});
