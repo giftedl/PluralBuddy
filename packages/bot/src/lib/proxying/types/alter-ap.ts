@@ -230,7 +230,8 @@ export async function performAlterAutoProxy(
 
 					if (
 						(lastMessageInChannel.isTextable() ||
-							lastMessageInChannel.isVoice()) &&
+							lastMessageInChannel.isVoice() || 
+      lastMessageInChannel.isThread() ) &&
 						lastMessageInChannel.lastMessageId
 					) {
 						const messageLast = await lastMessageInChannel.messages.list({
