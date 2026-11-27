@@ -15,7 +15,11 @@ export default class PluralBuddyConverter
 		}>
 {
 	to(system: PSystem, forceUserId?: string) {
-		return { ...system, systemId: forceUserId ?? "@me" };
+		return {
+			...system,
+			verifiedSubAccounts: [],
+			systemId: forceUserId ?? "@me",
+		};
 	}
 	toAlter(alter: PAlter, forceUserId?: string) {
 		return { ...alter, systemId: forceUserId ?? "@me" };
