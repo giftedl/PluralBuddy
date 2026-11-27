@@ -166,9 +166,9 @@ export default class PluralPortConverter
 				],
 			),
 			fields: {
-				"@/converter/openplural": alter.id,
-				"@/openplural/is_custom_front": String(alter.is_custom_front),
-				"@/openplural/sort_order": String(alter.sort_order),
+				"@/op/id": alter.id,
+				"@/op/custom-front": String(alter.is_custom_front),
+				"@/op/sort-order": String(alter.sort_order),
 				...(birthdayDate !== null
 					? { "@/birthday": birthdayDate.toISOString() }
 					: {}),
@@ -188,8 +188,8 @@ export default class PluralPortConverter
 			associatedAlters: [],
 			public: 0,
 			fields: {
-				"@/converter/openplural": tag.id,
-				"@/openplural/sort_order": String(tag.sort_order),
+				"@/op/id": tag.id,
+				"@/op/sort-order": String(tag.sort_order),
 				...(tag.color !== null ? { "@/custom-color": tag.color } : {}),
 				...(tag.emoji !== null ? { "@/emoji": tag.emoji } : {}),
 			},
@@ -218,10 +218,10 @@ export default class PluralPortConverter
 
 		data.group_memberships.forEach((element) => {
 			const alterIndex = alters.findIndex(
-				(c) => c.fields["@/converter/openplural"] === element.member_id,
+				(c) => c.fields["@/op/id"] === element.member_id,
 			);
 			const tagIndex = tags.findIndex(
-				(c) => c.fields["@/converter/openplural"] === element.group_id,
+				(c) => c.fields["@/op/id"] === element.group_id,
 			);
 
 			if (alterIndex !== -1 && tagIndex !== -1) {
@@ -344,11 +344,15 @@ export default class PluralPortConverter
 					: handleAsset(data.banner)
 				: null,
 			proxy_tags: data.proxyTags,
+<<<<<<< HEAD
 			is_custom_front: (data.fields ?? {})["@/openplural/is_custom_front"] === "true",
+=======
+			is_custom_front: data.fields["@/op/custom-front"] === "true",
+>>>>>>> 2ddcb165 (Add OP import support)
 			archived: false,
-			sort_order: Number.isNaN(Number(data.fields["@/openplural/sort_order"]))
+			sort_order: Number.isNaN(Number(data.fields["@/op/sort-order"]))
 				? null
-				: Number(data.fields["@/openplural/sort_order"]),
+				: Number(data.fields["@/op/sort-order"]),
 			created_at: data.created,
 			system_id: systemId,
 			privacy:
@@ -394,9 +398,9 @@ export default class PluralPortConverter
 			color: data.fields["@/custom-color"] ?? null,
 			emoji: data.fields["@/emoji"] ?? null,
 			parent_group_id: null,
-			sort_order: Number.isNaN(Number(data.fields["@/openplural/sort_order"]))
+			sort_order: Number.isNaN(Number(data.fields["@/op/sort-order"]))
 				? null
-				: Number(data.fields["@/openplural/sort_order"]),
+				: Number(data.fields["@/op/sort-order"]),
 			source_refs: [
 				{
 					app: "plurography",

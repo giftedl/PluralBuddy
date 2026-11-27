@@ -49,7 +49,7 @@ export const OpenPluralExport = z.object({
 			])
 			.array(),
 	}),
-	systems: OpenPluralSystem.array(),
+	systems: OpenPluralSystem.array().min(1),
 	members: OpenPluralMember.array(),
 	groups: OpenPluralGroup.array(),
 	group_memberships: OpenPluralGroupMembership.array(),

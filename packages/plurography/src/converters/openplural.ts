@@ -41,7 +41,8 @@ export default class OpenPluralConverter
 				userId ??
 				DiscordOpenPluralExtension.parse(system.extensions.discord)?.user_id ??
 				"@me",
-			systemName: system.name,
+			systemName: (system.display_name || system.name).slice(0, 100),
+			systemDescription: system.description?.slice(0, 4000) ?? "",
 			systemDisplayTag: system.tag ?? undefined,
 			displayTagMap:
 				PluralBuddySystemExtension.parse(system.extensions.pluralbuddy_system)
@@ -166,9 +167,9 @@ export default class OpenPluralConverter
 				],
 			),
 			fields: {
-				"@/converter/openplural": alter.id,
-				"@/openplural/is_custom_front": String(alter.is_custom_front),
-				"@/openplural/sort_order": String(alter.sort_order),
+				"@/op/id": alter.id,
+				"@/op/custom-front": String(alter.is_custom_front),
+				"@/op/sort-order": String(alter.sort_order),
 				...(birthdayDate !== null
 					? { "@/birthday": birthdayDate.toISOString() }
 					: {}),
@@ -188,15 +189,24 @@ export default class OpenPluralConverter
 			associatedAlters: [],
 			public: 0,
 			fields: {
-				"@/converter/openplural": tag.id,
-				"@/openplural/sort_order": String(tag.sort_order),
+				"@/op/id": tag.id,
+				"@/op/sort-order": String(tag.sort_order),
 				...(tag.color !== null ? { "@/custom-color": tag.color } : {}),
 				...(tag.emoji !== null ? { "@/emoji": tag.emoji } : {}),
 			},
 		} satisfies PTag);
 	}
 	toImport(data: z.infer<typeof OpenPluralExport>, userId?: string) {
-		const system = this.to(data.systems[0]);
+		const sourceSystem = data.systems[0];
+		if (!sourceSystem) throw new Error("OpenPlural export contains no system.");
+
+		const system = this.to(sourceSystem, userId);
+		const resolveAsset = (assetId: string | null) =>
+			assetId === null
+				? null
+				: (data.assets.find((asset) => asset.id === assetId)?.uri ?? null);
+		system.systemAvatar = resolveAsset(sourceSystem.avatar_asset_id);
+		system.systemBanner = resolveAsset(sourceSystem.banner_asset_id);
 		const tags = data.groups.map((v, i) => this.toTag(v, i, userId));
 		let alters = data.members.map((v, i) => this.toAlter(v, i, userId));
 
@@ -218,10 +228,10 @@ export default class OpenPluralConverter
 
 		data.group_memberships.forEach((element) => {
 			const alterIndex = alters.findIndex(
-				(c) => c.fields["@/converter/openplural"] === element.member_id,
+				(c) => c.fields["@/op/id"] === element.member_id,
 			);
 			const tagIndex = tags.findIndex(
-				(c) => c.fields["@/converter/openplural"] === element.group_id,
+				(c) => c.fields["@/op/id"] === element.group_id,
 			);
 
 			if (alterIndex !== -1 && tagIndex !== -1) {
@@ -345,11 +355,11 @@ export default class OpenPluralConverter
 					: handleAsset(data.banner)
 				: null,
 			proxy_tags: data.proxyTags,
-			is_custom_front: data.fields["@/openplural/is_custom_front"] === "true",
+			is_custom_front: data.fields["@/op/custom-front"] === "true",
 			archived: false,
-			sort_order: Number.isNaN(Number(data.fields["@/openplural/sort_order"]))
+			sort_order: Number.isNaN(Number(data.fields["@/op/sort-order"]))
 				? null
-				: Number(data.fields["@/openplural/sort_order"]),
+				: Number(data.fields["@/op/sort-order"]),
 			created_at: data.created,
 			system_id: systemId,
 			privacy:
@@ -395,9 +405,9 @@ export default class OpenPluralConverter
 			color: data.fields["@/custom-color"] ?? null,
 			emoji: data.fields["@/emoji"] ?? null,
 			parent_group_id: null,
-			sort_order: Number.isNaN(Number(data.fields["@/openplural/sort_order"]))
+			sort_order: Number.isNaN(Number(data.fields["@/op/sort-order"]))
 				? null
-				: Number(data.fields["@/openplural/sort_order"]),
+				: Number(data.fields["@/op/sort-order"]),
 			source_refs: [
 				{
 					app: "plurography",
